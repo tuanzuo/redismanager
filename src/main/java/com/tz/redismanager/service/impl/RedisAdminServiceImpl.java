@@ -1,0 +1,275 @@
+package com.tz.redismanager.service.impl;
+
+import com.google.common.collect.Lists;
+import com.tz.redismanager.annotation.SetRedisTemplate;
+import com.tz.redismanager.bean.po.RedisConfigPO;
+import com.tz.redismanager.bean.vo.RedisKeyDelVo;
+import com.tz.redismanager.bean.vo.RedisTreeNode;
+import com.tz.redismanager.bean.vo.RedisValueQueryVo;
+import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
+import com.tz.redismanager.service.IRedisAdminService;
+import com.tz.redismanager.util.JsonUtils;
+import com.tz.redismanager.util.RedisContextUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service
+public class RedisAdminServiceImpl implements IRedisAdminService {
+
+    private static final Logger logger = LoggerFactory.getLogger(RedisAdminServiceImpl.class);
+
+    @Autowired
+    private RedisConfigPOMapper redisConfigPOMapper;
+
+    @SetRedisTemplate
+    @Override
+    public List<RedisTreeNode> searchKey(String id, String key) {
+        logger.info("[RedisAdmin] [searchKey] {正在通过id:{},key:{}查询keys}", id, key);
+        String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
+        RedisConfigPO configPO = redisConfigPOMapper.selectByPrimaryKey(id);
+        if (null != configPO) {
+            rootNodeTitle = configPO.getName();
+        }
+
+        //Root树节点List
+        List<RedisTreeNode> treeNodesForRoot = new ArrayList<>();
+        //构建Root树节点
+        RedisTreeNode root = new RedisTreeNode(rootNodeTitle, ConstInterface.Common.ROOT_NODE_KEY, false, null);
+        root.setDisableCheckbox(true);
+        root.setDisabled(true);
+        root.setLeaf(true);
+        treeNodesForRoot.add(root);
+        if (StringUtils.isBlank(key) || ConstInterface.Symbol.STAR.equals(key.trim())) {
+            logger.error("[RedisAdmin] [searchKey] {查询key不能为空或者为*}");
+            return treeNodesForRoot;
+        }
+
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        if (null == redisTemplate) {
+            logger.error("[RedisAdmin] [searchKey] {id:{}查询不到redisTemplate}", id);
+            return treeNodesForRoot;
+        }
+        //查询到的keys生成树节点的List
+        List<RedisTreeNode> treeNodes = new ArrayList<>();
+        Set<String> keySet = redisTemplate.keys(key.trim());
+        if (CollectionUtils.isEmpty(keySet)) {
+            //重新设置keySerializer
+            this.reSetKeySerializer(redisTemplate);
+            keySet = redisTemplate.keys(key.trim());
+        }
+        if (CollectionUtils.isEmpty(keySet)) {
+            return treeNodesForRoot;
+        }
+
+        List<String> keyList = keySet.stream().sorted().collect(Collectors.toList());
+        keySet = null;
+        keyList.forEach(temp -> {
+            String[] strs = StringUtils.split(temp, ConstInterface.Symbol.COLON);
+            if (ArrayUtils.isNotEmpty(strs)) {
+                boolean blankFlag = false;
+                List<String> strList = new ArrayList<>();
+                for (int i = 0; i < strs.length; i++) {
+                    String str = strs[i];
+                    strList.add(str);
+                    if (StringUtils.isBlank(str)) {
+                        blankFlag = true;
+                        strList = null;
+                        treeNodes.add(new RedisTreeNode(temp, temp, true, redisTemplate.type(temp).code()));
+                        break;
+                    }
+                }
+
+                if (!blankFlag) {
+                    int i = 1;
+                    String title;
+                    Boolean isLeaf = false;
+                    String keyType = null;
+                    RedisTreeNode preNode = null;
+                    for (String str : strList) {
+                        title = str;
+                        if (i == strList.size()) {
+                            title = temp;
+                            isLeaf = true;
+                            keyType = redisTemplate.type(temp).code();
+                        }
+                        RedisTreeNode node = new RedisTreeNode(title, title, isLeaf, keyType);
+                        if (i == 1) {
+                            if (treeNodes.contains(node)) {
+                                preNode = treeNodes.get(treeNodes.indexOf(node));
+                            } else {
+                                treeNodes.add(node);
+                                preNode = node;
+                            }
+                        } else {
+                            if (CollectionUtils.isNotEmpty(preNode.getChildren())) {
+                                if (preNode.getChildren().contains(node)) {
+                                    preNode = preNode.getChildren().get(preNode.getChildren().indexOf(node));
+                                } else {
+                                    preNode.getChildren().add(node);
+                                    preNode = node;
+                                }
+                            } else {
+                                preNode.addChildren(node);
+                                preNode = node;
+                            }
+                        }
+
+                        i++;
+                    }
+                }
+            } else {
+                treeNodes.add(new RedisTreeNode(temp, temp, true, redisTemplate.type(temp).code()));
+            }
+        });
+        //将查询到的keys生成的树节点List设置为Root树节点的子节点
+        if (CollectionUtils.isNotEmpty(treeNodes)) {
+            root.setChildren(treeNodes);
+            root.setLeaf(false);
+        }
+        logger.info("[RedisAdmin] [searchKey] {通过id:{},key:{}查询keys生成TreeNode完成,result:{}}", id, key, JsonUtils.toJsonStr(treeNodesForRoot));
+        return treeNodesForRoot;
+    }
+
+    @SetRedisTemplate
+    @Override
+    public Object searchKeyValue(String id, RedisValueQueryVo vo) {
+        logger.info("[RedisAdmin] [searchKeyValue] {正在通过vo:{}查询key对应的value}", JsonUtils.toJsonStr(vo));
+        Object result = null;
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        if (null == redisTemplate) {
+            logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询不到redisTemplate}", vo.getId());
+            return null;
+        }
+
+        if ("string".equals(vo.getKeyType())) {
+            try {
+                result = redisTemplate.opsForValue().get(vo.getSearchKey());
+                if (null == result) {
+                    //重新设置keySerializer
+                    this.reSetKeySerializer(redisTemplate);
+                    result = redisTemplate.opsForValue().get(vo.getSearchKey());
+                }
+            } catch (Exception e) {
+                logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
+                logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
+                redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
+                result = redisTemplate.opsForValue().get(vo.getSearchKey());
+            }
+        }
+        if ("list".equals(vo.getKeyType())) {
+            try {
+                //result = redisTemplate.opsForList().range(vo.getSearchKey(), 0, -1);
+                result = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
+                if (null == result) {
+                    //重新设置keySerializer
+                    this.reSetKeySerializer(redisTemplate);
+                    result = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
+                }
+            } catch (Exception e) {
+                logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
+                logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
+                redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
+                result = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
+            }
+        }
+        if ("hash".equals(vo.getKeyType())) {
+            try {
+                result = redisTemplate.opsForHash().entries(vo.getSearchKey());
+                if (null == result) {
+                    //重新设置keySerializer
+                    this.reSetKeySerializer(redisTemplate);
+                    result = redisTemplate.opsForHash().entries(vo.getSearchKey());
+                }
+            } catch (Exception e) {
+                logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
+                logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
+                logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getHashValueSerializer().getClass().getSimpleName());
+                redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
+                redisTemplate.setHashValueSerializer(redisTemplate.getStringSerializer());
+                result = redisTemplate.opsForHash().entries(vo.getSearchKey());
+            }
+        }
+        if ("set".equals(vo.getKeyType())) {
+            try {
+                result = redisTemplate.opsForSet().members(vo.getSearchKey());
+                if (null == result) {
+                    //重新设置keySerializer
+                    this.reSetKeySerializer(redisTemplate);
+                    result = redisTemplate.opsForSet().members(vo.getSearchKey());
+                }
+            } catch (Exception e) {
+                logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
+                logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
+                redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
+                result = redisTemplate.opsForSet().members(vo.getSearchKey());
+            }
+        }
+        if ("zset".equals(vo.getKeyType())) {
+            try {
+                //result = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE);
+                result = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
+                if (null == result) {
+                    //重新设置keySerializer
+                    this.reSetKeySerializer(redisTemplate);
+                    result = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
+                }
+            } catch (Exception e) {
+                logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
+                logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
+                redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
+                result = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
+            }
+        }
+        logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询key对应的value完成,result:{}}", JsonUtils.toJsonStr(vo), JsonUtils.toJsonStr(result));
+        return result;
+    }
+
+    /**
+     * 重新设置keySerializer
+     * @param vo
+     * @param result
+     * @param redisTemplate
+     */
+    private void reSetKeySerializer(RedisTemplate<String, Object> redisTemplate) {
+        RedisSerializer keySerializer = redisTemplate.getKeySerializer();
+        if (null != keySerializer) {
+            if (keySerializer.getClass().getName().equals(StringRedisSerializer.class.getName())) {
+                redisTemplate.setKeySerializer(redisTemplate.getDefaultSerializer());
+            } else {
+                redisTemplate.setKeySerializer(redisTemplate.getStringSerializer());
+            }
+            logger.info("[RedisAdmin] [reSetKeySerializer] {keySerializer从{}切换为:{}再查询}", keySerializer.getClass().getSimpleName(), redisTemplate.getKeySerializer().getClass().getSimpleName());
+        }
+    }
+
+    @SetRedisTemplate
+    @Override
+    public void delKeys(String id, RedisKeyDelVo vo) {
+        logger.info("[RedisAdmin] [delKeys] {正在删除id:{}下的keys:{}}", id, JsonUtils.toJsonStr(vo.getKeys()));
+        if (ArrayUtils.isEmpty(vo.getKeys())) {
+            logger.error("[RedisAdmin] [delKeys] {keys为空}", vo.getKeys());
+            return;
+        }
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        if (null == redisTemplate) {
+            logger.error("[RedisAdmin] [delKeys] {id:{}查询不到redisTemplate}", vo.getId());
+            return;
+        }
+        redisTemplate.delete(Lists.newArrayList(vo.getKeys()));
+        logger.info("[RedisAdmin] [delKeys] {删除id:{}下的keys:{}完成}", id, JsonUtils.toJsonStr(vo.getKeys()));
+    }
+}
