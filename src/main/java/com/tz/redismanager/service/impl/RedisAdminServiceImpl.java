@@ -6,6 +6,7 @@ import com.tz.redismanager.bean.po.RedisConfigPO;
 import com.tz.redismanager.bean.vo.RedisKeyDelVo;
 import com.tz.redismanager.bean.vo.RedisTreeNode;
 import com.tz.redismanager.bean.vo.RedisValueQueryVo;
+import com.tz.redismanager.bean.vo.RedisValueResp;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.service.IRedisAdminService;
@@ -146,9 +147,11 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
     @SetRedisTemplate
     @Override
-    public Object searchKeyValue(String id, RedisValueQueryVo vo) {
+    public RedisValueResp searchKeyValue(String id, RedisValueQueryVo vo) {
+        RedisValueResp resp = new RedisValueResp();
         logger.info("[RedisAdmin] [searchKeyValue] {正在通过vo:{}查询key对应的value}", JsonUtils.toJsonStr(vo));
-        Object result = null;
+        Long expireTime =  null;
+        Object value = null;
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         if (null == redisTemplate) {
             logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询不到redisTemplate}", vo.getId());
@@ -157,42 +160,42 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
         if ("string".equals(vo.getKeyType())) {
             try {
-                result = redisTemplate.opsForValue().get(vo.getSearchKey());
-                if (null == result) {
+                value = redisTemplate.opsForValue().get(vo.getSearchKey());
+                if (null == value) {
                     //重新设置keySerializer
                     this.reSetKeySerializer(redisTemplate);
-                    result = redisTemplate.opsForValue().get(vo.getSearchKey());
+                    value = redisTemplate.opsForValue().get(vo.getSearchKey());
                 }
             } catch (Exception e) {
                 logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
                 logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
                 redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
-                result = redisTemplate.opsForValue().get(vo.getSearchKey());
+                value = redisTemplate.opsForValue().get(vo.getSearchKey());
             }
         }
         if ("list".equals(vo.getKeyType())) {
             try {
                 //result = redisTemplate.opsForList().range(vo.getSearchKey(), 0, -1);
-                result = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
-                if (null == result) {
+                value = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
+                if (null == value) {
                     //重新设置keySerializer
                     this.reSetKeySerializer(redisTemplate);
-                    result = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
+                    value = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
                 }
             } catch (Exception e) {
                 logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
                 logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
                 redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
-                result = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
+                value = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
             }
         }
         if ("hash".equals(vo.getKeyType())) {
             try {
-                result = redisTemplate.opsForHash().entries(vo.getSearchKey());
-                if (null == result) {
+                value = redisTemplate.opsForHash().entries(vo.getSearchKey());
+                if (null == value) {
                     //重新设置keySerializer
                     this.reSetKeySerializer(redisTemplate);
-                    result = redisTemplate.opsForHash().entries(vo.getSearchKey());
+                    value = redisTemplate.opsForHash().entries(vo.getSearchKey());
                 }
             } catch (Exception e) {
                 logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
@@ -200,48 +203,49 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                 logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getHashValueSerializer().getClass().getSimpleName());
                 redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
                 redisTemplate.setHashValueSerializer(redisTemplate.getStringSerializer());
-                result = redisTemplate.opsForHash().entries(vo.getSearchKey());
+                value = redisTemplate.opsForHash().entries(vo.getSearchKey());
             }
         }
         if ("set".equals(vo.getKeyType())) {
             try {
-                result = redisTemplate.opsForSet().members(vo.getSearchKey());
-                if (null == result) {
+                value = redisTemplate.opsForSet().members(vo.getSearchKey());
+                if (null == value) {
                     //重新设置keySerializer
                     this.reSetKeySerializer(redisTemplate);
-                    result = redisTemplate.opsForSet().members(vo.getSearchKey());
+                    value = redisTemplate.opsForSet().members(vo.getSearchKey());
                 }
             } catch (Exception e) {
                 logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
                 logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
                 redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
-                result = redisTemplate.opsForSet().members(vo.getSearchKey());
+                value = redisTemplate.opsForSet().members(vo.getSearchKey());
             }
         }
         if ("zset".equals(vo.getKeyType())) {
             try {
                 //result = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE);
-                result = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
-                if (null == result) {
+                value = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
+                if (null == value) {
                     //重新设置keySerializer
                     this.reSetKeySerializer(redisTemplate);
-                    result = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
+                    value = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
                 }
             } catch (Exception e) {
                 logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
                 logger.info("[RedisAdmin] [searchKeyValue] {从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
                 redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
-                result = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
+                value = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
             }
         }
-        logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询key对应的value完成,result:{}}", JsonUtils.toJsonStr(vo), JsonUtils.toJsonStr(result));
-        return result;
+        expireTime = redisTemplate.getExpire(vo.getSearchKey());
+        resp.setExpireTime(expireTime);
+        resp.setValue(value);
+        logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询key对应的value完成,resp:{}}", JsonUtils.toJsonStr(vo), JsonUtils.toJsonStr(resp));
+        return resp;
     }
 
     /**
      * 重新设置keySerializer
-     * @param vo
-     * @param result
      * @param redisTemplate
      */
     private void reSetKeySerializer(RedisTemplate<String, Object> redisTemplate) {

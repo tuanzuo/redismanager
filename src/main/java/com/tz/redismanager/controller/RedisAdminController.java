@@ -50,8 +50,6 @@ public class RedisAdminController {
         redisAdminService.delKeys(vo.getId(), vo);
     }
 
-
-
     @RequestMapping("add")
     public void add(@RequestBody RedisConfigVO vo) {
         redisConfigService.add(vo);
