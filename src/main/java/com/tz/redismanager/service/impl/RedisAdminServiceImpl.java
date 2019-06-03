@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -150,15 +151,35 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     public RedisValueResp searchKeyValue(String id, RedisValueQueryVo vo) {
         RedisValueResp resp = new RedisValueResp();
         logger.info("[RedisAdmin] [searchKeyValue] {正在通过vo:{}查询key对应的value}", JsonUtils.toJsonStr(vo));
-        Long expireTime =  null;
-        Object value = null;
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         if (null == redisTemplate) {
             logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询不到redisTemplate}", vo.getId());
-            return null;
+            return resp;
         }
-
-        if ("string".equals(vo.getKeyType())) {
+        DataType dataType = null;
+        try {
+            dataType = redisTemplate.type(vo.getSearchKey());
+            if (null == dataType || dataType == DataType.NONE) {
+                //重新设置keySerializer
+                this.reSetKeySerializer(redisTemplate);
+                dataType = redisTemplate.type(vo.getSearchKey());
+            }
+        } catch (Exception e) {
+            //重新设置keySerializer
+            this.reSetKeySerializer(redisTemplate);
+            dataType = redisTemplate.type(vo.getSearchKey());
+        }
+        if (null == dataType || dataType == DataType.NONE) {
+            logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
+            return resp;
+        }
+        String keyType = dataType.code();
+        if (StringUtils.isBlank(keyType)) {
+            logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
+            return resp;
+        }
+        Object value = null;
+        if (DataType.STRING.code().equals(keyType)) {
             try {
                 value = redisTemplate.opsForValue().get(vo.getSearchKey());
                 if (null == value) {
@@ -173,7 +194,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                 value = redisTemplate.opsForValue().get(vo.getSearchKey());
             }
         }
-        if ("list".equals(vo.getKeyType())) {
+        if (DataType.LIST.code().equals(keyType)) {
             try {
                 //result = redisTemplate.opsForList().range(vo.getSearchKey(), 0, -1);
                 value = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
@@ -189,7 +210,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                 value = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
             }
         }
-        if ("hash".equals(vo.getKeyType())) {
+        if (DataType.HASH.code().equals(keyType)) {
             try {
                 value = redisTemplate.opsForHash().entries(vo.getSearchKey());
                 if (null == value) {
@@ -206,7 +227,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                 value = redisTemplate.opsForHash().entries(vo.getSearchKey());
             }
         }
-        if ("set".equals(vo.getKeyType())) {
+        if (DataType.SET.code().equals(keyType)) {
             try {
                 value = redisTemplate.opsForSet().members(vo.getSearchKey());
                 if (null == value) {
@@ -221,7 +242,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                 value = redisTemplate.opsForSet().members(vo.getSearchKey());
             }
         }
-        if ("zset".equals(vo.getKeyType())) {
+        if (DataType.ZSET.code().equals(keyType)) {
             try {
                 //result = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE);
                 value = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
@@ -237,7 +258,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                 value = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
             }
         }
-        resp.setKeyType(redisTemplate.type(vo.getSearchKey()).code());
+        resp.setKeyType(keyType);
         resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
         resp.setValue(value);
         logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询key对应的value完成,resp:{}}", JsonUtils.toJsonStr(vo), JsonUtils.toJsonStr(resp));

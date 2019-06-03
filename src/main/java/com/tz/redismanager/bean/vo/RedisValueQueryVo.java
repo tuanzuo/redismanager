@@ -3,8 +3,6 @@ package com.tz.redismanager.bean.vo;
 public class RedisValueQueryVo {
     private String id;
     private String searchKey;
-    private String keyType;
-
     public String getId() {
         return id;
     }
@@ -20,14 +18,5 @@ public class RedisValueQueryVo {
     public void setSearchKey(String searchKey) {
         this.searchKey = searchKey;
     }
-
-    public String getKeyType() {
-        return keyType;
-    }
-
-    public void setKeyType(String keyType) {
-        this.keyType = keyType;
-    }
-
 
 }
