@@ -7,29 +7,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * key对应的Tree节点
+ */
 public class RedisTreeNode {
-    //tree节点显示的名称
+    /**
+     * tree节点显示的名称
+     */
     private String title;
-    //tree节点的key不能重复
+    /**
+     * tree节点的key不能重复
+     */
     private String key;
-    //是否是叶子节点：true是,fals否
+    /**
+     * 是否是叶子节点：true是,fals否
+     */
     private Boolean isLeaf = false;
-    //节点类型：string,List,set,hash,zset
-    private String keyType;
-    //禁掉checkbox
+    /**
+     * 禁掉checkbox
+     */
     private Boolean disableCheckbox = false;
-    //禁掉响应
+    /**
+     * 禁掉响应
+     */
     private Boolean disabled = false;
-    //设置节点是否可被选中
+    /**
+     * 设置节点是否可被选中
+     */
     private Boolean selectable = true;
-    //子节点
+    /**
+     * 子节点
+     */
     private List<RedisTreeNode> children;
 
-    public RedisTreeNode(String title, String key, Boolean isLeaf, String keyType) {
+    public RedisTreeNode(String title, String key, Boolean isLeaf) {
         this.title = title;
         this.key = key;
         this.isLeaf = isLeaf;
-        this.keyType = keyType;
     }
 
     public String getTitle() {
@@ -54,14 +68,6 @@ public class RedisTreeNode {
 
     public void setLeaf(Boolean leaf) {
         isLeaf = leaf;
-    }
-
-    public String getKeyType() {
-        return keyType;
-    }
-
-    public void setKeyType(String keyType) {
-        this.keyType = keyType;
     }
 
     public List<RedisTreeNode> getChildren() {

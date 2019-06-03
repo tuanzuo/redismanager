@@ -2,9 +2,17 @@ package com.tz.redismanager.bean.vo;
 
 
 public class RedisValueResp {
-    //过期时间
+    /**
+     * key类型：string,List,set,hash,zset
+     */
+    private String keyType;
+    /**
+     * 过期时间
+     */
     private Long expireTime;
-    //key对应的value
+    /**
+     * key对应的value
+     */
     private Object value;
 
     public Long getExpireTime() {
@@ -21,5 +29,13 @@ public class RedisValueResp {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    public String getKeyType() {
+        return keyType;
+    }
+
+    public void setKeyType(String keyType) {
+        this.keyType = keyType;
     }
 }

@@ -49,7 +49,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         //Root树节点List
         List<RedisTreeNode> treeNodesForRoot = new ArrayList<>();
         //构建Root树节点
-        RedisTreeNode root = new RedisTreeNode(rootNodeTitle, ConstInterface.Common.ROOT_NODE_KEY, false, null);
+        RedisTreeNode root = new RedisTreeNode(rootNodeTitle, ConstInterface.Common.ROOT_NODE_KEY, false);
         root.setDisableCheckbox(true);
         root.setDisabled(true);
         root.setLeaf(true);
@@ -89,7 +89,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                     if (StringUtils.isBlank(str)) {
                         blankFlag = true;
                         strList = null;
-                        treeNodes.add(new RedisTreeNode(temp, temp, true, redisTemplate.type(temp).code()));
+                        treeNodes.add(new RedisTreeNode(temp, temp, true));
                         break;
                     }
                 }
@@ -107,7 +107,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                             isLeaf = true;
                             keyType = redisTemplate.type(temp).code();
                         }
-                        RedisTreeNode node = new RedisTreeNode(title, title, isLeaf, keyType);
+                        RedisTreeNode node = new RedisTreeNode(title, title, isLeaf);
                         if (i == 1) {
                             if (treeNodes.contains(node)) {
                                 preNode = treeNodes.get(treeNodes.indexOf(node));
@@ -133,7 +133,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                     }
                 }
             } else {
-                treeNodes.add(new RedisTreeNode(temp, temp, true, redisTemplate.type(temp).code()));
+                treeNodes.add(new RedisTreeNode(temp, temp, true));
             }
         });
         //将查询到的keys生成的树节点List设置为Root树节点的子节点
@@ -237,8 +237,8 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                 value = redisTemplate.opsForZSet().rangeByScoreWithScores(vo.getSearchKey(), Double.MIN_VALUE, Double.MAX_VALUE, 0, 1000);
             }
         }
-        expireTime = redisTemplate.getExpire(vo.getSearchKey());
-        resp.setExpireTime(expireTime);
+        resp.setKeyType(redisTemplate.type(vo.getSearchKey()).code());
+        resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
         resp.setValue(value);
         logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询key对应的value完成,resp:{}}", JsonUtils.toJsonStr(vo), JsonUtils.toJsonStr(resp));
         return resp;
