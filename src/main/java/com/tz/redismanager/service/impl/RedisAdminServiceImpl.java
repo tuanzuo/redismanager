@@ -295,4 +295,5 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         redisTemplate.delete(Lists.newArrayList(vo.getKeys()));
         logger.info("[RedisAdmin] [delKeys] {删除id:{}下的keys:{}完成}", id, JsonUtils.toJsonStr(vo.getKeys()));
     }
+    
 }
