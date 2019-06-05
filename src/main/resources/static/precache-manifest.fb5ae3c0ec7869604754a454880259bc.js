@@ -180,11 +180,11 @@ self.__precacheManifest = [
     "url": "/p__Profile__models__profile.js.async.js"
   },
   {
-    "revision": "2033f6b92311364cab2a",
+    "revision": "bf7a593e50a52facdccf",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
-    "revision": "2033f6b92311364cab2a",
+    "revision": "bf7a593e50a52facdccf",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
