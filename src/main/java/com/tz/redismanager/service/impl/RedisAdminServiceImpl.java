@@ -99,14 +99,12 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                     int i = 1;
                     String title;
                     Boolean isLeaf = false;
-                    String keyType = null;
                     RedisTreeNode preNode = null;
                     for (String str : strList) {
                         title = str;
                         if (i == strList.size()) {
                             title = temp;
                             isLeaf = true;
-                            keyType = redisTemplate.type(temp).code();
                         }
                         RedisTreeNode node = new RedisTreeNode(title, title, isLeaf);
                         if (i == 1) {
