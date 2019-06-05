@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "f37ed22e262b75ca5d42",
+    "revision": "c555b1bf1904286e5a5c",
     "url": "/vendors.chunk.css"
   },
   {
@@ -24,7 +24,7 @@ self.__precacheManifest = [
     "url": "/umi.css"
   },
   {
-    "revision": "f37ed22e262b75ca5d42",
+    "revision": "c555b1bf1904286e5a5c",
     "url": "/vendors.async.js"
   },
   {
@@ -180,11 +180,11 @@ self.__precacheManifest = [
     "url": "/p__Profile__models__profile.js.async.js"
   },
   {
-    "revision": "bf7a593e50a52facdccf",
+    "revision": "bdcfea6ce60794ffa934",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
-    "revision": "bf7a593e50a52facdccf",
+    "revision": "bdcfea6ce60794ffa934",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -312,16 +312,16 @@ self.__precacheManifest = [
     "url": "/43.chunk.css"
   },
   {
-    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
-    "url": "/icons/icon-512x512.png"
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons/icon-192x192.png"
   },
   {
     "revision": "077f45e3bf6d3383ad14",
     "url": "/49.async.js"
   },
   {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons/icon-192x192.png"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons/icon-128x128.png"
   },
   {
     "revision": "41214b6a09df9bbb4a3b",
@@ -352,8 +352,8 @@ self.__precacheManifest = [
     "url": "/index.html"
   },
   {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons/icon-128x128.png"
+    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
+    "url": "/icons/icon-512x512.png"
   },
   {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
