@@ -1,14 +1,14 @@
 self.__precacheManifest = [
   {
-    "revision": "03b94d820cd71e528d3f",
+    "revision": "3b2df41c195b63bc38a6",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "c555b1bf1904286e5a5c",
+    "revision": "65d102bc76a7fee094c2",
     "url": "/vendors.chunk.css"
   },
   {
-    "revision": "03b94d820cd71e528d3f",
+    "revision": "3b2df41c195b63bc38a6",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
@@ -16,15 +16,15 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "43851521e18d02ce373e",
+    "revision": "ec1e2a80a29d5f6623a3",
     "url": "/umi.js"
   },
   {
-    "revision": "43851521e18d02ce373e",
+    "revision": "ec1e2a80a29d5f6623a3",
     "url": "/umi.css"
   },
   {
-    "revision": "c555b1bf1904286e5a5c",
+    "revision": "65d102bc76a7fee094c2",
     "url": "/vendors.async.js"
   },
   {
@@ -180,11 +180,11 @@ self.__precacheManifest = [
     "url": "/p__Profile__models__profile.js.async.js"
   },
   {
-    "revision": "bdcfea6ce60794ffa934",
+    "revision": "3aa14f6a68bbc584d3a0",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
-    "revision": "bdcfea6ce60794ffa934",
+    "revision": "3aa14f6a68bbc584d3a0",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -312,16 +312,16 @@ self.__precacheManifest = [
     "url": "/43.chunk.css"
   },
   {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons/icon-192x192.png"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons/icon-128x128.png"
   },
   {
     "revision": "077f45e3bf6d3383ad14",
     "url": "/49.async.js"
   },
   {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons/icon-128x128.png"
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons/icon-192x192.png"
   },
   {
     "revision": "41214b6a09df9bbb4a3b",
@@ -352,12 +352,12 @@ self.__precacheManifest = [
     "url": "/index.html"
   },
   {
-    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
-    "url": "/icons/icon-512x512.png"
-  },
-  {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
     "url": "/favicon.png"
+  },
+  {
+    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
+    "url": "/icons/icon-512x512.png"
   },
   {
     "revision": "aa519c2a1b7c8353ce58",
