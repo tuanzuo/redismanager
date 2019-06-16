@@ -2,6 +2,7 @@ package com.tz.redismanager.controller;
 
 import com.tz.redismanager.bean.vo.RedisConfigVO;
 import com.tz.redismanager.bean.vo.RedisKeyDelVo;
+import com.tz.redismanager.bean.vo.RedisKeyUpdateVo;
 import com.tz.redismanager.bean.vo.RedisValueQueryVo;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisConfigService;
@@ -48,6 +49,11 @@ public class RedisAdminController {
     @RequestMapping("key/del")
     public void delKeys(@RequestBody RedisKeyDelVo vo) {
         redisAdminService.delKeys(vo.getId(), vo);
+    }
+
+    @RequestMapping("key/setTtl")
+    public void delKeys(@RequestBody RedisKeyUpdateVo vo) {
+        redisAdminService.setTtl(vo.getId(), vo);
     }
 
     @RequestMapping("add")

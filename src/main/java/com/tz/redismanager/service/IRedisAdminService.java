@@ -1,9 +1,6 @@
 package com.tz.redismanager.service;
 
-import com.tz.redismanager.bean.vo.RedisKeyDelVo;
-import com.tz.redismanager.bean.vo.RedisValueQueryVo;
-import com.tz.redismanager.bean.vo.RedisTreeNode;
-import com.tz.redismanager.bean.vo.RedisValueResp;
+import com.tz.redismanager.bean.vo.*;
 
 import java.util.List;
 
@@ -14,4 +11,6 @@ public interface IRedisAdminService {
     RedisValueResp searchKeyValue(String id, RedisValueQueryVo vo);
 
     void delKeys(String id, RedisKeyDelVo vo);
+
+    void setTtl(String id, RedisKeyUpdateVo vo);
 }

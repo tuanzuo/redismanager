@@ -3,10 +3,7 @@ package com.tz.redismanager.service.impl;
 import com.google.common.collect.Lists;
 import com.tz.redismanager.annotation.SetRedisTemplate;
 import com.tz.redismanager.bean.po.RedisConfigPO;
-import com.tz.redismanager.bean.vo.RedisKeyDelVo;
-import com.tz.redismanager.bean.vo.RedisTreeNode;
-import com.tz.redismanager.bean.vo.RedisValueQueryVo;
-import com.tz.redismanager.bean.vo.RedisValueResp;
+import com.tz.redismanager.bean.vo.*;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.service.IRedisAdminService;
@@ -27,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -295,5 +293,25 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         redisTemplate.delete(Lists.newArrayList(vo.getKeys()));
         logger.info("[RedisAdmin] [delKeys] {删除id:{}下的keys:{}完成}", id, JsonUtils.toJsonStr(vo.getKeys()));
     }
-    
+
+    @SetRedisTemplate
+    @Override
+    public void setTtl(String id, RedisKeyUpdateVo vo) {
+        logger.info("[RedisAdmin] [setTtl] {正在设置TTL id:{}下的vo:{}}", id, JsonUtils.toJsonStr(vo));
+        if (StringUtils.isBlank(vo.getKey())) {
+            logger.error("[RedisAdmin] [setTtl] {key为空}");
+            return;
+        }
+        if (null == vo.getExpireTime()) {
+            logger.error("[RedisAdmin] [setTtl] {expireTime为空}");
+            return;
+        }
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        if (null == redisTemplate) {
+            logger.error("[RedisAdmin] [setTtl] {id:{}查询不到redisTemplate}", vo.getId());
+            return;
+        }
+        redisTemplate.expire(vo.getKey(),vo.getExpireTime(), TimeUnit.SECONDS);
+        logger.info("[RedisAdmin] [setTtl] {设置TTL完成 id:{}下的vo:{}}", id, JsonUtils.toJsonStr(vo));
+    }
 }
