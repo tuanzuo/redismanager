@@ -3,6 +3,7 @@ package com.tz.redismanager.bean.vo;
 public class RedisKeyUpdateVo {
     private String id;
     private String key;
+    private String oldKey;
     private Long expireTime;
 
     public String getId() {
@@ -27,5 +28,13 @@ public class RedisKeyUpdateVo {
 
     public void setExpireTime(Long expireTime) {
         this.expireTime = expireTime;
+    }
+
+    public String getOldKey() {
+        return oldKey;
+    }
+
+    public void setOldKey(String oldKey) {
+        this.oldKey = oldKey;
     }
 }

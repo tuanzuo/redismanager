@@ -51,8 +51,13 @@ public class RedisAdminController {
         redisAdminService.delKeys(vo.getId(), vo);
     }
 
+    @RequestMapping("key/rename")
+    public void renameKey(@RequestBody RedisKeyUpdateVo vo) {
+        redisAdminService.renameKey(vo.getId(), vo);
+    }
+
     @RequestMapping("key/setTtl")
-    public void delKeys(@RequestBody RedisKeyUpdateVo vo) {
+    public void setTtl(@RequestBody RedisKeyUpdateVo vo) {
         redisAdminService.setTtl(vo.getId(), vo);
     }
 

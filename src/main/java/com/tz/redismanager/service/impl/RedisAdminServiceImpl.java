@@ -263,6 +263,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
     /**
      * 重新设置keySerializer
+     *
      * @param redisTemplate
      */
     private void reSetKeySerializer(RedisTemplate<String, Object> redisTemplate) {
@@ -296,6 +297,23 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
     @SetRedisTemplate
     @Override
+    public void renameKey(String id, RedisKeyUpdateVo vo) {
+        logger.info("[RedisAdmin] [renameKey] {正在重命名key id:{}下的vo:{}}", id, JsonUtils.toJsonStr(vo));
+        if (StringUtils.isAnyBlank(vo.getKey(), vo.getOldKey())) {
+            logger.error("[RedisAdmin] [renameKey] {key或者oldKey为空}");
+            return;
+        }
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        if (null == redisTemplate) {
+            logger.error("[RedisAdmin] [renameKey] {id:{}查询不到redisTemplate}", vo.getId());
+            return;
+        }
+        redisTemplate.rename(vo.getOldKey(), vo.getKey());
+        logger.info("[RedisAdmin] [renameKey] {重命名key完成 id:{}下的vo:{}}", id, JsonUtils.toJsonStr(vo));
+    }
+
+    @SetRedisTemplate
+    @Override
     public void setTtl(String id, RedisKeyUpdateVo vo) {
         logger.info("[RedisAdmin] [setTtl] {正在设置TTL id:{}下的vo:{}}", id, JsonUtils.toJsonStr(vo));
         if (StringUtils.isBlank(vo.getKey())) {
@@ -311,7 +329,11 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             logger.error("[RedisAdmin] [setTtl] {id:{}查询不到redisTemplate}", vo.getId());
             return;
         }
-        redisTemplate.expire(vo.getKey(),vo.getExpireTime(), TimeUnit.SECONDS);
+        if (-1 == vo.getExpireTime()) {
+            redisTemplate.persist(vo.getKey());
+        } else {
+            redisTemplate.expire(vo.getKey(), vo.getExpireTime(), TimeUnit.SECONDS);
+        }
         logger.info("[RedisAdmin] [setTtl] {设置TTL完成 id:{}下的vo:{}}", id, JsonUtils.toJsonStr(vo));
     }
 }

@@ -12,5 +12,9 @@ public interface IRedisAdminService {
 
     void delKeys(String id, RedisKeyDelVo vo);
 
+    void renameKey(String id, RedisKeyUpdateVo vo);
+
     void setTtl(String id, RedisKeyUpdateVo vo);
+
+
 }
