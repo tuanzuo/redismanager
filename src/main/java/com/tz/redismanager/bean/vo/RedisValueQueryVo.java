@@ -1,6 +1,9 @@
 package com.tz.redismanager.bean.vo;
 
+import com.tz.redismanager.annotation.ConnectionId;
+
 public class RedisValueQueryVo {
+    @ConnectionId
     private String id;
     private String searchKey;
     public String getId() {

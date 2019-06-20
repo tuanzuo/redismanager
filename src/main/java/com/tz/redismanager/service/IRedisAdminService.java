@@ -8,13 +8,13 @@ public interface IRedisAdminService {
 
     List<RedisTreeNode> searchKey(String id, String key);
 
-    RedisValueResp searchKeyValue(String id, RedisValueQueryVo vo);
+    RedisValueResp searchKeyValue(RedisValueQueryVo vo);
 
-    void delKeys(String id, RedisKeyDelVo vo);
+    void delKeys(RedisKeyDelVo vo);
 
-    void renameKey(String id, RedisKeyUpdateVo vo);
+    void renameKey(RedisKeyUpdateVo vo);
 
-    void setTtl(String id, RedisKeyUpdateVo vo);
+    void setTtl(RedisKeyUpdateVo vo);
 
 
 }

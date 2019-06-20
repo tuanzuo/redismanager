@@ -1,6 +1,9 @@
 package com.tz.redismanager.bean.vo;
 
+import com.tz.redismanager.annotation.ConnectionId;
+
 public class RedisKeyUpdateVo {
+    @ConnectionId
     private String id;
     private String key;
     private String oldKey;

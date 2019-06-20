@@ -1,6 +1,7 @@
 package com.tz.redismanager.service.impl;
 
 import com.google.common.collect.Lists;
+import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.annotation.SetRedisTemplate;
 import com.tz.redismanager.bean.po.RedisConfigPO;
 import com.tz.redismanager.bean.vo.*;
@@ -37,7 +38,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
     @SetRedisTemplate
     @Override
-    public List<RedisTreeNode> searchKey(String id, String key) {
+    public List<RedisTreeNode> searchKey(@ConnectionId String id, String key) {
         logger.info("[RedisAdmin] [searchKey] {正在通过id:{},key:{}查询keys}", id, key);
         String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
         RedisConfigPO configPO = redisConfigPOMapper.selectByPrimaryKey(id);
@@ -144,7 +145,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
     @SetRedisTemplate
     @Override
-    public RedisValueResp searchKeyValue(String id, RedisValueQueryVo vo) {
+    public RedisValueResp searchKeyValue(RedisValueQueryVo vo) {
         RedisValueResp resp = new RedisValueResp();
         logger.info("[RedisAdmin] [searchKeyValue] {正在通过vo:{}查询key对应的value}", JsonUtils.toJsonStr(vo));
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
@@ -280,8 +281,8 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
     @SetRedisTemplate
     @Override
-    public void delKeys(String id, RedisKeyDelVo vo) {
-        logger.info("[RedisAdmin] [delKeys] {正在删除id:{}下的keys:{}}", id, JsonUtils.toJsonStr(vo.getKeys()));
+    public void delKeys(RedisKeyDelVo vo) {
+        logger.info("[RedisAdmin] [delKeys] {正在删除keys:{}}", JsonUtils.toJsonStr(vo.getKeys()));
         if (ArrayUtils.isEmpty(vo.getKeys())) {
             logger.error("[RedisAdmin] [delKeys] {keys为空}", vo.getKeys());
             return;
@@ -292,13 +293,13 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             return;
         }
         redisTemplate.delete(Lists.newArrayList(vo.getKeys()));
-        logger.info("[RedisAdmin] [delKeys] {删除id:{}下的keys:{}完成}", id, JsonUtils.toJsonStr(vo.getKeys()));
+        logger.info("[RedisAdmin] [delKeys] {删除keys:{}完成}", JsonUtils.toJsonStr(vo.getKeys()));
     }
 
     @SetRedisTemplate
     @Override
-    public void renameKey(String id, RedisKeyUpdateVo vo) {
-        logger.info("[RedisAdmin] [renameKey] {正在重命名key id:{}下的vo:{}}", id, JsonUtils.toJsonStr(vo));
+    public void renameKey(RedisKeyUpdateVo vo) {
+        logger.info("[RedisAdmin] [renameKey] {正在重命名key:{}}", JsonUtils.toJsonStr(vo));
         if (StringUtils.isAnyBlank(vo.getKey(), vo.getOldKey())) {
             logger.error("[RedisAdmin] [renameKey] {key或者oldKey为空}");
             return;
@@ -309,13 +310,13 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             return;
         }
         redisTemplate.rename(vo.getOldKey(), vo.getKey());
-        logger.info("[RedisAdmin] [renameKey] {重命名key完成 id:{}下的vo:{}}", id, JsonUtils.toJsonStr(vo));
+        logger.info("[RedisAdmin] [renameKey] {重命名key完成:{}}", JsonUtils.toJsonStr(vo));
     }
 
     @SetRedisTemplate
     @Override
-    public void setTtl(String id, RedisKeyUpdateVo vo) {
-        logger.info("[RedisAdmin] [setTtl] {正在设置TTL id:{}下的vo:{}}", id, JsonUtils.toJsonStr(vo));
+    public void setTtl(RedisKeyUpdateVo vo) {
+        logger.info("[RedisAdmin] [setTtl] {正在设置TTL:{}}", JsonUtils.toJsonStr(vo));
         if (StringUtils.isBlank(vo.getKey())) {
             logger.error("[RedisAdmin] [setTtl] {key为空}");
             return;
@@ -334,6 +335,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         } else {
             redisTemplate.expire(vo.getKey(), vo.getExpireTime(), TimeUnit.SECONDS);
         }
-        logger.info("[RedisAdmin] [setTtl] {设置TTL完成 id:{}下的vo:{}}", id, JsonUtils.toJsonStr(vo));
+        logger.info("[RedisAdmin] [setTtl] {设置TTL完成:{}}", JsonUtils.toJsonStr(vo));
     }
 }
