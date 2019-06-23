@@ -1,6 +1,6 @@
 self.__precacheManifest = [
   {
-    "revision": "313ddfd2674b0abf1170",
+    "revision": "860a81ba3731a95754ac",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = [
     "url": "/vendors.chunk.css"
   },
   {
-    "revision": "313ddfd2674b0abf1170",
+    "revision": "860a81ba3731a95754ac",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
@@ -16,11 +16,11 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "28c518d1ccc343fb4286",
+    "revision": "4f55af2cf903874b6615",
     "url": "/umi.js"
   },
   {
-    "revision": "28c518d1ccc343fb4286",
+    "revision": "4f55af2cf903874b6615",
     "url": "/umi.css"
   },
   {
@@ -180,11 +180,11 @@ self.__precacheManifest = [
     "url": "/p__Profile__models__profile.js.async.js"
   },
   {
-    "revision": "270167229c37ac173906",
+    "revision": "765059c33d008e9488b3",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
-    "revision": "270167229c37ac173906",
+    "revision": "765059c33d008e9488b3",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -320,8 +320,8 @@ self.__precacheManifest = [
     "url": "/49.async.js"
   },
   {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons/icon-192x192.png"
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png"
   },
   {
     "revision": "41214b6a09df9bbb4a3b",
@@ -352,12 +352,12 @@ self.__precacheManifest = [
     "url": "/index.html"
   },
   {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons/icon-128x128.png"
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons/icon-192x192.png"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons/icon-128x128.png"
   },
   {
     "revision": "aa519c2a1b7c8353ce58",

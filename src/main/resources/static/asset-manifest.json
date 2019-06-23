@@ -92,7 +92,7 @@
   "/icons/icon-512x512.png": "/icons/icon-512x512.png",
   "/index.html": "/index.html",
   "/manifest.json": "/manifest.json",
-  "/precache-manifest.9b648e29f00386c63c7573174f1c3e59.js": "/precache-manifest.9b648e29f00386c63c7573174f1c3e59.js",
+  "/precache-manifest.9870cae082ec6e553753fc3c925e019a.js": "/precache-manifest.9870cae082ec6e553753fc3c925e019a.js",
   "/pwacompat.min.js": "/pwacompat.min.js",
   "/service-worker.js": "/service-worker.js"
 }
