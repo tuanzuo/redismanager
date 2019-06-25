@@ -5,6 +5,8 @@ import com.alibaba.fastjson.parser.ParserConfig;
 import com.tz.redismanager.RedisManagerApplication;
 import com.tz.redismanager.bean.Person;
 import com.tz.redismanager.config.FastJson2JsonRedisSerializer;
+import com.tz.redismanager.util.JsonUtils;
+import com.tz.redismanager.util.UUIDUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RedisManagerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = RedisManagerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RedisTemplateTest {
 	
     private static Logger logger = LoggerFactory.getLogger(RedisTemplateTest.class);
@@ -38,13 +40,13 @@ public class RedisTemplateTest {
     @Before
     public void testBefore() throws Exception {
         RedisProperties redisProperties = new RedisProperties();
-        /*redisProperties.setHost("127.0.0.1");*/
+        redisProperties.setHost("127.0.0.1");
 
-        RedisProperties.Cluster cluster = new RedisProperties.Cluster();
+       /* RedisProperties.Cluster cluster = new RedisProperties.Cluster();
         String nodes = "192.168.1.32:7000,192.168.1.32:7001,192.168.1.32:7002,192.168.1.32:7003,192.168.1.32:7004,192.168.1.32:7005";
         cluster.setNodes(Arrays.asList(nodes.split(",")));
         cluster.setMaxRedirects(2);
-        redisProperties.setCluster(cluster);
+        redisProperties.setCluster(cluster);*/
 
         MyRedisAutoConfiguration.RedisConnectionConfiguration redisConnectionConfiguration = new
                 MyRedisAutoConfiguration.RedisConnectionConfiguration(redisProperties,null,null);
@@ -73,20 +75,31 @@ public class RedisTemplateTest {
 	//StringRedisTemplate--保存字符串
 	@Test
 	public void testString() throws Exception {
-        /*Set<String> setList = myRedisTemplate.keys("*");
+        Person jsonperson = new Person("小明"+UUIDUtils.generateId(), 30);
+        stringRedisTemplate.opsForValue().set("jsonvalue", JsonUtils.toJsonStr(jsonperson));
+
+        Set<String> setList = myRedisTemplate.keys("*");
         setList.forEach(tep->{
             myRedisTemplate.delete(tep);
-        });*/
+        });
 
-        for (int i = 0; i < 10; i++) {
-            myRedisTemplate.opsForValue().set("ttt" + i + ":bbb" + i + ":good" + i + ":tian" + i + ":tuanzuo" + i, "value" + i);
+        for (int i = 0; i < 15000; i++) {
+            String uuid = UUIDUtils.generateId();
+            myRedisTemplate.opsForValue().set("tuanzuogood:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
 
             List<Person> list = new ArrayList<>();
-            Person person = new Person("小明"+i, 30+i);
-            Person chil = new Person("小明"+i+i, 30+i+i);
+            Person person = new Person("小明"+uuid, 30+i);
+            Person chil = new Person("小明"+uuid+uuid, 30+i+i);
             person.setChild(chil);
+            Person two1 = new Person("小天"+uuid, 20+i);
+            Person two2 = new Person("小花"+uuid, 10+i);
+            Person two3 = new Person("小章"+uuid, 30+i);
+
             list.add(person);
-            myRedisTemplate.opsForValue().set("person"+i, list);
+            list.add(two1);
+            list.add(two2);
+            list.add(two3);
+            myRedisTemplate.opsForValue().set("person"+uuid, list);
         }
         Person person = new Person("小明", 30);
         myRedisTemplate.opsForValue().set("person", JSONArray.toJSON(person));

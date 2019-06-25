@@ -40,6 +40,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     @Override
     public List<RedisTreeNode> searchKey(@ConnectionId String id, String key) {
         logger.info("[RedisAdmin] [searchKey] {正在通过id:{},key:{}查询keys}", id, key);
+        long startAll = System.currentTimeMillis();
         String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
         RedisConfigPO configPO = redisConfigPOMapper.selectByPrimaryKey(id);
         if (null != configPO) {
@@ -64,6 +65,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             logger.error("[RedisAdmin] [searchKey] {id:{}查询不到redisTemplate}", id);
             return treeNodesForRoot;
         }
+        long start = System.currentTimeMillis();
         //查询到的keys生成树节点的List
         List<RedisTreeNode> treeNodes = new ArrayList<>();
         Set<String> keySet = redisTemplate.keys(key.trim());
@@ -72,15 +74,21 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             this.reSetKeySerializer(redisTemplate);
             keySet = redisTemplate.keys(key.trim());
         }
+        logger.info("keys time:{}", (System.currentTimeMillis() - start));
         if (CollectionUtils.isEmpty(keySet)) {
             return treeNodesForRoot;
         }
-
+        start = System.currentTimeMillis();
         List<String> keyList = keySet.stream().sorted().collect(Collectors.toList());
+        logger.info("sort time:{}", (System.currentTimeMillis() - start));
+        start = System.currentTimeMillis();
         keySet = null;
         keyList.forEach(temp -> {
+            long startEach = System.currentTimeMillis();
             String[] strs = StringUtils.split(temp, ConstInterface.Symbol.COLON);
+            //logger.info("split time:{}", (System.currentTimeMillis() - startEach));
             if (ArrayUtils.isNotEmpty(strs)) {
+                //startEach = System.currentTimeMillis();
                 boolean blankFlag = false;
                 List<String> strList = new ArrayList<>();
                 for (int i = 0; i < strs.length; i++) {
@@ -93,7 +101,8 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                         break;
                     }
                 }
-
+                //logger.info("forone time:{}", (System.currentTimeMillis() - startEach));
+                startEach = System.currentTimeMillis();
                 if (!blankFlag) {
                     int i = 1;
                     String title;
@@ -130,16 +139,19 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                         i++;
                     }
                 }
+                //logger.info("fortwo time:{}", (System.currentTimeMillis() - startEach));
             } else {
                 treeNodes.add(new RedisTreeNode(temp, temp, true));
             }
         });
+        logger.info("wrapper tree time:{}", (System.currentTimeMillis() - start));
         //将查询到的keys生成的树节点List设置为Root树节点的子节点
         if (CollectionUtils.isNotEmpty(treeNodes)) {
             root.setChildren(treeNodes);
             root.setLeaf(false);
         }
-        logger.info("[RedisAdmin] [searchKey] {通过id:{},key:{}查询keys生成TreeNode完成,result:{}}", id, key, JsonUtils.toJsonStr(treeNodesForRoot));
+        //logger.info("[RedisAdmin] [searchKey] {通过id:{},key:{}查询keys生成TreeNode完成,result:{}}", id, key, JsonUtils.toJsonStr(treeNodesForRoot));
+        logger.info("all time:{}", (System.currentTimeMillis() - startAll));
         return treeNodesForRoot;
     }
 

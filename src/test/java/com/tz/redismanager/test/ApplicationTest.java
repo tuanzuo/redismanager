@@ -17,15 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
-
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RedisManagerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = RedisManagerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ApplicationTest {
 	
     private static Logger logger = LoggerFactory.getLogger(ApplicationTest.class);
@@ -40,11 +39,14 @@ public class ApplicationTest {
     @Before
     public void testBefore() throws Exception {
         RedisProperties redisProperties = new RedisProperties();
-        RedisProperties.Cluster cluster = new RedisProperties.Cluster();
+        redisProperties.setHost("127.0.0.1");
+
+       /* RedisProperties.Cluster cluster = new RedisProperties.Cluster();
         String nodes = "192.168.1.32:7000,192.168.1.32:7001,192.168.1.32:7002,192.168.1.32:7003,192.168.1.32:7004,192.168.1.32:7005";
         cluster.setNodes(Arrays.asList(nodes.split(",")));
         cluster.setMaxRedirects(2);
-        redisProperties.setCluster(cluster);
+        redisProperties.setCluster(cluster);*/
+
         MyRedisAutoConfiguration.RedisConnectionConfiguration redisConnectionConfiguration = new
                 MyRedisAutoConfiguration.RedisConnectionConfiguration(redisProperties,null,null);
         JedisConnectionFactory redisConnectionFactory = redisConnectionConfiguration.redisConnectionFactory();
@@ -59,24 +61,38 @@ public class ApplicationTest {
         //设置了白名单才能正常从缓存中序列化出来
         ParserConfig.getGlobalInstance().addAccept("com.tz.redis.bean");
 
-        myRedisTemplate.setValueSerializer(fastJson2JsonRedisSerializer);
+        /*myRedisTemplate.setValueSerializer(fastJson2JsonRedisSerializer);
         myRedisTemplate.setHashValueSerializer(fastJson2JsonRedisSerializer);
         myRedisTemplate.setKeySerializer(new StringRedisSerializer());
-        myRedisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        myRedisTemplate.setHashKeySerializer(new StringRedisSerializer());*/
 
         myRedisTemplate.afterPropertiesSet();
 
         this.myRedisTemplate = myRedisTemplate;
     }
 
+    //StringRedisTemplate--保存字符串
+    @Test
+    public void testScan() throws Exception {
+        String keySet ="tz:redis:set:one";
+        stringRedisTemplate.delete(keySet);
+        for (int i = 0; i < 100; i++) {
+            stringRedisTemplate.opsForSet().add(keySet,"18687878878"+i);
+        }
+        Cursor<String> cursor = stringRedisTemplate.opsForSet().scan(keySet, ScanOptions.scanOptions().count(50).build());
+        while (cursor.hasNext()){
+            System.err.println(cursor.next());
+        }
+    }
+
 	//StringRedisTemplate--保存字符串
 	@Test
 	public void testString() throws Exception {
-        myRedisTemplate.opsForValue().set("tuozuogood003","tuozuogood003");
-		stringRedisTemplate.opsForValue().set("tuozuogood001", "111");
+        myRedisTemplate.opsForValue().set("tuanzuogood003","tuozuogood003");
+		stringRedisTemplate.opsForValue().set("tuanzuogood001", "111");
 		System.err.println(stringRedisTemplate.opsForValue().get("aaa"));
         Person person = new Person("小明", 30);
-        myRedisTemplate.opsForValue().set("tuozuogood002", JSONArray.toJSON(person));
+        myRedisTemplate.opsForValue().set("tuanzuogood002", JSONArray.toJSON(person));
         System.err.println(myRedisTemplate.opsForValue().get("person"));
     }
 
