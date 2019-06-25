@@ -40,10 +40,24 @@ public class RedisTreeNode {
      */
     private List<RedisTreeNode> children;
 
+    //临时Title
+    private String tempTitle;
+    //key对应的parent key
+    private String pkey;
+
+
     public RedisTreeNode(String title, String key, Boolean isLeaf) {
         this.title = title;
         this.key = key;
         this.isLeaf = isLeaf;
+    }
+
+    public RedisTreeNode(String title, String tempTitle, String key, Boolean isLeaf, String pkey) {
+        this.title = title;
+        this.tempTitle = tempTitle;
+        this.key = key;
+        this.isLeaf = isLeaf;
+        this.pkey = pkey;
     }
 
     public String getTitle() {
@@ -107,6 +121,22 @@ public class RedisTreeNode {
 
     public void setSelectable(Boolean selectable) {
         this.selectable = selectable;
+    }
+
+    public String getTempTitle() {
+        return tempTitle;
+    }
+
+    public void setTempTitle(String tempTitle) {
+        this.tempTitle = tempTitle;
+    }
+
+    public String getPkey() {
+        return pkey;
+    }
+
+    public void setPkey(String pkey) {
+        this.pkey = pkey;
     }
 
     /**

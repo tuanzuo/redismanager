@@ -22,9 +22,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -74,7 +72,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             this.reSetKeySerializer(redisTemplate);
             keySet = redisTemplate.keys(key.trim());
         }
-        logger.info("keys time:{}", (System.currentTimeMillis() - start));
+        logger.info("keys time:{},keys count:{}", (System.currentTimeMillis() - start), keySet.size());
         if (CollectionUtils.isEmpty(keySet)) {
             return treeNodesForRoot;
         }
@@ -83,67 +81,53 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         logger.info("sort time:{}", (System.currentTimeMillis() - start));
         start = System.currentTimeMillis();
         keySet = null;
+        root.setTitle(root.getTitle() + "(" + keyList.size() + ")");
+
+        //生成树--1、将节点封装到Map中
+        Map<String, RedisTreeNode> map = new HashMap<>();
+        Set<String> strSet = new HashSet<>();
         keyList.forEach(temp -> {
-            long startEach = System.currentTimeMillis();
             String[] strs = StringUtils.split(temp, ConstInterface.Symbol.COLON);
-            //logger.info("split time:{}", (System.currentTimeMillis() - startEach));
-            if (ArrayUtils.isNotEmpty(strs)) {
-                //startEach = System.currentTimeMillis();
-                boolean blankFlag = false;
-                List<String> strList = new ArrayList<>();
+            if (ArrayUtils.isNotEmpty(strs) && strs.length > 1) {
+                String title = null;
+                Boolean isLeaf = false;
+                StringBuilder preTitle = new StringBuilder("");
                 for (int i = 0; i < strs.length; i++) {
                     String str = strs[i];
-                    strList.add(str);
-                    if (StringUtils.isBlank(str)) {
-                        blankFlag = true;
-                        strList = null;
-                        treeNodes.add(new RedisTreeNode(temp, temp, true));
-                        break;
+                    title = str;
+                    StringBuilder tempkeyBuilder = new StringBuilder();
+                    tempkeyBuilder.append(preTitle.toString()).append(title);
+                    if (i == strs.length - 1) {
+                        title = temp;
+                        isLeaf = true;
+                    } else {
+                        tempkeyBuilder.append(ConstInterface.Symbol.COLON);
                     }
+                    String tempkey = tempkeyBuilder.toString();
+                    strSet.add(tempkey);
+                    map.put(tempkey, new RedisTreeNode(title, title, tempkey, isLeaf, preTitle.toString()));
+                    preTitle.append(str).append(ConstInterface.Symbol.COLON);
                 }
-                //logger.info("forone time:{}", (System.currentTimeMillis() - startEach));
-                startEach = System.currentTimeMillis();
-                if (!blankFlag) {
-                    int i = 1;
-                    String title;
-                    Boolean isLeaf = false;
-                    RedisTreeNode preNode = null;
-                    for (String str : strList) {
-                        title = str;
-                        if (i == strList.size()) {
-                            title = temp;
-                            isLeaf = true;
-                        }
-                        RedisTreeNode node = new RedisTreeNode(title, title, isLeaf);
-                        if (i == 1) {
-                            if (treeNodes.contains(node)) {
-                                preNode = treeNodes.get(treeNodes.indexOf(node));
-                            } else {
-                                treeNodes.add(node);
-                                preNode = node;
-                            }
-                        } else {
-                            if (CollectionUtils.isNotEmpty(preNode.getChildren())) {
-                                if (preNode.getChildren().contains(node)) {
-                                    preNode = preNode.getChildren().get(preNode.getChildren().indexOf(node));
-                                } else {
-                                    preNode.getChildren().add(node);
-                                    preNode = node;
-                                }
-                            } else {
-                                preNode.addChildren(node);
-                                preNode = node;
-                            }
-                        }
-
-                        i++;
-                    }
-                }
-                //logger.info("fortwo time:{}", (System.currentTimeMillis() - startEach));
             } else {
                 treeNodes.add(new RedisTreeNode(temp, temp, true));
             }
         });
+        //生成树--2、设置tree的children tree
+        if (CollectionUtils.isNotEmpty(strSet)) {
+            strSet.forEach(temp -> {
+                if (map.containsKey(temp)) {
+                    if (StringUtils.isNotBlank(map.get(temp).getPkey())) {
+                        RedisTreeNode parent = map.get(map.get(temp).getPkey());
+                        parent.addChildren(map.get(temp));
+                        parent.setTitle(parent.getTempTitle() + "(" + parent.getChildren().size() + ")");
+                    } else {
+                        treeNodes.add(map.get(temp));
+                    }
+                }
+            });
+        }
+        keyList = null;
+
         logger.info("wrapper tree time:{}", (System.currentTimeMillis() - start));
         //将查询到的keys生成的树节点List设置为Root树节点的子节点
         if (CollectionUtils.isNotEmpty(treeNodes)) {

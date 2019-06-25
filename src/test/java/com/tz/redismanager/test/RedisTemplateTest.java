@@ -78,10 +78,27 @@ public class RedisTemplateTest {
         Person jsonperson = new Person("小明"+UUIDUtils.generateId(), 30);
         stringRedisTemplate.opsForValue().set("jsonvalue", JsonUtils.toJsonStr(jsonperson));
 
-        Set<String> setList = myRedisTemplate.keys("*");
+        /*Set<String> setList = myRedisTemplate.keys("*");
         setList.forEach(tep->{
             myRedisTemplate.delete(tep);
-        });
+        });*/
+
+        for (int i = 0; i < 1500; i++) {
+            String uuid = UUIDUtils.generateId();
+            myRedisTemplate.opsForValue().set("a:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
+        }
+        for (int i = 0; i < 15000; i++) {
+            String uuid = UUIDUtils.generateId();
+            myRedisTemplate.opsForValue().set("b:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
+        }
+        for (int i = 0; i < 150000; i++) {
+            String uuid = UUIDUtils.generateId();
+            myRedisTemplate.opsForValue().set("c:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
+        }
+        for (int i = 0; i < 1500000; i++) {
+            String uuid = UUIDUtils.generateId();
+            myRedisTemplate.opsForValue().set("d:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
+        }
 
         for (int i = 0; i < 15000; i++) {
             String uuid = UUIDUtils.generateId();
@@ -99,7 +116,7 @@ public class RedisTemplateTest {
             list.add(two1);
             list.add(two2);
             list.add(two3);
-            myRedisTemplate.opsForValue().set("person"+uuid, list);
+            myRedisTemplate.opsForValue().set("tperson"+uuid, list);
         }
         Person person = new Person("小明", 30);
         myRedisTemplate.opsForValue().set("person", JSONArray.toJSON(person));
@@ -110,7 +127,13 @@ public class RedisTemplateTest {
         myRedisTemplate.opsForList().leftPush("tlist",new Person("小明list1", 30));
         myRedisTemplate.opsForList().leftPush("tlist",new Person("小明list2", 30));
 
-        myRedisTemplate.opsForSet().add("tset",new Person("小明set1", 30),new Person("小明set2", 30));
+        myRedisTemplate.opsForSet().add("tset",new Person("小明set1", 1),new Person("小明set2", 30));
+        myRedisTemplate.opsForSet().add("tset:tset",new Person("小明set1", 2),new Person("小明set2", 30));
+        myRedisTemplate.opsForSet().add("tset:tset:tset",new Person("小明set1", 3),new Person("小明set2", 30));
+        myRedisTemplate.opsForSet().add("tset:tset:tset:tset",new Person("小明set1", 4),new Person("小明set2", 30));
+        myRedisTemplate.opsForSet().add("tset:tset:tset:tset:tset",new Person("小明set1", 5),new Person("小明set2", 30));
+        myRedisTemplate.opsForSet().add("tset:tset:tset:tset:tset:001",new Person("小明set1", 6),new Person("小明set2", 30));
+        myRedisTemplate.opsForSet().add("tset:tset:tset:tset:tset:002",new Person("小明set1", 7),new Person("小明set2", 30));
 
         myRedisTemplate.opsForZSet().add("tzset",new Person("小明zset1", 30),10);
         myRedisTemplate.opsForZSet().add("tzset",new Person("小明zset2", 30),20);
@@ -128,5 +151,27 @@ public class RedisTemplateTest {
                     myRedisTemplate.getKeySerializer().deserialize(cursor.next()) : cursor.next());
         }
         System.err.println(binaryKeys);
+    }
+
+    @Test
+    public void testT(){
+        for (int i = 0; i < 15000; i++) {
+            String uuid = UUIDUtils.generateId();
+            myRedisTemplate.opsForValue().set("tuanzuogood:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
+
+            List<Person> list = new ArrayList<>();
+            Person person = new Person("小明"+uuid, 30+i);
+            Person chil = new Person("小明"+uuid+uuid, 30+i+i);
+            person.setChild(chil);
+            Person two1 = new Person("小天"+uuid, 20+i);
+            Person two2 = new Person("小花"+uuid, 10+i);
+            Person two3 = new Person("小章"+uuid, 30+i);
+
+            list.add(person);
+            list.add(two1);
+            list.add(two2);
+            list.add(two3);
+            myRedisTemplate.opsForValue().set("tperson"+uuid, list);
+        }
     }
 }
