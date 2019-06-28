@@ -44,6 +44,7 @@ public class RedisTreeNode {
     private String tempTitle;
     //key对应的parent key
     private String pkey;
+    private String name;
 
 
     public RedisTreeNode(String title, String key, Boolean isLeaf) {
@@ -137,6 +138,14 @@ public class RedisTreeNode {
 
     public void setPkey(String pkey) {
         this.pkey = pkey;
+    }
+
+    public String getName() {
+        return title;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
