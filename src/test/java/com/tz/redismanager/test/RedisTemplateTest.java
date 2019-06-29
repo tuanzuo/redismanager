@@ -83,24 +83,24 @@ public class RedisTemplateTest {
             myRedisTemplate.delete(tep);
         });*/
 
-        for (int i = 0; i < 1500; i++) {
+        for (int i = 0; i < 100; i++) {
             String uuid = UUIDUtils.generateId();
             myRedisTemplate.opsForValue().set("a:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
         }
-        for (int i = 0; i < 15000; i++) {
+        for (int i = 0; i < 100; i++) {
             String uuid = UUIDUtils.generateId();
             myRedisTemplate.opsForValue().set("b:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
         }
-        for (int i = 0; i < 150000; i++) {
+        for (int i = 0; i < 100; i++) {
             String uuid = UUIDUtils.generateId();
             myRedisTemplate.opsForValue().set("c:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
         }
-        for (int i = 0; i < 1500000; i++) {
+        for (int i = 0; i < 100; i++) {
             String uuid = UUIDUtils.generateId();
             myRedisTemplate.opsForValue().set("d:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
         }
 
-        for (int i = 0; i < 15000; i++) {
+        for (int i = 0; i < 100; i++) {
             String uuid = UUIDUtils.generateId();
             myRedisTemplate.opsForValue().set("tuanzuogood:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
 
