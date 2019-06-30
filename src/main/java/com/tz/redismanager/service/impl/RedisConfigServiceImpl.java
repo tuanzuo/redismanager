@@ -1,10 +1,14 @@
 package com.tz.redismanager.service.impl;
 
 import com.tz.redismanager.bean.vo.RedisConfigVO;
+import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.bean.po.RedisConfigPO;
 import com.tz.redismanager.service.IRedisConfigService;
+import com.tz.redismanager.service.IRedisContextService;
+import com.tz.redismanager.util.RSAUtil;
+import com.tz.redismanager.util.RsaException;
 import com.tz.redismanager.util.UUIDUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +21,10 @@ import java.util.List;
 @Service
 public class RedisConfigServiceImpl implements IRedisConfigService {
 
+    @Autowired
+    private EncryptConfig encryptConfig;
+    @Autowired
+    private IRedisContextService contextService;
     @Autowired
     private RedisConfigPOMapper redisConfigPOMapper;
 
@@ -31,9 +39,10 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void add(RedisConfigVO vo) {
+    public void add(RedisConfigVO vo) throws RsaException {
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
+        this.encryptPassWord(po);
         po.setId(UUIDUtils.generateId());
         po.setCreater("admin");
         po.setCreateTime(new Date());
@@ -51,14 +60,36 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         po.setUpdateTime(new Date());
         po.setIfDel(ConstInterface.IF_DEL.YES);
         redisConfigPOMapper.updateByPrimaryKeySelective(po);
+        //删除缓存中的RedisTemplate
+        contextService.getRedisTemplateMap().remove(id);
     }
 
     @Override
-    public void update(RedisConfigVO vo) {
+    public void update(RedisConfigVO vo) throws RsaException {
+        RedisConfigPO oldPO = redisConfigPOMapper.selectByPrimaryKey(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
+        if (null != oldPO && null != oldPO.getPassword() && null != po.getPassword() && !oldPO.getPassword().equals(po.getPassword())) {
+            this.encryptPassWord(po);
+        } else {
+            po.setPassword(null);
+        }
         po.setUpdater("admin");
         po.setUpdateTime(new Date());
         redisConfigPOMapper.updateByPrimaryKeySelective(po);
+        //删除缓存中的RedisTemplate
+        contextService.getRedisTemplateMap().remove(vo.getId());
+    }
+
+    /**
+     * 密码加密
+     *
+     * @param po
+     * @throws RsaException
+     */
+    private void encryptPassWord(RedisConfigPO po) throws RsaException {
+        if (StringUtils.isNotBlank(po.getPassword())) {
+            po.setPassword(RSAUtil.rsaPublicEncrypt(po.getPassword(), encryptConfig.getPublicKey(), RSAUtil.CHARSET_UTF8));
+        }
     }
 }

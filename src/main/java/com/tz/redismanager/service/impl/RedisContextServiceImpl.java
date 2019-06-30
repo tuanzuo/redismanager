@@ -1,9 +1,12 @@
 package com.tz.redismanager.service.impl;
 
 import com.tz.redismanager.bean.po.RedisConfigPO;
+import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.service.IRedisContextService;
+import com.tz.redismanager.util.RSAUtil;
 import com.tz.redismanager.util.RedisContextUtils;
+import com.tz.redismanager.util.RsaException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,8 @@ public class RedisContextServiceImpl implements IRedisContextService {
 
     private static Map<String, RedisTemplate<String, Object>> redisTemplateMap = new ConcurrentHashMap<>();
 
+    @Autowired
+    private EncryptConfig encryptConfig;
     @Autowired
     private RedisConfigPOMapper redisConfigPOMapper;
 
@@ -47,10 +52,17 @@ public class RedisContextServiceImpl implements IRedisContextService {
         }
         RedisTemplate<String, Object> redisTemplate = null;
         try {
-            redisTemplate = RedisContextUtils.initRedisTemplate(redisConfigPO.getType(), redisConfigPO.getAddress(), redisConfigPO.getPassword());
+            String passwrod = null;
+            if(StringUtils.isNotBlank(redisConfigPO.getPassword())){
+                passwrod = RSAUtil.rsaPrivateDecrypt(redisConfigPO.getPassword(), encryptConfig.getPrivateKey(), RSAUtil.CHARSET_UTF8);
+            }
+            redisTemplate = RedisContextUtils.initRedisTemplate(redisConfigPO.getType(), redisConfigPO.getAddress(), passwrod);
+            passwrod = null;
         } catch (UnknownHostException e) {
             logger.error("[redisContext] [initContext] [初始化redisTemplate出错] {redisConfigPO:{}}", redisConfigPO, e);
             return redisTemplate;
+        } catch (RsaException e) {
+            logger.error("[redisContext] [initContext] [解密失败] {redisConfigPO:{}}", redisConfigPO, e);
         }
         if (null != redisTemplate && StringUtils.isNotBlank(redisConfigPO.getSerCode())) {
             RedisContextUtils.initRedisSerializer(redisConfigPO.getSerCode(), redisTemplate);
@@ -63,6 +75,11 @@ public class RedisContextServiceImpl implements IRedisContextService {
     @Override
     public RedisTemplate<String, Object> getRedisTemplate(String id) {
         return redisTemplateMap.get(id);
+    }
+
+    @Override
+    public Map<String, RedisTemplate<String, Object>> getRedisTemplateMap(){
+        return redisTemplateMap;
     }
 
 }

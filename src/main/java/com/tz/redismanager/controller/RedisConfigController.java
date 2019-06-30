@@ -1,8 +1,9 @@
 package com.tz.redismanager.controller;
 
-import com.tz.redismanager.bean.vo.RedisConfigVO;
 import com.tz.redismanager.bean.po.RedisConfigPO;
+import com.tz.redismanager.bean.vo.RedisConfigVO;
 import com.tz.redismanager.service.IRedisConfigService;
+import com.tz.redismanager.util.RsaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +29,7 @@ public class RedisConfigController {
     }
 
     @RequestMapping("add")
-    public void add(@RequestBody RedisConfigVO vo) {
+    public void add(@RequestBody RedisConfigVO vo) throws RsaException {
         redisConfigService.add(vo);
     }
 
@@ -38,7 +39,7 @@ public class RedisConfigController {
     }
 
     @RequestMapping("update")
-    public void update(@RequestBody RedisConfigVO vo) {
+    public void update(@RequestBody RedisConfigVO vo) throws RsaException {
         redisConfigService.update(vo);
     }
 }

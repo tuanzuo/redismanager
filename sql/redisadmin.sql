@@ -5,7 +5,7 @@ CREATE TABLE `t_redis_config` (
   `name` varchar(1024) collate utf8_bin default NULL COMMENT '名称',
   `type` int(2) default '1' COMMENT '类型[1=单机,2=集群]',
   `address` varchar(1024) collate utf8_bin default NULL COMMENT '地址',
-  `password` varchar(1024) collate utf8_bin default NULL COMMENT '密码',
+  `password` varchar(2048) collate utf8_bin default NULL COMMENT '密码',
   `ser_code` text collate utf8_bin COMMENT '序列化代码',
   `note` varchar(2048) collate utf8_bin default NULL COMMENT '备注',
   `creater` varchar(32) collate utf8_bin default NULL COMMENT '创建人',
