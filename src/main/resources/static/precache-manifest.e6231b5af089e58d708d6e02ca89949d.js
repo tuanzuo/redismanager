@@ -44,11 +44,11 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisDataPageZtree.async.js"
   },
   {
-    "revision": "7a2f75f94917fd47864c",
+    "revision": "af0c1febd84e2737126d",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "7a2f75f94917fd47864c",
+    "revision": "af0c1febd84e2737126d",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {

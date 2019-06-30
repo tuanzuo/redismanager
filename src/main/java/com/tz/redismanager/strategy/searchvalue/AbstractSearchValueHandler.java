@@ -1,16 +1,14 @@
-package com.tz.redismanager.strategy.search;
+package com.tz.redismanager.strategy.searchvalue;
 
+import com.tz.redismanager.annotation.StrategyType;
 import com.tz.redismanager.bean.vo.RedisValueQueryVo;
+import com.tz.redismanager.enm.StrategyTypeEnum;
 import com.tz.redismanager.strategy.AbstractHandler;
-import com.tz.redismanager.strategy.IHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p></p>
@@ -19,21 +17,10 @@ import java.util.Map;
  * @version 1.0
  * @time 2019-06-23 21:40
  **/
-public abstract class AbstractSearchHandler extends AbstractHandler<RedisValueQueryVo, Object> implements ISearchValueHandler {
+@StrategyType({StrategyTypeEnum.SEARCH_VALUE})
+public abstract class AbstractSearchValueHandler extends AbstractHandler<RedisValueQueryVo, Object> implements ISearchValueHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractSearchHandler.class);
-
-    private static Map<Object, ISearchValueHandler> handlerMap = new HashMap<>();
-
-    @Override
-    public IHandler getHandler(Object handlerType) {
-        return handlerMap.get(handlerType);
-    }
-
-    @Override
-    public void putHandlerToMap(Object handlerType, IHandler handler) {
-        handlerMap.put(handlerType, (ISearchValueHandler) handler);
-    }
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSearchValueHandler.class);
 
     /**
      * 重新设置keySerializer

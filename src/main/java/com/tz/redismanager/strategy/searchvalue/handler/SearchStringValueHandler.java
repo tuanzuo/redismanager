@@ -1,8 +1,9 @@
-package com.tz.redismanager.strategy.search.handler;
+package com.tz.redismanager.strategy.searchvalue.handler;
 
+import com.tz.redismanager.annotation.HandlerType;
 import com.tz.redismanager.bean.vo.RedisValueQueryVo;
-import com.tz.redismanager.enm.SearchValueHandlerEnum;
-import com.tz.redismanager.strategy.search.AbstractSearchHandler;
+import com.tz.redismanager.enm.HandlerTypeEnum;
+import com.tz.redismanager.strategy.searchvalue.AbstractSearchValueHandler;
 import com.tz.redismanager.util.RedisContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,14 +18,11 @@ import org.springframework.stereotype.Service;
  * @time 2019-06-23 21:33
  **/
 @Service
-public class SearchStringValueHandler extends AbstractSearchHandler {
+@HandlerType({HandlerTypeEnum.STRING})
+public class SearchStringValueHandler extends AbstractSearchValueHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchStringValueHandler.class);
 
-    @Override
-    public Object[] getHandlerType() {
-        return new Object[]{SearchValueHandlerEnum.STRING};
-    }
 
     @Override
     public Object handle(RedisValueQueryVo vo) {

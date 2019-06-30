@@ -1,4 +1,4 @@
-package com.tz.redismanager.strategy.search;
+package com.tz.redismanager.strategy.searchvalue;
 
 import com.tz.redismanager.bean.vo.RedisValueQueryVo;
 import com.tz.redismanager.strategy.IHandler;
