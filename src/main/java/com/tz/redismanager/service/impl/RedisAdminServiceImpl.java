@@ -183,7 +183,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         resp.setKeyType(keyType);
         resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
         resp.setValue(value);
-        logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询key对应的value完成,resp:{}}", JsonUtils.toJsonStr(vo), JsonUtils.toJsonStr(resp));
+        logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询key对应的value完成}", JsonUtils.toJsonStr(vo));
         return resp;
     }
 
