@@ -1,6 +1,6 @@
 package com.tz.redismanager.util;
 
-public class RsaException extends Exception {
+public class RsaException extends RuntimeException {
 
 	private static final long serialVersionUID = -238091758285157331L;
 

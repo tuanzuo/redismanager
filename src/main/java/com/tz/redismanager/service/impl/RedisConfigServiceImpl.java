@@ -39,7 +39,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void add(RedisConfigVO vo) throws RsaException {
+    public void add(RedisConfigVO vo) {
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
         this.encryptPassWord(po);
@@ -65,7 +65,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void update(RedisConfigVO vo) throws RsaException {
+    public void update(RedisConfigVO vo) {
         RedisConfigPO oldPO = redisConfigPOMapper.selectByPrimaryKey(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
@@ -87,7 +87,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
      * @param po
      * @throws RsaException
      */
-    private void encryptPassWord(RedisConfigPO po) throws RsaException {
+    private void encryptPassWord(RedisConfigPO po) {
         if (StringUtils.isNotBlank(po.getPassword())) {
             po.setPassword(RSAUtil.rsaPublicEncrypt(po.getPassword(), encryptConfig.getPublicKey(), RSAUtil.CHARSET_UTF8));
         }
