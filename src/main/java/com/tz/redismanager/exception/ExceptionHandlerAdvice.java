@@ -27,7 +27,7 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public Object handleException(HttpServletRequest request, Exception e) throws Exception {
+    public Object handleException(HttpServletRequest request, Exception e) {
         this.getParams(request, e);
         return "exp";
     }
@@ -35,7 +35,7 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(RmException.class)
     @ResponseBody
-    public Object handleRmException(HttpServletRequest request, Exception e) throws Exception {
+    public Object handleRmException(HttpServletRequest request, Exception e) {
         this.getParams(request, e);
         return "exp";
     }
@@ -48,7 +48,7 @@ public class ExceptionHandlerAdvice {
         String token = ((ContentCachingRequestWrapper) request).getHeader("token");
         //获取post请求的数据
         String reqBody = StringUtils.toEncodedString(wrapper.getContentAsByteArray(), Charset.forName(wrapper.getCharacterEncoding()));
-        logger.info("[异常] {url:{},token:{},reqParam:{},reqBody:{},{}}",url,token, reqParamMap, reqBody, e.getMessage());
+        logger.info("[异常] {url:{},token:{},reqParam:{},reqBody:{},{}}", url, token, reqParamMap, reqBody, e.getMessage());
     }
 
     private static Map<String, String> getParameterMap(ServletRequest request) {
