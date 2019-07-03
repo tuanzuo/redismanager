@@ -14,14 +14,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 //https://docs.spring.io/spring-boot/docs/1.5.11.BUILD-SNAPSHOT/reference/htmlsingle/#boot-features-error-handling
 
 @ControllerAdvice()
 public class ExceptionHandlerAdvice {
-
     private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlerAdvice.class);
 
     @ResponseStatus(HttpStatus.OK)
@@ -44,24 +42,20 @@ public class ExceptionHandlerAdvice {
         ContentCachingRequestWrapper wrapper = (ContentCachingRequestWrapper) request;
         //获取get请求的数据
         Map<String, String> reqParamMap = getParameterMap(request);
-        String url = ((ContentCachingRequestWrapper) request).getRequestURI();
-        String token = ((ContentCachingRequestWrapper) request).getHeader("token");
+        String url = wrapper.getRequestURI();
+        String token = wrapper.getHeader("token");
         //获取post请求的数据
         String reqBody = StringUtils.toEncodedString(wrapper.getContentAsByteArray(), Charset.forName(wrapper.getCharacterEncoding()));
-        logger.info("[异常] {url:{},token:{},reqParam:{},reqBody:{},{}}", url, token, reqParamMap, reqBody, e.getMessage());
+        logger.error("[异常] {url:{},token:{},reqParam:{},reqBody:{},{}}", url, token, reqParamMap, reqBody, e.getMessage());
     }
 
     private static Map<String, String> getParameterMap(ServletRequest request) {
         // 返回值Map
-        Map<String, String> returnMap = new HashMap();
-        Iterator entries = request.getParameterMap().entrySet().iterator();
-        Map.Entry entry;
-        String name = "";
-        String value = "";
-        while (entries.hasNext()) {
-            entry = (Map.Entry) entries.next();
-            name = (String) entry.getKey();
-            Object valueObj = entry.getValue();
+        Map<String, String> returnMap = new HashMap<>();
+        request.getParameterMap().forEach((key,temp)->{
+            String name = key;
+            String value = "";
+            Object valueObj = temp;
             if (null == valueObj) {
                 value = "";
             } else if (valueObj instanceof String[]) {
@@ -74,7 +68,7 @@ public class ExceptionHandlerAdvice {
                 value = valueObj.toString();
             }
             returnMap.put(name, value);
-        }
+        });
         return returnMap;
     }
 
