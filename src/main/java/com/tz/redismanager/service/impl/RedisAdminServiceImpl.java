@@ -136,6 +136,8 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         //将查询到的keys生成的树节点List设置为Root树节点的子节点
         if (CollectionUtils.isNotEmpty(treeNodes)) {
             root.setChildren(treeNodes);
+            root.setDisableCheckbox(false);
+            root.setDisabled(false);
             root.setLeaf(false);
         }
         //logger.info("[RedisAdmin] [searchKey] {通过id:{},key:{}查询keys生成TreeNode完成,result:{}}", id, key, JsonUtils.toJsonStr(treeNodesForRoot));
