@@ -1,6 +1,7 @@
 package com.tz.redismanager.bean.vo;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ public class RedisTreeNode {
      * tree节点显示的名称
      */
     private String title;
+    /**ztree会使用(和title的值一样)*/
+    private String name;
     /**
      * tree节点的key不能重复
      */
@@ -41,11 +44,14 @@ public class RedisTreeNode {
     private List<RedisTreeNode> children;
 
     //临时Title
+    @JsonIgnore
     private String tempTitle;
     //key对应的parent key
+    @JsonIgnore
     private String pkey;
-    private String name;
-
+    //当前节点下面叶子节点(key)的个数
+    @JsonIgnore
+    private int allChildrenCount;
 
     public RedisTreeNode(String title, String key, Boolean isLeaf) {
         this.title = title;
@@ -67,6 +73,8 @@ public class RedisTreeNode {
 
     public void setTitle(String title) {
         this.title = title;
+        /**把title的值赋值给name*/
+        this.name = title;
     }
 
     public String getKey() {
@@ -140,8 +148,16 @@ public class RedisTreeNode {
         this.pkey = pkey;
     }
 
+    public int getAllChildrenCount() {
+        return allChildrenCount;
+    }
+
+    public void setAllChildrenCount(int allChildrenCount) {
+        this.allChildrenCount = allChildrenCount;
+    }
+
     public String getName() {
-        return title;
+        return name;
     }
 
     public void setName(String name) {

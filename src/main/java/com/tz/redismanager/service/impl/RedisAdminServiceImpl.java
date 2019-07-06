@@ -69,7 +69,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         }
         long start = System.currentTimeMillis();
         //查询到的keys生成树节点的List
-        List<RedisTreeNode> treeNodes = new ArrayList<>();
         Set<String> keySet = redisTemplate.keys(key.trim());
         if (CollectionUtils.isEmpty(keySet)) {
             //重新设置keySerializer
@@ -88,6 +87,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         root.setTitle(root.getTitle() + "(" + keyList.size() + ")");
 
         //生成树--1、将节点封装到Map中
+        List<RedisTreeNode> treeNodes = new ArrayList<>();
         Map<String, RedisTreeNode> map = new HashMap<>();
         Set<String> strSet = new HashSet<>();
         keyList.forEach(temp -> {
@@ -120,12 +120,16 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         if (CollectionUtils.isNotEmpty(strSet)) {
             strSet.forEach(temp -> {
                 if (map.containsKey(temp)) {
-                    if (StringUtils.isNotBlank(map.get(temp).getPkey())) {
-                        RedisTreeNode parent = map.get(map.get(temp).getPkey());
-                        parent.addChildren(map.get(temp));
-                        parent.setTitle(parent.getTempTitle() + "(" + parent.getChildren().size() + ")");
+                    RedisTreeNode node = map.get(temp);
+                    if (StringUtils.isNotBlank(node.getPkey())) {
+                        RedisTreeNode parent = map.get(node.getPkey());
+                        parent.addChildren(node);
+                        //如果是叶子节点，则增加父节点,父父...节点中叶子结点的个数
+                        if (node.getIsLeaf()) {
+                            this.setParentTreeNodeInfo(map, parent);
+                        }
                     } else {
-                        treeNodes.add(map.get(temp));
+                        treeNodes.add(node);
                     }
                 }
             });
@@ -143,6 +147,19 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         //logger.info("[RedisAdmin] [searchKey] {通过id:{},key:{}查询keys生成TreeNode完成,result:{}}", id, key, JsonUtils.toJsonStr(treeNodesForRoot));
         logger.info("all time:{}", (System.currentTimeMillis() - startAll));
         return treeNodesForRoot;
+    }
+
+    /**
+     * 设置节点的title信息(包含叶子节点的数量)
+     * @param map
+     * @param parent
+     */
+    private void setParentTreeNodeInfo(Map<String, RedisTreeNode> map, RedisTreeNode parent) {
+        parent.setAllChildrenCount(parent.getAllChildrenCount() + 1);
+        parent.setTitle(parent.getTempTitle() + "(" + parent.getAllChildrenCount() + ")");
+        if (StringUtils.isNotBlank(parent.getPkey())) {
+            this.setParentTreeNodeInfo(map, map.get(parent.getPkey()));
+        }
     }
 
     @SetRedisTemplate
