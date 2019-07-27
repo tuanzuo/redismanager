@@ -36,7 +36,7 @@ self.__precacheManifest = [
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "200100f83eec7bed21db",
+    "revision": "33a98dd46f0d089024ab",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -64,7 +64,7 @@ self.__precacheManifest = [
     "url": "/p__User__Login.async.js"
   },
   {
-    "revision": "200100f83eec7bed21db",
+    "revision": "33a98dd46f0d089024ab",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
