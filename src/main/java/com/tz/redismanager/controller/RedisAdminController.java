@@ -57,4 +57,9 @@ public class RedisAdminController {
         redisAdminService.setTtl(vo);
     }
 
+    @RequestMapping("key/updateValue")
+    public void updateValue(@RequestBody RedisKeyUpdateVo vo) {
+        redisAdminService.updateValue(vo);
+    }
+
 }

@@ -281,4 +281,39 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         }
         logger.info("[RedisAdmin] [setTtl] {设置TTL完成:{}}", JsonUtils.toJsonStr(vo));
     }
+
+    @SetRedisTemplate
+    @Override
+    public void updateValue(RedisKeyUpdateVo vo) {
+        logger.info("[RedisAdmin] [updateValue] {正在更新Key的Value:{}}", JsonUtils.toJsonStr(vo));
+        if (StringUtils.isBlank(vo.getKey())) {
+            logger.error("[RedisAdmin] [updateValue] {key为空}");
+            return;
+        }
+        if (StringUtils.isBlank(vo.getKeyType())) {
+            logger.error("[RedisAdmin] [updateValue] {keyType为空}");
+            return;
+        }
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        if (null == redisTemplate) {
+            logger.error("[RedisAdmin] [updateValue] {id:{}查询不到redisTemplate}", vo.getId());
+            return;
+        }
+        if("string".equals(vo.getKeyType())){
+            if (StringUtils.isBlank(vo.getStringValue())) {
+                logger.error("[RedisAdmin] [updateValue] {key的value为空}");
+                return;
+            }
+            RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
+            //1、先试用string序列化方式把value存入redis
+            redisTemplate.setValueSerializer(new StringRedisSerializer());
+            redisTemplate.opsForValue().set(vo.getKey(), vo.getStringValue());
+
+            //2、再查询出value,最后使用redisTemplate本身的序列化方式把数据存入redis
+            Object valueTemp = redisTemplate.opsForValue().get(vo.getKey());
+            redisTemplate.setValueSerializer(valueSerializer);
+            redisTemplate.opsForValue().set(vo.getKey(), valueTemp);
+        }
+        logger.info("[RedisAdmin] [updateValue] {更新Key的Value完成:{}}", JsonUtils.toJsonStr(vo));
+    }
 }

@@ -16,5 +16,6 @@ public interface IRedisAdminService {
 
     void setTtl(RedisKeyUpdateVo vo);
 
+    void updateValue(RedisKeyUpdateVo vo);
 
 }

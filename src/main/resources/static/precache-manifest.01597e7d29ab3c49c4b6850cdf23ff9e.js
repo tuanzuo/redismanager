@@ -20,11 +20,11 @@ self.__precacheManifest = [
     "url": "/static/zTreeStandard.524f504c.png"
   },
   {
-    "revision": "d883102e883aab523cea",
+    "revision": "0aa609bbc91701c3b8f3",
     "url": "/umi.js"
   },
   {
-    "revision": "d883102e883aab523cea",
+    "revision": "0aa609bbc91701c3b8f3",
     "url": "/umi.css"
   },
   {
@@ -32,11 +32,11 @@ self.__precacheManifest = [
     "url": "/vendors.async.js"
   },
   {
-    "revision": "3ee0a6ac12657b460816",
+    "revision": "269124e9c47281a2596e",
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "488af25f76c377c8c84a",
+    "revision": "200100f83eec7bed21db",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -44,15 +44,15 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisDataPageZtree.async.js"
   },
   {
-    "revision": "af0c1febd84e2737126d",
+    "revision": "e421c13d7c380eea8360",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "af0c1febd84e2737126d",
+    "revision": "e421c13d7c380eea8360",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
-    "revision": "a98fe15cb8c0e5984d45",
+    "revision": "fb805082947328c7a4f4",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
@@ -64,7 +64,7 @@ self.__precacheManifest = [
     "url": "/p__User__Login.async.js"
   },
   {
-    "revision": "488af25f76c377c8c84a",
+    "revision": "200100f83eec7bed21db",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {

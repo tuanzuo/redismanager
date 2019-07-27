@@ -7,7 +7,13 @@ public class RedisKeyUpdateVo {
     private String id;
     private String key;
     private String oldKey;
+    /**
+     * key类型：string,List,set,hash,zset
+     */
+    private String keyType;
+    //过期时间
     private Long expireTime;
+    private String stringValue;
 
     public String getId() {
         return id;
@@ -39,5 +45,21 @@ public class RedisKeyUpdateVo {
 
     public void setOldKey(String oldKey) {
         this.oldKey = oldKey;
+    }
+
+    public String getKeyType() {
+        return keyType;
+    }
+
+    public void setKeyType(String keyType) {
+        this.keyType = keyType;
+    }
+
+    public String getStringValue() {
+        return stringValue;
+    }
+
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
     }
 }
