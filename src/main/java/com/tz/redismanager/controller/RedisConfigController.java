@@ -41,4 +41,5 @@ public class RedisConfigController {
     public void update(@RequestBody RedisConfigVO vo) {
         redisConfigService.update(vo);
     }
+
 }

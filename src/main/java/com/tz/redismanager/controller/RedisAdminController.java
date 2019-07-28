@@ -21,11 +21,17 @@ public class RedisAdminController {
     @Autowired
     private IRedisAdminService redisAdminService;
     @Autowired
-    private IRedisContextService contextService;
+    private IRedisContextService redisContextService;
 
     @RequestMapping("context/init/{id}")
     public void initContext(@PathVariable("id") String id) {
-        contextService.initContext(id);
+        redisContextService.initContext(id);
+    }
+
+    @RequestMapping("context/cache/clear/{id}")
+    public void clearCacheRedisTemplate(@PathVariable("id") String id) {
+        redisContextService.removeRedisTemplate(id);
+        redisContextService.getRedisConfigCache().invalidate(id);
     }
 
     @RequestMapping("key/list")

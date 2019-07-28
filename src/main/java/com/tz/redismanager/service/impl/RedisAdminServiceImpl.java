@@ -6,10 +6,10 @@ import com.tz.redismanager.annotation.SetRedisTemplate;
 import com.tz.redismanager.bean.po.RedisConfigPO;
 import com.tz.redismanager.bean.vo.*;
 import com.tz.redismanager.constant.ConstInterface;
-import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.enm.StrategyTypeEnum;
 import com.tz.redismanager.service.IRedisAdminService;
+import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.strategy.HandlerFactory;
 import com.tz.redismanager.strategy.IHandler;
 import com.tz.redismanager.util.JsonUtils;
@@ -36,7 +36,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     private static final Logger logger = LoggerFactory.getLogger(RedisAdminServiceImpl.class);
 
     @Autowired
-    private RedisConfigPOMapper redisConfigPOMapper;
+    private IRedisContextService redisContextService;
 
     @SetRedisTemplate
     @Override
@@ -44,11 +44,10 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         logger.info("[RedisAdmin] [searchKey] {正在通过id:{},key:{}查询keys}", id, key);
         long startAll = System.currentTimeMillis();
         String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
-        RedisConfigPO configPO = redisConfigPOMapper.selectByPrimaryKey(id);
+        RedisConfigPO configPO = redisContextService.getRedisConfigCache().get(id);
         if (null != configPO) {
             rootNodeTitle = configPO.getName();
         }
-
         //Root树节点List
         List<RedisTreeNode> treeNodesForRoot = new ArrayList<>();
         //构建Root树节点
@@ -299,7 +298,9 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             logger.error("[RedisAdmin] [updateValue] {id:{}查询不到redisTemplate}", vo.getId());
             return;
         }
-        if("string".equals(vo.getKeyType())){
+        //过期时间
+        Long expireTime = redisTemplate.getExpire(vo.getKey());
+        if ("string".equals(vo.getKeyType())) {
             if (StringUtils.isBlank(vo.getStringValue())) {
                 logger.error("[RedisAdmin] [updateValue] {key的value为空}");
                 return;
@@ -307,13 +308,25 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
             //1、先试用string序列化方式把value存入redis
             redisTemplate.setValueSerializer(new StringRedisSerializer());
-            redisTemplate.opsForValue().set(vo.getKey(), vo.getStringValue());
-
+            this.setValueForStringType(vo.getKey(), vo.getStringValue(), redisTemplate, expireTime);
             //2、再查询出value,最后使用redisTemplate本身的序列化方式把数据存入redis
             Object valueTemp = redisTemplate.opsForValue().get(vo.getKey());
             redisTemplate.setValueSerializer(valueSerializer);
-            redisTemplate.opsForValue().set(vo.getKey(), valueTemp);
+            this.setValueForStringType(vo.getKey(), valueTemp, redisTemplate, expireTime);
         }
         logger.info("[RedisAdmin] [updateValue] {更新Key的Value完成:{}}", JsonUtils.toJsonStr(vo));
+    }
+
+    private void setValueForStringType(String key, Object value, RedisTemplate<String, Object> redisTemplate, Long expireTime) {
+        if (null != expireTime && null != key && null != value) {
+            if (-1 == expireTime) {
+                redisTemplate.opsForValue().set(key, value);
+            } else if (expireTime > Integer.MAX_VALUE) {
+                redisTemplate.opsForValue().set(key, value);
+                redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+            } else if (expireTime > 0) {
+                redisTemplate.opsForValue().set(key, value, expireTime, TimeUnit.SECONDS);
+            }
+        }
     }
 }

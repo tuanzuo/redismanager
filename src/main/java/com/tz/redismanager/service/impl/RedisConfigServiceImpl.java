@@ -24,7 +24,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     @Autowired
     private EncryptConfig encryptConfig;
     @Autowired
-    private IRedisContextService contextService;
+    private IRedisContextService redisContextService;
     @Autowired
     private RedisConfigPOMapper redisConfigPOMapper;
 
@@ -50,6 +50,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         po.setUpdateTime(new Date());
         po.setIfDel(ConstInterface.IF_DEL.NO);
         redisConfigPOMapper.insertSelective(po);
+        //放入缓存
+        redisContextService.getRedisConfigCache().put(po.getId(), po);
     }
 
     @Override
@@ -61,12 +63,13 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         po.setIfDel(ConstInterface.IF_DEL.YES);
         redisConfigPOMapper.updateByPrimaryKeySelective(po);
         //删除缓存中的RedisTemplate
-        contextService.getRedisTemplateMap().remove(id);
+        redisContextService.getRedisTemplateMap().remove(id);
+        redisContextService.getRedisConfigCache().invalidate(id);
     }
 
     @Override
     public void update(RedisConfigVO vo) {
-        RedisConfigPO oldPO = redisConfigPOMapper.selectByPrimaryKey(vo.getId());
+        RedisConfigPO oldPO = redisContextService.getRedisConfigCache().get(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
         if (null != oldPO && null != oldPO.getPassword() && null != po.getPassword() && !oldPO.getPassword().equals(po.getPassword())) {
@@ -78,7 +81,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         po.setUpdateTime(new Date());
         redisConfigPOMapper.updateByPrimaryKeySelective(po);
         //删除缓存中的RedisTemplate
-        contextService.getRedisTemplateMap().remove(vo.getId());
+        redisContextService.getRedisTemplateMap().remove(vo.getId());
+        redisContextService.getRedisConfigCache().invalidate(vo.getId());
     }
 
     /**

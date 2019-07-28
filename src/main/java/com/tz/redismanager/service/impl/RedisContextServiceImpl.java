@@ -1,7 +1,10 @@
 package com.tz.redismanager.service.impl;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.tz.redismanager.bean.po.RedisConfigPO;
 import com.tz.redismanager.config.EncryptConfig;
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.util.RSAUtil;
@@ -10,6 +13,7 @@ import com.tz.redismanager.util.RsaException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -17,13 +21,19 @@ import org.springframework.stereotype.Service;
 import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @Service
-public class RedisContextServiceImpl implements IRedisContextService {
+public class RedisContextServiceImpl implements IRedisContextService, InitializingBean {
 
     private static final Logger logger = LoggerFactory.getLogger(RedisContextServiceImpl.class);
 
+    /**
+     * RedisTemplate缓存Map--key:id,value:RedisTemplate
+     */
     private static Map<String, RedisTemplate<String, Object>> redisTemplateMap = new ConcurrentHashMap<>();
+
+    private static Map<String, LoadingCache> cacheMap = new ConcurrentHashMap<>();
 
     @Autowired
     private EncryptConfig encryptConfig;
@@ -41,7 +51,7 @@ public class RedisContextServiceImpl implements IRedisContextService {
             logger.info("[redisContext] [initContext] [已存在对应的redisTemplate] {id:{}}", id);
             return null;
         }
-        RedisConfigPO redisConfigPO = redisConfigPOMapper.selectByPrimaryKey(id);
+        RedisConfigPO redisConfigPO =  this.getRedisConfigCache().get(id);
         if (null == redisConfigPO) {
             logger.error("[redisContext] [initContext] [查询不到redisConfig数据] {id:{}}", id);
             return null;
@@ -81,5 +91,31 @@ public class RedisContextServiceImpl implements IRedisContextService {
     public Map<String, RedisTemplate<String, Object>> getRedisTemplateMap(){
         return redisTemplateMap;
     }
+
+    @Override
+    public void removeRedisTemplate(String id) {
+        redisTemplateMap.remove(id);
+        logger.info("[redisContext] [removeRedisTemplate] {redisTemplate清理完成,id:{}}", id);
+    }
+
+    @Override
+    public LoadingCache<String, RedisConfigPO> getRedisConfigCache() {
+        return cacheMap.get(ConstInterface.Cacher.REDIS_CONFIG_CACHER);
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        LoadingCache<String, RedisConfigPO> redisConfigCache = Caffeine.newBuilder()
+                .expireAfterAccess(1L, TimeUnit.HOURS)
+                .initialCapacity(10)
+                .maximumSize(1000)
+                .build((id) -> {
+                    logger.info("[回源查询] {id:{}对应的redis连接信息}", id);
+                    return redisConfigPOMapper.selectByPrimaryKey(id);
+                });
+        cacheMap.put(ConstInterface.Cacher.REDIS_CONFIG_CACHER, redisConfigCache);
+        logger.info("[初始化缓存] {{}完成}", ConstInterface.Cacher.REDIS_CONFIG_CACHER);
+    }
+
 
 }

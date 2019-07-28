@@ -25,4 +25,8 @@ public interface ConstInterface {
         String ROOT_NODE_TITLE = "ROOT";
         String ROOT_NODE_KEY = "ROOT";
     }
+
+    interface Cacher {
+        String REDIS_CONFIG_CACHER = "redisConfigCacher";
+    }
 }
