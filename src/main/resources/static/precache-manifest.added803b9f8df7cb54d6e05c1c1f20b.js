@@ -20,11 +20,11 @@ self.__precacheManifest = [
     "url": "/static/zTreeStandard.524f504c.png"
   },
   {
-    "revision": "5926f7561ad9d6c86660",
+    "revision": "c7dd512f04ede63f2974",
     "url": "/umi.js"
   },
   {
-    "revision": "5926f7561ad9d6c86660",
+    "revision": "c7dd512f04ede63f2974",
     "url": "/umi.css"
   },
   {
@@ -44,15 +44,15 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisDataPageZtree.async.js"
   },
   {
-    "revision": "01dd22c8d5d6a567e351",
+    "revision": "c23dd7643fdab330ce8b",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "01dd22c8d5d6a567e351",
+    "revision": "c23dd7643fdab330ce8b",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
-    "revision": "409eb34d4ce1c8672785",
+    "revision": "441020baf966c6a81a0b",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
@@ -80,12 +80,12 @@ self.__precacheManifest = [
     "url": "/p__User__RegisterResult.async.js"
   },
   {
-    "revision": "24ebaf90962e27030962",
+    "revision": "6856b7050ef24e3b28c0",
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "5423f638851bd441057fb363969ac6c9",
-    "url": "/favicon.png.redis"
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
   },
   {
     "revision": "d8be978d3eb8dfcc41c7",
@@ -124,12 +124,12 @@ self.__precacheManifest = [
     "url": "/icons\\icon-128x128.png"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png.back"
+    "revision": "5423f638851bd441057fb363969ac6c9",
+    "url": "/favicon.png.redis"
   },
   {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png.back"
   },
   {
     "revision": "e7c379077cb6d7cb9efa",
