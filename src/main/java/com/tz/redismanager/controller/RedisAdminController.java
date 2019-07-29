@@ -1,5 +1,7 @@
 package com.tz.redismanager.controller;
 
+import com.tz.redismanager.bean.ApiResult;
+import com.tz.redismanager.bean.vo.RedisConfigVO;
 import com.tz.redismanager.bean.vo.RedisKeyDelVo;
 import com.tz.redismanager.bean.vo.RedisKeyUpdateVo;
 import com.tz.redismanager.bean.vo.RedisValueQueryVo;
@@ -32,6 +34,11 @@ public class RedisAdminController {
     public void clearCacheRedisTemplate(@PathVariable("id") String id) {
         redisContextService.removeRedisTemplate(id);
         redisContextService.getRedisConfigCache().invalidate(id);
+    }
+
+    @RequestMapping("context/test/connection")
+    public ApiResult<String> testRedisConnection(@RequestBody RedisConfigVO vo) {
+        return redisContextService.testRedisConnection(vo);
     }
 
     @RequestMapping("key/list")

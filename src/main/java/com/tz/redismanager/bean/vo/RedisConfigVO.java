@@ -1,5 +1,7 @@
 package com.tz.redismanager.bean.vo;
 
+import com.tz.redismanager.constant.ConstInterface;
+
 public class RedisConfigVO {
 
     private String id;
@@ -12,7 +14,7 @@ public class RedisConfigVO {
     /**
      * 类型[1=单机,2=集群]
      *
-     * @see com.tz.redismanager.constant.ConstInterface.TYPE
+     * @see ConstInterface.TYPE
      */
     private Integer type;
 
@@ -48,6 +50,12 @@ public class RedisConfigVO {
      * 修改人
      */
     private String updater;
+
+    /**
+     * 来源：1添加，2修改
+     * @see ConstInterface.SOURCE
+     */
+    private Integer source;
 
     public String getId() {
         return id;
@@ -121,6 +129,14 @@ public class RedisConfigVO {
         this.updater = updater;
     }
 
+    public Integer getSource() {
+        return source;
+    }
+
+    public void setSource(Integer source) {
+        this.source = source;
+    }
+
     @Override
     public String toString() {
         return "RedisConfigVO{" +
@@ -133,6 +149,7 @@ public class RedisConfigVO {
                 ", note='" + note + '\'' +
                 ", creater='" + creater + '\'' +
                 ", updater='" + updater + '\'' +
+                ", source='" + source + '\'' +
                 '}';
     }
 }

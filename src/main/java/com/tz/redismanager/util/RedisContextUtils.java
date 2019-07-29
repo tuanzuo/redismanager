@@ -79,9 +79,11 @@ public class RedisContextUtils {
         RedisTemplate<String, Object> customRedisTemplate = new RedisTemplate<>();
         customRedisTemplate.setConnectionFactory(redisConnectionFactory);
 
-        //设置key和hashKey的序列化方式
+        //设置key,hashKey,value,hashValue的序列化方式
         customRedisTemplate.setKeySerializer(new StringRedisSerializer());
         customRedisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        customRedisTemplate.setValueSerializer(new StringRedisSerializer());
+        customRedisTemplate.setHashValueSerializer(new StringRedisSerializer());
 
         //建议使用这种方式，小范围指定白名单
         ParserConfig.getGlobalInstance().addAccept("com.tz.redismanager.bean");

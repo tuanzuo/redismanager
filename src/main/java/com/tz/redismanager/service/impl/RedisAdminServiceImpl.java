@@ -309,6 +309,10 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             //1、先试用string序列化方式把value存入redis
             redisTemplate.setValueSerializer(new StringRedisSerializer());
             this.setValueForStringType(vo.getKey(), vo.getStringValue(), redisTemplate, expireTime);
+            if (StringRedisSerializer.class.equals(valueSerializer.getClass())) {
+                logger.info("[RedisAdmin] [updateValue] {更新Key的Value完成:{}}", JsonUtils.toJsonStr(vo));
+                return;
+            }
             //2、再查询出value,最后使用redisTemplate本身的序列化方式把数据存入redis
             Object valueTemp = redisTemplate.opsForValue().get(vo.getKey());
             redisTemplate.setValueSerializer(valueSerializer);

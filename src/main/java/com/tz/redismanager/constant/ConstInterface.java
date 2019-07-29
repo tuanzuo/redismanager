@@ -13,6 +13,12 @@ public interface ConstInterface {
         Integer CLUSTER = 2;
     }
 
+    //来源[1添加,2修改]
+    interface SOURCE {
+        Integer ADD = 1;
+        Integer UPDATE = 2;
+    }
+
     //符号
     interface Symbol {
         //冒号

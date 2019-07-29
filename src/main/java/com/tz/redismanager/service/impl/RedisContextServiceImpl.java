@@ -2,7 +2,10 @@ package com.tz.redismanager.service.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.tz.redismanager.bean.ApiResult;
+import com.tz.redismanager.bean.ResultCode;
 import com.tz.redismanager.bean.po.RedisConfigPO;
+import com.tz.redismanager.bean.vo.RedisConfigVO;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
@@ -101,6 +104,43 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
     @Override
     public LoadingCache<String, RedisConfigPO> getRedisConfigCache() {
         return cacheMap.get(ConstInterface.Cacher.REDIS_CONFIG_CACHER);
+    }
+
+    @Override
+    public ApiResult<String> testRedisConnection(RedisConfigVO vo) {
+        ApiResult<String> result = new ApiResult<>(ResultCode.FAIL);
+        try {
+            RedisTemplate<String, Object> redisTemplate = null;
+            String passwrod = null;
+            if (StringUtils.isNotBlank(vo.getPassword())) {
+                if (null != vo.getSource() && ConstInterface.SOURCE.UPDATE.intValue() == vo.getSource()) {
+                    try {
+                        passwrod = RSAUtil.rsaPrivateDecrypt(vo.getPassword(), encryptConfig.getPrivateKey(), RSAUtil.CHARSET_UTF8);
+                    } catch (Exception e) {
+                        passwrod = vo.getPassword();
+                    }
+                } else {
+                    passwrod = vo.getPassword();
+                }
+            }
+            redisTemplate = RedisContextUtils.initRedisTemplate(vo.getType(), vo.getAddress(), passwrod);
+            passwrod = null;
+            if (null != redisTemplate && StringUtils.isNotBlank(vo.getSerCode())) {
+                RedisContextUtils.initRedisSerializer(vo.getSerCode(), redisTemplate);
+            }
+            redisTemplate.randomKey();
+            result = new ApiResult<>(ResultCode.SUCCESS);
+        } catch (Throwable e) {
+            Throwable old = e;
+            Throwable cause = e.getCause();
+            while (null != cause) {
+                old = cause;
+                cause = cause.getCause();
+            }
+            result.setMsg(old.getMessage());
+            logger.error("[redisContext] [testRedisConnection] {param:{},测试连接失败}", vo, e);
+        }
+        return result;
     }
 
     @Override
