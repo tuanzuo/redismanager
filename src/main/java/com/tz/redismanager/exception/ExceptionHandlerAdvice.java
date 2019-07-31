@@ -46,7 +46,7 @@ public class ExceptionHandlerAdvice {
         String token = wrapper.getHeader("token");
         //获取post请求的数据
         String reqBody = StringUtils.toEncodedString(wrapper.getContentAsByteArray(), Charset.forName(wrapper.getCharacterEncoding()));
-        logger.error("[异常] {url:{},token:{},reqParam:{},reqBody:{},{}}", url, token, reqParamMap, reqBody, e.getMessage());
+        logger.error("[异常] {url:{},token:{},reqParam:{},reqBody:{}}", url, token, reqParamMap, reqBody, e);
     }
 
     private static Map<String, String> getParameterMap(ServletRequest request) {

@@ -87,9 +87,8 @@ public class SetRedisTemplateAspect {
                 }
                 if (null == redisTemplate) {
                     logger.error("[SetRedisTemplateAspect] [annotationPointCut] {id:{}查询不到redisTemplate}", id);
-                    return null;
+                    return joinPoint.proceed();
                 }
-
                 RedisContextUtils.setRedisTemplate(redisTemplate);
                 //执行方法
                 Object result;

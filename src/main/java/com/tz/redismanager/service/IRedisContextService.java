@@ -11,6 +11,11 @@ import java.util.Map;
 
 public interface IRedisContextService {
 
+    /**
+     * 初始化RedisTemplate,非线程安全
+     * @param id
+     * @return
+     */
     RedisTemplate<String, Object> initContext(String id);
 
     RedisTemplate<String, Object> getRedisTemplate(String id);

@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +53,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
             logger.info("[redisContext] [initContext] [已存在对应的redisTemplate] {id:{}}", id);
             return null;
         }
-        RedisConfigPO redisConfigPO =  this.getRedisConfigCache().get(id);
+        RedisConfigPO redisConfigPO = this.getRedisConfigCache().get(id);
         if (null == redisConfigPO) {
             logger.error("[redisContext] [initContext] [查询不到redisConfig数据] {id:{}}", id);
             return null;
@@ -66,22 +65,27 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
         RedisTemplate<String, Object> redisTemplate = null;
         try {
             String passwrod = null;
-            if(StringUtils.isNotBlank(redisConfigPO.getPassword())){
+            if (StringUtils.isNotBlank(redisConfigPO.getPassword())) {
                 passwrod = RSAUtil.rsaPrivateDecrypt(redisConfigPO.getPassword(), encryptConfig.getPrivateKey(), RSAUtil.CHARSET_UTF8);
             }
             redisTemplate = RedisContextUtils.initRedisTemplate(redisConfigPO.getType(), redisConfigPO.getAddress(), passwrod);
             passwrod = null;
-        } catch (UnknownHostException e) {
-            logger.error("[redisContext] [initContext] [初始化redisTemplate出错] {redisConfigPO:{}}", redisConfigPO, e);
-            return redisTemplate;
         } catch (RsaException e) {
             logger.error("[redisContext] [initContext] [解密失败] {redisConfigPO:{}}", redisConfigPO, e);
+            return redisTemplate;
+        } catch (Exception e) {
+            logger.error("[redisContext] [initContext] [初始化initRedisTemplate出错] {redisConfigPO:{}}", redisConfigPO, e);
+            return redisTemplate;
         }
         if (null != redisTemplate && StringUtils.isNotBlank(redisConfigPO.getSerCode())) {
             RedisContextUtils.initRedisSerializer(redisConfigPO.getSerCode(), redisTemplate);
         }
-        redisTemplateMap.put(id, redisTemplate);
-        logger.info("[redisContext] [initContext] {初始化redisTemplate完成,id:{}}", id);
+        if (null != redisTemplate) {
+            redisTemplateMap.put(id, redisTemplate);
+            logger.info("[redisContext] [initContext] {初始化redisTemplate完成,id:{}}", id);
+        } else {
+            logger.info("[redisContext] [initContext] {初始化redisTemplate失败,id:{}}", id);
+        }
         return redisTemplate;
     }
 
@@ -91,7 +95,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
     }
 
     @Override
-    public Map<String, RedisTemplate<String, Object>> getRedisTemplateMap(){
+    public Map<String, RedisTemplate<String, Object>> getRedisTemplateMap() {
         return redisTemplateMap;
     }
 
