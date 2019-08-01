@@ -1,5 +1,7 @@
 package com.tz.redismanager.exception;
 
+import com.tz.redismanager.bean.ApiResult;
+import com.tz.redismanager.bean.ResultCode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +29,7 @@ public class ExceptionHandlerAdvice {
     @ResponseBody
     public Object handleException(HttpServletRequest request, Exception e) {
         this.getParams(request, e);
-        return "exp";
+        return new ApiResult<>(ResultCode.FAIL.getCode(), this.getExcpMsg(e));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -35,7 +37,17 @@ public class ExceptionHandlerAdvice {
     @ResponseBody
     public Object handleRmException(HttpServletRequest request, Exception e) {
         this.getParams(request, e);
-        return "exp";
+        return new ApiResult<>(ResultCode.FAIL.getCode(), this.getExcpMsg(e));
+    }
+
+    private String getExcpMsg(Exception e) {
+        Throwable old = e;
+        Throwable cause = e.getCause();
+        while (null != cause) {
+            old = cause;
+            cause = cause.getCause();
+        }
+        return old.getMessage();
     }
 
     private void getParams(HttpServletRequest request, Exception e) {
@@ -52,7 +64,7 @@ public class ExceptionHandlerAdvice {
     private static Map<String, String> getParameterMap(ServletRequest request) {
         // 返回值Map
         Map<String, String> returnMap = new HashMap<>();
-        request.getParameterMap().forEach((key,temp)->{
+        request.getParameterMap().forEach((key, temp) -> {
             String name = key;
             String value = "";
             Object valueObj = temp;
