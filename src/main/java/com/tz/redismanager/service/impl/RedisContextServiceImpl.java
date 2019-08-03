@@ -10,6 +10,7 @@ import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.service.IRedisContextService;
+import com.tz.redismanager.util.CommonUtils;
 import com.tz.redismanager.util.RSAUtil;
 import com.tz.redismanager.util.RedisContextUtils;
 import com.tz.redismanager.util.RsaException;
@@ -135,13 +136,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
             redisTemplate.randomKey();
             result = new ApiResult<>(ResultCode.SUCCESS);
         } catch (Throwable e) {
-            Throwable old = e;
-            Throwable cause = e.getCause();
-            while (null != cause) {
-                old = cause;
-                cause = cause.getCause();
-            }
-            result.setMsg(old.getMessage());
+            result.setMsg(CommonUtils.getExcpMsg(e));
             logger.error("[redisContext] [testRedisConnection] {param:{},测试连接失败}", vo, e);
         }
         return result;

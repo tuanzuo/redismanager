@@ -2,6 +2,7 @@ package com.tz.redismanager.exception;
 
 import com.tz.redismanager.bean.ApiResult;
 import com.tz.redismanager.bean.ResultCode;
+import com.tz.redismanager.util.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class ExceptionHandlerAdvice {
     @ResponseBody
     public Object handleException(HttpServletRequest request, Exception e) {
         this.getParams(request, e);
-        return new ApiResult<>(ResultCode.FAIL.getCode(), this.getExcpMsg(e));
+        return new ApiResult<>(ResultCode.FAIL.getCode(), CommonUtils.getExcpMsg(e));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -37,17 +38,7 @@ public class ExceptionHandlerAdvice {
     @ResponseBody
     public Object handleRmException(HttpServletRequest request, Exception e) {
         this.getParams(request, e);
-        return new ApiResult<>(ResultCode.FAIL.getCode(), this.getExcpMsg(e));
-    }
-
-    private String getExcpMsg(Exception e) {
-        Throwable old = e;
-        Throwable cause = e.getCause();
-        while (null != cause) {
-            old = cause;
-            cause = cause.getCause();
-        }
-        return old.getMessage();
+        return new ApiResult<>(ResultCode.FAIL.getCode(), CommonUtils.getExcpMsg(e));
     }
 
     private void getParams(HttpServletRequest request, Exception e) {

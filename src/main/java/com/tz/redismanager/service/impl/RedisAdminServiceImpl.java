@@ -12,6 +12,7 @@ import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.strategy.HandlerFactory;
 import com.tz.redismanager.strategy.IHandler;
+import com.tz.redismanager.util.CommonUtils;
 import com.tz.redismanager.util.JsonUtils;
 import com.tz.redismanager.util.RedisContextUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -211,15 +212,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
      * @param redisTemplate
      */
     private void reSetKeySerializer(RedisTemplate<String, Object> redisTemplate) {
-        RedisSerializer keySerializer = redisTemplate.getKeySerializer();
-        if (null != keySerializer) {
-            if (keySerializer.getClass().getName().equals(StringRedisSerializer.class.getName())) {
-                redisTemplate.setKeySerializer(redisTemplate.getDefaultSerializer());
-            } else {
-                redisTemplate.setKeySerializer(redisTemplate.getStringSerializer());
-            }
-            logger.info("[RedisAdmin] [reSetKeySerializer] {keySerializer从{}切换为:{}再查询}", keySerializer.getClass().getSimpleName(), redisTemplate.getKeySerializer().getClass().getSimpleName());
-        }
+        CommonUtils.reSetKeySerializer(redisTemplate);
     }
 
     @SetRedisTemplate
