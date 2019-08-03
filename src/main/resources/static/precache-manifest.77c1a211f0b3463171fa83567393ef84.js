@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.async.js"
   },
   {
-    "revision": "4b4be2f1d2d66177887b",
+    "revision": "4162ae1207fe4daccbdb",
     "url": "/vendors.chunk.css"
   },
   {
@@ -20,15 +20,15 @@ self.__precacheManifest = [
     "url": "/static/zTreeStandard.524f504c.png"
   },
   {
-    "revision": "c7dd512f04ede63f2974",
+    "revision": "43a2ddc3eb151befe684",
     "url": "/umi.js"
   },
   {
-    "revision": "c7dd512f04ede63f2974",
+    "revision": "43a2ddc3eb151befe684",
     "url": "/umi.css"
   },
   {
-    "revision": "4b4be2f1d2d66177887b",
+    "revision": "4162ae1207fe4daccbdb",
     "url": "/vendors.async.js"
   },
   {
@@ -36,7 +36,7 @@ self.__precacheManifest = [
     "url": "/p__404.async.js"
   },
   {
-    "revision": "88668970207284637854",
+    "revision": "0ee4628756415b87a4a3",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -44,11 +44,11 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisDataPageZtree.async.js"
   },
   {
-    "revision": "02c2428d763db773c3c3",
+    "revision": "ce04bf3a2c038609960e",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "02c2428d763db773c3c3",
+    "revision": "ce04bf3a2c038609960e",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
@@ -68,7 +68,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.chunk.css"
   },
   {
-    "revision": "88668970207284637854",
+    "revision": "0ee4628756415b87a4a3",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
@@ -84,8 +84,8 @@ self.__precacheManifest = [
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons\\icon-128x128.png"
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png.back"
   },
   {
     "revision": "d8be978d3eb8dfcc41c7",
@@ -120,12 +120,12 @@ self.__precacheManifest = [
     "url": "/icons\\icon-192x192.png"
   },
   {
-    "revision": "5423f638851bd441057fb363969ac6c9",
-    "url": "/favicon.png.redis"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons\\icon-128x128.png"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png.back"
+    "revision": "5423f638851bd441057fb363969ac6c9",
+    "url": "/favicon.png.redis"
   },
   {
     "revision": "c891db020b04fc5afaccff5439d843cd",
