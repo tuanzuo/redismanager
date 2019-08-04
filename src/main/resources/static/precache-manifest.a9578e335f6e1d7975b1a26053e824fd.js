@@ -20,11 +20,11 @@ self.__precacheManifest = [
     "url": "/static/zTreeStandard.524f504c.png"
   },
   {
-    "revision": "43a2ddc3eb151befe684",
+    "revision": "9272ada0093bfb9bc8ea",
     "url": "/umi.js"
   },
   {
-    "revision": "43a2ddc3eb151befe684",
+    "revision": "9272ada0093bfb9bc8ea",
     "url": "/umi.css"
   },
   {
@@ -36,7 +36,7 @@ self.__precacheManifest = [
     "url": "/p__404.async.js"
   },
   {
-    "revision": "0ee4628756415b87a4a3",
+    "revision": "0e412bcb0be92c8d3df1",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -44,11 +44,11 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisDataPageZtree.async.js"
   },
   {
-    "revision": "2c847158f2dafea0feca",
+    "revision": "877458358ab2aa9ff568",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "2c847158f2dafea0feca",
+    "revision": "877458358ab2aa9ff568",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
@@ -68,7 +68,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.chunk.css"
   },
   {
-    "revision": "0ee4628756415b87a4a3",
+    "revision": "0e412bcb0be92c8d3df1",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
@@ -84,8 +84,8 @@ self.__precacheManifest = [
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons\\icon-192x192.png"
+    "revision": "5423f638851bd441057fb363969ac6c9",
+    "url": "/favicon.png.redis"
   },
   {
     "revision": "d8be978d3eb8dfcc41c7",
@@ -116,12 +116,12 @@ self.__precacheManifest = [
     "url": "/icons\\icon-512x512.png"
   },
   {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons\\icon-128x128.png"
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons\\icon-192x192.png"
   },
   {
-    "revision": "5423f638851bd441057fb363969ac6c9",
-    "url": "/favicon.png.redis"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons\\icon-128x128.png"
   },
   {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
