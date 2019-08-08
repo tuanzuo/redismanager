@@ -21,10 +21,10 @@ public interface ConstInterface {
 
     //符号
     interface Symbol {
-        //冒号
         String COLON = ":";
         String COMMA = ",";
         String STAR = "*";
+        String SPOT = ".";
     }
 
     interface Common {

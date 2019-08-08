@@ -2,6 +2,7 @@ package com.tz.redismanager.service.impl;
 
 import com.google.common.collect.Lists;
 import com.tz.redismanager.annotation.ConnectionId;
+import com.tz.redismanager.annotation.MethodExecTime;
 import com.tz.redismanager.annotation.SetRedisTemplate;
 import com.tz.redismanager.bean.po.RedisConfigPO;
 import com.tz.redismanager.bean.vo.*;
@@ -39,11 +40,11 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     @Autowired
     private IRedisContextService redisContextService;
 
+    @MethodExecTime
     @SetRedisTemplate
     @Override
     public List<RedisTreeNode> searchKey(@ConnectionId String id, String key) {
         logger.info("[RedisAdmin] [searchKey] {正在通过id:{},key:{}查询keys}", id, key);
-        long startAll = System.currentTimeMillis();
         String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
         RedisConfigPO configPO = redisContextService.getRedisConfigCache().get(id);
         if (null != configPO) {
@@ -145,7 +146,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             root.setLeaf(false);
         }
         //logger.info("[RedisAdmin] [searchKey] {通过id:{},key:{}查询keys生成TreeNode完成,result:{}}", id, key, JsonUtils.toJsonStr(treeNodesForRoot));
-        logger.info("all time:{}", (System.currentTimeMillis() - startAll));
         return treeNodesForRoot;
     }
 
@@ -163,6 +163,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     }
 
     @SetRedisTemplate
+    @MethodExecTime
     @Override
     public RedisValueResp searchKeyValue(RedisValueQueryVo vo) {
         RedisValueResp resp = new RedisValueResp();
