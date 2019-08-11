@@ -72,7 +72,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         RedisConfigPO oldPO = redisContextService.getRedisConfigCache().get(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
-        if (null != oldPO && null != oldPO.getPassword() && null != po.getPassword() && !oldPO.getPassword().equals(po.getPassword())) {
+        if (!StringUtils.equals(po.getPassword(), oldPO.getPassword())) {
             this.encryptPassWord(po);
         } else {
             po.setPassword(null);
