@@ -20,11 +20,11 @@ self.__precacheManifest = [
     "url": "/static/zTreeStandard.524f504c.png"
   },
   {
-    "revision": "603fb70972cac63da26b",
+    "revision": "7df93fe41e1e86a6725c",
     "url": "/umi.js"
   },
   {
-    "revision": "603fb70972cac63da26b",
+    "revision": "7df93fe41e1e86a6725c",
     "url": "/umi.css"
   },
   {
@@ -36,7 +36,7 @@ self.__precacheManifest = [
     "url": "/p__404.async.js"
   },
   {
-    "revision": "fb9720ab8fc39adcd724",
+    "revision": "89ca8726f8bd00ad86d7",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -68,7 +68,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.chunk.css"
   },
   {
-    "revision": "fb9720ab8fc39adcd724",
+    "revision": "89ca8726f8bd00ad86d7",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
