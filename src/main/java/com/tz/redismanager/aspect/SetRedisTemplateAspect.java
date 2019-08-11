@@ -2,6 +2,8 @@ package com.tz.redismanager.aspect;
 
 import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.annotation.SetRedisTemplate;
+import com.tz.redismanager.bean.ResultCode;
+import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.util.RedisContextUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -89,7 +91,11 @@ public class SetRedisTemplateAspect {
                 }
                 if (null == redisTemplate) {
                     logger.error("[SetRedisTemplateAspect] [annotationPointCut] {id:{}查询不到redisTemplate}", id);
-                    return joinPoint.proceed();
+                    if (setRedisTemplate.whenIsNullContinueExec()) {
+                        return joinPoint.proceed();
+                    } else {
+                        throw new RmException(ResultCode.REDIS_TEMPLATE_ISNULL.getCode(), "RedisTemplate为空,操作失败!");
+                    }
                 }
                 RedisContextUtils.setRedisTemplate(redisTemplate);
                 //执行方法

@@ -4,11 +4,13 @@ import com.google.common.collect.Lists;
 import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.annotation.MethodExecTime;
 import com.tz.redismanager.annotation.SetRedisTemplate;
+import com.tz.redismanager.bean.ResultCode;
 import com.tz.redismanager.bean.po.RedisConfigPO;
 import com.tz.redismanager.bean.vo.*;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.enm.StrategyTypeEnum;
+import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.strategy.HandlerFactory;
@@ -41,7 +43,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     private IRedisContextService redisContextService;
 
     @MethodExecTime
-    @SetRedisTemplate
+    @SetRedisTemplate(whenIsNullContinueExec = true)
     @Override
     public List<RedisTreeNode> searchKey(@ConnectionId String id, String key) {
         logger.info("[RedisAdmin] [searchKey] {正在通过id:{},key:{}查询keys}", id, key);
@@ -62,11 +64,10 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             logger.error("[RedisAdmin] [searchKey] {查询key不能为空或者为*}");
             return treeNodesForRoot;
         }
-
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         if (null == redisTemplate) {
             logger.error("[RedisAdmin] [searchKey] {id:{}查询不到redisTemplate}", id);
-            return treeNodesForRoot;
+            throw new RmException(ResultCode.REDIS_TEMPLATE_ISNULL.getCode(), "RedisTemplate为空,查询失败!");
         }
         long start = System.currentTimeMillis();
         //查询到的keys生成树节点的List
@@ -151,6 +152,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
     /**
      * 设置节点的title信息(包含叶子节点的数量)
+     *
      * @param map
      * @param parent
      */
@@ -169,10 +171,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         RedisValueResp resp = new RedisValueResp();
         logger.info("[RedisAdmin] [searchKeyValue] {正在通过vo:{}查询key对应的value}", JsonUtils.toJsonStr(vo));
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        if (null == redisTemplate) {
-            logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询不到redisTemplate}", vo.getId());
-            return resp;
-        }
         DataType dataType = null;
         try {
             dataType = redisTemplate.type(vo.getSearchKey());
@@ -225,10 +223,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             return;
         }
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        if (null == redisTemplate) {
-            logger.error("[RedisAdmin] [delKeys] {id:{}查询不到redisTemplate}", vo.getId());
-            return;
-        }
         redisTemplate.delete(Lists.newArrayList(vo.getKeys()));
         logger.info("[RedisAdmin] [delKeys] {删除keys:{}完成}", JsonUtils.toJsonStr(vo.getKeys()));
     }
@@ -242,10 +236,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             return;
         }
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        if (null == redisTemplate) {
-            logger.error("[RedisAdmin] [renameKey] {id:{}查询不到redisTemplate}", vo.getId());
-            return;
-        }
         redisTemplate.rename(vo.getOldKey(), vo.getKey());
         logger.info("[RedisAdmin] [renameKey] {重命名key完成:{}}", JsonUtils.toJsonStr(vo));
     }
@@ -263,10 +253,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             return;
         }
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        if (null == redisTemplate) {
-            logger.error("[RedisAdmin] [setTtl] {id:{}查询不到redisTemplate}", vo.getId());
-            return;
-        }
         if (-1 == vo.getExpireTime()) {
             redisTemplate.persist(vo.getKey());
         } else {
@@ -288,10 +274,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             return;
         }
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        if (null == redisTemplate) {
-            logger.error("[RedisAdmin] [updateValue] {id:{}查询不到redisTemplate}", vo.getId());
-            return;
-        }
         //过期时间
         Long expireTime = redisTemplate.getExpire(vo.getKey());
         if ("string".equals(vo.getKeyType())) {
