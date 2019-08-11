@@ -1,0 +1,3 @@
+1、日志注解实现
+2、替换umi.js中接口访问路径："http://127.0.0.1"替换成window.location.protocol+"//"+window.location.host
+3、Hibernate Validator实现参数的校验
