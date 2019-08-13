@@ -20,11 +20,11 @@ self.__precacheManifest = [
     "url": "/static/zTreeStandard.524f504c.png"
   },
   {
-    "revision": "7df93fe41e1e86a6725c",
+    "revision": "3cad5b57a0bb1ef83b00",
     "url": "/umi.js"
   },
   {
-    "revision": "7df93fe41e1e86a6725c",
+    "revision": "3cad5b57a0bb1ef83b00",
     "url": "/umi.css"
   },
   {
@@ -44,11 +44,11 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisDataPageZtree.async.js"
   },
   {
-    "revision": "877458358ab2aa9ff568",
+    "revision": "d5a06e242285b73efe0f",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "877458358ab2aa9ff568",
+    "revision": "d5a06e242285b73efe0f",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
@@ -84,8 +84,8 @@ self.__precacheManifest = [
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons\\icon-192x192.png"
   },
   {
     "revision": "d8be978d3eb8dfcc41c7",
@@ -116,10 +116,6 @@ self.__precacheManifest = [
     "url": "/icons\\icon-512x512.png"
   },
   {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons\\icon-192x192.png"
-  },
-  {
     "revision": "347329d0982682b42d40c8162817a940",
     "url": "/icons\\icon-128x128.png"
   },
@@ -130,6 +126,10 @@ self.__precacheManifest = [
   {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
     "url": "/favicon.png.back"
+  },
+  {
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
   },
   {
     "revision": "e7c379077cb6d7cb9efa",
