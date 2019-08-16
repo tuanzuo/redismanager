@@ -27,7 +27,7 @@ public class RedisConfigController {
 
     @RequestMapping("list")
     @MethodExecTime(logInputParams = false, logOutputParams = false)
-    public Object list(@NotEmpty(message = "searchKey不能为空") String searchKey) {
+    public Object list(String searchKey) {
         Map<String, List<RedisConfigPO>> map = new HashMap<>();
         map.put("configList", redisConfigService.searchList(searchKey));
         return map;
