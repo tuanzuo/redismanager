@@ -2,6 +2,7 @@ package com.tz.redismanager.service.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.tz.redismanager.annotation.MethodExecTime;
 import com.tz.redismanager.bean.ApiResult;
 import com.tz.redismanager.bean.ResultCode;
 import com.tz.redismanager.bean.po.RedisConfigPO;
@@ -44,12 +45,8 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
     private RedisConfigPOMapper redisConfigPOMapper;
 
     @Override
+    @MethodExecTime(logPrefix = "RedisTemplate初始化", logInputParams = false, logOutputParams = false)
     public RedisTemplate<String, Object> initContext(String id) {
-        logger.info("[redisContext] [initContext] {正在初始化redisTemplate,id:{}}", id);
-        if (StringUtils.isBlank(id)) {
-            logger.error("[redisContext] [initContext] [id为空]");
-            return null;
-        }
         if (redisTemplateMap.containsKey(id)) {
             logger.info("[redisContext] [initContext] [已存在对应的redisTemplate] {id:{}}", id);
             return null;

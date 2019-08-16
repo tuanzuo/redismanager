@@ -1,19 +1,54 @@
 package com.tz.redismanager.bean.vo;
 
 import com.tz.redismanager.annotation.ConnectionId;
+import com.tz.redismanager.validator.ValidGroup;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.ScriptAssert;
 
+@ScriptAssert.List({
+        @ScriptAssert(lang = "javascript", groups = {ValidGroup.UpdateKeyValue.class},
+                script = "_this.updateValueValidate(_this.keyType,_this.stringValue)", message = "value不能为空"),
+        @ScriptAssert(lang = "javascript", groups = {ValidGroup.SetTTL.class},
+                script = "_this.setTtlValidate(_this.expireTime)", message = "expireTime:过期时间为-1或者大于0")
+})
 public class RedisKeyUpdateVo {
+
+    @NotEmpty(message = "id不能为空", groups = {ValidGroup.RenameKey.class, ValidGroup.SetTTL.class, ValidGroup.UpdateKeyValue.class})
     @ConnectionId
     private String id;
+    @NotEmpty(message = "key不能为空", groups = {ValidGroup.RenameKey.class, ValidGroup.SetTTL.class, ValidGroup.UpdateKeyValue.class})
     private String key;
+    @NotEmpty(message = "oldKey不能为空", groups = {ValidGroup.RenameKey.class})
     private String oldKey;
     /**
      * key类型：string,List,set,hash,zset
      */
+    @NotEmpty(message = "key类型不能为空", groups = {ValidGroup.UpdateKeyValue.class})
     private String keyType;
     //过期时间
     private Long expireTime;
     private String stringValue;
+
+    public boolean updateValueValidate(String keyType, String stringValue) {
+        if ("string".equals(keyType)) {
+            if (StringUtils.isBlank(stringValue)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean setTtlValidate(Long expireTime) {
+        if (null == expireTime) {
+            return false;
+        }
+        if (-1 == expireTime || expireTime > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public String getId() {
         return id;

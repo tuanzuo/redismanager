@@ -25,6 +25,8 @@ public interface ConstInterface {
         String COMMA = ",";
         String STAR = "*";
         String SPOT = ".";
+        String MIDDLE_BRACKET_LEFT = "[";
+        String MIDDLE_BRACKET_RIGHT = "]";
     }
 
     interface Common {

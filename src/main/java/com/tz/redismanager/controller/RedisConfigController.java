@@ -1,9 +1,13 @@
 package com.tz.redismanager.controller;
 
+import com.tz.redismanager.annotation.MethodExecTime;
 import com.tz.redismanager.bean.po.RedisConfigPO;
 import com.tz.redismanager.bean.vo.RedisConfigVO;
 import com.tz.redismanager.service.IRedisConfigService;
+import com.tz.redismanager.validator.ValidGroup;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,30 +19,32 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/redis/config")
+@Validated
 public class RedisConfigController {
 
     @Autowired
     private IRedisConfigService redisConfigService;
 
     @RequestMapping("list")
-    public Object list(String searchKey) {
+    @MethodExecTime(logInputParams = false, logOutputParams = false)
+    public Object list(@NotEmpty(message = "searchKey不能为空") String searchKey) {
         Map<String, List<RedisConfigPO>> map = new HashMap<>();
         map.put("configList", redisConfigService.searchList(searchKey));
         return map;
     }
 
     @RequestMapping("add")
-    public void add(@RequestBody RedisConfigVO vo) {
+    public void add(@Validated({ValidGroup.AddConnection.class}) @RequestBody RedisConfigVO vo) {
         redisConfigService.add(vo);
     }
 
     @RequestMapping("del/{id}")
-    public void del(@PathVariable("id") String id) {
+    public void del(@NotEmpty(message = "id不能为空") @PathVariable("id") String id) {
         redisConfigService.delete(id);
     }
 
     @RequestMapping("update")
-    public void update(@RequestBody RedisConfigVO vo) {
+    public void update(@Validated({ValidGroup.UpdateConnection.class}) @RequestBody RedisConfigVO vo) {
         redisConfigService.update(vo);
     }
 

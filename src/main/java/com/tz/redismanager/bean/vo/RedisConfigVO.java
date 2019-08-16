@@ -1,14 +1,27 @@
 package com.tz.redismanager.bean.vo;
 
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.validator.ValidGroup;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.ScriptAssert;
 
+import javax.validation.constraints.NotNull;
+
+@ScriptAssert.List({
+        @ScriptAssert(lang = "javascript", groups = {ValidGroup.TestConnection.class},
+                script = "_this.testConnectionValidate(_this.password,_this.source)", message = "source不能为空")
+})
 public class RedisConfigVO {
 
+    @NotEmpty(message = "id不能为空", groups = {ValidGroup.UpdateConnection.class})
     private String id;
 
     /**
      * 名称
      */
+    @NotEmpty(message = "名称不能为空", groups = {ValidGroup.AddConnection.class, ValidGroup.UpdateConnection.class})
     private String name;
 
     /**
@@ -16,6 +29,8 @@ public class RedisConfigVO {
      *
      * @see ConstInterface.TYPE
      */
+    @NotNull(message = "类型不能为空", groups = {ValidGroup.TestConnection.class, ValidGroup.AddConnection.class, ValidGroup.UpdateConnection.class})
+    @Range(min = 1, max = 2, message = "类型只能为1或者2", groups = {ValidGroup.TestConnection.class, ValidGroup.AddConnection.class, ValidGroup.UpdateConnection.class})
     private Integer type;
 
     /**
@@ -23,6 +38,7 @@ public class RedisConfigVO {
      * 单机-->127.0.0.1:6379
      * 集群-->192.168.1.32:7000,192.168.1.32:7001,192.168.1.32:7002,192.168.1.32:7003,192.168.1.32:7004,192.168.1.32:7005
      */
+    @NotEmpty(message = "地址不能为空", groups = {ValidGroup.TestConnection.class, ValidGroup.AddConnection.class, ValidGroup.UpdateConnection.class})
     private String address;
 
     /**
@@ -53,9 +69,20 @@ public class RedisConfigVO {
 
     /**
      * 来源：1添加，2修改
+     *
      * @see ConstInterface.SOURCE
      */
+    @Range(min = 1, max = 2, message = "source只能为1或者2", groups = {ValidGroup.TestConnection.class})
     private Integer source;
+
+    public boolean testConnectionValidate(String password, Integer source) {
+        if (StringUtils.isNotBlank(password)) {
+            if (null == source) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public String getId() {
         return id;
