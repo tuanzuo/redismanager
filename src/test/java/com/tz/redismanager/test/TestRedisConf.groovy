@@ -10,8 +10,8 @@ import org.springframework.data.redis.serializer.SerializationException;
 public class TestRedisConf extends Script{
 
     public void setRedisTemplateSerializer(){
-        myRedisTemplate.setValueSerializer(new CustomValueRedisObjectSerializer());
-        myRedisTemplate.setHashValueSerializer(new CustomValueRedisObjectSerializer());
+        myRedisTemplate.setValueSerializer(new MyRedisObjectSerializer());
+        myRedisTemplate.setHashValueSerializer(new MyRedisObjectSerializer());
         myRedisTemplate.setKeySerializer(new StringRedisSerializer());
         myRedisTemplate.setHashKeySerializer(new StringRedisSerializer());
     }
