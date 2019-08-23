@@ -2,6 +2,9 @@ package com.tz.redismanager.validator;
 
 /**
  * 验证分组接口
+ *
+ * @Since:2019-08-23 22:55:52
+ * @Version:1.1.0
  */
 public interface ValidGroup {
     /**

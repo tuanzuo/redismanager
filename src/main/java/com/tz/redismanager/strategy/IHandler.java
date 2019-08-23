@@ -1,9 +1,8 @@
 package com.tz.redismanager.strategy;
 
 /**
- * <p></p>
+ * 处理器接口
  *
- * @author Administrator
  * @version 1.0
  * @time 2019-06-23 21:17
  **/

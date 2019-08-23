@@ -1,13 +1,13 @@
 package com.tz.redismanager.service.impl;
 
-import com.tz.redismanager.bean.vo.RedisConfigVO;
+import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
-import com.tz.redismanager.bean.po.RedisConfigPO;
+import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisContextService;
-import com.tz.redismanager.util.RSAUtil;
+import com.tz.redismanager.util.RSAUtils;
 import com.tz.redismanager.util.RsaException;
 import com.tz.redismanager.util.UUIDUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -93,7 +93,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
      */
     private void encryptPassWord(RedisConfigPO po) {
         if (StringUtils.isNotBlank(po.getPassword())) {
-            po.setPassword(RSAUtil.rsaPublicEncrypt(po.getPassword(), encryptConfig.getPublicKey(), RSAUtil.CHARSET_UTF8));
+            po.setPassword(RSAUtils.rsaPublicEncrypt(po.getPassword(), encryptConfig.getPublicKey(), RSAUtils.CHARSET_UTF8));
         }
     }
 }

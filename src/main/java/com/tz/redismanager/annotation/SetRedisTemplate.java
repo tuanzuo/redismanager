@@ -4,6 +4,9 @@ import java.lang.annotation.*;
 
 /**
  * 设置RedisTemplate注解
+ *
+ * @Since:2019-08-23 22:21:56
+ * @Version:1.1.0
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

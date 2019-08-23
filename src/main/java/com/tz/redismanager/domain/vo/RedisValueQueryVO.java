@@ -1,9 +1,14 @@
-package com.tz.redismanager.bean.vo;
+package com.tz.redismanager.domain.vo;
 
 import com.tz.redismanager.annotation.ConnectionId;
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class RedisValueQueryVo {
+/**
+ * redis key查询value的VO
+ * @Since:2019-08-23 22:35:31
+ * @Version:1.1.0
+ */
+public class RedisValueQueryVO {
     @NotEmpty(message = "id不能为空")
     @ConnectionId
     private String id;

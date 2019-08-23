@@ -1,7 +1,7 @@
 package com.tz.redismanager.strategy.searchvalue.handler;
 
 import com.tz.redismanager.annotation.HandlerType;
-import com.tz.redismanager.bean.vo.RedisValueQueryVo;
+import com.tz.redismanager.domain.vo.RedisValueQueryVO;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.strategy.searchvalue.AbstractSearchValueHandler;
 import com.tz.redismanager.util.RedisContextUtils;
@@ -17,9 +17,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * <p></p>
+ * 查询set的value处理器
  *
- * @author Administrator
  * @version 1.0
  * @time 2019-06-23 21:33
  **/
@@ -29,7 +28,7 @@ public class SearchSetValueHandler extends AbstractSearchValueHandler {
     private static final Logger logger = LoggerFactory.getLogger(SearchSetValueHandler.class);
 
     @Override
-    public Object handle(RedisValueQueryVo vo) {
+    public Object handle(RedisValueQueryVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         Object value = null;
         try {
@@ -51,7 +50,7 @@ public class SearchSetValueHandler extends AbstractSearchValueHandler {
         return value;
     }
 
-    private Object getValue(RedisValueQueryVo vo, RedisTemplate<String, Object> redisTemplate) {
+    private Object getValue(RedisValueQueryVO vo, RedisTemplate<String, Object> redisTemplate) {
         Set<Object> set = new HashSet<>();
         try (Cursor<Object> cursor = redisTemplate.opsForSet().scan(vo.getSearchKey(), ScanOptions.scanOptions().match("*").count(1000).build())) {
             while (cursor.hasNext()) {

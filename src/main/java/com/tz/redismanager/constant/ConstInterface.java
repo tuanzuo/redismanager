@@ -1,5 +1,11 @@
 package com.tz.redismanager.constant;
 
+/**
+ * 常量接口
+ *
+ * @Since:2019-08-23 22:27:52
+ * @Version:1.1.0
+ */
 public interface ConstInterface {
 
     interface IF_DEL {

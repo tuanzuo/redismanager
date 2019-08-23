@@ -1,7 +1,7 @@
 package com.tz.redismanager.strategy.searchvalue.handler;
 
 import com.tz.redismanager.annotation.HandlerType;
-import com.tz.redismanager.bean.vo.RedisValueQueryVo;
+import com.tz.redismanager.domain.vo.RedisValueQueryVO;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.strategy.searchvalue.AbstractSearchValueHandler;
 import com.tz.redismanager.util.RedisContextUtils;
@@ -11,9 +11,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 /**
- * <p></p>
+ * 查询string的value处理器
  *
- * @author Administrator
  * @version 1.0
  * @time 2019-06-23 21:33
  **/
@@ -25,7 +24,7 @@ public class SearchStringValueHandler extends AbstractSearchValueHandler {
 
 
     @Override
-    public Object handle(RedisValueQueryVo vo) {
+    public Object handle(RedisValueQueryVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         Object value = null;
         try {

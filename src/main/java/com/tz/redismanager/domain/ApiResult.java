@@ -1,9 +1,10 @@
-package com.tz.redismanager.bean;
+package com.tz.redismanager.domain;
+
+import com.tz.redismanager.enm.ResultCode;
 
 /**
- * <p></p>
+ * 接口返回对象
  *
- * @author Administrator
  * @version 1.0
  * @time 2019-07-29 19:51
  **/

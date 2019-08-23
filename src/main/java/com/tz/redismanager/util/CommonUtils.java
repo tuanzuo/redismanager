@@ -6,6 +6,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+/**
+ * 公共工具类
+ *
+ * @Since:2019-08-23 22:52:15
+ * @Version:1.1.0
+ */
 public class CommonUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonUtils.class);

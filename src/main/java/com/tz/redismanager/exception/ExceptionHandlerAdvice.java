@@ -1,7 +1,7 @@
 package com.tz.redismanager.exception;
 
-import com.tz.redismanager.bean.ApiResult;
-import com.tz.redismanager.bean.ResultCode;
+import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.util.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,8 +27,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Controller异常统一处理
+ *
+ * @Since:2019-08-23 22:41:42 ChengDu
+ * @Version:1.1.0
+ */
 //https://docs.spring.io/spring-boot/docs/1.5.11.BUILD-SNAPSHOT/reference/htmlsingle/#boot-features-error-handling
-
 @ControllerAdvice()
 public class ExceptionHandlerAdvice {
     private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlerAdvice.class);

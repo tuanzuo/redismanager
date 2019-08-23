@@ -3,9 +3,8 @@ package com.tz.redismanager.annotation;
 import java.lang.annotation.*;
 
 /**
- * <p>标识redis连接的id</p>
+ * 标识redis连接的id注解
  *
- * @author Administrator
  * @version 1.0
  * @time 2019-06-19 23:11
  **/

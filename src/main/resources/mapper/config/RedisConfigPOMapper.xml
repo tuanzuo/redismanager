@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tz.redismanager.dao.mapper.RedisConfigPOMapper">
-  <resultMap id="BaseResultMap" type="com.tz.redismanager.bean.po.RedisConfigPO">
+  <resultMap id="BaseResultMap" type="com.tz.redismanager.domain.po.RedisConfigPO">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="INTEGER" property="type" />
@@ -39,7 +39,7 @@
     delete from t_redis_config
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.tz.redismanager.bean.po.RedisConfigPO">
+  <insert id="insert" parameterType="com.tz.redismanager.domain.po.RedisConfigPO">
     insert into t_redis_config (id, name, type,
       address, password, ser_code,
       note, creater, create_time,
@@ -51,7 +51,7 @@
       #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{ifDel,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.tz.redismanager.bean.po.RedisConfigPO">
+  <insert id="insertSelective" parameterType="com.tz.redismanager.domain.po.RedisConfigPO">
     insert into t_redis_config
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -130,7 +130,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tz.redismanager.bean.po.RedisConfigPO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.tz.redismanager.domain.po.RedisConfigPO">
     update t_redis_config
     <set>
       <if test="name != null">
@@ -169,7 +169,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.bean.po.RedisConfigPO">
+  <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.domain.po.RedisConfigPO">
     update t_redis_config
     set name = #{name,jdbcType=VARCHAR},
       type = #{type,jdbcType=INTEGER},

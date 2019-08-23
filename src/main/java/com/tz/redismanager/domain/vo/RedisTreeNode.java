@@ -1,4 +1,4 @@
-package com.tz.redismanager.bean.vo;
+package com.tz.redismanager.domain.vo;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,14 +9,19 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * key对应的Tree节点
+ * key的Tree节点
+ *
+ * @Since:2019-08-23 22:35:02
+ * @Version:1.1.0
  */
 public class RedisTreeNode {
     /**
      * tree节点显示的名称
      */
     private String title;
-    /**ztree会使用(和title的值一样)*/
+    /**
+     * ztree会使用(和title的值一样)
+     */
     private String name;
     /**
      * tree节点的key不能重复

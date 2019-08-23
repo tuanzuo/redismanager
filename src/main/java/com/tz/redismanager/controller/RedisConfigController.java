@@ -1,8 +1,8 @@
 package com.tz.redismanager.controller;
 
-import com.tz.redismanager.annotation.MethodExecTime;
-import com.tz.redismanager.bean.po.RedisConfigPO;
-import com.tz.redismanager.bean.vo.RedisConfigVO;
+import com.tz.redismanager.annotation.MethodLog;
+import com.tz.redismanager.domain.po.RedisConfigPO;
+import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.validator.ValidGroup;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -17,6 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * redis连接配置controller
+ *
+ * @Since:2019-08-23 22:29:01
+ * @Version:1.1.0
+ */
 @RestController
 @RequestMapping("/redis/config")
 @Validated
@@ -26,7 +32,7 @@ public class RedisConfigController {
     private IRedisConfigService redisConfigService;
 
     @RequestMapping("list")
-    @MethodExecTime(logInputParams = false, logOutputParams = false)
+    @MethodLog(logInputParams = false, logOutputParams = false)
     public Object list(String searchKey) {
         Map<String, List<RedisConfigPO>> map = new HashMap<>();
         map.put("configList", redisConfigService.searchList(searchKey));

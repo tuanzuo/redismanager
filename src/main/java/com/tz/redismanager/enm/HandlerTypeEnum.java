@@ -3,9 +3,8 @@ package com.tz.redismanager.enm;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * <p>处理器类型</p>
+ * 处理器类型枚举
  *
- * @author Administrator
  * @version 1.0
  * @time 2019-06-23 21:47
  **/

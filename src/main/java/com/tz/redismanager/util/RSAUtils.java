@@ -13,10 +13,11 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
+ * RSA加解密工具类
  * RSA非对称加密和解密，当使用keySize=2048生成的秘钥进行解密的时候会报错，
  * 但是使用keySize=1024生成的秘钥进行解密的时候则不会报错
  */
-public class RSAUtil {
+public class RSAUtils {
 
     private static final String RSA_ALGORITHM = "RSA";
     public static final int KEYSIZE_1024 = 1024;

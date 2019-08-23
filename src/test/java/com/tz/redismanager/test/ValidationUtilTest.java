@@ -1,7 +1,7 @@
 package com.tz.redismanager.test;
 
-import com.tz.redismanager.bean.vo.RedisConfigVO;
-import com.tz.redismanager.util.ValidationUtil;
+import com.tz.redismanager.domain.vo.RedisConfigVO;
+import com.tz.redismanager.util.ValidationUtils;
 import com.tz.redismanager.validator.ValidGroup;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ public class ValidationUtilTest {
     @Test
     public void test() {
         RedisConfigVO vo = new RedisConfigVO();
-        ValidationUtil.ValidResult validResult = ValidationUtil.validateBean(vo, ValidGroup.UpdateConnection.class);
+        ValidationUtils.ValidResult validResult = ValidationUtils.validateBean(vo, ValidGroup.UpdateConnection.class);
         if (validResult.hasErrors()) {
             String errors = validResult.getErrors();
             System.out.println(errors);

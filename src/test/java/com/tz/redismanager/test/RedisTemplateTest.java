@@ -3,7 +3,7 @@ package com.tz.redismanager.test;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.tz.redismanager.RedisManagerApplication;
-import com.tz.redismanager.bean.Person;
+import com.tz.redismanager.domain.Person;
 import com.tz.redismanager.config.FastJson2JsonRedisSerializer;
 import com.tz.redismanager.util.JsonUtils;
 import com.tz.redismanager.util.UUIDUtils;
@@ -58,9 +58,9 @@ public class RedisTemplateTest {
 
         FastJson2JsonRedisSerializer<Object> fastJson2JsonRedisSerializer = new FastJson2JsonRedisSerializer<>(Object.class);
         //建议使用这种方式，小范围指定白名单
-        ParserConfig.getGlobalInstance().addAccept("com.tz.redismanager.bean");
+        ParserConfig.getGlobalInstance().addAccept("com.tz.redismanager.domain");
         //设置了白名单才能正常从缓存中序列化出来
-        ParserConfig.getGlobalInstance().addAccept("com.tz.redis.bean");
+        ParserConfig.getGlobalInstance().addAccept("com.tz.redis.domain");
 
         myRedisTemplate.setValueSerializer(fastJson2JsonRedisSerializer);
         myRedisTemplate.setHashValueSerializer(fastJson2JsonRedisSerializer);
@@ -75,6 +75,11 @@ public class RedisTemplateTest {
 	//StringRedisTemplate--保存字符串
 	@Test
 	public void testString() throws Exception {
+        redisTemplate.opsForValue().set("ttrue",true);
+        redisTemplate.opsForValue().set("tfalse",false);
+        redisTemplate.opsForValue().set("tone",1);
+        redisTemplate.opsForValue().set("tzreo",0);
+
         Person jsonperson = new Person("小明"+UUIDUtils.generateId(), 30);
         stringRedisTemplate.opsForValue().set("jsonvalue", JsonUtils.toJsonStr(jsonperson));
 
@@ -100,7 +105,7 @@ public class RedisTemplateTest {
             myRedisTemplate.opsForValue().set("d:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
         }
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             String uuid = UUIDUtils.generateId();
             myRedisTemplate.opsForValue().set("tuanzuogood:" + uuid + ":userinfo:" + uuid + ":activityinfo:" + uuid + ":tian:" + uuid + ":tuanzuo:" + uuid, "value" + uuid);
 

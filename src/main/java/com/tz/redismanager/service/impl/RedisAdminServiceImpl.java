@@ -2,11 +2,11 @@ package com.tz.redismanager.service.impl;
 
 import com.google.common.collect.Lists;
 import com.tz.redismanager.annotation.ConnectionId;
-import com.tz.redismanager.annotation.MethodExecTime;
+import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.annotation.SetRedisTemplate;
-import com.tz.redismanager.bean.ResultCode;
-import com.tz.redismanager.bean.po.RedisConfigPO;
-import com.tz.redismanager.bean.vo.*;
+import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.domain.po.RedisConfigPO;
+import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.enm.StrategyTypeEnum;
@@ -163,7 +163,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
     @SetRedisTemplate
     @Override
-    public RedisValueResp searchKeyValue(RedisValueQueryVo vo) {
+    public RedisValueResp searchKeyValue(RedisValueQueryVO vo) {
         RedisValueResp resp = new RedisValueResp();
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         DataType dataType = null;
@@ -208,26 +208,26 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         CommonUtils.reSetKeySerializer(redisTemplate);
     }
 
-    @MethodExecTime
+    @MethodLog
     @SetRedisTemplate
     @Override
-    public void delKeys(RedisKeyDelVo vo) {
+    public void delKeys(RedisKeyDelVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         redisTemplate.delete(Lists.newArrayList(vo.getKeys()));
     }
 
-    @MethodExecTime
+    @MethodLog
     @SetRedisTemplate
     @Override
-    public void renameKey(RedisKeyUpdateVo vo) {
+    public void renameKey(RedisKeyUpdateVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         redisTemplate.rename(vo.getOldKey(), vo.getKey());
     }
 
-    @MethodExecTime
+    @MethodLog
     @SetRedisTemplate
     @Override
-    public void setTtl(RedisKeyUpdateVo vo) {
+    public void setTtl(RedisKeyUpdateVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         if (-1 == vo.getExpireTime()) {
             redisTemplate.persist(vo.getKey());
@@ -236,10 +236,10 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         }
     }
 
-    @MethodExecTime
+    @MethodLog
     @SetRedisTemplate
     @Override
-    public void updateValue(RedisKeyUpdateVo vo) {
+    public void updateValue(RedisKeyUpdateVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         //过期时间
         Long expireTime = redisTemplate.getExpire(vo.getKey());

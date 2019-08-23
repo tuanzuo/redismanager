@@ -1,11 +1,17 @@
 package com.tz.redismanager.dao.mapper;
 
-import com.tz.redismanager.bean.po.RedisConfigPO;
+import com.tz.redismanager.domain.po.RedisConfigPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * redis连接配置Mapper
+ *
+ * @Since:2019-08-23 22:31:41
+ * @Version:1.1.0
+ */
 @Mapper
 public interface RedisConfigPOMapper {
 

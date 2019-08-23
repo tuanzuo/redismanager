@@ -2,7 +2,7 @@ package com.tz.redismanager.aspect;
 
 import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.annotation.SetRedisTemplate;
-import com.tz.redismanager.bean.ResultCode;
+import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.util.RedisContextUtils;
@@ -25,6 +25,12 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
+/**
+ * 设置RedisTemplate切面
+ *
+ * @Since:2019-08-23 22:23:40
+ * @Version:1.1.0
+ */
 @Aspect
 @Component
 @Order(200)

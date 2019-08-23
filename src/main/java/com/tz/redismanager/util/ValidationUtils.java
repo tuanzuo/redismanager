@@ -11,9 +11,12 @@ import java.util.Set;
 
 /**
  * Hibernate Validator验证工具
+ *
+ * @Since:2019-08-23 22:55:21
+ * @Version:1.1.0
  * @see com.tz.redismanager.test.ValidationUtilTest#test()
  */
-public class ValidationUtil {
+public class ValidationUtils {
     /**
      * 开启快速结束模式 failFast (true)
      * failFast(true) true:快速校验，遇到不合法的就直接返回  false:全量校验，找出所有不合法的数据
@@ -23,12 +26,12 @@ public class ValidationUtil {
     /**
      * 校验对象
      *
-     * @param t      bean
+     * @param t      domain
      * @param groups 校验组
      * @return ValidResult
      */
     public static <T> ValidResult validateBean(T t, Class<?>... groups) {
-        ValidResult result = new ValidationUtil().new ValidResult();
+        ValidResult result = new ValidationUtils().new ValidResult();
         Set<ConstraintViolation<T>> violationSet = validator.validate(t, groups);
         boolean hasError = violationSet != null && violationSet.size() > 0;
         result.setHasErrors(hasError);
@@ -43,12 +46,12 @@ public class ValidationUtil {
     /**
      * 校验bean的某一个属性
      *
-     * @param obj          bean
+     * @param obj          domain
      * @param propertyName 属性名称
      * @return ValidResult
      */
     public static <T> ValidResult validateProperty(T obj, String propertyName) {
-        ValidResult result = new ValidationUtil().new ValidResult();
+        ValidResult result = new ValidationUtils().new ValidResult();
         Set<ConstraintViolation<T>> violationSet = validator.validateProperty(obj, propertyName);
         boolean hasError = violationSet != null && violationSet.size() > 0;
         result.setHasErrors(hasError);

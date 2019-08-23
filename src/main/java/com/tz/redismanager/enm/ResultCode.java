@@ -1,5 +1,11 @@
-package com.tz.redismanager.bean;
+package com.tz.redismanager.enm;
 
+/**
+ * 返回code枚举
+ *
+ * @Since:2019-08-23 22:40:26
+ * @Version:1.1.0
+ */
 public enum ResultCode {
     SUCCESS("200", "成功"),
     FAIL("500", "失败"),

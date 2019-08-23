@@ -20,6 +20,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
+/**
+ * RedisContext工具类
+ *
+ * @Since:2019-08-23 22:52:57
+ * @Version:1.1.0
+ */
 public class RedisContextUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(RedisContextUtils.class);
@@ -86,9 +92,9 @@ public class RedisContextUtils {
         customRedisTemplate.setHashValueSerializer(new StringRedisSerializer());
 
         //建议使用这种方式，小范围指定白名单
-        ParserConfig.getGlobalInstance().addAccept("com.tz.redismanager.bean");
+        ParserConfig.getGlobalInstance().addAccept("com.tz.redismanager.domain");
         //设置了白名单才能正常从缓存中序列化出来
-        ParserConfig.getGlobalInstance().addAccept("com.tz.redismanager.bean.po");
+        ParserConfig.getGlobalInstance().addAccept("com.tz.redismanager.domain.po");
 
         customRedisTemplate.afterPropertiesSet();
         return customRedisTemplate;

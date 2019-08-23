@@ -1,4 +1,4 @@
-package com.tz.redismanager.bean.vo;
+package com.tz.redismanager.domain.vo;
 
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.validator.ValidGroup;
@@ -9,6 +9,12 @@ import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * redis连接配置VO
+ *
+ * @Since:2019-08-23 22:32:31
+ * @Version:1.1.0
+ */
 @ScriptAssert.List({
         @ScriptAssert(lang = "javascript", groups = {ValidGroup.TestConnection.class},
                 script = "_this.testConnectionValidate(_this.password,_this.source)", message = "source不能为空")

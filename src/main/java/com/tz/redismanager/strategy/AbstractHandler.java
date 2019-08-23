@@ -1,9 +1,8 @@
 package com.tz.redismanager.strategy;
 
 /**
- * <p></p>
+ * 抽象的处理器
  *
- * @author Administrator
  * @version 1.0
  * @time 2019-06-23 21:35
  **/

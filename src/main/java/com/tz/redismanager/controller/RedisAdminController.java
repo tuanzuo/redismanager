@@ -1,11 +1,11 @@
 package com.tz.redismanager.controller;
 
-import com.tz.redismanager.annotation.MethodExecTime;
-import com.tz.redismanager.bean.ApiResult;
-import com.tz.redismanager.bean.vo.RedisConfigVO;
-import com.tz.redismanager.bean.vo.RedisKeyDelVo;
-import com.tz.redismanager.bean.vo.RedisKeyUpdateVo;
-import com.tz.redismanager.bean.vo.RedisValueQueryVo;
+import com.tz.redismanager.annotation.MethodLog;
+import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.domain.vo.RedisConfigVO;
+import com.tz.redismanager.domain.vo.RedisKeyDelVO;
+import com.tz.redismanager.domain.vo.RedisKeyUpdateVO;
+import com.tz.redismanager.domain.vo.RedisValueQueryVO;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.validator.ValidGroup;
@@ -20,6 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * redis操作controller
+ *
+ * @Since:2019-08-23 22:28:29
+ * @Version:1.1.0
+ */
 @RestController
 @RequestMapping("/redis/admin")
 @Validated
@@ -47,7 +53,7 @@ public class RedisAdminController {
     }
 
     @RequestMapping("key/list")
-    @MethodExecTime(logPrefix = "查询Redis的Key接口", logInputParams = false, logOutputParams = false)
+    @MethodLog(logPrefix = "查询Redis的Key接口", logInputParams = false, logOutputParams = false)
     public Object keyList(@NotEmpty(message = "id不能为空") String id, @NotEmpty(message = "searchKey不能为空") String searchKey) {
         Map<String, Object> map = new HashMap<>();
         map.put("keyList", redisAdminService.searchKey(id, searchKey));
@@ -55,30 +61,30 @@ public class RedisAdminController {
     }
 
     @RequestMapping("key/value")
-    @MethodExecTime(logPrefix = "查询Redis的Key对应value接口", logInputParams = false, logOutputParams = false)
-    public Object keyValue(@Validated @RequestBody RedisValueQueryVo vo) {
+    @MethodLog(logPrefix = "查询Redis的Key对应value接口", logInputParams = false, logOutputParams = false)
+    public Object keyValue(@Validated @RequestBody RedisValueQueryVO vo) {
         Map<String, Object> map = new HashMap<>();
         map.put("keyValue", redisAdminService.searchKeyValue(vo));
         return map;
     }
 
     @RequestMapping("key/del")
-    public void delKeys(@Validated @RequestBody RedisKeyDelVo vo) {
+    public void delKeys(@Validated @RequestBody RedisKeyDelVO vo) {
         redisAdminService.delKeys(vo);
     }
 
     @RequestMapping("key/rename")
-    public void renameKey(@Validated({ValidGroup.RenameKey.class}) @RequestBody RedisKeyUpdateVo vo) {
+    public void renameKey(@Validated({ValidGroup.RenameKey.class}) @RequestBody RedisKeyUpdateVO vo) {
         redisAdminService.renameKey(vo);
     }
 
     @RequestMapping("key/setTtl")
-    public void setTtl(@Validated({ValidGroup.SetTTL.class}) @RequestBody RedisKeyUpdateVo vo) {
+    public void setTtl(@Validated({ValidGroup.SetTTL.class}) @RequestBody RedisKeyUpdateVO vo) {
         redisAdminService.setTtl(vo);
     }
 
     @RequestMapping("key/updateValue")
-    public void updateValue(@Validated({ValidGroup.UpdateKeyValue.class}) @RequestBody RedisKeyUpdateVo vo) {
+    public void updateValue(@Validated({ValidGroup.UpdateKeyValue.class}) @RequestBody RedisKeyUpdateVO vo) {
         redisAdminService.updateValue(vo);
     }
 

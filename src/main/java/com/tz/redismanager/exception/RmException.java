@@ -1,9 +1,8 @@
 package com.tz.redismanager.exception;
 
 /**
- * <p></p>
+ * RedisManager异常
  *
- * @author Administrator
  * @version 1.0
  * @time 2019-07-02 20:16
  **/

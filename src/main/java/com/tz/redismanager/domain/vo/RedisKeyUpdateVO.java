@@ -1,4 +1,4 @@
-package com.tz.redismanager.bean.vo;
+package com.tz.redismanager.domain.vo;
 
 import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.validator.ValidGroup;
@@ -6,13 +6,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.ScriptAssert;
 
+/**
+ * redis key修改VO
+ *
+ * @Since:2019-08-23 22:33:31
+ * @Version:1.1.0
+ */
 @ScriptAssert.List({
         @ScriptAssert(lang = "javascript", groups = {ValidGroup.UpdateKeyValue.class},
                 script = "_this.updateValueValidate(_this.keyType,_this.stringValue)", message = "value不能为空"),
         @ScriptAssert(lang = "javascript", groups = {ValidGroup.SetTTL.class},
                 script = "_this.setTtlValidate(_this.expireTime)", message = "expireTime:过期时间为-1或者大于0")
 })
-public class RedisKeyUpdateVo {
+public class RedisKeyUpdateVO {
 
     @NotEmpty(message = "id不能为空", groups = {ValidGroup.RenameKey.class, ValidGroup.SetTTL.class, ValidGroup.UpdateKeyValue.class})
     @ConnectionId
@@ -26,8 +32,13 @@ public class RedisKeyUpdateVo {
      */
     @NotEmpty(message = "key类型不能为空", groups = {ValidGroup.UpdateKeyValue.class})
     private String keyType;
-    //过期时间
+    /**
+     * 过期时间
+     */
     private Long expireTime;
+    /**
+     * String类型key对应的value
+     */
     private String stringValue;
 
     public boolean updateValueValidate(String keyType, String stringValue) {

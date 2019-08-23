@@ -2,17 +2,17 @@ package com.tz.redismanager.service.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.tz.redismanager.annotation.MethodExecTime;
-import com.tz.redismanager.bean.ApiResult;
-import com.tz.redismanager.bean.ResultCode;
-import com.tz.redismanager.bean.po.RedisConfigPO;
-import com.tz.redismanager.bean.vo.RedisConfigVO;
+import com.tz.redismanager.annotation.MethodLog;
+import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.domain.po.RedisConfigPO;
+import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.util.CommonUtils;
-import com.tz.redismanager.util.RSAUtil;
+import com.tz.redismanager.util.RSAUtils;
 import com.tz.redismanager.util.RedisContextUtils;
 import com.tz.redismanager.util.RsaException;
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +45,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
     private RedisConfigPOMapper redisConfigPOMapper;
 
     @Override
-    @MethodExecTime(logPrefix = "RedisTemplate初始化", logInputParams = false, logOutputParams = false)
+    @MethodLog(logPrefix = "RedisTemplate初始化", logInputParams = false, logOutputParams = false)
     public RedisTemplate<String, Object> initContext(String id) {
         if (redisTemplateMap.containsKey(id)) {
             logger.info("[redisContext] [initContext] [已存在对应的redisTemplate] {id:{}}", id);
@@ -64,7 +64,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
         try {
             String passwrod = null;
             if (StringUtils.isNotBlank(redisConfigPO.getPassword())) {
-                passwrod = RSAUtil.rsaPrivateDecrypt(redisConfigPO.getPassword(), encryptConfig.getPrivateKey(), RSAUtil.CHARSET_UTF8);
+                passwrod = RSAUtils.rsaPrivateDecrypt(redisConfigPO.getPassword(), encryptConfig.getPrivateKey(), RSAUtils.CHARSET_UTF8);
             }
             redisTemplate = RedisContextUtils.initRedisTemplate(redisConfigPO.getType(), redisConfigPO.getAddress(), passwrod);
             passwrod = null;
@@ -117,7 +117,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
             if (StringUtils.isNotBlank(vo.getPassword())) {
                 if (null != vo.getSource() && ConstInterface.SOURCE.UPDATE.intValue() == vo.getSource()) {
                     try {
-                        passwrod = RSAUtil.rsaPrivateDecrypt(vo.getPassword(), encryptConfig.getPrivateKey(), RSAUtil.CHARSET_UTF8);
+                        passwrod = RSAUtils.rsaPrivateDecrypt(vo.getPassword(), encryptConfig.getPrivateKey(), RSAUtils.CHARSET_UTF8);
                     } catch (Exception e) {
                         passwrod = vo.getPassword();
                     }

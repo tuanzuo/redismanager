@@ -6,38 +6,46 @@ import org.springframework.core.serializer.support.SerializingConverter;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
+/**
+ * redis序列化
+ *
+ * @Since:2019-08-23 22:25:47
+ * @Version:1.1.0
+ */
 public class RedisObjectSerializer implements RedisSerializer<Object> {
 
-  private Converter<Object, byte[]> serializer = new SerializingConverter();
-  private Converter<byte[], Object> deserializer = new DeserializingConverter();
+    private Converter<Object, byte[]> serializer = new SerializingConverter();
+    private Converter<byte[], Object> deserializer = new DeserializingConverter();
 
-  static final byte[] EMPTY_ARRAY = new byte[0];
+    static final byte[] EMPTY_ARRAY = new byte[0];
 
-  public Object deserialize(byte[] bytes) {
-    if (isEmpty(bytes)) {
-      return null;
+    @Override
+    public Object deserialize(byte[] bytes) {
+        if (isEmpty(bytes)) {
+            return null;
+        }
+
+        try {
+            return deserializer.convert(bytes);
+        } catch (Exception ex) {
+            throw new SerializationException("Cannot deserialize", ex);
+        }
     }
 
-    try {
-      return deserializer.convert(bytes);
-    } catch (Exception ex) {
-      throw new SerializationException("Cannot deserialize", ex);
-    }
-  }
+    @Override
+    public byte[] serialize(Object object) {
+        if (object == null) {
+            return EMPTY_ARRAY;
+        }
 
-  public byte[] serialize(Object object) {
-    if (object == null) {
-      return EMPTY_ARRAY;
+        try {
+            return serializer.convert(object);
+        } catch (Exception ex) {
+            return EMPTY_ARRAY;
+        }
     }
 
-    try {
-      return serializer.convert(object);
-    } catch (Exception ex) {
-      return EMPTY_ARRAY;
+    private boolean isEmpty(byte[] data) {
+        return (data == null || data.length == 0);
     }
-  }
-
-  private boolean isEmpty(byte[] data) {
-    return (data == null || data.length == 0);
-  }
 }

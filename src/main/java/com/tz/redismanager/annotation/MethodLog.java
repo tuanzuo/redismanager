@@ -4,13 +4,16 @@ package com.tz.redismanager.annotation;
 import java.lang.annotation.*;
 
 /**
- * 方法执行时间注解
+ * 输出方法入参和出参日志注解
+ *
+ * @Since:2019-08-23 22:21:34
+ * @Version:1.1.0
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface MethodExecTime {
+public @interface MethodLog {
 
     /**
      * 日志前缀

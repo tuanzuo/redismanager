@@ -1,9 +1,8 @@
-package com.tz.redismanager.bean;
+package com.tz.redismanager.domain;
 
 /**
- * <p></p>
+ * person对象
  *
- * @author Administrator
  * @version 1.0
  * @time 2019-01-30 23:27
  **/

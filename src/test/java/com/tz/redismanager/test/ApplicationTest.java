@@ -3,7 +3,7 @@ package com.tz.redismanager.test;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.tz.redismanager.RedisManagerApplication;
-import com.tz.redismanager.bean.Person;
+import com.tz.redismanager.domain.Person;
 import com.tz.redismanager.config.FastJson2JsonRedisSerializer;
 import groovy.lang.*;
 import groovy.util.GroovyScriptEngine;
@@ -21,6 +21,7 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -57,14 +58,17 @@ public class ApplicationTest {
 
         FastJson2JsonRedisSerializer<Object> fastJson2JsonRedisSerializer = new FastJson2JsonRedisSerializer<>(Object.class);
         //建议使用这种方式，小范围指定白名单
-        ParserConfig.getGlobalInstance().addAccept("com.tz.redismanager.bean");
+        ParserConfig.getGlobalInstance().addAccept("com.tz.redismanager.domain");
         //设置了白名单才能正常从缓存中序列化出来
-        ParserConfig.getGlobalInstance().addAccept("com.tz.redis.bean");
+        ParserConfig.getGlobalInstance().addAccept("com.tz.redis.domain");
 
         /*myRedisTemplate.setValueSerializer(fastJson2JsonRedisSerializer);
-        myRedisTemplate.setHashValueSerializer(fastJson2JsonRedisSerializer);
-        myRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        myRedisTemplate.setHashValueSerializer(fastJson2JsonRedisSerializer);*/
+        /*myRedisTemplate.setKeySerializer(new StringRedisSerializer());
         myRedisTemplate.setHashKeySerializer(new StringRedisSerializer());*/
+
+        myRedisTemplate.setKeySerializer(new JdkSerializationRedisSerializer());
+        myRedisTemplate.setHashKeySerializer(new JdkSerializationRedisSerializer());
 
         myRedisTemplate.afterPropertiesSet();
 
@@ -88,6 +92,7 @@ public class ApplicationTest {
 	//StringRedisTemplate--保存字符串
 	@Test
 	public void testString() throws Exception {
+        myRedisTemplate.opsForValue().set("tuanzuojsonwenwen","tuanzuojsonwenwen");
         myRedisTemplate.opsForValue().set("tuanzuogood003","tuozuogood003");
 		stringRedisTemplate.opsForValue().set("tuanzuogood001", "111");
 		System.err.println(stringRedisTemplate.opsForValue().get("aaa"));

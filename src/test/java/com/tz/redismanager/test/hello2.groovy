@@ -1,6 +1,6 @@
 package com.tz.redismanager.test
 
-import com.tz.redismanager.bean.Person
+import com.tz.redismanager.domain.Person
 
 /**
  * <p></p>
