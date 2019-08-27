@@ -20,11 +20,11 @@ self.__precacheManifest = [
     "url": "/static/zTreeStandard.524f504c.png"
   },
   {
-    "revision": "3cad5b57a0bb1ef83b00",
+    "revision": "2911d418971a2bc7b249",
     "url": "/umi.js"
   },
   {
-    "revision": "3cad5b57a0bb1ef83b00",
+    "revision": "2911d418971a2bc7b249",
     "url": "/umi.css"
   },
   {
@@ -36,7 +36,7 @@ self.__precacheManifest = [
     "url": "/p__404.async.js"
   },
   {
-    "revision": "89ca8726f8bd00ad86d7",
+    "revision": "9da6bb6fc012dcd33566",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -68,7 +68,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.chunk.css"
   },
   {
-    "revision": "89ca8726f8bd00ad86d7",
+    "revision": "9da6bb6fc012dcd33566",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
@@ -84,8 +84,8 @@ self.__precacheManifest = [
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons\\icon-192x192.png"
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
   },
   {
     "revision": "d8be978d3eb8dfcc41c7",
@@ -116,6 +116,10 @@ self.__precacheManifest = [
     "url": "/icons\\icon-512x512.png"
   },
   {
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons\\icon-192x192.png"
+  },
+  {
     "revision": "347329d0982682b42d40c8162817a940",
     "url": "/icons\\icon-128x128.png"
   },
@@ -126,10 +130,6 @@ self.__precacheManifest = [
   {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
     "url": "/favicon.png.back"
-  },
-  {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
   },
   {
     "revision": "e7c379077cb6d7cb9efa",
