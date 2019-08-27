@@ -34,6 +34,7 @@
       AND (name LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%') OR address LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%'))
     </if>
     ORDER BY name
+    LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from t_redis_config

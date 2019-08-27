@@ -54,7 +54,7 @@ public class RedisAdminController {
 
     @RequestMapping("key/list")
     @MethodLog(logPrefix = "查询Redis的Key接口", logInputParams = false, logOutputParams = false)
-    public Object keyList(@NotEmpty(message = "id不能为空") String id, @NotEmpty(message = "searchKey不能为空") String searchKey) {
+    public Object keyList(@NotEmpty(message = "id不能为空") String id, @NotEmpty(message = "查询条件不能为空") String searchKey) {
         Map<String, Object> map = new HashMap<>();
         map.put("keyList", redisAdminService.searchKey(id, searchKey));
         return map;

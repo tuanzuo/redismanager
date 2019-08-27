@@ -21,6 +21,8 @@ import java.util.List;
 @Service
 public class RedisConfigServiceImpl implements IRedisConfigService {
 
+    private static final Integer PAGE_SIZE = 9;
+
     @Autowired
     private EncryptConfig encryptConfig;
     @Autowired
@@ -29,13 +31,21 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     private RedisConfigPOMapper redisConfigPOMapper;
 
     @Override
-    public List<RedisConfigPO> searchList(String searchKey) {
+    public List<RedisConfigPO> searchList(String searchKey, Integer pageNum, Integer pagesize) {
         if (StringUtils.isBlank(searchKey)) {
             searchKey = null;
         } else {
             searchKey = searchKey.trim();
         }
-        return redisConfigPOMapper.selectAll(searchKey);
+        if (null == pageNum || pageNum <= 0) {
+            pageNum = 1;
+        }
+        if (null == pagesize || pagesize <= 0) {
+            pagesize = PAGE_SIZE;
+        }
+        int offset = (pageNum - 1) * pagesize;
+        int rows = pagesize;
+        return redisConfigPOMapper.selectAll(searchKey, offset, rows);
     }
 
     @Override

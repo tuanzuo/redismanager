@@ -11,9 +11,11 @@ public interface IRedisConfigService {
      * 查询redis连接配置
      *
      * @param searchKey
+     * @param pageNum 查询的页数
+     * @param pagesize 每页大小
      * @return
      */
-    List<RedisConfigPO> searchList(String searchKey);
+    List<RedisConfigPO> searchList(String searchKey, Integer pageNum, Integer pagesize);
 
     /**
      * 添加redis连接配置

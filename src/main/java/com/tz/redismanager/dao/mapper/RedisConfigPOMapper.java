@@ -23,7 +23,7 @@ public interface RedisConfigPOMapper {
 
     RedisConfigPO selectByPrimaryKey(String id);
 
-    List<RedisConfigPO> selectAll(@Param("searchKey") String searchKey);
+    List<RedisConfigPO> selectAll(@Param("searchKey") String searchKey, @Param("offset") Integer offset, @Param("rows") Integer rows);
 
     int updateByPrimaryKeySelective(RedisConfigPO record);
 

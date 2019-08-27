@@ -33,9 +33,9 @@ public class RedisConfigController {
 
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
-    public Object list(String searchKey) {
+    public Object list(String searchKey, Integer pageNum, Integer pagesize) {
         Map<String, List<RedisConfigPO>> map = new HashMap<>();
-        map.put("configList", redisConfigService.searchList(searchKey));
+        map.put("configList", redisConfigService.searchList(searchKey, pageNum, pagesize));
         return map;
     }
 
