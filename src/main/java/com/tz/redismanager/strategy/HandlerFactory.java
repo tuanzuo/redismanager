@@ -34,7 +34,6 @@ public class HandlerFactory implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        logger.info("[HandlerFactory] {初始化HandlerFactory...}");
         handlers.forEach((handler) -> {
             Class clazz = handler.getClass();
             if (clazz.isAnnotationPresent(StrategyType.class) && clazz.isAnnotationPresent(HandlerType.class)) {
@@ -52,6 +51,7 @@ public class HandlerFactory implements InitializingBean {
                             for (HandlerTypeEnum handlerTypeEnum : handlerType.value()) {
                                 if (null != handlerTypeEnum) {
                                     handlerMap.put(handlerTypeEnum, handler);
+                                    logger.info("[HandlerFactory] [{}] [{}] [初始化完成]", strategyTypeEnum, handlerTypeEnum);
                                 }
                             }
                             strategyMap.put(strategyTypeEnum, handlerMap);
@@ -60,7 +60,6 @@ public class HandlerFactory implements InitializingBean {
                 }
             }
         });
-        logger.info("[HandlerFactory] {初始化HandlerFactory完成.}");
     }
 
     public static IHandler getHandler(StrategyTypeEnum strategyType, HandlerTypeEnum handlerType) {

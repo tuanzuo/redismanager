@@ -150,7 +150,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
                     return redisConfigPOMapper.selectByPrimaryKey(id);
                 });
         cacheMap.put(ConstInterface.Cacher.REDIS_CONFIG_CACHER, redisConfigCache);
-        logger.info("[初始化缓存] {{}完成}", ConstInterface.Cacher.REDIS_CONFIG_CACHER);
+        logger.info("[本地缓存] [{}] [初始化完成]", ConstInterface.Cacher.REDIS_CONFIG_CACHER);
     }
 
 
