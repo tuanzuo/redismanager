@@ -146,7 +146,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
                 .initialCapacity(10)
                 .maximumSize(1000)
                 .build((id) -> {
-                    logger.info("[回源查询] {id:{}对应的redis连接信息}", id);
+                    logger.info("[本地缓存] [回源查询] {id:{}对应的redis连接信息}", id);
                     return redisConfigPOMapper.selectByPrimaryKey(id);
                 });
         cacheMap.put(ConstInterface.Cacher.REDIS_CONFIG_CACHER, redisConfigCache);
