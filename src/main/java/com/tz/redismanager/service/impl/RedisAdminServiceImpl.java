@@ -221,7 +221,12 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     @Override
     public void renameKey(RedisKeyUpdateVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        //过期时间
+        Long expireTime = redisTemplate.getExpire(vo.getOldKey());
         redisTemplate.rename(vo.getOldKey(), vo.getKey());
+        if (null != expireTime && expireTime > 0) {
+            redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
+        }
     }
 
     @MethodLog
