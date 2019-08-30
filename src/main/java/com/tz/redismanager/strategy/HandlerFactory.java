@@ -4,11 +4,11 @@ import com.tz.redismanager.annotation.HandlerType;
 import com.tz.redismanager.annotation.StrategyType;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.enm.StrategyTypeEnum;
+import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.JsonUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,8 @@ import java.util.Map;
  **/
 @Component
 public class HandlerFactory implements InitializingBean {
-    private static final Logger logger = LoggerFactory.getLogger(HandlerFactory.class);
+
+    private static final Logger logger = TraceLoggerFactory.getLogger(HandlerFactory.class);
 
     private static Map<StrategyTypeEnum, Map<HandlerTypeEnum, IHandler>> strategyMap = new HashMap<>();
 

@@ -1,12 +1,12 @@
 package com.tz.redismanager.exception;
 
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -36,7 +36,7 @@ import java.util.Set;
 //https://docs.spring.io/spring-boot/docs/1.5.11.BUILD-SNAPSHOT/reference/htmlsingle/#boot-features-error-handling
 @ControllerAdvice()
 public class ExceptionHandlerAdvice {
-    private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlerAdvice.class);
+    private static final Logger logger = TraceLoggerFactory.getLogger(ExceptionHandlerAdvice.class);
 
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(Exception.class)

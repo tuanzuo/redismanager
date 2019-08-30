@@ -4,10 +4,10 @@ import com.tz.redismanager.annotation.HandlerType;
 import com.tz.redismanager.domain.vo.RedisValueQueryVO;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.strategy.searchvalue.AbstractSearchValueHandler;
+import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.RedisContextUtils;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
@@ -25,7 +25,8 @@ import java.util.Map;
 @Service
 @HandlerType({HandlerTypeEnum.HASH})
 public class SearchHashValueHandler extends AbstractSearchValueHandler {
-    private static final Logger logger = LoggerFactory.getLogger(SearchHashValueHandler.class);
+
+    private static final Logger logger = TraceLoggerFactory.getLogger(SearchHashValueHandler.class);
 
     @Override
     public Object handle(RedisValueQueryVO vo) {

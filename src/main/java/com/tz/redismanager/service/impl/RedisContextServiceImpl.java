@@ -3,21 +3,21 @@ package com.tz.redismanager.service.impl;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.tz.redismanager.annotation.MethodLog;
-import com.tz.redismanager.domain.ApiResult;
-import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.domain.po.RedisConfigPO;
-import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
+import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.domain.po.RedisConfigPO;
+import com.tz.redismanager.domain.vo.RedisConfigVO;
+import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IRedisContextService;
+import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.CommonUtils;
 import com.tz.redismanager.util.RSAUtils;
 import com.tz.redismanager.util.RedisContextUtils;
 import com.tz.redismanager.util.RsaException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RedisContextServiceImpl implements IRedisContextService, InitializingBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedisContextServiceImpl.class);
+    private static final Logger logger = TraceLoggerFactory.getLogger(RedisContextServiceImpl.class);
 
     /**
      * RedisTemplate缓存Map--key:id,value:RedisTemplate

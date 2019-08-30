@@ -1,7 +1,7 @@
 package com.tz.redismanager.util;
 
+import com.tz.redismanager.trace.TraceLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 public class CommonUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(CommonUtils.class);
+    private static final Logger logger = TraceLoggerFactory.getLogger(CommonUtils.class);
 
     public static String getExcpMsg(Throwable e) {
         Throwable old = e;
