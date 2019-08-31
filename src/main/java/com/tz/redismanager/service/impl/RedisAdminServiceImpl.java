@@ -103,6 +103,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
                     tempkeyBuilder.append(preTitle.toString()).append(title);
                     if (i == strs.length - 1) {
                         title = temp;
+                        tempkeyBuilder = new StringBuilder(temp);
                         isLeaf = true;
                     } else {
                         tempkeyBuilder.append(ConstInterface.Symbol.COLON);
