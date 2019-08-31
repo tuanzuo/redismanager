@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  **/
 public class TraceLoggerFactory {
 
-    public static TransmittableThreadLocal<String> traceThreadLocal = new TransmittableThreadLocal<>();
+    private static TransmittableThreadLocal<String> traceThreadLocal = new TransmittableThreadLocal<>();
 
     public static void setTraceId(String traceId) {
         traceThreadLocal.set(traceId);
@@ -69,24 +69,24 @@ public class TraceLoggerFactory {
                 }
                 return args;
             }
-        });
-    }
 
-    private static String enhanceArg(Object msg) {
-        StringBuilder logBuilder = new StringBuilder();
-        String traceId = traceThreadLocal.get();
-        if (null != traceId) {
-            logBuilder.append(traceId);
-        } else {
-            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-            if (requestAttributes instanceof ServletRequestAttributes) {
-                ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-                String sid = requestAttributes.getSessionId();
-                logBuilder.append("[sid-").append(sid).append("]");
+            private String enhanceArg(Object msg) {
+                StringBuilder logBuilder = new StringBuilder();
+                String traceId = traceThreadLocal.get();
+                if (null != traceId) {
+                    logBuilder.append(traceId);
+                } else {
+                    RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+                    if (requestAttributes instanceof ServletRequestAttributes) {
+                        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
+                        String sid = requestAttributes.getSessionId();
+                        logBuilder.append("[sid-").append(sid).append("]");
+                    }
+                }
+                logBuilder.append(" ").append(msg);
+                return logBuilder.toString();
             }
-        }
-        logBuilder.append(" ").append(msg);
-        return logBuilder.toString();
+        });
     }
 
     public static Logger getLogger(Class<?> clazz) {
