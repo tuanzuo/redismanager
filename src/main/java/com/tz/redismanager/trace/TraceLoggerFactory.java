@@ -17,7 +17,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
- * <p>可追踪的日志Factory</p>
+ * <p>调用链路日志追踪Factory</p>
  *
  * @author Administrator
  * @version 1.0
@@ -73,22 +73,20 @@ public class TraceLoggerFactory {
     }
 
     private static String enhanceArg(Object msg) {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder logBuilder = new StringBuilder();
         String traceId = traceThreadLocal.get();
         if (null != traceId) {
-            stringBuilder.append(traceId);
+            logBuilder.append(traceId);
         } else {
             RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
             if (requestAttributes instanceof ServletRequestAttributes) {
                 ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-                String path = servletRequestAttributes.getRequest().getServletPath();
-                stringBuilder.append("[path-").append(path).append("] ");
                 String sid = requestAttributes.getSessionId();
-                stringBuilder.append("[sid-").append(sid).append("] ");
+                logBuilder.append("[sid-").append(sid).append("]");
             }
         }
-        stringBuilder.append(msg);
-        return stringBuilder.toString();
+        logBuilder.append(" ").append(msg);
+        return logBuilder.toString();
     }
 
     public static Logger getLogger(Class<?> clazz) {
