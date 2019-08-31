@@ -5,8 +5,6 @@ import com.tz.redismanager.domain.vo.RedisValueQueryVO;
 import com.tz.redismanager.enm.StrategyTypeEnum;
 import com.tz.redismanager.strategy.AbstractHandler;
 import com.tz.redismanager.util.CommonUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -17,8 +15,6 @@ import org.springframework.data.redis.core.RedisTemplate;
  **/
 @StrategyType({StrategyTypeEnum.SEARCH_VALUE})
 public abstract class AbstractSearchValueHandler extends AbstractHandler<RedisValueQueryVO, Object> implements ISearchValueHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(AbstractSearchValueHandler.class);
 
     /**
      * 重新设置keySerializer

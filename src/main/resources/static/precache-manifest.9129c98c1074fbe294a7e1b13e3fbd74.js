@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.async.js"
   },
   {
-    "revision": "351433445c842188406a",
+    "revision": "9c39b52ae54c6a7397fa",
     "url": "/vendors.chunk.css"
   },
   {
@@ -20,15 +20,15 @@ self.__precacheManifest = [
     "url": "/static/zTreeStandard.524f504c.png"
   },
   {
-    "revision": "2911d418971a2bc7b249",
+    "revision": "8efabaef65ff6ac753c3",
     "url": "/umi.js"
   },
   {
-    "revision": "2911d418971a2bc7b249",
+    "revision": "8efabaef65ff6ac753c3",
     "url": "/umi.css"
   },
   {
-    "revision": "351433445c842188406a",
+    "revision": "9c39b52ae54c6a7397fa",
     "url": "/vendors.async.js"
   },
   {
@@ -44,11 +44,11 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisDataPageZtree.async.js"
   },
   {
-    "revision": "fa6df145e817b534512d",
+    "revision": "ee2105b3e578a424ce07",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "fa6df145e817b534512d",
+    "revision": "ee2105b3e578a424ce07",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
@@ -84,8 +84,8 @@ self.__precacheManifest = [
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons\\icon-192x192.png"
+    "revision": "5423f638851bd441057fb363969ac6c9",
+    "url": "/favicon.png.redis"
   },
   {
     "revision": "d8be978d3eb8dfcc41c7",
@@ -116,12 +116,12 @@ self.__precacheManifest = [
     "url": "/icons\\icon-512x512.png"
   },
   {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons\\icon-128x128.png"
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons\\icon-192x192.png"
   },
   {
-    "revision": "5423f638851bd441057fb363969ac6c9",
-    "url": "/favicon.png.redis"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons\\icon-128x128.png"
   },
   {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",

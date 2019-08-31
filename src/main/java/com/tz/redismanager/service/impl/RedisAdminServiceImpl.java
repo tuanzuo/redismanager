@@ -4,17 +4,18 @@ import com.google.common.collect.Lists;
 import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.annotation.SetRedisTemplate;
-import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.*;
-import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.enm.HandlerTypeEnum;
+import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.enm.StrategyTypeEnum;
 import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.strategy.HandlerFactory;
 import com.tz.redismanager.strategy.IHandler;
+import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.CommonUtils;
 import com.tz.redismanager.util.JsonUtils;
 import com.tz.redismanager.util.RedisContextUtils;
@@ -22,7 +23,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @Service
 public class RedisAdminServiceImpl implements IRedisAdminService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedisAdminServiceImpl.class);
+    private static final Logger logger = TraceLoggerFactory.getLogger(RedisAdminServiceImpl.class);
 
     @Autowired
     private IRedisContextService redisContextService;

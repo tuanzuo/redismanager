@@ -3,6 +3,7 @@ package com.tz.redismanager.util;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.tz.redismanager.config.CustomRedisAutoConfiguration;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.trace.TraceLoggerFactory;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
@@ -11,7 +12,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -28,7 +28,7 @@ import java.util.Arrays;
  */
 public class RedisContextUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedisContextUtils.class);
+    private static final Logger logger = TraceLoggerFactory.getLogger(RedisContextUtils.class);
 
     public static ThreadLocal<RedisTemplate<String, Object>> threadLocalRedisTemplate = new InheritableThreadLocal<>();
 

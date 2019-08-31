@@ -4,9 +4,9 @@ import com.tz.redismanager.annotation.HandlerType;
 import com.tz.redismanager.domain.vo.RedisValueQueryVO;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.strategy.searchvalue.AbstractSearchValueHandler;
+import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.RedisContextUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @HandlerType({HandlerTypeEnum.STRING})
 public class SearchStringValueHandler extends AbstractSearchValueHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(SearchStringValueHandler.class);
+    private static final Logger logger = TraceLoggerFactory.getLogger(SearchStringValueHandler.class);
 
 
     @Override
