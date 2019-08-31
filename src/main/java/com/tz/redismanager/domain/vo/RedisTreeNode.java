@@ -1,6 +1,7 @@
 package com.tz.redismanager.domain.vo;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -50,12 +51,15 @@ public class RedisTreeNode {
 
     //临时Title
     @JsonIgnore
+    @JSONField(serialize = false)
     private String tempTitle;
     //key对应的parent key
     @JsonIgnore
+    @JSONField(serialize = false)
     private String pkey;
     //当前节点下面叶子节点(key)的个数
     @JsonIgnore
+    @JSONField(serialize = false)
     private int allChildrenCount;
 
     public RedisTreeNode(String title, String key, Boolean isLeaf) {
