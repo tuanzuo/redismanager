@@ -1,3 +1,8 @@
-1、日志注解实现
+1、日志注解实现-ok
 2、替换umi.js中接口访问路径："http://127.0.0.1"替换成window.location.protocol+"//"+window.location.host
-3、Hibernate Validator实现参数的校验
+-ok
+3、Hibernate Validator实现参数的校验-ok
+4、redis连接信息保存时修改提示信息为"修改成功"，而不是现在的“保存成功”-ok
+5、TraceLoggerFactory-ok
+6、MethodExecTimeAspect增加url和sessionId输出-ok
+7、home列表自动加载-ok
