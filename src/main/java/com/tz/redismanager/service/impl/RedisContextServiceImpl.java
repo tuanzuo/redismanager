@@ -12,10 +12,7 @@ import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.trace.TraceLoggerFactory;
-import com.tz.redismanager.util.CommonUtils;
-import com.tz.redismanager.util.RSAUtils;
-import com.tz.redismanager.util.RedisContextUtils;
-import com.tz.redismanager.util.RsaException;
+import com.tz.redismanager.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
@@ -130,7 +127,8 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
             if (null != redisTemplate && StringUtils.isNotBlank(vo.getSerCode())) {
                 RedisContextUtils.initRedisSerializer(vo.getSerCode(), redisTemplate);
             }
-            redisTemplate.randomKey();
+            String key = "rds:mag:" + UUIDUtils.generateId();
+            redisTemplate.opsForValue().set(key, key, 5, TimeUnit.SECONDS);
             result = new ApiResult<>(ResultCode.SUCCESS);
         } catch (Throwable e) {
             result.setMsg(CommonUtils.getExcpMsg(e));
