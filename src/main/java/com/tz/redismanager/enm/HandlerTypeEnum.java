@@ -17,6 +17,10 @@ public enum HandlerTypeEnum {
         this.type = type;
     }
 
+    public String getType() {
+        return type;
+    }
+
     public static HandlerTypeEnum getEnumByType(String type) {
         if (StringUtils.isBlank(type)) {
             return null;

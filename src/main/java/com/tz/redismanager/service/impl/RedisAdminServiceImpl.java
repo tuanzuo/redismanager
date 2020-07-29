@@ -1,5 +1,6 @@
 package com.tz.redismanager.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.annotation.MethodLog;
@@ -30,6 +31,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -38,6 +40,8 @@ import java.util.stream.Collectors;
 public class RedisAdminServiceImpl implements IRedisAdminService {
 
     private static final Logger logger = TraceLoggerFactory.getLogger(RedisAdminServiceImpl.class);
+
+    private final static Type SET_STRING_TYPE = new TypeReference<Set<String>>() {}.getType();
 
     @Autowired
     private IRedisContextService redisContextService;
@@ -249,7 +253,8 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         //过期时间
         Long expireTime = redisTemplate.getExpire(vo.getKey());
-        if ("string".equals(vo.getKeyType())) {
+        //string类型修改value
+        if (HandlerTypeEnum.STRING.getType().equals(vo.getKeyType())) {
             RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
             //1、先试用string序列化方式把value存入redis
             redisTemplate.setValueSerializer(new StringRedisSerializer());
@@ -262,6 +267,21 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             Object valueTemp = redisTemplate.opsForValue().get(vo.getKey());
             redisTemplate.setValueSerializer(valueSerializer);
             this.setValueForStringType(vo.getKey(), valueTemp, redisTemplate, expireTime);
+        }
+        //set类型修改value
+        else if (HandlerTypeEnum.SET.getType().equals(vo.getKeyType())) {
+            Set<String> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), SET_STRING_TYPE);
+            Set<String> newValues = JsonUtils.parseObject(vo.getStringValue(), SET_STRING_TYPE);
+            oldValues = Optional.ofNullable(oldValues).orElse(new HashSet<>());
+            newValues = Optional.ofNullable(newValues).orElse(new HashSet<>());
+            List<String> delValues = (List<String>) CollectionUtils.removeAll(oldValues, newValues);
+            List<String> addValues = (List<String>) CollectionUtils.removeAll(newValues, oldValues);
+            if (CollectionUtils.isNotEmpty(delValues)) {
+                redisTemplate.opsForSet().remove(vo.getKey(), delValues.toArray());
+            }
+            if (CollectionUtils.isNotEmpty(addValues)) {
+                redisTemplate.opsForSet().add(vo.getKey(), addValues.toArray());
+            }
         }
     }
 
