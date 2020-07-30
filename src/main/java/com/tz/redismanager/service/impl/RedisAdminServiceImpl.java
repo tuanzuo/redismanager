@@ -1,5 +1,6 @@
 package com.tz.redismanager.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.annotation.MethodLog;
@@ -20,6 +21,7 @@ import com.tz.redismanager.util.CommonUtils;
 import com.tz.redismanager.util.JsonUtils;
 import com.tz.redismanager.util.RedisContextUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,6 +32,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -38,6 +41,11 @@ import java.util.stream.Collectors;
 public class RedisAdminServiceImpl implements IRedisAdminService {
 
     private static final Logger logger = TraceLoggerFactory.getLogger(RedisAdminServiceImpl.class);
+
+    private final static Type SET_STRING_TYPE = new TypeReference<Set<String>>() {}.getType();
+    private final static Type ZSET_STRING_TYPE = new TypeReference<Set<ZSetValue>>() {}.getType();
+    private final static Type LIST_STRING_TYPE = new TypeReference<List<String>>() {}.getType();
+    private final static Type HASH_STRING_TYPE = new TypeReference<Map<String,String>>() {}.getType();
 
     @Autowired
     private IRedisContextService redisContextService;
@@ -249,7 +257,8 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         //过期时间
         Long expireTime = redisTemplate.getExpire(vo.getKey());
-        if ("string".equals(vo.getKeyType())) {
+        //string类型修改value
+        if (HandlerTypeEnum.STRING.getType().equals(vo.getKeyType())) {
             RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
             //1、先试用string序列化方式把value存入redis
             redisTemplate.setValueSerializer(new StringRedisSerializer());
@@ -263,6 +272,70 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             redisTemplate.setValueSerializer(valueSerializer);
             this.setValueForStringType(vo.getKey(), valueTemp, redisTemplate, expireTime);
         }
+        //set类型修改value
+        else if (HandlerTypeEnum.SET.getType().equals(vo.getKeyType())) {
+            Set<String> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), SET_STRING_TYPE);
+            Set<String> newValues = JsonUtils.parseObject(vo.getStringValue(), SET_STRING_TYPE);
+            oldValues = Optional.ofNullable(oldValues).orElse(new HashSet<>());
+            newValues = Optional.ofNullable(newValues).orElse(new HashSet<>());
+            List<String> delValues = (List<String>) CollectionUtils.removeAll(oldValues, newValues);
+            List<String> addValues = (List<String>) CollectionUtils.removeAll(newValues, oldValues);
+            if (CollectionUtils.isNotEmpty(delValues)) {
+                redisTemplate.opsForSet().remove(vo.getKey(), delValues.toArray());
+            }
+            if (CollectionUtils.isNotEmpty(addValues)) {
+                redisTemplate.opsForSet().add(vo.getKey(), addValues.toArray());
+            }
+        }
+        //zset类型修改value
+        else if (HandlerTypeEnum.ZSET.getType().equals(vo.getKeyType())) {
+            Set<ZSetValue> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), ZSET_STRING_TYPE);
+            Set<ZSetValue> newValues = JsonUtils.parseObject(vo.getStringValue(), ZSET_STRING_TYPE);
+            oldValues = Optional.ofNullable(oldValues).orElse(new HashSet<>());
+            newValues = Optional.ofNullable(newValues).orElse(new HashSet<>());
+
+            Set<String> oldMembers = oldValues.stream().map(temp->temp.getValue()).collect(Collectors.toSet());
+            Set<String> newMembers = newValues.stream().map(temp->temp.getValue()).collect(Collectors.toSet());
+
+            List<String> delMembers = (List<String>) CollectionUtils.removeAll(oldMembers, newMembers);
+            if (CollectionUtils.isNotEmpty(delMembers)) {
+                redisTemplate.opsForZSet().remove(vo.getKey(),delMembers.toArray());
+            }
+            if (CollectionUtils.isNotEmpty(newValues)) {
+                newValues.forEach(temp -> {
+                    redisTemplate.opsForZSet().add(vo.getKey(), temp.getValue(), temp.getScore());
+                });
+            }
+        }
+        //hash类型修改value
+        else if (HandlerTypeEnum.HASH.getType().equals(vo.getKeyType())) {
+            Map<String, String> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), HASH_STRING_TYPE);
+            Map<String, String> newValues = JsonUtils.parseObject(vo.getStringValue(), HASH_STRING_TYPE);
+            oldValues = Optional.ofNullable(oldValues).orElse(new HashMap<>());
+            newValues = Optional.ofNullable(newValues).orElse(new HashMap<>());
+            Set<String> oldKeys = oldValues.keySet();
+            Set<String> newKeys = newValues.keySet();
+
+            List<String> delValues = (List<String>) CollectionUtils.removeAll(oldKeys, newKeys);
+            if (CollectionUtils.isNotEmpty(delValues)) {
+                redisTemplate.opsForHash().delete(vo.getKey(), delValues.toArray());
+            }
+            if (MapUtils.isNotEmpty(newValues)) {
+                redisTemplate.opsForHash().putAll(vo.getKey(), newValues);
+            }
+        }
+        //list类型修改value
+        else if (HandlerTypeEnum.LIST.getType().equals(vo.getKeyType())) {
+            List<String> newValues = JsonUtils.parseObject(vo.getStringValue(), LIST_STRING_TYPE);
+            redisTemplate.delete(vo.getKey());
+            if (CollectionUtils.isNotEmpty(newValues)) {
+                redisTemplate.opsForList().rightPushAll(vo.getKey(), newValues.toArray());
+            }
+        }
+        //设置过期时间
+        if (null != expireTime && -1 != expireTime) {
+            redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
+        }
     }
 
     private void setValueForStringType(String key, Object value, RedisTemplate<String, Object> redisTemplate, Long expireTime) {
@@ -275,6 +348,35 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             } else if (expireTime > 0) {
                 redisTemplate.opsForValue().set(key, value, expireTime, TimeUnit.SECONDS);
             }
+        }
+    }
+
+    public static class ZSetValue{
+        private Double score;
+        private String value;
+
+        public ZSetValue() {
+        }
+
+        public ZSetValue(Double score, String value) {
+            this.score = score;
+            this.value = value;
+        }
+
+        public Double getScore() {
+            return score;
+        }
+
+        public void setScore(Double score) {
+            this.score = score;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 }

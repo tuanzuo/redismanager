@@ -1,6 +1,7 @@
 package com.tz.redismanager.domain.vo;
 
 import com.tz.redismanager.annotation.ConnectionId;
+import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.validator.ValidGroup;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -37,12 +38,16 @@ public class RedisKeyUpdateVO {
      */
     private Long expireTime;
     /**
-     * String类型key对应的value
+     * key对应的value(新值-修改后的值)
      */
     private String stringValue;
+    /**
+     * key对应的value(老值-修改前的值)
+     */
+    private String oldStringValue;
 
     public boolean updateValueValidate(String keyType, String stringValue) {
-        if ("string".equals(keyType)) {
+        if (HandlerTypeEnum.STRING.getType().equals(keyType)) {
             if (StringUtils.isBlank(stringValue)) {
                 return false;
             }
@@ -107,5 +112,13 @@ public class RedisKeyUpdateVO {
 
     public void setStringValue(String stringValue) {
         this.stringValue = stringValue;
+    }
+
+    public String getOldStringValue() {
+        return oldStringValue;
+    }
+
+    public void setOldStringValue(String oldStringValue) {
+        this.oldStringValue = oldStringValue;
     }
 }

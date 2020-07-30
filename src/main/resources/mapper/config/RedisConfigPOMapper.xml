@@ -31,7 +31,8 @@
     from t_redis_config
     where if_del = 0
     <if test="searchKey != null">
-      AND (name LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%') OR address LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%'))
+      <!--AND (name LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%') OR address LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%'))-->
+      AND (LOCATE(#{searchKey,jdbcType=VARCHAR},name) > 0 OR LOCATE(#{searchKey,jdbcType=VARCHAR},address) > 0)
     </if>
     ORDER BY name
     LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
