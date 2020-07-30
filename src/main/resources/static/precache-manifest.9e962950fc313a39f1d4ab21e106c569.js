@@ -32,7 +32,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "e73ff787bdf58356d484",
+    "revision": "933db0f47cf28ce932e5",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
@@ -72,15 +72,15 @@ self.__precacheManifest = [
     "url": "/p__User__RegisterResult.async.js"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png.back"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons\\icon-128x128.png"
   },
   {
     "revision": "ff7260edcb4ba255c3c3",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "e73ff787bdf58356d484",
+    "revision": "933db0f47cf28ce932e5",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -112,12 +112,12 @@ self.__precacheManifest = [
     "url": "/icons\\icon-192x192.png"
   },
   {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons\\icon-128x128.png"
-  },
-  {
     "revision": "5423f638851bd441057fb363969ac6c9",
     "url": "/favicon.png.redis"
+  },
+  {
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png.back"
   },
   {
     "revision": "c891db020b04fc5afaccff5439d843cd",
