@@ -6,6 +6,7 @@ import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.annotation.SetRedisTemplate;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.HandlerTypeEnum;
@@ -294,12 +295,12 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             oldValues = Optional.ofNullable(oldValues).orElse(new HashSet<>());
             newValues = Optional.ofNullable(newValues).orElse(new HashSet<>());
 
-            Set<String> oldMembers = oldValues.stream().map(temp->temp.getValue()).collect(Collectors.toSet());
-            Set<String> newMembers = newValues.stream().map(temp->temp.getValue()).collect(Collectors.toSet());
+            Set<String> oldMembers = oldValues.stream().map(temp -> temp.getValue()).collect(Collectors.toSet());
+            Set<String> newMembers = newValues.stream().map(temp -> temp.getValue()).collect(Collectors.toSet());
 
             List<String> delMembers = (List<String>) CollectionUtils.removeAll(oldMembers, newMembers);
             if (CollectionUtils.isNotEmpty(delMembers)) {
-                redisTemplate.opsForZSet().remove(vo.getKey(),delMembers.toArray());
+                redisTemplate.opsForZSet().remove(vo.getKey(), delMembers.toArray());
             }
             if (CollectionUtils.isNotEmpty(newValues)) {
                 newValues.forEach(temp -> {
@@ -327,6 +328,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         //list类型修改value
         else if (HandlerTypeEnum.LIST.getType().equals(vo.getKeyType())) {
             List<String> newValues = JsonUtils.parseObject(vo.getStringValue(), LIST_STRING_TYPE);
+            //FIXME 直接删除有问题，待完善
             redisTemplate.delete(vo.getKey());
             if (CollectionUtils.isNotEmpty(newValues)) {
                 redisTemplate.opsForList().rightPushAll(vo.getKey(), newValues.toArray());
@@ -336,6 +338,69 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         if (null != expireTime && -1 != expireTime) {
             redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
         }
+    }
+
+    @MethodLog
+    @SetRedisTemplate
+    @Override
+    public ApiResult<Object> addKey(RedisKeyAddVO vo) {
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        if (redisTemplate.hasKey(vo.getKey())) {
+            logger.warn("[RedisAdmin] [addKey] {添加Key已存在:{}}", JsonUtils.toJsonStr(vo));
+            return new ApiResult<>(ResultCode.REDIS_KEY_EXIST.getCode(), "key:" + vo.getKey() + "已经存在,不能添加!");
+        }
+        //过期时间
+        Long expireTime = vo.getExpireTime();
+        //string类型修改value
+        if (HandlerTypeEnum.STRING.getType().equals(vo.getKeyType())) {
+            RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
+            //1、先试用string序列化方式把value存入redis
+            redisTemplate.setValueSerializer(new StringRedisSerializer());
+            this.setValueForStringType(vo.getKey(), vo.getStringValue(), redisTemplate, expireTime);
+            if (StringRedisSerializer.class.equals(valueSerializer.getClass())) {
+                logger.info("[RedisAdmin] [addKey] {添加Key完成:{}}", JsonUtils.toJsonStr(vo));
+                return new ApiResult<>(ResultCode.SUCCESS);
+            }
+            //2、再查询出value,最后使用redisTemplate本身的序列化方式把数据存入redis
+            Object valueTemp = redisTemplate.opsForValue().get(vo.getKey());
+            redisTemplate.setValueSerializer(valueSerializer);
+            this.setValueForStringType(vo.getKey(), valueTemp, redisTemplate, expireTime);
+        }
+        //set类型修改value
+        else if (HandlerTypeEnum.SET.getType().equals(vo.getKeyType())) {
+            Set<String> newValues = JsonUtils.parseObject(vo.getStringValue(), SET_STRING_TYPE);
+            if (CollectionUtils.isNotEmpty(newValues)) {
+                redisTemplate.opsForSet().add(vo.getKey(), newValues.toArray());
+            }
+        }
+        //zset类型修改value
+        else if (HandlerTypeEnum.ZSET.getType().equals(vo.getKeyType())) {
+            Set<ZSetValue> newValues = JsonUtils.parseObject(vo.getStringValue(), ZSET_STRING_TYPE);
+            if (CollectionUtils.isNotEmpty(newValues)) {
+                newValues.forEach(temp -> {
+                    redisTemplate.opsForZSet().add(vo.getKey(), temp.getValue(), temp.getScore());
+                });
+            }
+        }
+        //hash类型修改value
+        else if (HandlerTypeEnum.HASH.getType().equals(vo.getKeyType())) {
+            Map<String, String> newValues = JsonUtils.parseObject(vo.getStringValue(), HASH_STRING_TYPE);
+            if (MapUtils.isNotEmpty(newValues)) {
+                redisTemplate.opsForHash().putAll(vo.getKey(), newValues);
+            }
+        }
+        //list类型修改value
+        else if (HandlerTypeEnum.LIST.getType().equals(vo.getKeyType())) {
+            List<String> newValues = JsonUtils.parseObject(vo.getStringValue(), LIST_STRING_TYPE);
+            if (CollectionUtils.isNotEmpty(newValues)) {
+                redisTemplate.opsForList().rightPushAll(vo.getKey(), newValues.toArray());
+            }
+        }
+        //设置过期时间
+        if (null != expireTime && -1 != expireTime) {
+            redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
+        }
+        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     private void setValueForStringType(String key, Object value, RedisTemplate<String, Object> redisTemplate, Long expireTime) {

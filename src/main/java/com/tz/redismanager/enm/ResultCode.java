@@ -9,7 +9,8 @@ package com.tz.redismanager.enm;
 public enum ResultCode {
     SUCCESS("200", "成功"),
     FAIL("500", "失败"),
-    REDIS_TEMPLATE_ISNULL("600001", "RedisTemplate为空");
+    REDIS_TEMPLATE_ISNULL("600001", "RedisTemplate为空"),
+    REDIS_KEY_EXIST("600002", "key已经存在,不能添加");
 
     private String code;
     private String msg;

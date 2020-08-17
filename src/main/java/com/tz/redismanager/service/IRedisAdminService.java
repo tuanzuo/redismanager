@@ -1,5 +1,6 @@
 package com.tz.redismanager.service;
 
+import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.*;
 
 import java.util.List;
@@ -51,4 +52,10 @@ public interface IRedisAdminService {
      */
     void updateValue(RedisKeyUpdateVO vo);
 
+    /**
+     * 添加redis key
+     *
+     * @param vo
+     */
+    ApiResult<Object> addKey(RedisKeyAddVO vo);
 }

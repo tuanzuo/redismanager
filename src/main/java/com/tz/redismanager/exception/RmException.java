@@ -1,5 +1,7 @@
 package com.tz.redismanager.exception;
 
+import com.tz.redismanager.enm.ResultCode;
+
 /**
  * RedisManager异常
  *
@@ -16,6 +18,16 @@ public class RmException extends RuntimeException {
 
     public RmException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public RmException(ResultCode resultCode) {
+        super(resultCode.getMsg());
+        this.code = resultCode.getCode();
+    }
+
+    public RmException(ResultCode resultCode, Throwable cause) {
+        super(resultCode.getMsg(), cause);
+        this.code = resultCode.getCode();
     }
 
     public RmException(String code, String message) {
