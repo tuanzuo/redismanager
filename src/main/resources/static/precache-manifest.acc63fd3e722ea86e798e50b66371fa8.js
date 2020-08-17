@@ -16,11 +16,11 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "01e9f790ba35849b49c7",
+    "revision": "cb6dfc08871713bd92b1",
     "url": "/umi.js"
   },
   {
-    "revision": "01e9f790ba35849b49c7",
+    "revision": "cb6dfc08871713bd92b1",
     "url": "/umi.css"
   },
   {
@@ -32,7 +32,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "933db0f47cf28ce932e5",
+    "revision": "0fc3bdc5ccae096dd768",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
@@ -48,7 +48,7 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
-    "revision": "76ee8f74fe6913cc2eac",
+    "revision": "fb60a67361fcd59e724b",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
@@ -64,7 +64,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.chunk.css"
   },
   {
-    "revision": "f240967dc94c602880c9",
+    "revision": "5f80e2e3c37e0c8a26bc",
     "url": "/p__User__models__register.js.async.js"
   },
   {
@@ -72,15 +72,15 @@ self.__precacheManifest = [
     "url": "/p__User__RegisterResult.async.js"
   },
   {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons\\icon-128x128.png"
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png.back"
   },
   {
     "revision": "ff7260edcb4ba255c3c3",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "933db0f47cf28ce932e5",
+    "revision": "0fc3bdc5ccae096dd768",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -112,12 +112,12 @@ self.__precacheManifest = [
     "url": "/icons\\icon-192x192.png"
   },
   {
-    "revision": "5423f638851bd441057fb363969ac6c9",
-    "url": "/favicon.png.redis"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons\\icon-128x128.png"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png.back"
+    "revision": "5423f638851bd441057fb363969ac6c9",
+    "url": "/favicon.png.redis"
   },
   {
     "revision": "c891db020b04fc5afaccff5439d843cd",

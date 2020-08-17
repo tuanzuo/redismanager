@@ -2,10 +2,7 @@ package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.domain.ApiResult;
-import com.tz.redismanager.domain.vo.RedisConfigVO;
-import com.tz.redismanager.domain.vo.RedisKeyDelVO;
-import com.tz.redismanager.domain.vo.RedisKeyUpdateVO;
-import com.tz.redismanager.domain.vo.RedisValueQueryVO;
+import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.validator.ValidGroup;
@@ -86,6 +83,11 @@ public class RedisAdminController {
     @RequestMapping("key/updateValue")
     public void updateValue(@Validated({ValidGroup.UpdateKeyValue.class}) @RequestBody RedisKeyUpdateVO vo) {
         redisAdminService.updateValue(vo);
+    }
+
+    @RequestMapping("key/addKey")
+    public ApiResult<?> addKey(@Validated @RequestBody RedisKeyAddVO vo) {
+        return redisAdminService.addKey(vo);
     }
 
 }
