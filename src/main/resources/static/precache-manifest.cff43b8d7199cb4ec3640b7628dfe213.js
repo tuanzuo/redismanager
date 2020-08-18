@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.async.js"
   },
   {
-    "revision": "bc78524c8f6063b479bc",
+    "revision": "8bcfec330222e58ca892",
     "url": "/vendors.chunk.css"
   },
   {
@@ -16,15 +16,15 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "cb6dfc08871713bd92b1",
+    "revision": "8dceeecadc22309c83ba",
     "url": "/umi.js"
   },
   {
-    "revision": "cb6dfc08871713bd92b1",
+    "revision": "8dceeecadc22309c83ba",
     "url": "/umi.css"
   },
   {
-    "revision": "bc78524c8f6063b479bc",
+    "revision": "8bcfec330222e58ca892",
     "url": "/vendors.async.js"
   },
   {
@@ -32,7 +32,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "0fc3bdc5ccae096dd768",
+    "revision": "2719964596dccde8bb0b",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
@@ -40,11 +40,11 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisDataPageZtree.async.js"
   },
   {
-    "revision": "be9b334bf76352c05ef4",
+    "revision": "7a8895ad80956c7a0ef5",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "be9b334bf76352c05ef4",
+    "revision": "7a8895ad80956c7a0ef5",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
@@ -72,15 +72,15 @@ self.__precacheManifest = [
     "url": "/p__User__RegisterResult.async.js"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png.back"
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
   },
   {
     "revision": "ff7260edcb4ba255c3c3",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "0fc3bdc5ccae096dd768",
+    "revision": "2719964596dccde8bb0b",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
@@ -120,8 +120,8 @@ self.__precacheManifest = [
     "url": "/favicon.png.redis"
   },
   {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png.back"
   },
   {
     "revision": "1e75813d95d8c3edcf6d",
