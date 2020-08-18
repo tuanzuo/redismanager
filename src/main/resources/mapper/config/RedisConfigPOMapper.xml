@@ -34,7 +34,7 @@
       <!--AND (name LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%') OR address LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%'))-->
       AND (LOCATE(#{searchKey,jdbcType=VARCHAR},name) > 0 OR LOCATE(#{searchKey,jdbcType=VARCHAR},address) > 0)
     </if>
-    ORDER BY name
+    ORDER BY name,create_time DESC
     LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
