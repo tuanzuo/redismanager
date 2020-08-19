@@ -32,7 +32,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "2719964596dccde8bb0b",
+    "revision": "ed92c58aebdbdd4bebd8",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
@@ -40,11 +40,11 @@ self.__precacheManifest = [
     "url": "/p__Redis__RedisDataPageZtree.async.js"
   },
   {
-    "revision": "7a8895ad80956c7a0ef5",
+    "revision": "5108e3d47436b6b5ba30",
     "url": "/p__Redis__RedisHomePage.chunk.css"
   },
   {
-    "revision": "7a8895ad80956c7a0ef5",
+    "revision": "5108e3d47436b6b5ba30",
     "url": "/p__Redis__RedisHomePage.async.js"
   },
   {
@@ -80,7 +80,7 @@ self.__precacheManifest = [
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "2719964596dccde8bb0b",
+    "revision": "ed92c58aebdbdd4bebd8",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {

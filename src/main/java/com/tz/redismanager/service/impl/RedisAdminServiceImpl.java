@@ -327,11 +327,20 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         }
         //list类型修改value
         else if (HandlerTypeEnum.LIST.getType().equals(vo.getKeyType())) {
+            List<String> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), LIST_STRING_TYPE);
             List<String> newValues = JsonUtils.parseObject(vo.getStringValue(), LIST_STRING_TYPE);
-            //FIXME 直接删除有问题，待完善
-            redisTemplate.delete(vo.getKey());
+            oldValues = Optional.ofNullable(oldValues).orElse(new ArrayList<>());
+            newValues = Optional.ofNullable(newValues).orElse(new ArrayList<>());
+            if (CollectionUtils.isNotEmpty(oldValues)) {
+                //删除旧数据
+                //FIXME 由于目前查询List数据时只返回了前1000条数据，所以旧数据可以这样删除，当后面查询支持返回中间数据后就不能这样操作了
+                redisTemplate.opsForList().trim(vo.getKey(), oldValues.size(), -1);
+            }
+            //FIXME 由于目前查询List数据时只返回了前1000条数据，所以新数据可以这样从头插入，当后面查询支持返回中间数据后就不能这样操作了
             if (CollectionUtils.isNotEmpty(newValues)) {
-                redisTemplate.opsForList().rightPushAll(vo.getKey(), newValues.toArray());
+                Object[] newValueArray = newValues.toArray();
+                CollectionUtils.reverseArray(newValueArray);
+                redisTemplate.opsForList().leftPushAll(vo.getKey(), newValueArray);
             }
         }
         //设置过期时间
