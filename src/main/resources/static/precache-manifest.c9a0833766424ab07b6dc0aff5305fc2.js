@@ -32,7 +32,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "ed92c58aebdbdd4bebd8",
+    "revision": "25830ecc382ca7237143",
     "url": "/p__Redis__RedisDataPage.chunk.css"
   },
   {
@@ -80,7 +80,7 @@ self.__precacheManifest = [
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "ed92c58aebdbdd4bebd8",
+    "revision": "25830ecc382ca7237143",
     "url": "/p__Redis__RedisDataPage.async.js"
   },
   {
