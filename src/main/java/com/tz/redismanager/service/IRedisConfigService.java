@@ -22,19 +22,19 @@ public interface IRedisConfigService {
      *
      * @param vo
      */
-    void add(RedisConfigVO vo);
+    void add(RedisConfigVO vo, String token);
 
     /**
      * 删除redis连接配置
      *
      * @param id
      */
-    void delete(String id);
+    void delete(String id, String token);
 
     /**
      * 修改redis连接配置
      *
      * @param vo
      */
-    void update(RedisConfigVO vo);
+    void update(RedisConfigVO vo, String token);
 }

@@ -1,9 +1,11 @@
 package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.service.IRedisConfigService;
+import com.tz.redismanager.token.TokenAuth;
 import com.tz.redismanager.validator.ValidGroup;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +36,7 @@ public class RedisConfigController {
 
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
+    @TokenAuth
     public Object list(String searchKey, Integer pageNum, Integer pagesize) {
         Map<String, List<RedisConfigPO>> map = new HashMap<>();
         map.put("configList", redisConfigService.searchList(searchKey, pageNum, pagesize));
@@ -40,18 +44,24 @@ public class RedisConfigController {
     }
 
     @RequestMapping("add")
-    public void add(@Validated({ValidGroup.AddConnection.class}) @RequestBody RedisConfigVO vo) {
-        redisConfigService.add(vo);
+    @TokenAuth
+    public void add(@Validated({ValidGroup.AddConnection.class}) @RequestBody RedisConfigVO vo, HttpServletRequest request) {
+        String token = request.getHeader(ConstInterface.Auth.AUTHORIZATION);
+        redisConfigService.add(vo, token);
     }
 
     @RequestMapping("del/{id}")
-    public void del(@NotEmpty(message = "id不能为空") @PathVariable("id") String id) {
-        redisConfigService.delete(id);
+    @TokenAuth
+    public void del(@NotEmpty(message = "id不能为空") @PathVariable("id") String id, HttpServletRequest request) {
+        String token = request.getHeader(ConstInterface.Auth.AUTHORIZATION);
+        redisConfigService.delete(id, token);
     }
 
     @RequestMapping("update")
-    public void update(@Validated({ValidGroup.UpdateConnection.class}) @RequestBody RedisConfigVO vo) {
-        redisConfigService.update(vo);
+    @TokenAuth
+    public void update(@Validated({ValidGroup.UpdateConnection.class}) @RequestBody RedisConfigVO vo, HttpServletRequest request) {
+        String token = request.getHeader(ConstInterface.Auth.AUTHORIZATION);
+        redisConfigService.update(vo, token);
     }
 
 }

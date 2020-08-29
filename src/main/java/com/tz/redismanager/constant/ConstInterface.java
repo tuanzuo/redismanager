@@ -31,6 +31,7 @@ public interface ConstInterface {
         String COMMA = ",";
         String STAR = "*";
         String SPOT = ".";
+        String UNDERLINE = "_";
         String MIDDLE_BRACKET_LEFT = "[";
         String MIDDLE_BRACKET_RIGHT = "]";
     }
@@ -42,5 +43,13 @@ public interface ConstInterface {
 
     interface Cacher {
         String REDIS_CONFIG_CACHER = "redisConfigCacher";
+    }
+
+    interface CacheKey {
+        String USER_INFO = "rm:user:info:";
+    }
+
+    interface Auth {
+        String AUTHORIZATION = "Authorization";
     }
 }

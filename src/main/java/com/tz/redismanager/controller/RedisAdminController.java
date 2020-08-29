@@ -5,6 +5,7 @@ import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisContextService;
+import com.tz.redismanager.token.TokenAuth;
 import com.tz.redismanager.validator.ValidGroup;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,22 +35,26 @@ public class RedisAdminController {
     private IRedisContextService redisContextService;
 
     @RequestMapping("context/init/{id}")
+    @TokenAuth
     public void initContext(@NotEmpty(message = "id不能为空") @PathVariable("id") String id) {
         redisContextService.initContext(id);
     }
 
     @RequestMapping("context/cache/clear/{id}")
+    @TokenAuth
     public void clearCacheRedisTemplate(@NotEmpty(message = "id不能为空") @PathVariable("id") String id) {
         redisContextService.removeRedisTemplate(id);
         redisContextService.getRedisConfigCache().invalidate(id);
     }
 
     @RequestMapping("context/test/connection")
+    @TokenAuth
     public ApiResult<String> testRedisConnection(@Validated({ValidGroup.TestConnection.class}) @RequestBody RedisConfigVO vo) {
         return redisContextService.testRedisConnection(vo);
     }
 
     @RequestMapping("key/list")
+    @TokenAuth
     @MethodLog(logPrefix = "查询Redis的Key接口", logInputParams = false, logOutputParams = false)
     public Object keyList(@NotEmpty(message = "id不能为空") String id, @NotEmpty(message = "查询条件不能为空") String searchKey) {
         Map<String, Object> map = new HashMap<>();
@@ -58,6 +63,7 @@ public class RedisAdminController {
     }
 
     @RequestMapping("key/value")
+    @TokenAuth
     @MethodLog(logPrefix = "查询Redis的Key对应value接口", logInputParams = false, logOutputParams = false)
     public Object keyValue(@Validated @RequestBody RedisValueQueryVO vo) {
         Map<String, Object> map = new HashMap<>();
@@ -66,26 +72,31 @@ public class RedisAdminController {
     }
 
     @RequestMapping("key/del")
+    @TokenAuth
     public void delKeys(@Validated @RequestBody RedisKeyDelVO vo) {
         redisAdminService.delKeys(vo);
     }
 
     @RequestMapping("key/rename")
+    @TokenAuth
     public void renameKey(@Validated({ValidGroup.RenameKey.class}) @RequestBody RedisKeyUpdateVO vo) {
         redisAdminService.renameKey(vo);
     }
 
     @RequestMapping("key/setTtl")
+    @TokenAuth
     public void setTtl(@Validated({ValidGroup.SetTTL.class}) @RequestBody RedisKeyUpdateVO vo) {
         redisAdminService.setTtl(vo);
     }
 
     @RequestMapping("key/updateValue")
+    @TokenAuth
     public void updateValue(@Validated({ValidGroup.UpdateKeyValue.class}) @RequestBody RedisKeyUpdateVO vo) {
         redisAdminService.updateValue(vo);
     }
 
     @RequestMapping("key/addKey")
+    @TokenAuth
     public ApiResult<?> addKey(@Validated @RequestBody RedisKeyAddVO vo) {
         return redisAdminService.addKey(vo);
     }

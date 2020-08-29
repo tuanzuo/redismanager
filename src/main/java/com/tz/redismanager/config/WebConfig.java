@@ -1,8 +1,12 @@
 package com.tz.redismanager.config;
 
+import com.tz.redismanager.token.TokenAuthInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -15,11 +19,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebConfig {
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
     @Bean
     public WebMvcConfigurer webMvcConfigurer() {
-        /**跨域设置*/
         return new WebMvcConfigurerAdapter() {
-            /**CROS解决跨域访问*/
+            /**跨域设置-CROS解决跨域访问*/
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") //支持跨域访问的url，如果是所有url也可以设置为/**
@@ -28,6 +34,13 @@ public class WebConfig {
                         .allowedMethods("GET", "POST", "DELETE", "PUT")
                 //.maxAge(3600);
                 ;
+            }
+            //添加拦截器
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                //设置token验证的Interceptor v1.3.0
+                registry.addInterceptor(new TokenAuthInterceptor(stringRedisTemplate));
+                super.addInterceptors(registry);
             }
         };
     }

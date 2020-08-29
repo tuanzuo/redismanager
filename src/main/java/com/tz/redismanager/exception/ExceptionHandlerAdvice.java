@@ -34,28 +34,28 @@ import java.util.Set;
  * @Version:1.1.0
  */
 //https://docs.spring.io/spring-boot/docs/1.5.11.BUILD-SNAPSHOT/reference/htmlsingle/#boot-features-error-handling
-@ControllerAdvice()
+@ControllerAdvice
 public class ExceptionHandlerAdvice {
     private static final Logger logger = TraceLoggerFactory.getLogger(ExceptionHandlerAdvice.class);
 
-    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Object handleException(HttpServletRequest request, Exception e) {
         this.getParams(request, e);
         return new ApiResult<>(ResultCode.FAIL.getCode(), CommonUtils.getExcpMsg(e));
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(RmException.class)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Object handleRmException(HttpServletRequest request, Exception e) {
+    public Object handleRmException(HttpServletRequest request, RmException e) {
         this.getParams(request, e);
-        return new ApiResult<>(ResultCode.FAIL.getCode(), CommonUtils.getExcpMsg(e));
+        return new ApiResult<>(e.getCode(), e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Object handleBindException(HttpServletRequest request, Exception e) {
         this.getParams(request, e);
@@ -95,7 +95,7 @@ public class ExceptionHandlerAdvice {
         //获取get请求的数据
         Map<String, String> reqParamMap = getParameterMap(request);
         String url = wrapper.getRequestURI();
-        String token = wrapper.getHeader("token");
+        String token = wrapper.getHeader(ConstInterface.Auth.AUTHORIZATION);
         //获取post请求的数据
         String reqBody = StringUtils.toEncodedString(wrapper.getContentAsByteArray(), Charset.forName(wrapper.getCharacterEncoding()));
         logger.error("[异常] {url:{},token:{},reqParam:{},reqBody:{}}", url, token, reqParamMap, reqBody, e);

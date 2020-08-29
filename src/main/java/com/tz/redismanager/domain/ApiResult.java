@@ -25,6 +25,12 @@ public class ApiResult<T> {
         this.msg = resultCode.getMsg();
     }
 
+    public ApiResult(ResultCode resultCode, T datas) {
+        this.code = resultCode.getCode();
+        this.msg = resultCode.getMsg();
+        this.datas = datas;
+    }
+
     public ApiResult(String code, String msg) {
         this.code = code;
         this.msg = msg;

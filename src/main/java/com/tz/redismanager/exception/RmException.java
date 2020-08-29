@@ -41,4 +41,7 @@ public class RmException extends RuntimeException {
     }
 
 
+    public String getCode() {
+        return code;
+    }
 }

@@ -1,12 +1,13 @@
 package com.tz.redismanager.service.impl;
 
-import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.domain.po.RedisConfigPO;
+import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisContextService;
+import com.tz.redismanager.util.CommonUtils;
 import com.tz.redismanager.util.RSAUtils;
 import com.tz.redismanager.util.RsaException;
 import com.tz.redismanager.util.UUIDUtils;
@@ -49,14 +50,15 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void add(RedisConfigVO vo) {
+    public void add(RedisConfigVO vo, String token) {
+        String userName = CommonUtils.getUserNameByToken(token);
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
         this.encryptPassWord(po);
         po.setId(UUIDUtils.generateId());
-        po.setCreater("admin");
+        po.setCreater(userName);
         po.setCreateTime(new Date());
-        po.setUpdater("admin");
+        po.setUpdater(userName);
         po.setUpdateTime(new Date());
         po.setIfDel(ConstInterface.IF_DEL.NO);
         redisConfigPOMapper.insertSelective(po);
@@ -65,10 +67,11 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(String id, String token) {
+        String userName = CommonUtils.getUserNameByToken(token);
         RedisConfigPO po = new RedisConfigPO();
         po.setId(id);
-        po.setUpdater("admin");
+        po.setUpdater(userName);
         po.setUpdateTime(new Date());
         po.setIfDel(ConstInterface.IF_DEL.YES);
         redisConfigPOMapper.updateByPrimaryKeySelective(po);
@@ -78,7 +81,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void update(RedisConfigVO vo) {
+    public void update(RedisConfigVO vo, String token) {
+        String userName = CommonUtils.getUserNameByToken(token);
         RedisConfigPO oldPO = redisContextService.getRedisConfigCache().get(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
@@ -87,7 +91,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         } else {
             po.setPassword(null);
         }
-        po.setUpdater("admin");
+        po.setUpdater(userName);
         po.setUpdateTime(new Date());
         redisConfigPOMapper.updateByPrimaryKeySelective(po);
         //删除缓存中的RedisTemplate

@@ -10,7 +10,12 @@ public enum ResultCode {
     SUCCESS("200", "成功"),
     FAIL("500", "失败"),
     REDIS_TEMPLATE_ISNULL("600001", "RedisTemplate为空"),
-    REDIS_KEY_EXIST("600002", "key已经存在,不能添加");
+    REDIS_KEY_EXIST("600002", "key已经存在,不能添加"),
+    LOGIN_FAIL("600003", "用户名或者密码不正确"),
+
+    TOKEN_AUTH_ERR("700001", "token验证失败"),
+    TOKEN_AUTH_EXPIRE("700002", "token过期,请重新登录"),
+    ;
 
     private String code;
     private String msg;
