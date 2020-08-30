@@ -1,5 +1,8 @@
 package com.tz.redismanager.domain.vo;
 
+import com.tz.redismanager.validator.ValidGroup;
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * 用户VO
  *
@@ -11,7 +14,23 @@ public class UserVO {
     /**
      * 用户名
      */
+    @NotEmpty(message = "用户名不能为空", groups = {ValidGroup.addUserInfo.class, ValidGroup.updateUserInfo.class})
     private String name;
+    private String oldName;
+
+    /**
+     * 密码
+     */
+    @NotEmpty(message = "密码不能为空", groups = {ValidGroup.addUserInfo.class, ValidGroup.updateUserPwd.class,})
+    private String pwd;
+
+    @NotEmpty(message = "原密码不能为空", groups = {ValidGroup.updateUserPwd.class,})
+    private String oldPwd;
+
+    /**
+     * 备注
+     */
+    private String note;
 
     public String getName() {
         return name;
@@ -19,5 +38,37 @@ public class UserVO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOldName() {
+        return oldName;
+    }
+
+    public void setOldName(String oldName) {
+        this.oldName = oldName;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
+    public String getOldPwd() {
+        return oldPwd;
+    }
+
+    public void setOldPwd(String oldPwd) {
+        this.oldPwd = oldPwd;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

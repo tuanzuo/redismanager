@@ -21,6 +21,12 @@
     from t_user
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user
+    where name = #{name,jdbcType=VARCHAR}
+  </select>
   <select id="selectByNamePwd" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -32,7 +38,7 @@
     delete from t_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.tz.redismanager.domain.po.UserPO">
+  <insert id="insert" parameterType="com.tz.redismanager.domain.po.UserPO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into t_user (id, name, pwd,
       note, creater, create_time, 
       updater, update_time, if_del
@@ -42,7 +48,7 @@
       #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{ifDel,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.tz.redismanager.domain.po.UserPO">
+  <insert id="insertSelective" parameterType="com.tz.redismanager.domain.po.UserPO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into t_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -144,5 +150,10 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       if_del = #{ifDel,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPwd">
+    update t_user
+    set pwd = #{pwd,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER} and pwd = #{oldPwd,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -21,6 +21,12 @@
     from t_role
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="getAll" resultType="com.tz.redismanager.domain.po.RolePO">
+    select
+    <include refid="Base_Column_List" />
+    from t_role
+    where if_del=0
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_role
     where id = #{id,jdbcType=INTEGER}

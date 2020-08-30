@@ -1,14 +1,18 @@
 package com.tz.redismanager.config;
 
 import com.tz.redismanager.token.TokenAuthInterceptor;
+import com.tz.redismanager.token.TokenContextAttributeMethodProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import java.util.List;
 
 /**
  * web配置
@@ -41,6 +45,12 @@ public class WebConfig {
                 //设置token验证的Interceptor v1.3.0
                 registry.addInterceptor(new TokenAuthInterceptor(stringRedisTemplate));
                 super.addInterceptors(registry);
+            }
+            //添加参数解析器 v1.3.0
+            @Override
+            public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+                argumentResolvers.add(new TokenContextAttributeMethodProcessor());
+                super.addArgumentResolvers(argumentResolvers);
             }
         };
     }

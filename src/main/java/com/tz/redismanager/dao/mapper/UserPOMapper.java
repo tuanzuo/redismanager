@@ -21,9 +21,13 @@ public interface UserPOMapper {
 
     UserPO selectByPrimaryKey(Integer id);
 
+    UserPO selectByName(@Param("name") String name);
+
     UserPO selectByNamePwd(@Param("name") String name, @Param("pwd") String pwd);
 
     int updateByPrimaryKeySelective(UserPO record);
 
     int updateByPrimaryKey(UserPO record);
+
+    int updateByPwd(@Param("id") Integer id, @Param("pwd") String pwd, @Param("oldPwd") String oldPwd);
 }

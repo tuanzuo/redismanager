@@ -1,8 +1,10 @@
 package com.tz.redismanager.token;
 
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.domain.vo.AuthResp;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
+import com.tz.redismanager.util.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.method.HandlerMethod;
@@ -36,11 +38,32 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
                     throw new RmException(ResultCode.TOKEN_AUTH_ERR);
                 }
                 String userInfoKey = ConstInterface.CacheKey.USER_INFO + token;
-                if (!stringRedisTemplate.hasKey(userInfoKey)) {
+                String authStr = stringRedisTemplate.opsForValue().get(userInfoKey);
+                if (StringUtils.isBlank(authStr)) {
                     throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
                 }
+                AuthResp authResp = JsonUtils.parseObject(authStr, AuthResp.class);
+                if (null == authResp) {
+                    throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
+                }
+                TokenContext tokenContext = new TokenContext();
+                tokenContext.setUserName(authResp.getUser().getName());
+                tokenContext.setToken(authResp.getToken());
+                TokenContextHolder.set(tokenContext);
             }
         }
         return super.preHandle(request, response, handler);
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        super.afterCompletion(request, response, handler, ex);
+        if (handler instanceof HandlerMethod) {
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            TokenAuth tokenAuth = handlerMethod.getMethodAnnotation(TokenAuth.class);
+            if (null != tokenAuth) {
+                TokenContextHolder.remove();
+            }
+        }
     }
 }

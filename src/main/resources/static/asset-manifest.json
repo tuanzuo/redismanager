@@ -7,6 +7,8 @@
   "/layouts__UserLayout.css": "/layouts__UserLayout.chunk.css",
   "/layouts__UserLayout.js": "/layouts__UserLayout.async.js",
   "/p__404.js": "/p__404.async.js",
+  "/p__Account__Settings__models__geographic.js.js": "/p__Account__Settings__models__geographic.js.async.js",
+  "/p__Account__Settings__models__useropt.js.js": "/p__Account__Settings__models__useropt.js.async.js",
   "/p__Redis__models__redisadmin.js.js": "/p__Redis__models__redisadmin.js.async.js",
   "/p__User__Login.css": "/p__User__Login.chunk.css",
   "/p__User__Login.js": "/p__User__Login.async.js",
@@ -17,8 +19,8 @@
   "/p__User__models__register.js.js": "/p__User__models__register.js.async.js",
   "/umi.css": "/umi.css",
   "/umi.js": "/umi.js",
-  "/11.chunk.css": "/11.chunk.css",
-  "/11.async.js": "/11.async.js",
+  "/13.chunk.css": "/13.chunk.css",
+  "/13.async.js": "/13.async.js",
   "/favicon.png": "/favicon.png",
   "/favicon.png.back": "/favicon.png.back",
   "/favicon.png.redis": "/favicon.png.redis",
@@ -27,7 +29,7 @@
   "/icons/icon-512x512.png": "/icons/icon-512x512.png",
   "/index.html": "/index.html",
   "/manifest.json": "/manifest.json",
-  "/precache-manifest.445079318cb1253a065b31db3d41d7d0.js": "/precache-manifest.445079318cb1253a065b31db3d41d7d0.js",
+  "/precache-manifest.2a5130f0022227e63dab3964962864ad.js": "/precache-manifest.2a5130f0022227e63dab3964962864ad.js",
   "/pwacompat.min.js": "/pwacompat.min.js",
   "/service-worker.js": "/service-worker.js"
 }

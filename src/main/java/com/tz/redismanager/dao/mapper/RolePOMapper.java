@@ -3,6 +3,8 @@ package com.tz.redismanager.dao.mapper;
 import com.tz.redismanager.domain.po.RolePO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 角色Mapper
  *
@@ -20,7 +22,10 @@ public interface RolePOMapper {
 
     RolePO selectByPrimaryKey(Integer id);
 
+    List<RolePO> getAll();
+
     int updateByPrimaryKeySelective(RolePO record);
 
     int updateByPrimaryKey(RolePO record);
+
 }

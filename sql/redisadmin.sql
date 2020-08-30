@@ -26,7 +26,8 @@ CREATE TABLE `t_role` (
   `updater` varchar(32) collate utf8_bin default NULL COMMENT '修改人',
   `update_time` datetime default NULL COMMENT '修改时间',
   `if_del` int(2) default NULL COMMENT '是否删除[1=是,0=否]',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `unique_code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='角色表';
 
 insert  into `t_role`(`id`,`name`,`code`,`note`,`creater`,`create_time`,`updater`,`update_time`,`if_del`) values (1,'管理员','admin',NULL,NULL,NULL,NULL,NULL,0),(2,'测试','test',NULL,NULL,NULL,NULL,NULL,0),(3,'开发','develop',NULL,NULL,NULL,NULL,NULL,0);
@@ -41,7 +42,8 @@ CREATE TABLE `t_user` (
   `updater` varchar(32) collate utf8_bin default NULL COMMENT '修改人',
   `update_time` datetime default NULL COMMENT '修改时间',
   `if_del` int(2) default NULL COMMENT '是否删除[1=是,0=否]',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `unique_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户表';
 
 insert  into `t_user`(`id`,`name`,`pwd`,`note`,`creater`,`create_time`,`updater`,`update_time`,`if_del`) values (1,'admin','admin',NULL,NULL,NULL,NULL,NULL,0),(2,'test','test',NULL,NULL,NULL,NULL,NULL,0),(3,'develop','develop',NULL,NULL,NULL,NULL,NULL,0);

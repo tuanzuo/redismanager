@@ -43,5 +43,23 @@ public interface ValidGroup {
     interface UpdateKeyValue {
     }
 
+    /**
+     * 添加用户信息
+     */
+    interface addUserInfo {
+    }
+
+    /**
+     * 修改用户信息
+     */
+    interface updateUserInfo {
+    }
+
+    /**
+     * 修改用户密码
+     */
+    interface updateUserPwd {
+    }
+
 
 }
