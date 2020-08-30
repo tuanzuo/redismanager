@@ -24,7 +24,7 @@ public class AuthResp {
     /**
      * 用户的角色List
      */
-    private Set<String> rules = new HashSet<>();
+    private Set<String> roles = new HashSet<>();
 
     public String getToken() {
         return token;
@@ -42,11 +42,11 @@ public class AuthResp {
         this.user = user;
     }
 
-    public Set<String> getRules() {
-        return rules;
+    public Set<String> getRoles() {
+        return roles;
     }
 
-    public void setRules(Set<String> rules) {
-        this.rules = rules;
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 }

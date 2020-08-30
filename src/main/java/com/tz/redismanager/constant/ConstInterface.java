@@ -47,6 +47,7 @@ public interface ConstInterface {
 
     interface CacheKey {
         String USER_INFO = "rm:user:info:";
+        String USER_LOGIN = "rm:user:login:";
     }
 
     interface Auth {
