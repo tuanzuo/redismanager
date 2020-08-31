@@ -72,7 +72,7 @@ self.__precacheManifest = [
     "url": "/favicon.png.redis"
   },
   {
-    "revision": "94b85b59287921a68944",
+    "revision": "8d877c1a1b2284b835e7",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -88,7 +88,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.chunk.css"
   },
   {
-    "revision": "94b85b59287921a68944",
+    "revision": "8d877c1a1b2284b835e7",
     "url": "/layouts__BasicLayout.async.js"
   },
   {

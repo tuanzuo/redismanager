@@ -16,6 +16,10 @@ public class UserVO {
      */
     @NotEmpty(message = "用户名不能为空", groups = {ValidGroup.addUserInfo.class, ValidGroup.updateUserInfo.class})
     private String name;
+
+    /**
+     * 原用户名
+     */
     private String oldName;
 
     /**

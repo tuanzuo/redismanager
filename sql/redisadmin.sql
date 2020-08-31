@@ -46,8 +46,6 @@ CREATE TABLE `t_user` (
   UNIQUE KEY `unique_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户表';
 
-insert  into `t_user`(`id`,`name`,`pwd`,`note`,`creater`,`create_time`,`updater`,`update_time`,`if_del`) values (1,'admin','admin',NULL,NULL,NULL,NULL,NULL,0),(2,'test','test',NULL,NULL,NULL,NULL,NULL,0),(3,'develop','develop',NULL,NULL,NULL,NULL,NULL,0);
-
 CREATE TABLE `t_user_role_relation` (
   `id` int(11) NOT NULL auto_increment COMMENT '主键',
   `user_id` int(11) NOT NULL COMMENT '用户Id',
@@ -59,5 +57,3 @@ CREATE TABLE `t_user_role_relation` (
   `if_del` int(2) default NULL COMMENT '是否删除[1=是,0=否]',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户角色关系表';
-
-insert  into `t_user_role_relation`(`id`,`user_id`,`role_id`,`creater`,`create_time`,`updater`,`update_time`,`if_del`) values (1,1,1,NULL,NULL,NULL,NULL,0),(2,1,2,NULL,NULL,NULL,NULL,0),(3,1,3,NULL,NULL,NULL,NULL,0),(4,2,1,NULL,NULL,NULL,NULL,0),(5,2,2,NULL,NULL,NULL,NULL,0),(6,2,3,NULL,NULL,NULL,NULL,0),(7,3,1,NULL,NULL,NULL,NULL,0),(8,3,2,NULL,NULL,NULL,NULL,0),(9,3,3,NULL,NULL,NULL,NULL,0);

@@ -13,8 +13,10 @@ import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.DigestUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -28,9 +30,11 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements IUserService {
 
+    @Value("${rd.encrypt.md5Salt}")
+    private String md5Salt;
+
     @Autowired
     private TransactionTemplate transactionTemplate;
-
     @Autowired
     private UserPOMapper userPOMapper;
     @Autowired
@@ -42,6 +46,8 @@ public class UserServiceImpl implements IUserService {
     public ApiResult<?> register(UserVO vo) {
         UserPO userPO = new UserPO();
         BeanUtils.copyProperties(vo, userPO);
+        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userPO.getName(), userPO.getPwd(), md5Salt).getBytes());
+        userPO.setPwd(encodePwd);
         userPO.setCreater(vo.getName());
         userPO.setCreateTime(new Date());
         userPO.setUpdater(vo.getName());
@@ -82,7 +88,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ApiResult<?> updatePwd(UserVO vo) {
         UserPO userTemp = userPOMapper.selectByName(vo.getName());
-        int updateCont = userPOMapper.updateByPwd(userTemp.getId(), vo.getPwd(), vo.getOldPwd());
+        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", vo.getName(), vo.getPwd(), md5Salt).getBytes());
+        String encodeOldPwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", vo.getName(), vo.getOldPwd(), md5Salt).getBytes());
+        int updateCont = userPOMapper.updateByPwd(userTemp.getId(), encodePwd, encodeOldPwd);
         if (updateCont != 1) {
             return new ApiResult<>(ResultCode.UPDATE_PWD_FAIL);
         }

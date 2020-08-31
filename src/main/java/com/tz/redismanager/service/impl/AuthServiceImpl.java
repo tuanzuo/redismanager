@@ -54,7 +54,8 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public ApiResult<AuthResp> login(LoginVO vo) {
-        UserPO userPO = userPOMapper.selectByNamePwd(vo.getName(), vo.getPwd());
+        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", vo.getName(), vo.getPwd(), md5Salt).getBytes());
+        UserPO userPO = userPOMapper.selectByNamePwd(vo.getName(), encodePwd);
         if (null == userPO) {
             return new ApiResult<>(ResultCode.LOGIN_FAIL);
         }
