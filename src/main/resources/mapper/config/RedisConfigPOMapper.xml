@@ -25,7 +25,7 @@
     from t_redis_config
     where id = #{id,jdbcType=VARCHAR}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectPage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_redis_config

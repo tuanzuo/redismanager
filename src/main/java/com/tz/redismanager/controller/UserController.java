@@ -1,5 +1,6 @@
 package com.tz.redismanager.controller;
 
+import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.service.IUserService;
@@ -30,18 +31,31 @@ public class UserController {
         return userService.register(vo);
     }
 
+    @RequestMapping("current")
+    @TokenAuth
+    public ApiResult<?> currentUser(TokenContext tokenContext) {
+        return userService.currentUser(tokenContext);
+    }
+
     @RequestMapping("update/info")
     @TokenAuth
     public ApiResult<?> updateInfo(@Validated({ValidGroup.updateUserInfo.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
-        vo.setOldName(tokenContext.getUserName());
+        vo.setId(tokenContext.getUserId());
         return userService.updateInfo(vo);
     }
 
     @RequestMapping("update/pwd")
     @TokenAuth
     public ApiResult<?> updatePwd(@Validated({ValidGroup.updateUserPwd.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
-        vo.setName(tokenContext.getUserName());
+        vo.setId(tokenContext.getUserId());
         return userService.updatePwd(vo);
+    }
+
+    @RequestMapping("list")
+    @MethodLog(logInputParams = false, logOutputParams = false)
+    @TokenAuth
+    public Object list(String name, Integer currentPage, Integer pageSize) {
+        return userService.queryList(name, currentPage, pageSize);
     }
 
 }

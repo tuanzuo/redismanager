@@ -2,6 +2,7 @@ package com.tz.redismanager.trace;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.tz.redismanager.annotation.LoggerMsg;
+import com.tz.redismanager.constant.ConstInterface;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,15 @@ public class TraceLoggerFactory {
 
     private static TransmittableThreadLocal<String> traceThreadLocal = new TransmittableThreadLocal<>();
 
-    public static void setTraceId(String traceId) {
-        traceThreadLocal.set(traceId);
+    public static void setTraceInfo(String traceInfo) {
+        traceThreadLocal.set(traceInfo);
     }
 
-    public static void clearTraceId() {
+    public static String getTraceInfo() {
+        return traceThreadLocal.get();
+    }
+
+    public static void clearTraceInfo() {
         traceThreadLocal.remove();
     }
 
@@ -46,45 +51,72 @@ public class TraceLoggerFactory {
             }
 
             private Object[] enhanceArgs(Method method, Object[] args) {
-                Annotation[][] annotations = method.getParameterAnnotations();
-                if (ArrayUtils.isEmpty(annotations) || ArrayUtils.isEmpty(args)) {
+                if (ArrayUtils.isEmpty(args)) {
                     return args;
                 }
-                Integer index = null;
-                int i = 0;
-                label:
-                for (Annotation[] array : annotations) {
-                    if (ArrayUtils.isNotEmpty(array)) {
-                        for (Annotation annotation : array) {
-                            if (null != annotation && annotation.annotationType().getName().equals(LoggerMsg.class.getName())) {
-                                index = i;
-                                break label;
-                            }
-                        }
-                    }
-                    i++;
+                Annotation[][] annotations = method.getParameterAnnotations();
+                if (ArrayUtils.isEmpty(annotations)) {
+                    return args;
                 }
+                /**找到{@link LoggerMsg}注解标识的参数的位置*/
+                Integer index = findLoggerMsgToMarkParamIndex(annotations);
                 if (null != index && ArrayUtils.isNotEmpty(args) && null != args[index]) {
+                    //增强参数
                     args[index] = enhanceArg(args[index]);
                 }
                 return args;
             }
 
+            private Integer findLoggerMsgToMarkParamIndex(Annotation[][] annotations) {
+                Integer index = null;
+                int i = -1;
+                label:
+                for (Annotation[] array : annotations) {
+                    i++;
+                    if (ArrayUtils.isEmpty(array)) {
+                        continue;
+                    }
+                    for (Annotation annotation : array) {
+                        if (null != annotation && annotation.annotationType().getName().equals(LoggerMsg.class.getName())) {
+                            index = i;
+                            break label;
+                        }
+                    }
+                }
+                return index;
+            }
+
             private String enhanceArg(Object msg) {
                 StringBuilder logBuilder = new StringBuilder();
-                String traceId = traceThreadLocal.get();
-                if (null != traceId) {
-                    logBuilder.append(traceId);
+                //获取方法信息到日志builder
+                this.getMethodInfo(logBuilder);
+
+                String traceInfo = getTraceInfo();
+                if (null != traceInfo) {
+                    logBuilder.append(traceInfo);
                 } else {
                     RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
                     if (requestAttributes instanceof ServletRequestAttributes) {
                         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
                         String sid = requestAttributes.getSessionId();
-                        logBuilder.append("[sid-").append(sid).append("]");
+                        logBuilder.append(ConstInterface.Symbol.MIDDLE_BRACKET_LEFT).append("sid-").append(sid).append(ConstInterface.Symbol.MIDDLE_BRACKET_RIGHT);
                     }
                 }
                 logBuilder.append(" ").append(msg);
                 return logBuilder.toString();
+            }
+
+            private void getMethodInfo(StringBuilder logBuilder) {
+                StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
+                if (ArrayUtils.isNotEmpty(stackTraces) && stackTraces.length >= 7) {
+                    StackTraceElement stackTrace = stackTraces[6];
+                    logBuilder.append(ConstInterface.Symbol.MIDDLE_BRACKET_LEFT);
+                    logBuilder.append(stackTrace.getFileName());
+                    logBuilder.append(ConstInterface.Symbol.COLON);
+                    logBuilder.append(stackTrace.getLineNumber());
+                    logBuilder.append(ConstInterface.Symbol.MIDDLE_BRACKET_RIGHT);
+                    logBuilder.append(" ");
+                }
             }
         });
     }

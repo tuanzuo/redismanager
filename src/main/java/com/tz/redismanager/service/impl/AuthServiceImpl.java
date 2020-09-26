@@ -83,7 +83,8 @@ public class AuthServiceImpl implements IAuthService {
     private AuthResp buildLoginResp(UserPO userPO, List<RolePO> roles) {
         AuthResp resp = new AuthResp();
         String token = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userPO.getName(), userPO.getPwd(), UUIDUtils.generateId()).getBytes());
-        resp.setToken(token + ConstInterface.Symbol.UNDERLINE + userPO.getName());
+        resp.setToken(token);
+        resp.getUser().setId(userPO.getId());
         resp.getUser().setName(userPO.getName());
         roles = Optional.ofNullable(roles).orElse(new ArrayList<>());
         resp.setRoles(roles.stream().filter(role -> StringUtils.isNotBlank(role.getCode())).map(role -> role.getCode()).collect(Collectors.toSet()));

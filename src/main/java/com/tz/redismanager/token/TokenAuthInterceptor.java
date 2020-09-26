@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * <p></p>
+ * <p>TokenAuth拦截器</p>
  *
  * @version 1.3.0
  * @time 2020-08-29 13:50
@@ -47,6 +47,7 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
                     throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
                 }
                 TokenContext tokenContext = new TokenContext();
+                tokenContext.setUserId(authResp.getUser().getId());
                 tokenContext.setUserName(authResp.getUser().getName());
                 tokenContext.setToken(authResp.getToken());
                 TokenContextHolder.set(tokenContext);

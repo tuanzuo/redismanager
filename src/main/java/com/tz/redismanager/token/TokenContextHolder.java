@@ -3,7 +3,7 @@ package com.tz.redismanager.token;
 import com.alibaba.ttl.TransmittableThreadLocal;
 
 /**
- * <p></p>
+ * <p>Token上下文Hodler</p>
  *
  * @version 1.3.0
  * @time 2020-08-30 19:17

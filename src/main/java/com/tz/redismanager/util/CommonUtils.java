@@ -1,8 +1,6 @@
 package com.tz.redismanager.util;
 
-import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.trace.TraceLoggerFactory;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -45,12 +43,4 @@ public class CommonUtils {
         }
     }
 
-    public static String getUserNameByToken(String token) {
-        if (StringUtils.isNotBlank(token)) {
-            String[] tokenSplits = StringUtils.split(token, ConstInterface.Symbol.UNDERLINE);
-            String userName = tokenSplits[1];
-            return userName;
-        }
-        return "";
-    }
 }

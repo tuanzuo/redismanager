@@ -4,7 +4,7 @@ package com.tz.redismanager.token;
 import java.lang.annotation.*;
 
 /**
- * <p></p>
+ * <p>Token认证注解</p>
  *
  * @version 1.3.0
  * @time 2020-08-29 13:50

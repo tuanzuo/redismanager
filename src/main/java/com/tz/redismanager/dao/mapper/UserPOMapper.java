@@ -4,6 +4,8 @@ import com.tz.redismanager.domain.po.UserPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * 用户Mapper
  *
@@ -24,6 +26,10 @@ public interface UserPOMapper {
     UserPO selectByName(@Param("name") String name);
 
     UserPO selectByNamePwd(@Param("name") String name, @Param("pwd") String pwd);
+
+    List<UserPO> selectPage(@Param("name") String name, @Param("offset") Integer offset, @Param("rows") Integer rows);
+
+    int countUser(@Param("name") String name);
 
     int updateByPrimaryKeySelective(UserPO record);
 
