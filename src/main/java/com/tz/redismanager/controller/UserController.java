@@ -31,17 +31,23 @@ public class UserController {
         return userService.register(vo);
     }
 
+    @RequestMapping("current")
+    @TokenAuth
+    public ApiResult<?> currentUser(TokenContext tokenContext) {
+        return userService.currentUser(tokenContext);
+    }
+
     @RequestMapping("update/info")
     @TokenAuth
     public ApiResult<?> updateInfo(@Validated({ValidGroup.updateUserInfo.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
-        vo.setOldName(tokenContext.getUserName());
+        vo.setId(tokenContext.getUserId());
         return userService.updateInfo(vo);
     }
 
     @RequestMapping("update/pwd")
     @TokenAuth
     public ApiResult<?> updatePwd(@Validated({ValidGroup.updateUserPwd.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
-        vo.setName(tokenContext.getUserName());
+        vo.setId(tokenContext.getUserId());
         return userService.updatePwd(vo);
     }
 

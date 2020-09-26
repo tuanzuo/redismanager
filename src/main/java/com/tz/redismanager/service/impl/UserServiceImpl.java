@@ -14,6 +14,7 @@ import com.tz.redismanager.domain.vo.UserResp;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IUserService;
+import com.tz.redismanager.token.TokenContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +35,9 @@ public class UserServiceImpl implements IUserService {
 
     private static final Integer PAGE_SIZE = 10;
 
-    private static List<String> noteList = Arrays.asList("世界那么大，我想去看看", "生活不只是苟且，还有诗和远方", "有人与我立黄昏，有人问我粥可温", "有人与我捻熄灯，有人共我书半生",
-            "有人陪我夜已深，有人与我把酒分", "有人拭我相思泪，有人梦我与前尘", "有人陪我顾星辰, 有人醒我茶已冷");
+    private static List<String> noteList = Arrays.asList("世界那么大", "我想去看看", "生活不只是苟且", "还有诗和远方",
+            "有人与我立黄昏", "有人问我粥可温", "有人与我捻熄灯", "有人共我书半生",
+            "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰, 有人醒我茶已冷");
 
     @Value("${rd.encrypt.md5Salt}")
     private String md5Salt;
@@ -82,8 +84,15 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public ApiResult<?> currentUser(TokenContext tokenContext) {
+        UserPO userPO = userPOMapper.selectByPrimaryKey(tokenContext.getUserId());
+        userPO.setPwd(null);
+        return new ApiResult<>(ResultCode.SUCCESS, userPO);
+    }
+
+    @Override
     public ApiResult<?> updateInfo(UserVO vo) {
-        UserPO userTemp = userPOMapper.selectByName(vo.getOldName());
+        UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
         UserPO userPO = new UserPO();
         userPO.setId(userTemp.getId());
         userPO.setName(vo.getName());
@@ -96,9 +105,9 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ApiResult<?> updatePwd(UserVO vo) {
-        UserPO userTemp = userPOMapper.selectByName(vo.getName());
-        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", vo.getName(), vo.getPwd(), md5Salt).getBytes());
-        String encodeOldPwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", vo.getName(), vo.getOldPwd(), md5Salt).getBytes());
+        UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
+        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), vo.getPwd(), md5Salt).getBytes());
+        String encodeOldPwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), vo.getOldPwd(), md5Salt).getBytes());
         int updateCont = userPOMapper.updateByPwd(userTemp.getId(), encodePwd, encodeOldPwd);
         if (updateCont != 1) {
             return new ApiResult<>(ResultCode.UPDATE_PWD_FAIL);

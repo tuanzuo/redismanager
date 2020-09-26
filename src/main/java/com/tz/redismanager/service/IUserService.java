@@ -3,6 +3,7 @@ package com.tz.redismanager.service;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.UserListResp;
 import com.tz.redismanager.domain.vo.UserVO;
+import com.tz.redismanager.token.TokenContext;
 
 /**
  * <p>用户service接口</p>
@@ -13,6 +14,8 @@ import com.tz.redismanager.domain.vo.UserVO;
 public interface IUserService {
 
     ApiResult<?> register(UserVO vo);
+
+    ApiResult<?> currentUser(TokenContext tokenContext);
 
     ApiResult<?> updateInfo(UserVO vo);
 

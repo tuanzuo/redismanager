@@ -12,6 +12,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class UserVO {
 
     /**
+     * 用户id
+     */
+    private Integer id;
+
+    /**
      * 用户名
      */
     @NotEmpty(message = "用户名不能为空", groups = {ValidGroup.addUserInfo.class, ValidGroup.updateUserInfo.class})
@@ -35,6 +40,14 @@ public class UserVO {
      * 备注
      */
     private String note;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

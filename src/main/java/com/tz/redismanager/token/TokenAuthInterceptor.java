@@ -47,6 +47,7 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
                     throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
                 }
                 TokenContext tokenContext = new TokenContext();
+                tokenContext.setUserId(authResp.getUser().getId());
                 tokenContext.setUserName(authResp.getUser().getName());
                 tokenContext.setToken(authResp.getToken());
                 TokenContextHolder.set(tokenContext);

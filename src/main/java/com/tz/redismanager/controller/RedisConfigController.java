@@ -45,19 +45,19 @@ public class RedisConfigController {
     @RequestMapping("add")
     @TokenAuth
     public void add(@Validated({ValidGroup.AddConnection.class}) @RequestBody RedisConfigVO vo, TokenContext tokenContext) {
-        redisConfigService.add(vo, tokenContext.getToken());
+        redisConfigService.add(vo, tokenContext);
     }
 
     @RequestMapping("del/{id}")
     @TokenAuth
     public void del(@NotEmpty(message = "id不能为空") @PathVariable("id") String id, TokenContext tokenContext) {
-        redisConfigService.delete(id, tokenContext.getToken());
+        redisConfigService.delete(id, tokenContext);
     }
 
     @RequestMapping("update")
     @TokenAuth
     public void update(@Validated({ValidGroup.UpdateConnection.class}) @RequestBody RedisConfigVO vo, TokenContext tokenContext) {
-        redisConfigService.update(vo, tokenContext.getToken());
+        redisConfigService.update(vo, tokenContext);
     }
 
 }

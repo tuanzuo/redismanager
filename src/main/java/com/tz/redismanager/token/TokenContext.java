@@ -8,8 +8,17 @@ package com.tz.redismanager.token;
  **/
 public class TokenContext {
 
+    private Integer userId;
     private String userName;
     private String token;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public String getUserName() {
         return userName;
