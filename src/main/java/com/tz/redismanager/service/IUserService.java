@@ -1,6 +1,7 @@
 package com.tz.redismanager.service;
 
 import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.domain.vo.UserListResp;
 import com.tz.redismanager.domain.vo.UserVO;
 
 /**
@@ -16,4 +17,6 @@ public interface IUserService {
     ApiResult<?> updateInfo(UserVO vo);
 
     ApiResult<?> updatePwd(UserVO vo);
+
+    UserListResp queryList(String name, Integer currentPage, Integer pageSize);
 }

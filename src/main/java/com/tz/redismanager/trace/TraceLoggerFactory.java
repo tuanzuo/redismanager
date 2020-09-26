@@ -51,35 +51,44 @@ public class TraceLoggerFactory {
             }
 
             private Object[] enhanceArgs(Method method, Object[] args) {
-                Annotation[][] annotations = method.getParameterAnnotations();
-                if (ArrayUtils.isEmpty(annotations) || ArrayUtils.isEmpty(args)) {
+                if (ArrayUtils.isEmpty(args)) {
                     return args;
                 }
-                Integer index = null;
-                int i = 0;
-                label:
-                for (Annotation[] array : annotations) {
-                    if (ArrayUtils.isNotEmpty(array)) {
-                        for (Annotation annotation : array) {
-                            if (null != annotation && annotation.annotationType().getName().equals(LoggerMsg.class.getName())) {
-                                index = i;
-                                break label;
-                            }
-                        }
-                    }
-                    i++;
+                Annotation[][] annotations = method.getParameterAnnotations();
+                if (ArrayUtils.isEmpty(annotations)) {
+                    return args;
                 }
+                /**找到{@link LoggerMsg}注解标识的参数的位置*/
+                Integer index = findLoggerMsgToMarkParamIndex(annotations);
                 if (null != index && ArrayUtils.isNotEmpty(args) && null != args[index]) {
+                    //增强参数
                     args[index] = enhanceArg(args[index]);
                 }
                 return args;
             }
 
-            /**
-             * 增强参数
-             */
+            private Integer findLoggerMsgToMarkParamIndex(Annotation[][] annotations) {
+                Integer index = null;
+                int i = -1;
+                label:
+                for (Annotation[] array : annotations) {
+                    i++;
+                    if (ArrayUtils.isEmpty(array)) {
+                        continue;
+                    }
+                    for (Annotation annotation : array) {
+                        if (null != annotation && annotation.annotationType().getName().equals(LoggerMsg.class.getName())) {
+                            index = i;
+                            break label;
+                        }
+                    }
+                }
+                return index;
+            }
+
             private String enhanceArg(Object msg) {
                 StringBuilder logBuilder = new StringBuilder();
+                //获取方法信息到日志builder
                 this.getMethodInfo(logBuilder);
 
                 String traceInfo = getTraceInfo();
@@ -97,19 +106,16 @@ public class TraceLoggerFactory {
                 return logBuilder.toString();
             }
 
-            /**
-             * 获取方法信息
-             */
             private void getMethodInfo(StringBuilder logBuilder) {
                 StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
                 if (ArrayUtils.isNotEmpty(stackTraces) && stackTraces.length >= 7) {
                     StackTraceElement stackTrace = stackTraces[6];
-                    logBuilder.append(ConstInterface.Symbol.MIDDLE_BRACKET_LEFT)
-                            .append(stackTrace.getFileName())
-                            .append(ConstInterface.Symbol.COLON)
-                            .append(stackTrace.getLineNumber())
-                            .append(ConstInterface.Symbol.MIDDLE_BRACKET_RIGHT)
-                            .append(" ");
+                    logBuilder.append(ConstInterface.Symbol.MIDDLE_BRACKET_LEFT);
+                    logBuilder.append(stackTrace.getFileName());
+                    logBuilder.append(ConstInterface.Symbol.COLON);
+                    logBuilder.append(stackTrace.getLineNumber());
+                    logBuilder.append(ConstInterface.Symbol.MIDDLE_BRACKET_RIGHT);
+                    logBuilder.append(" ");
                 }
             }
         });

@@ -46,7 +46,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         }
         int offset = (pageNum - 1) * pagesize;
         int rows = pagesize;
-        return redisConfigPOMapper.selectAll(searchKey, offset, rows);
+        return redisConfigPOMapper.selectPage(searchKey, offset, rows);
     }
 
     @Override

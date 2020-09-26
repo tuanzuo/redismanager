@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * <p></p>
+ * <p>TokenAuth拦截器</p>
  *
  * @version 1.3.0
  * @time 2020-08-29 13:50

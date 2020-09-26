@@ -24,6 +24,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 /**
  * 设置RedisTemplate切面
@@ -44,86 +45,114 @@ public class SetRedisTemplateAspect {
     @Around("@annotation(setRedisTemplate)")
     public Object annotationPointCut(ProceedingJoinPoint joinPoint, SetRedisTemplate setRedisTemplate) throws Throwable {
         Signature signature = joinPoint.getSignature();
-        if (signature instanceof MethodSignature) {
-            Integer index = null;
-            MethodSignature methodSignature = (MethodSignature) signature;
-            Annotation[][] annotations = methodSignature.getMethod().getParameterAnnotations();
-            if (ArrayUtils.isNotEmpty(annotations)) {
-                int i = 0;
-                label:
-                for (Annotation[] array : annotations) {
-                    if (ArrayUtils.isNotEmpty(array)) {
-                        for (Annotation annotation : array) {
-                            if (null != annotation && annotation.annotationType().getName().equals(ConnectionId.class.getName())) {
-                                index = i;
-                                break label;
-                            }
-                        }
-                    }
-                    i++;
-                }
-            }
+        boolean methodSignFlag = signature instanceof MethodSignature;
+        if (!methodSignFlag) {
+            return joinPoint.proceed();
+        }
+        Object[] args = joinPoint.getArgs();
+        if (ArrayUtils.isEmpty(args)) {
+            return joinPoint.proceed();
+        }
 
-            String id = null;
-            //得到参数
-            Object[] args = joinPoint.getArgs();
-            if (null != index && ArrayUtils.isNotEmpty(args) && null != args[index]) {
-                id = args[index].toString();
-            } else if (ArrayUtils.isNotEmpty(args)) {
-                label:
-                for (Object arg : args) {
-                    if (null != arg) {
-                        Field[] fields = arg.getClass().getDeclaredFields();
-                        if (ArrayUtils.isNotEmpty(fields)) {
-                            for (Field field : fields) {
-                                if (null != field && null != field.getDeclaredAnnotation(ConnectionId.class)) {
-                                    ReflectionUtils.makeAccessible(field);
-                                    Object obj = field.get(arg);
-                                    if (null != obj) {
-                                        id = obj.toString();
-                                        break label;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (StringUtils.isNotBlank(id)) {
-                RedisTemplate<String, Object> redisTemplate = redisContextService.getRedisTemplate(id);
-                if (null == redisTemplate) {
-                    //初始化redisTemplate
-                    redisTemplate = redisContextService.initContext(id);
-                }
-                if (null == redisTemplate) {
-                    logger.error("[SetRedisTemplateAspect] [annotationPointCut] {id:{}查询不到redisTemplate}", id);
-                    if (setRedisTemplate.whenIsNullContinueExec()) {
-                        return joinPoint.proceed();
-                    } else {
-                        throw new RmException(ResultCode.REDIS_TEMPLATE_ISNULL.getCode(), "RedisTemplate为空,操作失败!");
-                    }
-                }
-                RedisContextUtils.setRedisTemplate(redisTemplate);
-                //执行方法
-                Object result;
-                //得到设置的序列化对象
-                RedisSerializer keySerializer = redisTemplate.getKeySerializer();
-                RedisSerializer hashKeySerializer = redisTemplate.getHashKeySerializer();
-                RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
-                RedisSerializer hashValueSerializer = redisTemplate.getHashValueSerializer();
-                try {
-                    result = joinPoint.proceed();
-                } finally {
-                    //还原设置的序列化对象
-                    redisTemplate.setKeySerializer(keySerializer);
-                    redisTemplate.setHashKeySerializer(hashKeySerializer);
-                    redisTemplate.setValueSerializer(valueSerializer);
-                    redisTemplate.setHashValueSerializer(hashValueSerializer);
-                    RedisContextUtils.cleanRedisTemplate();
-                }
-                return result;
+        String id = this.getIdFromParam(signature, args);
+        id = Optional.ofNullable(id).orElse(this.getIdFromParamObj(id, args));
+        if (StringUtils.isBlank(id)) {
+            return joinPoint.proceed();
+        }
+
+        RedisTemplate<String, Object> redisTemplate = redisContextService.getRedisTemplate(id);
+        redisTemplate = Optional.ofNullable(redisTemplate).orElse(redisContextService.initContext(id));
+        if (null == redisTemplate) {
+            logger.warn("通过id:{}查询不到redisTemplate", id);
+            if (setRedisTemplate.whenIsNullContinueExec()) {
+                return joinPoint.proceed();
+            } else {
+                throw new RmException(ResultCode.REDIS_TEMPLATE_ISNULL.getCode(), "RedisTemplate为空,操作失败!");
             }
         }
-        return joinPoint.proceed();
+        RedisContextUtils.setRedisTemplate(redisTemplate);
+        Object result;
+        //得到设置的序列化对象
+        RedisSerializer keySerializer = redisTemplate.getKeySerializer();
+        RedisSerializer hashKeySerializer = redisTemplate.getHashKeySerializer();
+        RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
+        RedisSerializer hashValueSerializer = redisTemplate.getHashValueSerializer();
+        try {
+            result = joinPoint.proceed();
+        } finally {
+            //还原设置的序列化对象
+            redisTemplate.setKeySerializer(keySerializer);
+            redisTemplate.setHashKeySerializer(hashKeySerializer);
+            redisTemplate.setValueSerializer(valueSerializer);
+            redisTemplate.setHashValueSerializer(hashValueSerializer);
+            RedisContextUtils.cleanRedisTemplate();
+        }
+        return result;
+    }
+
+    /**
+     * 从参数中得到被{@link ConnectionId}注解标识的参数的值
+     */
+    private String getIdFromParam(Signature signature, Object[] args) {
+        /**找到{@link ConnectionId}注解标识的参数的位置*/
+        Integer index = this.findConnectionIdToMarkParamIndex(signature);
+        String id = null;
+        if (null != index && null != args[index]) {
+            id = args[index].toString();
+        }
+        return id;
+    }
+
+    /**
+     * 从参数对象中得到被{@link ConnectionId}注解标识的属性的值
+     */
+    private String getIdFromParamObj(String id, Object[] args) throws IllegalAccessException {
+        label:
+        for (Object arg : args) {
+            if (null == arg) {
+                continue;
+            }
+            Field[] fields = arg.getClass().getDeclaredFields();
+            if (ArrayUtils.isEmpty(fields)) {
+                continue;
+            }
+            for (Field field : fields) {
+                if (null == field || null == field.getDeclaredAnnotation(ConnectionId.class)) {
+                    continue;
+                }
+                ReflectionUtils.makeAccessible(field);
+                Object obj = field.get(arg);
+                if (null == obj) {
+                    continue;
+                }
+                id = obj.toString();
+                break label;
+            }
+        }
+        return id;
+    }
+
+    private Integer findConnectionIdToMarkParamIndex(Signature signature) {
+        MethodSignature methodSignature = (MethodSignature) signature;
+        Integer index = null;
+        Annotation[][] annotations = methodSignature.getMethod().getParameterAnnotations();
+        if (ArrayUtils.isEmpty(annotations)) {
+            return index;
+        }
+        int i = -1;
+        label:
+        for (Annotation[] array : annotations) {
+            i++;
+            if (ArrayUtils.isEmpty(array)) {
+                continue;
+            }
+            for (Annotation annotation : array) {
+                if (null != annotation && annotation.annotationType().getName().equals(ConnectionId.class.getName())) {
+                    index = i;
+                    break label;
+                }
+            }
+        }
+        return index;
     }
 }

@@ -1,7 +1,7 @@
 package com.tz.redismanager.token;
 
 /**
- * <p></p>
+ * <p>Token上下文</p>
  *
  * @version 1.3.0
  * @time 2020-08-30 18:36

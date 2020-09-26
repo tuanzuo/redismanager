@@ -30,7 +30,7 @@ CREATE TABLE `t_role` (
   UNIQUE KEY `unique_code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='角色表';
 
-insert  into `t_role`(`id`,`name`,`code`,`note`,`creater`,`create_time`,`updater`,`update_time`,`if_del`) values (1,'管理员','admin',NULL,NULL,NULL,NULL,NULL,0),(2,'测试','test',NULL,NULL,NULL,NULL,NULL,0),(3,'开发','develop',NULL,NULL,NULL,NULL,NULL,0);
+insert  into `t_role`(`id`,`name`,`code`,`note`,`creater`,`create_time`,`updater`,`update_time`,`if_del`) values (1,'普通管理员','admin',NULL,NULL,NULL,NULL,NULL,0),(2,'测试','test',NULL,NULL,NULL,NULL,NULL,0),(3,'开发','develop',NULL,NULL,NULL,NULL,NULL,0),(4,'超级管理员','superadmin',NULL,NULL,NULL,NULL,NULL,0);
 
 CREATE TABLE `t_user` (
   `id` int(11) NOT NULL auto_increment COMMENT '主键',
