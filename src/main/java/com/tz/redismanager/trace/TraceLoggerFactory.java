@@ -2,6 +2,7 @@ package com.tz.redismanager.trace;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.tz.redismanager.annotation.LoggerMsg;
+import com.tz.redismanager.constant.ConstInterface;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,15 @@ public class TraceLoggerFactory {
 
     private static TransmittableThreadLocal<String> traceThreadLocal = new TransmittableThreadLocal<>();
 
-    public static void setTraceId(String traceId) {
-        traceThreadLocal.set(traceId);
+    public static void setTraceInfo(String traceInfo) {
+        traceThreadLocal.set(traceInfo);
     }
 
-    public static void clearTraceId() {
+    public static String getTraceInfo() {
+        return traceThreadLocal.get();
+    }
+
+    public static void clearTraceInfo() {
         traceThreadLocal.remove();
     }
 
@@ -70,21 +75,42 @@ public class TraceLoggerFactory {
                 return args;
             }
 
+            /**
+             * 增强参数
+             */
             private String enhanceArg(Object msg) {
                 StringBuilder logBuilder = new StringBuilder();
-                String traceId = traceThreadLocal.get();
-                if (null != traceId) {
-                    logBuilder.append(traceId);
+                this.getMethodInfo(logBuilder);
+
+                String traceInfo = getTraceInfo();
+                if (null != traceInfo) {
+                    logBuilder.append(traceInfo);
                 } else {
                     RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
                     if (requestAttributes instanceof ServletRequestAttributes) {
                         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
                         String sid = requestAttributes.getSessionId();
-                        logBuilder.append("[sid-").append(sid).append("]");
+                        logBuilder.append(ConstInterface.Symbol.MIDDLE_BRACKET_LEFT).append("sid-").append(sid).append(ConstInterface.Symbol.MIDDLE_BRACKET_RIGHT);
                     }
                 }
                 logBuilder.append(" ").append(msg);
                 return logBuilder.toString();
+            }
+
+            /**
+             * 获取方法信息
+             */
+            private void getMethodInfo(StringBuilder logBuilder) {
+                StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
+                if (ArrayUtils.isNotEmpty(stackTraces) && stackTraces.length >= 7) {
+                    StackTraceElement stackTrace = stackTraces[6];
+                    logBuilder.append(ConstInterface.Symbol.MIDDLE_BRACKET_LEFT)
+                            .append(stackTrace.getFileName())
+                            .append(ConstInterface.Symbol.COLON)
+                            .append(stackTrace.getLineNumber())
+                            .append(ConstInterface.Symbol.MIDDLE_BRACKET_RIGHT)
+                            .append(" ");
+                }
             }
         });
     }

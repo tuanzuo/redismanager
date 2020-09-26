@@ -2,6 +2,7 @@ package com.tz.redismanager.aspect;
 
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -10,7 +11,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -28,7 +28,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Order(100)
 public class MethodLogAspect {
 
-    private static final Logger logger = LoggerFactory.getLogger(MethodLogAspect.class);
+    private static final Logger logger = TraceLoggerFactory.getLogger(MethodLogAspect.class);
 
     @Around("@annotation(methodLog)")
     public Object annotationPointCut(ProceedingJoinPoint joinPoint, MethodLog methodLog) throws Throwable {
