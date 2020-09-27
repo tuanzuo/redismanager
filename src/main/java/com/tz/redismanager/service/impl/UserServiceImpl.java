@@ -39,7 +39,7 @@ public class UserServiceImpl implements IUserService {
 
     private static List<String> noteList = Arrays.asList("世界那么大", "我想去看看", "生活不只是苟且", "还有诗和远方",
             "有人与我立黄昏", "有人问我粥可温", "有人与我捻熄灯", "有人共我书半生",
-            "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰, 有人醒我茶已冷");
+            "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰", "有人醒我茶已冷");
 
     @Value("${rd.encrypt.md5Salt}")
     private String md5Salt;
