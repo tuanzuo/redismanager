@@ -61,5 +61,11 @@ public interface ValidGroup {
     interface updateUserPwd {
     }
 
+    /**
+     * 修改用户状态
+     */
+    interface updateUserStatus {
+    }
+
 
 }

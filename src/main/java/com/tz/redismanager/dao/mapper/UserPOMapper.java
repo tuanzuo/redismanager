@@ -27,13 +27,15 @@ public interface UserPOMapper {
 
     UserPO selectByNamePwd(@Param("name") String name, @Param("pwd") String pwd);
 
-    List<UserPO> selectPage(@Param("name") String name, @Param("offset") Integer offset, @Param("rows") Integer rows);
+    List<UserPO> selectPage(@Param("name") String name, @Param("status") Integer status, @Param("offset") Integer offset, @Param("rows") Integer rows);
 
-    int countUser(@Param("name") String name);
+    int countUser(@Param("name") String name, @Param("status") Integer status);
 
     int updateByPrimaryKeySelective(UserPO record);
 
     int updateByPrimaryKey(UserPO record);
 
     int updateByPwd(@Param("id") Integer id, @Param("pwd") String pwd, @Param("oldPwd") String oldPwd);
+
+    int batchUpdateStatus(@Param("ids") List<Integer> ids, @Param("status") Integer status, @Param("updater") String updater);
 }

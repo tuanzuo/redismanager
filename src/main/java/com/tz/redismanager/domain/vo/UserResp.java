@@ -1,5 +1,7 @@
 package com.tz.redismanager.domain.vo;
 
+import com.tz.redismanager.constant.ConstInterface;
+
 import java.util.Date;
 
 /**
@@ -20,6 +22,12 @@ public class UserResp {
      * 用户名
      */
     private String name;
+
+    /**
+     * 状态[1=启用,0=禁用]
+     * {@link ConstInterface.USER_STATUS}
+     */
+    private Integer status;
 
     /**
      * 备注
@@ -60,6 +68,14 @@ public class UserResp {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getNote() {

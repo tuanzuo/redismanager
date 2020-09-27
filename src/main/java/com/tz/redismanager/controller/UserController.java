@@ -44,6 +44,12 @@ public class UserController {
         return userService.updateInfo(vo);
     }
 
+    @RequestMapping("update/status")
+    @TokenAuth
+    public ApiResult<?> updateStatus(@Validated({ValidGroup.updateUserStatus.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
+        return userService.updateStatus(vo.getIds(), vo.getStatus(), tokenContext);
+    }
+
     @RequestMapping("update/pwd")
     @TokenAuth
     public ApiResult<?> updatePwd(@Validated({ValidGroup.updateUserPwd.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
@@ -54,8 +60,8 @@ public class UserController {
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
     @TokenAuth
-    public Object list(String name, Integer currentPage, Integer pageSize) {
-        return userService.queryList(name, currentPage, pageSize);
+    public Object list(String name, Integer status, Integer currentPage, Integer pageSize) {
+        return userService.queryList(name, status, currentPage, pageSize);
     }
 
 }

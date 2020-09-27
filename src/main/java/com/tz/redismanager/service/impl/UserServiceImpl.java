@@ -111,6 +111,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, TokenContext tokenContext) {
+        userPOMapper.batchUpdateStatus(ids, status, tokenContext.getUserName());
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @Override
     public ApiResult<?> updatePwd(UserVO vo) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
         String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), vo.getPwd(), md5Salt).getBytes());
@@ -123,7 +129,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserListResp queryList(String name, Integer currentPage, Integer pageSize) {
+    public UserListResp queryList(String name, Integer status, Integer currentPage, Integer pageSize) {
         UserListResp resp = new UserListResp();
         if (null == currentPage || currentPage <= 0) {
             currentPage = 1;
@@ -134,12 +140,12 @@ public class UserServiceImpl implements IUserService {
         int offset = (currentPage - 1) * pageSize;
         int rows = pageSize;
 
-        Integer total = userPOMapper.countUser(name);
+        Integer total = userPOMapper.countUser(name, status);
         Pagination pagination = new Pagination();
         pagination.setTotal(total);
         pagination.setCurrent(currentPage);
         pagination.setPageSize(pageSize);
-        List<UserPO> list = userPOMapper.selectPage(name, offset, rows);
+        List<UserPO> list = userPOMapper.selectPage(name, status, offset, rows);
         list = Optional.ofNullable(list).orElse(new ArrayList<>());
         List<UserResp> userResps = new ArrayList<>();
         list.forEach(user -> {

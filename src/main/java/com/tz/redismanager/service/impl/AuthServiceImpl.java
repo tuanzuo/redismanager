@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * <p></p>
+ * <p>授权service</p>
  *
  * @version 1.3.0
  * @time 2020-08-29 13:50
@@ -59,6 +59,10 @@ public class AuthServiceImpl implements IAuthService {
         if (null == userPO) {
             return new ApiResult<>(ResultCode.LOGIN_FAIL);
         }
+        if (ConstInterface.USER_STATUS.DISABLE.equals(userPO.getStatus())) {
+            return new ApiResult<>(ResultCode.USER_DISABLE);
+        }
+
         String key = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userPO.getName(), userPO.getPwd(), md5Salt).getBytes());
         String loginKey = ConstInterface.CacheKey.USER_LOGIN + key;
         String token = stringRedisTemplate.opsForValue().get(loginKey);
