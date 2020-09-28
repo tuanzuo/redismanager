@@ -16,11 +16,11 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "b09b32900e49705ea047",
+    "revision": "8508587ff31f6747f34a",
     "url": "/umi.js"
   },
   {
-    "revision": "b09b32900e49705ea047",
+    "revision": "8508587ff31f6747f34a",
     "url": "/umi.css"
   },
   {
@@ -36,15 +36,15 @@ self.__precacheManifest = [
     "url": "/p__404.async.js"
   },
   {
-    "revision": "0f5131bdf479cc274806",
+    "revision": "90c45d0fe208a17458cd",
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "1a3ae82f554d0912bb4e",
+    "revision": "36675b941742dacc8610",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
-    "revision": "9b87cff8cf2adf0fe77f",
+    "revision": "f04a57b3ba144a10c886",
     "url": "/p__UserManager__models__usermanager.js.async.js"
   },
   {
@@ -68,15 +68,15 @@ self.__precacheManifest = [
     "url": "/p__Account__Settings__models__geographic.js.async.js"
   },
   {
-    "revision": "af0964542c7cac8d6a59",
+    "revision": "476972bba5e61c80de98",
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "5423f638851bd441057fb363969ac6c9",
-    "url": "/favicon.png.redis"
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
   },
   {
-    "revision": "9046bb168c8d5992a667",
+    "revision": "c094fe8b86243283cb71",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -92,7 +92,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "9046bb168c8d5992a667",
+    "revision": "c094fe8b86243283cb71",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -112,12 +112,12 @@ self.__precacheManifest = [
     "url": "/icons\\icon-128x128.png"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png.back"
+    "revision": "5423f638851bd441057fb363969ac6c9",
+    "url": "/favicon.png.redis"
   },
   {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png.back"
   },
   {
     "revision": "997faa0a6c43934266f5",

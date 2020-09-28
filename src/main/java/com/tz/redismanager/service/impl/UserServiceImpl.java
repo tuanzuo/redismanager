@@ -36,6 +36,7 @@ import java.util.*;
 public class UserServiceImpl implements IUserService {
 
     private static final Integer PAGE_SIZE = 10;
+    private static final String DEFAULT_PWD = "123456";
 
     private static List<String> noteList = Arrays.asList("世界那么大", "我想去看看", "生活不只是苟且", "还有诗和远方",
             "有人与我立黄昏", "有人问我粥可温", "有人与我捻熄灯", "有人共我书半生",
@@ -125,6 +126,19 @@ public class UserServiceImpl implements IUserService {
         if (updateCont != 1) {
             return new ApiResult<>(ResultCode.UPDATE_PWD_FAIL);
         }
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @Override
+    public ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext) {
+        UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
+        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), DEFAULT_PWD, md5Salt).getBytes());
+        UserPO update = new UserPO();
+        update.setId(userTemp.getId());
+        update.setPwd(encodePwd);
+        update.setUpdater(tokenContext.getUserName());
+        update.setUpdateTime(new Date());
+        userPOMapper.updateByPrimaryKeySelective(update);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 

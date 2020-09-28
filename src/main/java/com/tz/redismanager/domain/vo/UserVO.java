@@ -5,6 +5,7 @@ import com.tz.redismanager.validator.ValidGroup;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public class UserVO {
     /**
      * 用户id
      */
+    @NotNull(message = "用户id不能为空", groups = {ValidGroup.resetUserPwd.class})
     private Integer id;
 
     /**

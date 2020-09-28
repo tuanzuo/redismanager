@@ -25,5 +25,7 @@ public interface IUserService {
 
     ApiResult<?> updatePwd(UserVO vo);
 
+    ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext);
+
     UserListResp queryList(String name, Integer status, Integer currentPage, Integer pageSize);
 }

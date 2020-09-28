@@ -57,6 +57,12 @@ public class UserController {
         return userService.updatePwd(vo);
     }
 
+    @RequestMapping("reset/pwd")
+    @TokenAuth
+    public ApiResult<?> resetPwd(@Validated({ValidGroup.resetUserPwd.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
+        return userService.resetPwd(vo, tokenContext);
+    }
+
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
     @TokenAuth
