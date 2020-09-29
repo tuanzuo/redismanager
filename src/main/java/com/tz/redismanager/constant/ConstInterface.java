@@ -50,9 +50,12 @@ public interface ConstInterface {
         String REDIS_CONFIG_CACHER = "redisConfigCacher";
     }
 
+    //缓存key
     interface CacheKey {
-        String USER_INFO = "rm:user:info:";
-        String USER_LOGIN = "rm:user:login:";
+        //认证信息的key
+        String USER_AUTH = "rm:user:auth:";
+        //映射到认证信息的key
+        String USER_TO_AUTH = "rm:user:to:auth:";
     }
 
     interface Auth {

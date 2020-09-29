@@ -1,7 +1,6 @@
 package com.tz.redismanager.token;
 
 import com.tz.redismanager.constant.ConstInterface;
-import com.tz.redismanager.domain.vo.AuthResp;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.util.JsonUtils;
@@ -35,27 +34,25 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
             if (null != tokenAuth) {
                 String token = request.getHeader(ConstInterface.Auth.AUTHORIZATION);
                 TokenContext tokenContext = new TokenContext();
+                tokenContext.setToken(token);
                 try {
                     if (StringUtils.isBlank(token)) {
                         throw new RmException(ResultCode.TOKEN_AUTH_ERR);
                     }
-                    String userInfoKey = ConstInterface.CacheKey.USER_INFO + token;
-                    String authStr = stringRedisTemplate.opsForValue().get(userInfoKey);
-                    if (StringUtils.isBlank(authStr)) {
+                    String userInfoKey = ConstInterface.CacheKey.USER_AUTH + token;
+                    String tokenContextCache = stringRedisTemplate.opsForValue().get(userInfoKey);
+                    if (StringUtils.isBlank(tokenContextCache)) {
                         throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
                     }
-                    AuthResp authResp = JsonUtils.parseObject(authStr, AuthResp.class);
-                    if (null == authResp) {
+                    tokenContext = JsonUtils.parseObject(tokenContextCache, TokenContext.class);
+                    if (null == tokenContext) {
                         throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
                     }
-                    tokenContext.setUserId(authResp.getUser().getId());
-                    tokenContext.setUserName(authResp.getUser().getName());
                 } catch (Throwable e) {
                     if (tokenAuth.required()) {
                         throw e;
                     }
                 }
-                tokenContext.setToken(token);
                 TokenContextHolder.set(tokenContext);
             }
         }

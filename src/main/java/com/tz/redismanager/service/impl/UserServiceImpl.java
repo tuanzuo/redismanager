@@ -2,7 +2,6 @@ package com.tz.redismanager.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Lists;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.dao.mapper.UserPOMapper;
@@ -16,13 +15,12 @@ import com.tz.redismanager.domain.vo.UserListResp;
 import com.tz.redismanager.domain.vo.UserResp;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.token.TokenContext;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.DigestUtils;
@@ -49,7 +47,7 @@ public class UserServiceImpl implements IUserService {
     private String md5Salt;
 
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private IAuthCacheService authCacheService;
     @Autowired
     private TransactionTemplate transactionTemplate;
     @Autowired
@@ -132,8 +130,8 @@ public class UserServiceImpl implements IUserService {
             return new ApiResult<>(ResultCode.UPDATE_PWD_FAIL);
         }
 
-        //重置密码后清理缓存token数据
-        this.cleanCacheTokenInfo(userTemp);
+        //修改密码后删除缓存auth数据
+        authCacheService.delAuthInfo(userTemp.getName(),userTemp.getPwd());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
@@ -148,8 +146,8 @@ public class UserServiceImpl implements IUserService {
         update.setUpdateTime(new Date());
         userPOMapper.updateByPrimaryKeySelective(update);
 
-        //重置密码后清理缓存token数据
-        this.cleanCacheTokenInfo(userTemp);
+        //重置密码后删除缓存auth数据
+        authCacheService.delAuthInfo(userTemp.getName(),userTemp.getPwd());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
@@ -183,12 +181,4 @@ public class UserServiceImpl implements IUserService {
         return resp;
     }
 
-    private void cleanCacheTokenInfo(UserPO userTemp) {
-        String key = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), userTemp.getPwd(), md5Salt).getBytes());
-        String loginKey = ConstInterface.CacheKey.USER_LOGIN + key;
-        String token = stringRedisTemplate.opsForValue().get(loginKey);
-        if (StringUtils.isNotBlank(token)) {
-            stringRedisTemplate.delete(Lists.newArrayList(ConstInterface.CacheKey.USER_INFO + token, loginKey));
-        }
-    }
 }
