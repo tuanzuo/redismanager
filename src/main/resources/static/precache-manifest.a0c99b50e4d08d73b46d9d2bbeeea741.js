@@ -16,11 +16,11 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "8508587ff31f6747f34a",
+    "revision": "a8c56bad1ff73a0efc53",
     "url": "/umi.js"
   },
   {
-    "revision": "8508587ff31f6747f34a",
+    "revision": "a8c56bad1ff73a0efc53",
     "url": "/umi.css"
   },
   {
@@ -40,7 +40,7 @@ self.__precacheManifest = [
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "36675b941742dacc8610",
+    "revision": "76d2d2bf999668a31df4",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {

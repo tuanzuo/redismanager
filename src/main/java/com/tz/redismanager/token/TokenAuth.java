@@ -15,4 +15,9 @@ import java.lang.annotation.*;
 @Documented
 public @interface TokenAuth {
 
+    /**
+     * 是否必须
+     * @return
+     */
+    boolean required() default true;
 }

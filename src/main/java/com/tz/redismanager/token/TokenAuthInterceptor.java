@@ -34,22 +34,28 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
             TokenAuth tokenAuth = handlerMethod.getMethodAnnotation(TokenAuth.class);
             if (null != tokenAuth) {
                 String token = request.getHeader(ConstInterface.Auth.AUTHORIZATION);
-                if (StringUtils.isBlank(token)) {
-                    throw new RmException(ResultCode.TOKEN_AUTH_ERR);
-                }
-                String userInfoKey = ConstInterface.CacheKey.USER_INFO + token;
-                String authStr = stringRedisTemplate.opsForValue().get(userInfoKey);
-                if (StringUtils.isBlank(authStr)) {
-                    throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
-                }
-                AuthResp authResp = JsonUtils.parseObject(authStr, AuthResp.class);
-                if (null == authResp) {
-                    throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
-                }
                 TokenContext tokenContext = new TokenContext();
-                tokenContext.setUserId(authResp.getUser().getId());
-                tokenContext.setUserName(authResp.getUser().getName());
-                tokenContext.setToken(authResp.getToken());
+                try {
+                    if (StringUtils.isBlank(token)) {
+                        throw new RmException(ResultCode.TOKEN_AUTH_ERR);
+                    }
+                    String userInfoKey = ConstInterface.CacheKey.USER_INFO + token;
+                    String authStr = stringRedisTemplate.opsForValue().get(userInfoKey);
+                    if (StringUtils.isBlank(authStr)) {
+                        throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
+                    }
+                    AuthResp authResp = JsonUtils.parseObject(authStr, AuthResp.class);
+                    if (null == authResp) {
+                        throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
+                    }
+                    tokenContext.setUserId(authResp.getUser().getId());
+                    tokenContext.setUserName(authResp.getUser().getName());
+                } catch (Throwable e) {
+                    if (tokenAuth.required()) {
+                        throw e;
+                    }
+                }
+                tokenContext.setToken(token);
                 TokenContextHolder.set(tokenContext);
             }
         }
