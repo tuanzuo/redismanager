@@ -11,6 +11,7 @@ public class TokenContext {
     private Integer userId;
     private String userName;
     private String token;
+    private String toToken;
 
     public Integer getUserId() {
         return userId;
@@ -34,5 +35,13 @@ public class TokenContext {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getToToken() {
+        return toToken;
+    }
+
+    public void setToToken(String toToken) {
+        this.toToken = toToken;
     }
 }

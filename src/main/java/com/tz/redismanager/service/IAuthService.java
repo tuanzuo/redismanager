@@ -3,6 +3,7 @@ package com.tz.redismanager.service;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.AuthResp;
 import com.tz.redismanager.domain.vo.LoginVO;
+import com.tz.redismanager.token.TokenContext;
 
 /**
  * <p></p>
@@ -14,5 +15,5 @@ public interface IAuthService {
 
     ApiResult<AuthResp> login(LoginVO vo);
 
-    ApiResult<Object> logout(String token);
+    ApiResult<Object> logout(TokenContext tokenContext);
 }

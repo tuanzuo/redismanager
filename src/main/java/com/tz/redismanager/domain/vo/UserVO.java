@@ -1,7 +1,12 @@
 package com.tz.redismanager.domain.vo;
 
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.validator.ValidGroup;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * 用户VO
@@ -14,7 +19,14 @@ public class UserVO {
     /**
      * 用户id
      */
+    @NotNull(message = "用户id不能为空", groups = {ValidGroup.resetUserPwd.class})
     private Integer id;
+
+    /**
+     * 用户id集合
+     */
+    @NotEmpty(message = "用户id集合不能为空", groups = {ValidGroup.updateUserStatus.class})
+    private List<Integer> ids;
 
     /**
      * 用户名
@@ -37,6 +49,13 @@ public class UserVO {
     private String oldPwd;
 
     /**
+     * 状态
+     * {@link ConstInterface.USER_STATUS}
+     */
+    @Range(min = 0, max = 1, message = "状态不能为空", groups = {ValidGroup.updateUserStatus.class})
+    private Integer status;
+
+    /**
      * 备注
      */
     private String note;
@@ -47,6 +66,14 @@ public class UserVO {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public List<Integer> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<Integer> ids) {
+        this.ids = ids;
     }
 
     public String getName() {
@@ -79,6 +106,14 @@ public class UserVO {
 
     public void setOldPwd(String oldPwd) {
         this.oldPwd = oldPwd;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getNote() {

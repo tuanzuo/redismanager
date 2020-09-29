@@ -5,6 +5,8 @@ import com.tz.redismanager.domain.vo.UserListResp;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.token.TokenContext;
 
+import java.util.List;
+
 /**
  * <p>用户service接口</p>
  *
@@ -19,7 +21,11 @@ public interface IUserService {
 
     ApiResult<?> updateInfo(UserVO vo);
 
+    ApiResult<?> updateStatus(List<Integer> ids, Integer status, TokenContext tokenContext);
+
     ApiResult<?> updatePwd(UserVO vo);
 
-    UserListResp queryList(String name, Integer currentPage, Integer pageSize);
+    ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext);
+
+    UserListResp queryList(String name, Integer status, Integer currentPage, Integer pageSize);
 }

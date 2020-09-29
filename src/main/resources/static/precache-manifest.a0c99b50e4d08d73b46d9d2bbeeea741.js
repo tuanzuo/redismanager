@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/p__User__RegisterResult.chunk.css"
   },
   {
-    "revision": "2bbbef523722aec2be92",
+    "revision": "871b12b35f777c3dd0ed",
     "url": "/vendors.chunk.css"
   },
   {
@@ -16,15 +16,15 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "97701c3c03c59372becb",
+    "revision": "a8c56bad1ff73a0efc53",
     "url": "/umi.js"
   },
   {
-    "revision": "97701c3c03c59372becb",
+    "revision": "a8c56bad1ff73a0efc53",
     "url": "/umi.css"
   },
   {
-    "revision": "2bbbef523722aec2be92",
+    "revision": "871b12b35f777c3dd0ed",
     "url": "/vendors.async.js"
   },
   {
@@ -36,15 +36,15 @@ self.__precacheManifest = [
     "url": "/p__404.async.js"
   },
   {
-    "revision": "e494d661aba644f90eab",
+    "revision": "90c45d0fe208a17458cd",
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "9573a787239a274ed920",
+    "revision": "76d2d2bf999668a31df4",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
-    "revision": "3f611a044356bfd0609c",
+    "revision": "f04a57b3ba144a10c886",
     "url": "/p__UserManager__models__usermanager.js.async.js"
   },
   {
@@ -68,7 +68,7 @@ self.__precacheManifest = [
     "url": "/p__Account__Settings__models__geographic.js.async.js"
   },
   {
-    "revision": "f02db8f923e4d4cb5364",
+    "revision": "476972bba5e61c80de98",
     "url": "/p__User__models__register.js.async.js"
   },
   {
@@ -76,7 +76,7 @@ self.__precacheManifest = [
     "url": "/favicon.png"
   },
   {
-    "revision": "20986f7b958e21536959",
+    "revision": "c094fe8b86243283cb71",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -92,7 +92,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "20986f7b958e21536959",
+    "revision": "c094fe8b86243283cb71",
     "url": "/layouts__BasicLayout.async.js"
   },
   {

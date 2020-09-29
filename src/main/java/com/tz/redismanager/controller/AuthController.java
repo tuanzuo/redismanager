@@ -29,9 +29,9 @@ public class AuthController {
     }
 
     @RequestMapping("logout")
-    @TokenAuth
+    @TokenAuth(required = false)
     public ApiResult<?> logout(TokenContext tokenContext) {
-        return authService.logout(tokenContext.getToken());
+        return authService.logout(tokenContext);
     }
 
 }

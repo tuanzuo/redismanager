@@ -17,11 +17,6 @@ public class AuthResp {
     private String token;
 
     /**
-     * 用户信息
-     */
-    private UserVO user = new UserVO();
-
-    /**
      * 用户的角色List
      */
     private Set<String> roles = new HashSet<>();
@@ -32,14 +27,6 @@ public class AuthResp {
 
     public void setToken(String token) {
         this.token = token;
-    }
-
-    public UserVO getUser() {
-        return user;
-    }
-
-    public void setUser(UserVO user) {
-        this.user = user;
     }
 
     public Set<String> getRoles() {

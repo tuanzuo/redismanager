@@ -20,6 +20,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.nio.charset.Charset;
@@ -38,6 +39,10 @@ import java.util.Set;
 public class ExceptionHandlerAdvice {
     private static final Logger logger = TraceLoggerFactory.getLogger(ExceptionHandlerAdvice.class);
 
+    private static final String CODE_NAME = "code";
+    private static final String CODE_700 = "700";
+    private static final String CODE_PRE_7 = "7";
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -49,8 +54,13 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(RmException.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Object handleRmException(HttpServletRequest request, RmException e) {
+    public Object handleRmException(HttpServletRequest request, HttpServletResponse response, RmException e) {
         this.getParams(request, e);
+        //v1.4.0 如果code以7开头，表示token验证不同过的code
+        if (null != e.getCode() && e.getCode().startsWith(CODE_PRE_7)) {
+            //往header中写入code='700'的数据，前端的/utils/request.js中会判断如果header中的code='700'，就强制退出系统
+            response.setHeader(CODE_NAME, CODE_700);
+        }
         return new ApiResult<>(e.getCode(), e.getMessage());
     }
 

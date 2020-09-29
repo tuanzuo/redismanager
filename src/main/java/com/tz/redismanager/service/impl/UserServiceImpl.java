@@ -15,6 +15,7 @@ import com.tz.redismanager.domain.vo.UserListResp;
 import com.tz.redismanager.domain.vo.UserResp;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.token.TokenContext;
 import org.springframework.beans.BeanUtils;
@@ -36,14 +37,17 @@ import java.util.*;
 public class UserServiceImpl implements IUserService {
 
     private static final Integer PAGE_SIZE = 10;
+    private static final String DEFAULT_PWD = "123456";
 
     private static List<String> noteList = Arrays.asList("世界那么大", "我想去看看", "生活不只是苟且", "还有诗和远方",
             "有人与我立黄昏", "有人问我粥可温", "有人与我捻熄灯", "有人共我书半生",
-            "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰, 有人醒我茶已冷");
+            "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰", "有人醒我茶已冷");
 
     @Value("${rd.encrypt.md5Salt}")
     private String md5Salt;
 
+    @Autowired
+    private IAuthCacheService authCacheService;
     @Autowired
     private TransactionTemplate transactionTemplate;
     @Autowired
@@ -111,6 +115,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, TokenContext tokenContext) {
+        userPOMapper.batchUpdateStatus(ids, status, tokenContext.getUserName());
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @Override
     public ApiResult<?> updatePwd(UserVO vo) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
         String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), vo.getPwd(), md5Salt).getBytes());
@@ -119,11 +129,30 @@ public class UserServiceImpl implements IUserService {
         if (updateCont != 1) {
             return new ApiResult<>(ResultCode.UPDATE_PWD_FAIL);
         }
+
+        //修改密码后删除缓存auth数据
+        authCacheService.delAuthInfo(userTemp.getName(),userTemp.getPwd());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @Override
-    public UserListResp queryList(String name, Integer currentPage, Integer pageSize) {
+    public ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext) {
+        UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
+        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), DEFAULT_PWD, md5Salt).getBytes());
+        UserPO update = new UserPO();
+        update.setId(userTemp.getId());
+        update.setPwd(encodePwd);
+        update.setUpdater(tokenContext.getUserName());
+        update.setUpdateTime(new Date());
+        userPOMapper.updateByPrimaryKeySelective(update);
+
+        //重置密码后删除缓存auth数据
+        authCacheService.delAuthInfo(userTemp.getName(),userTemp.getPwd());
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @Override
+    public UserListResp queryList(String name, Integer status, Integer currentPage, Integer pageSize) {
         UserListResp resp = new UserListResp();
         if (null == currentPage || currentPage <= 0) {
             currentPage = 1;
@@ -134,12 +163,12 @@ public class UserServiceImpl implements IUserService {
         int offset = (currentPage - 1) * pageSize;
         int rows = pageSize;
 
-        Integer total = userPOMapper.countUser(name);
+        Integer total = userPOMapper.countUser(name, status);
         Pagination pagination = new Pagination();
         pagination.setTotal(total);
         pagination.setCurrent(currentPage);
         pagination.setPageSize(pageSize);
-        List<UserPO> list = userPOMapper.selectPage(name, offset, rows);
+        List<UserPO> list = userPOMapper.selectPage(name, status, offset, rows);
         list = Optional.ofNullable(list).orElse(new ArrayList<>());
         List<UserResp> userResps = new ArrayList<>();
         list.forEach(user -> {
@@ -151,4 +180,5 @@ public class UserServiceImpl implements IUserService {
         resp.setList(userResps);
         return resp;
     }
+
 }

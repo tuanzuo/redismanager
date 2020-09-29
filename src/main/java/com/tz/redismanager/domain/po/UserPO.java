@@ -1,5 +1,7 @@
 package com.tz.redismanager.domain.po;
 
+import com.tz.redismanager.constant.ConstInterface;
+
 import java.util.Date;
 
 /**
@@ -24,6 +26,12 @@ public class UserPO {
      * 密码
      */
     private String pwd;
+
+    /**
+     * 状态[1=启用,0=禁用]
+     * {@link ConstInterface.USER_STATUS}
+     */
+    private Integer status;
 
     /**
      * 备注
@@ -52,6 +60,7 @@ public class UserPO {
 
     /**
      * 是否删除[1=是,0=否]
+     * {@link ConstInterface.IF_DEL}
      */
     private Integer ifDel;
 
@@ -77,6 +86,14 @@ public class UserPO {
 
     public void setPwd(String pwd) {
         this.pwd = pwd == null ? null : pwd.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getNote() {
