@@ -17,7 +17,7 @@ import com.tz.redismanager.domain.vo.UserResp;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IAuthCacheService;
-import com.tz.redismanager.service.IUserCipherService;
+import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.token.TokenContext;
 import org.springframework.beans.BeanUtils;
@@ -43,7 +43,7 @@ public class UserServiceImpl implements IUserService {
             "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰", "有人醒我茶已冷");
 
     @Autowired
-    private IUserCipherService userCipherService;
+    private ICipherService cipherService;
     @Autowired
     private IAuthCacheService authCacheService;
     @Autowired
@@ -59,7 +59,7 @@ public class UserServiceImpl implements IUserService {
     public ApiResult<?> register(UserVO vo) {
         UserPO userPO = new UserPO();
         BeanUtils.copyProperties(vo, userPO);
-        String encodePwd = userCipherService.getUserEncodeInfo(userPO.getName(), userPO.getPwd());
+        String encodePwd = cipherService.encodeUserInfoByMd5(userPO.getName(), userPO.getPwd());
         userPO.setPwd(encodePwd);
         Collections.shuffle(noteList);
         userPO.setNote(noteList.get(0));
@@ -121,8 +121,8 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ApiResult<?> updatePwd(UserVO vo) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
-        String encodePwd = userCipherService.getUserEncodeInfo(userTemp.getName(), vo.getPwd());
-        String encodeOldPwd = userCipherService.getUserEncodeInfo(userTemp.getName(), vo.getOldPwd());
+        String encodePwd = cipherService.encodeUserInfoByMd5(userTemp.getName(), vo.getPwd());
+        String encodeOldPwd = cipherService.encodeUserInfoByMd5(userTemp.getName(), vo.getOldPwd());
         int updateCont = userPOMapper.updateByPwd(userTemp.getId(), encodePwd, encodeOldPwd);
         if (updateCont != 1) {
             return new ApiResult<>(ResultCode.UPDATE_PWD_FAIL);
@@ -136,7 +136,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
-        String encodePwd = userCipherService.getUserEncodeInfo(userTemp.getName(), DEFAULT_PWD);
+        String encodePwd = cipherService.encodeUserInfoByMd5(userTemp.getName(), DEFAULT_PWD);
         UserPO update = new UserPO();
         update.setId(userTemp.getId());
         update.setPwd(encodePwd);

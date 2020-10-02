@@ -11,7 +11,7 @@ import com.tz.redismanager.domain.vo.LoginVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.IAuthService;
-import com.tz.redismanager.service.IUserCipherService;
+import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.token.TokenContext;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.UUIDUtils;
@@ -37,7 +37,7 @@ public class AuthServiceImpl implements IAuthService {
     private static final Logger logger = TraceLoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Autowired
-    private IUserCipherService userCipherService;
+    private ICipherService cipherService;
     @Autowired
     private UserPOMapper userPOMapper;
     @Autowired
@@ -47,7 +47,7 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public ApiResult<AuthResp> login(LoginVO vo) {
-        String encodePwd = userCipherService.getUserEncodeInfo(vo.getName(), vo.getPwd());
+        String encodePwd = cipherService.encodeUserInfoByMd5(vo.getName(), vo.getPwd());
         UserPO userPO = userPOMapper.selectByNamePwd(vo.getName(), encodePwd);
         if (null == userPO) {
             return new ApiResult<>(ResultCode.LOGIN_FAIL);
@@ -74,7 +74,7 @@ public class AuthServiceImpl implements IAuthService {
 
     private AuthResp buildLoginResp(UserPO userPO, List<RolePO> roles) {
         AuthResp resp = new AuthResp();
-        String token = userCipherService.getUserEncodeInfo(userPO.getName(), userPO.getPwd(), UUIDUtils.generateId());
+        String token = cipherService.encodeUserInfoByMd5(userPO.getName(), userPO.getPwd(), UUIDUtils.generateId());
         resp.setToken(token);
         roles = Optional.ofNullable(roles).orElse(new ArrayList<>());
         resp.setRoles(roles.stream().filter(role -> StringUtils.isNotBlank(role.getCode())).map(role -> role.getCode()).collect(Collectors.toSet()));

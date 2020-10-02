@@ -3,7 +3,7 @@ package com.tz.redismanager.service.impl;
 import com.google.common.collect.Sets;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.service.IAuthCacheService;
-import com.tz.redismanager.service.IUserCipherService;
+import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.token.TokenContext;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.JsonUtils;
@@ -33,13 +33,13 @@ public class AuthCacheServiceImpl implements IAuthCacheService {
     private static long userInfoExpireTime = 12 * 60 * 60;
 
     @Autowired
-    private IUserCipherService userCipherService;
+    private ICipherService cipherService;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public void setAuthInfo(String userName, String encodePwd, TokenContext context) {
-        String userEncodeKey = userCipherService.getUserEncodeInfo(userName, encodePwd);
+        String userEncodeKey = cipherService.encodeUserInfoByMd5(userName, encodePwd);
         String authKey = ConstInterface.CacheKey.USER_AUTH + context.getToken();
         String toAuthKey = ConstInterface.CacheKey.USER_TO_AUTH + userEncodeKey;
         context.setToToken(userEncodeKey);
@@ -50,7 +50,7 @@ public class AuthCacheServiceImpl implements IAuthCacheService {
     @Override
     public void delAuthInfo(String userName, String encodePwd) {
         Set<String> delKeys = new HashSet<>();
-        String userEncodeKey = userCipherService.getUserEncodeInfo(userName, encodePwd);
+        String userEncodeKey = cipherService.encodeUserInfoByMd5(userName, encodePwd);
         String toAuthKey = ConstInterface.CacheKey.USER_TO_AUTH + userEncodeKey;
         delKeys.add(toAuthKey);
         String token = stringRedisTemplate.opsForValue().get(toAuthKey);
