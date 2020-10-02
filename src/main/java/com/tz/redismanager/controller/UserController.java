@@ -2,6 +2,7 @@ package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.domain.param.UserPageParam;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.token.TokenAuth;
@@ -66,8 +67,8 @@ public class UserController {
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
     @TokenAuth
-    public Object list(String name, Integer status, Integer currentPage, Integer pageSize) {
-        return userService.queryList(name, status, currentPage, pageSize);
+    public Object list(UserPageParam param) {
+        return userService.queryList(param);
     }
 
 }

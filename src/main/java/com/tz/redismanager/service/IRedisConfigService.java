@@ -1,5 +1,6 @@
 package com.tz.redismanager.service;
 
+import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.token.TokenContext;
@@ -11,12 +12,9 @@ public interface IRedisConfigService {
     /**
      * 查询redis连接配置
      *
-     * @param searchKey
-     * @param pageNum   查询的页数
-     * @param pagesize  每页大小
      * @return
      */
-    List<RedisConfigPO> searchList(String searchKey, Integer pageNum, Integer pagesize);
+    List<RedisConfigPO> searchList(RedisConfigPageParam param);
 
     /**
      * 添加redis连接配置

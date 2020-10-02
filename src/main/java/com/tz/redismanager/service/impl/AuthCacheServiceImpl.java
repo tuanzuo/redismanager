@@ -1,6 +1,7 @@
 package com.tz.redismanager.service.impl;
 
 import com.google.common.collect.Sets;
+import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.token.TokenContext;
@@ -9,7 +10,6 @@ import com.tz.redismanager.util.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -33,9 +33,8 @@ public class AuthCacheServiceImpl implements IAuthCacheService {
     //12小时
     private static long userInfoExpireTime = 12 * 60 * 60;
 
-    @Value("${rd.encrypt.md5Salt}")
-    private String md5Salt;
-
+    @Autowired
+    private EncryptConfig encryptConfig;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
@@ -71,7 +70,7 @@ public class AuthCacheServiceImpl implements IAuthCacheService {
     }
 
     private String getUserEncodeKey(String userName, String encodePwd) {
-        return DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userName, encodePwd, md5Salt).getBytes());
+        return DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userName, encodePwd, encryptConfig.getMd5Salt()).getBytes());
     }
 
 
