@@ -152,8 +152,18 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserListResp queryList(UserPageParam param) {
-        UserListResp resp = new UserListResp();
         Integer total = userPOMapper.countUser(param.getName(), param.getStatus());
+        UserListResp resp = this.buildUserListResp(param, total);
+        if (total <= 0) {
+            return resp;
+        }
+        List<UserPO> list = userPOMapper.selectPage(param.getName(), param.getStatus(), param.getOffset(), param.getRows());
+        this.addUserResp(resp.getList(), list);
+        return resp;
+    }
+
+    private UserListResp buildUserListResp(UserPageParam param, Integer total) {
+        UserListResp resp = new UserListResp();
         Pagination pagination = new Pagination();
         pagination.setTotal(total);
         pagination.setCurrent(param.getCurrentPage());
@@ -161,18 +171,17 @@ public class UserServiceImpl implements IUserService {
         resp.setPagination(pagination);
         List<UserResp> userResps = new ArrayList<>();
         resp.setList(userResps);
-        if (total <= 0) {
-            return resp;
-        }
+        return resp;
+    }
 
-        List<UserPO> list = userPOMapper.selectPage(param.getName(), param.getStatus(), param.getOffset(), param.getRows());
+    private void addUserResp(List<UserResp> userResps, List<UserPO> list) {
         list = Optional.ofNullable(list).orElse(new ArrayList<>());
         list.forEach(user -> {
+            user.setPwd(null);
             UserResp userResp = new UserResp();
             BeanUtils.copyProperties(user, userResp);
             userResps.add(userResp);
         });
-        return resp;
     }
 
 }

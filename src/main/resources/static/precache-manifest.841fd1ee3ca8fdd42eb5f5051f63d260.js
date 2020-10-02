@@ -72,11 +72,11 @@ self.__precacheManifest = [
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png.back"
   },
   {
-    "revision": "c094fe8b86243283cb71",
+    "revision": "1ad4dc26293d48ef62b9",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -92,7 +92,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "c094fe8b86243283cb71",
+    "revision": "1ad4dc26293d48ef62b9",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -116,8 +116,8 @@ self.__precacheManifest = [
     "url": "/favicon.png.redis"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png.back"
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
   },
   {
     "revision": "997faa0a6c43934266f5",

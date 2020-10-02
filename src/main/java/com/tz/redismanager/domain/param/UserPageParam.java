@@ -6,7 +6,7 @@ import com.tz.redismanager.constant.ConstInterface;
  * <p>用户分页param</p>
  *
  * @author Administrator
- * @version 1.0
+ * @version 1.4.0
  * @time 2020-10-02 13:28
  **/
 public class UserPageParam {
