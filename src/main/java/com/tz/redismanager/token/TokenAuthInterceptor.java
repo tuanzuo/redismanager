@@ -28,35 +28,41 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (handler instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
-            TokenAuth tokenAuth = handlerMethod.getMethodAnnotation(TokenAuth.class);
-            if (null != tokenAuth) {
-                String token = request.getHeader(ConstInterface.Auth.AUTHORIZATION);
-                TokenContext tokenContext = new TokenContext();
-                tokenContext.setToken(token);
-                try {
-                    if (StringUtils.isBlank(token)) {
-                        throw new RmException(ResultCode.TOKEN_AUTH_ERR);
-                    }
-                    String userInfoKey = ConstInterface.CacheKey.USER_AUTH + token;
-                    String tokenContextCache = stringRedisTemplate.opsForValue().get(userInfoKey);
-                    if (StringUtils.isBlank(tokenContextCache)) {
-                        throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
-                    }
-                    tokenContext = JsonUtils.parseObject(tokenContextCache, TokenContext.class);
-                    if (null == tokenContext) {
-                        throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
-                    }
-                } catch (Throwable e) {
-                    if (tokenAuth.required()) {
-                        throw e;
-                    }
-                }
-                TokenContextHolder.set(tokenContext);
+        this.handleTokenContext(request, handler);
+        return super.preHandle(request, response, handler);
+    }
+
+    private void handleTokenContext(HttpServletRequest request, Object handler) {
+        if (!(handler instanceof HandlerMethod)) {
+            return;
+        }
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        TokenAuth tokenAuth = handlerMethod.getMethodAnnotation(TokenAuth.class);
+        if (null == tokenAuth) {
+            return;
+        }
+        String token = request.getHeader(ConstInterface.Auth.AUTHORIZATION);
+        TokenContext tokenContext = new TokenContext();
+        tokenContext.setToken(token);
+        try {
+            if (StringUtils.isBlank(token)) {
+                throw new RmException(ResultCode.TOKEN_AUTH_ERR);
+            }
+            String userInfoKey = ConstInterface.CacheKey.USER_AUTH + token;
+            String tokenContextCache = stringRedisTemplate.opsForValue().get(userInfoKey);
+            if (StringUtils.isBlank(tokenContextCache)) {
+                throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
+            }
+            tokenContext = JsonUtils.parseObject(tokenContextCache, TokenContext.class);
+            if (null == tokenContext) {
+                throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
+            }
+        } catch (Throwable e) {
+            if (tokenAuth.required()) {
+                throw e;
             }
         }
-        return super.preHandle(request, response, handler);
+        TokenContextHolder.set(tokenContext);
     }
 
     @Override

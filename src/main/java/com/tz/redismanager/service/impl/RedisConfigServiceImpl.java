@@ -3,6 +3,7 @@ package com.tz.redismanager.service.impl;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
+import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.service.IRedisConfigService;
@@ -22,8 +23,6 @@ import java.util.List;
 @Service
 public class RedisConfigServiceImpl implements IRedisConfigService {
 
-    private static final Integer PAGE_SIZE = 9;
-
     @Autowired
     private EncryptConfig encryptConfig;
     @Autowired
@@ -32,21 +31,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     private RedisConfigPOMapper redisConfigPOMapper;
 
     @Override
-    public List<RedisConfigPO> searchList(String searchKey, Integer pageNum, Integer pagesize) {
-        if (StringUtils.isBlank(searchKey)) {
-            searchKey = null;
-        } else {
-            searchKey = searchKey.trim();
-        }
-        if (null == pageNum || pageNum <= 0) {
-            pageNum = 1;
-        }
-        if (null == pagesize || pagesize <= 0) {
-            pagesize = PAGE_SIZE;
-        }
-        int offset = (pageNum - 1) * pagesize;
-        int rows = pagesize;
-        return redisConfigPOMapper.selectPage(searchKey, offset, rows);
+    public List<RedisConfigPO> searchList(RedisConfigPageParam param) {
+        return redisConfigPOMapper.selectPage(param.getSearchKey(), param.getOffset(), param.getRows());
     }
 
     @Override

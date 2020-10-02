@@ -1,6 +1,7 @@
 package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
+import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.service.IRedisConfigService;
@@ -36,9 +37,9 @@ public class RedisConfigController {
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
     @TokenAuth
-    public Object list(String searchKey, Integer pageNum, Integer pagesize) {
+    public Object list(RedisConfigPageParam param) {
         Map<String, List<RedisConfigPO>> map = new HashMap<>();
-        map.put("configList", redisConfigService.searchList(searchKey, pageNum, pagesize));
+        map.put("configList", redisConfigService.searchList(param));
         return map;
     }
 

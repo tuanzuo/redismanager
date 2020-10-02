@@ -2,11 +2,13 @@ package com.tz.redismanager.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.dao.mapper.UserPOMapper;
 import com.tz.redismanager.dao.mapper.UserRoleRelationPOMapper;
 import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.domain.param.UserPageParam;
 import com.tz.redismanager.domain.po.RolePO;
 import com.tz.redismanager.domain.po.UserPO;
 import com.tz.redismanager.domain.po.UserRoleRelationPO;
@@ -20,7 +22,6 @@ import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.token.TokenContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.DigestUtils;
@@ -36,16 +37,14 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    private static final Integer PAGE_SIZE = 10;
     private static final String DEFAULT_PWD = "123456";
 
     private static List<String> noteList = Arrays.asList("世界那么大", "我想去看看", "生活不只是苟且", "还有诗和远方",
             "有人与我立黄昏", "有人问我粥可温", "有人与我捻熄灯", "有人共我书半生",
             "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰", "有人醒我茶已冷");
 
-    @Value("${rd.encrypt.md5Salt}")
-    private String md5Salt;
-
+    @Autowired
+    private EncryptConfig encryptConfig;
     @Autowired
     private IAuthCacheService authCacheService;
     @Autowired
@@ -61,7 +60,7 @@ public class UserServiceImpl implements IUserService {
     public ApiResult<?> register(UserVO vo) {
         UserPO userPO = new UserPO();
         BeanUtils.copyProperties(vo, userPO);
-        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userPO.getName(), userPO.getPwd(), md5Salt).getBytes());
+        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userPO.getName(), userPO.getPwd(), encryptConfig.getMd5Salt()).getBytes());
         userPO.setPwd(encodePwd);
         Collections.shuffle(noteList);
         userPO.setNote(noteList.get(0));
@@ -123,22 +122,22 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ApiResult<?> updatePwd(UserVO vo) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
-        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), vo.getPwd(), md5Salt).getBytes());
-        String encodeOldPwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), vo.getOldPwd(), md5Salt).getBytes());
+        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), vo.getPwd(), encryptConfig.getMd5Salt()).getBytes());
+        String encodeOldPwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), vo.getOldPwd(), encryptConfig.getMd5Salt()).getBytes());
         int updateCont = userPOMapper.updateByPwd(userTemp.getId(), encodePwd, encodeOldPwd);
         if (updateCont != 1) {
             return new ApiResult<>(ResultCode.UPDATE_PWD_FAIL);
         }
 
         //修改密码后删除缓存auth数据
-        authCacheService.delAuthInfo(userTemp.getName(),userTemp.getPwd());
+        authCacheService.delAuthInfo(userTemp.getName(), userTemp.getPwd());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @Override
     public ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
-        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), DEFAULT_PWD, md5Salt).getBytes());
+        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), DEFAULT_PWD, encryptConfig.getMd5Salt()).getBytes());
         UserPO update = new UserPO();
         update.setId(userTemp.getId());
         update.setPwd(encodePwd);
@@ -147,38 +146,42 @@ public class UserServiceImpl implements IUserService {
         userPOMapper.updateByPrimaryKeySelective(update);
 
         //重置密码后删除缓存auth数据
-        authCacheService.delAuthInfo(userTemp.getName(),userTemp.getPwd());
+        authCacheService.delAuthInfo(userTemp.getName(), userTemp.getPwd());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @Override
-    public UserListResp queryList(String name, Integer status, Integer currentPage, Integer pageSize) {
-        UserListResp resp = new UserListResp();
-        if (null == currentPage || currentPage <= 0) {
-            currentPage = 1;
+    public UserListResp queryList(UserPageParam param) {
+        Integer total = userPOMapper.countUser(param.getName(), param.getStatus());
+        UserListResp resp = this.buildUserListResp(param, total);
+        if (total <= 0) {
+            return resp;
         }
-        if (null == pageSize || pageSize <= 0) {
-            pageSize = PAGE_SIZE;
-        }
-        int offset = (currentPage - 1) * pageSize;
-        int rows = pageSize;
+        List<UserPO> list = userPOMapper.selectPage(param.getName(), param.getStatus(), param.getOffset(), param.getRows());
+        this.addUserResp(resp.getList(), list);
+        return resp;
+    }
 
-        Integer total = userPOMapper.countUser(name, status);
+    private UserListResp buildUserListResp(UserPageParam param, Integer total) {
+        UserListResp resp = new UserListResp();
         Pagination pagination = new Pagination();
         pagination.setTotal(total);
-        pagination.setCurrent(currentPage);
-        pagination.setPageSize(pageSize);
-        List<UserPO> list = userPOMapper.selectPage(name, status, offset, rows);
-        list = Optional.ofNullable(list).orElse(new ArrayList<>());
+        pagination.setCurrent(param.getCurrentPage());
+        pagination.setPageSize(param.getPageSize());
+        resp.setPagination(pagination);
         List<UserResp> userResps = new ArrayList<>();
+        resp.setList(userResps);
+        return resp;
+    }
+
+    private void addUserResp(List<UserResp> userResps, List<UserPO> list) {
+        list = Optional.ofNullable(list).orElse(new ArrayList<>());
         list.forEach(user -> {
+            user.setPwd(null);
             UserResp userResp = new UserResp();
             BeanUtils.copyProperties(user, userResp);
             userResps.add(userResp);
         });
-        resp.setPagination(pagination);
-        resp.setList(userResps);
-        return resp;
     }
 
 }

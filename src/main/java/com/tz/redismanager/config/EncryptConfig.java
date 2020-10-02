@@ -23,6 +23,11 @@ public class EncryptConfig {
      */
     private String publicKey;
 
+    /**
+     * md5加盐
+     */
+    private String md5Salt;
+
     public String getPrivateKey() {
         return privateKey;
     }
@@ -37,5 +42,13 @@ public class EncryptConfig {
 
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
+    }
+
+    public String getMd5Salt() {
+        return md5Salt;
+    }
+
+    public void setMd5Salt(String md5Salt) {
+        this.md5Salt = md5Salt;
     }
 }
