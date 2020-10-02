@@ -2,7 +2,6 @@ package com.tz.redismanager.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.dao.mapper.UserPOMapper;
@@ -18,13 +17,13 @@ import com.tz.redismanager.domain.vo.UserResp;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IAuthCacheService;
+import com.tz.redismanager.service.IUserCipherService;
 import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.token.TokenContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.DigestUtils;
 
 import java.util.*;
 
@@ -44,7 +43,7 @@ public class UserServiceImpl implements IUserService {
             "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰", "有人醒我茶已冷");
 
     @Autowired
-    private EncryptConfig encryptConfig;
+    private IUserCipherService userCipherService;
     @Autowired
     private IAuthCacheService authCacheService;
     @Autowired
@@ -60,7 +59,7 @@ public class UserServiceImpl implements IUserService {
     public ApiResult<?> register(UserVO vo) {
         UserPO userPO = new UserPO();
         BeanUtils.copyProperties(vo, userPO);
-        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userPO.getName(), userPO.getPwd(), encryptConfig.getMd5Salt()).getBytes());
+        String encodePwd = userCipherService.getUserEncodeInfo(userPO.getName(), userPO.getPwd());
         userPO.setPwd(encodePwd);
         Collections.shuffle(noteList);
         userPO.setNote(noteList.get(0));
@@ -122,8 +121,8 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ApiResult<?> updatePwd(UserVO vo) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
-        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), vo.getPwd(), encryptConfig.getMd5Salt()).getBytes());
-        String encodeOldPwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), vo.getOldPwd(), encryptConfig.getMd5Salt()).getBytes());
+        String encodePwd = userCipherService.getUserEncodeInfo(userTemp.getName(), vo.getPwd());
+        String encodeOldPwd = userCipherService.getUserEncodeInfo(userTemp.getName(), vo.getOldPwd());
         int updateCont = userPOMapper.updateByPwd(userTemp.getId(), encodePwd, encodeOldPwd);
         if (updateCont != 1) {
             return new ApiResult<>(ResultCode.UPDATE_PWD_FAIL);
@@ -137,7 +136,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
-        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userTemp.getName(), DEFAULT_PWD, encryptConfig.getMd5Salt()).getBytes());
+        String encodePwd = userCipherService.getUserEncodeInfo(userTemp.getName(), DEFAULT_PWD);
         UserPO update = new UserPO();
         update.setId(userTemp.getId());
         update.setPwd(encodePwd);
