@@ -58,7 +58,7 @@ public class AuthServiceImpl implements IAuthService {
 
         //删除auth缓存数据
         authCacheService.delAuthInfo(userPO.getName(), userPO.getPwd());
-        List<RolePO> roles = userRoleRelationPOMapper.selectByUser(userPO.getId());
+        List<RolePO> roles = userRoleRelationPOMapper.selectByUserRole(userPO.getId(), ConstInterface.ROLE_STATUS.ENABLE);
         AuthResp resp = this.buildLoginResp(userPO, roles);
         TokenContext context = this.buildTokenContext(userPO, resp.getToken());
         //重新设置auth缓存数据
