@@ -2,6 +2,7 @@ package com.tz.redismanager.dao.mapper;
 
 import com.tz.redismanager.domain.po.RolePO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,8 +25,14 @@ public interface RolePOMapper {
 
     List<RolePO> getAll();
 
+    List<RolePO> selectPage(@Param("name") String name, @Param("code") String code, @Param("status") Integer status, @Param("offset") Integer offset, @Param("rows") Integer rows);
+
+    int countRole(@Param("name") String name, @Param("code") String code, @Param("status") Integer status);
+
     int updateByPrimaryKeySelective(RolePO record);
 
     int updateByPrimaryKey(RolePO record);
+
+    int batchUpdateStatus(@Param("ids") List<Integer> ids, @Param("status") Integer status, @Param("updater") String updater);
 
 }

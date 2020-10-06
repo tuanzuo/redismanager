@@ -100,10 +100,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> updateInfo(UserVO vo) {
+    public ApiResult<?> update(UserVO vo) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
+        if (null == userTemp || null == userTemp.getId()) {
+            return new ApiResult<>(ResultCode.QUERY_NULL);
+        }
         UserPO userPO = new UserPO();
-        userPO.setId(userTemp.getId());
+        userPO.setId(vo.getId());
         userPO.setName(vo.getName());
         userPO.setNote(vo.getNote());
         userPO.setUpdater(vo.getName());

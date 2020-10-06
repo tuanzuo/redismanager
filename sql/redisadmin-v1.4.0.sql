@@ -20,6 +20,7 @@ CREATE TABLE `t_role` (
   `id` int(11) NOT NULL auto_increment COMMENT '主键',
   `name` varchar(32) collate utf8_bin NOT NULL COMMENT '角色名称',
   `code` varchar(100) collate utf8_bin NOT NULL COMMENT '角色编码',
+  `status` int(2) NOT NULL default '1' COMMENT '状态[1=启用,0=禁用]',
   `note` varchar(200) collate utf8_bin default NULL COMMENT '备注',
   `creater` varchar(32) collate utf8_bin default NULL COMMENT '创建人',
   `create_time` datetime default NULL COMMENT '创建时间',

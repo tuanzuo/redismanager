@@ -1,5 +1,7 @@
 package com.tz.redismanager.domain.po;
 
+import com.tz.redismanager.constant.ConstInterface;
+
 import java.util.Date;
 
 /**
@@ -24,6 +26,12 @@ public class RolePO {
      * 角色编码
      */
     private String code;
+
+    /**
+     * 状态[1=启用,0=禁用]
+     * {@link ConstInterface.ROLE_STATUS}
+     */
+    private Integer status;
 
     /**
      * 备注
@@ -79,6 +87,14 @@ public class RolePO {
         this.code = code == null ? null : code.trim();
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public String getNote() {
         return note;
     }
@@ -126,4 +142,6 @@ public class RolePO {
     public void setIfDel(Integer ifDel) {
         this.ifDel = ifDel;
     }
+
+
 }

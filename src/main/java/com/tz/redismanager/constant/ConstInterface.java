@@ -13,6 +13,11 @@ public interface ConstInterface {
         Integer DISABLE = 0;
     }
 
+    interface ROLE_STATUS {
+        Integer ENABLE = 1;
+        Integer DISABLE = 0;
+    }
+
     interface IF_DEL {
         Integer YES = 1;
         Integer NO = 0;
