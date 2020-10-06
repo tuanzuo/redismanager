@@ -111,7 +111,7 @@ public class UserServiceImpl implements IUserService {
         userPO.setNote(vo.getNote());
         userPO.setUpdater(vo.getName());
         userPO.setUpdateTime(new Date());
-        userPOMapper.updateByPrimaryKey(userPO);
+        userPOMapper.updateByPrimaryKeySelective(userPO);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 

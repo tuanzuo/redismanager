@@ -59,7 +59,7 @@ public class RoleServiceImpl implements IRoleService {
             return new ApiResult<>(ResultCode.QUERY_NULL);
         }
         RolePO rolePO = this.buildUpdateRole(vo, tokenContext);
-        rolePOMapper.updateByPrimaryKey(rolePO);
+        rolePOMapper.updateByPrimaryKeySelective(rolePO);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 

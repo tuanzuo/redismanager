@@ -1,26 +1,26 @@
 self.__precacheManifest = [
   {
-    "revision": "375773cf329df98c5660",
-    "url": "/p__User__RegisterResult.chunk.css"
+    "revision": "26604635c35a62342145",
+    "url": "/p__User__Register.async.js"
   },
   {
     "revision": "871b12b35f777c3dd0ed",
     "url": "/vendors.chunk.css"
   },
   {
-    "revision": "375773cf329df98c5660",
-    "url": "/p__User__RegisterResult.async.js"
+    "revision": "24cbffe16e09862a01fb",
+    "url": "/p__User__RegisterResult.chunk.css"
   },
   {
     "revision": "9ef055bcf0c4b1f0ac5663173730b010",
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "a8c56bad1ff73a0efc53",
+    "revision": "efb9e7357f3b2f86ccfe",
     "url": "/umi.js"
   },
   {
-    "revision": "a8c56bad1ff73a0efc53",
+    "revision": "efb9e7357f3b2f86ccfe",
     "url": "/umi.css"
   },
   {
@@ -36,47 +36,51 @@ self.__precacheManifest = [
     "url": "/p__404.async.js"
   },
   {
-    "revision": "90c45d0fe208a17458cd",
+    "revision": "a52adbc6af8d341478fd",
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "76d2d2bf999668a31df4",
+    "revision": "16f2f1aa11c87de828ee",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
-    "revision": "f04a57b3ba144a10c886",
+    "revision": "ca65205a4840070015c2",
+    "url": "/p__RoleManager__models__rolemanager.js.async.js"
+  },
+  {
+    "revision": "56db706d88816254b964",
     "url": "/p__UserManager__models__usermanager.js.async.js"
   },
   {
-    "revision": "20cf405e8373fb91d143",
+    "revision": "902dc0f8ab30fe121383",
     "url": "/p__User__Login.chunk.css"
   },
   {
-    "revision": "20cf405e8373fb91d143",
+    "revision": "902dc0f8ab30fe121383",
     "url": "/p__User__Login.async.js"
   },
   {
-    "revision": "2211719e6a9d57f5ae57",
+    "revision": "26604635c35a62342145",
     "url": "/p__User__Register.chunk.css"
-  },
-  {
-    "revision": "2211719e6a9d57f5ae57",
-    "url": "/p__User__Register.async.js"
   },
   {
     "revision": "16b78e1338bea9cfa017",
     "url": "/p__Account__Settings__models__geographic.js.async.js"
   },
   {
-    "revision": "476972bba5e61c80de98",
+    "revision": "c8d42acad18849d053c3",
     "url": "/p__User__models__register.js.async.js"
+  },
+  {
+    "revision": "24cbffe16e09862a01fb",
+    "url": "/p__User__RegisterResult.async.js"
   },
   {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
     "url": "/favicon.png.back"
   },
   {
-    "revision": "1ad4dc26293d48ef62b9",
+    "revision": "d1e5392efe276dea4dd1",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -92,7 +96,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "1ad4dc26293d48ef62b9",
+    "revision": "d1e5392efe276dea4dd1",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -120,11 +124,11 @@ self.__precacheManifest = [
     "url": "/favicon.png"
   },
   {
-    "revision": "997faa0a6c43934266f5",
-    "url": "/14.chunk.css"
+    "revision": "2bb44b51f4fb160116e2",
+    "url": "/15.chunk.css"
   },
   {
-    "revision": "997faa0a6c43934266f5",
-    "url": "/14.async.js"
+    "revision": "2bb44b51f4fb160116e2",
+    "url": "/15.async.js"
   }
 ];
