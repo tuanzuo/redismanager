@@ -20,7 +20,7 @@ public interface IUserService {
 
     ApiResult<?> currentUser(TokenContext tokenContext);
 
-    ApiResult<?> updateInfo(UserVO vo);
+    ApiResult<?> update(UserVO vo);
 
     ApiResult<?> updateStatus(List<Integer> ids, Integer status, TokenContext tokenContext);
 

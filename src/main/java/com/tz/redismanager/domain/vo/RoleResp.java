@@ -5,13 +5,13 @@ import com.tz.redismanager.constant.ConstInterface;
 import java.util.Date;
 
 /**
- * <p>用户返回对象</p>
+ * <p>角色返回对象</p>
  *
  * @author Administrator
  * @version 1.4.0
  * @time 2020-09-26 16:43
  **/
-public class UserResp {
+public class RoleResp {
 
     /**
      * 主键
@@ -19,13 +19,18 @@ public class UserResp {
     private Integer id;
 
     /**
-     * 用户名
+     * 角色名称
      */
     private String name;
 
     /**
+     * 角色编码
+     */
+    private String code;
+
+    /**
      * 状态[1=启用,0=禁用]
-     * {@link ConstInterface.USER_STATUS}
+     * {@link ConstInterface.ROLE_STATUS}
      */
     private Integer status;
 
@@ -68,6 +73,14 @@ public class UserResp {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Integer getStatus() {

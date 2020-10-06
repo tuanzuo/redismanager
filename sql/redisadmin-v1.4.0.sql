@@ -20,12 +20,13 @@ CREATE TABLE `t_role` (
   `id` int(11) NOT NULL auto_increment COMMENT '主键',
   `name` varchar(32) collate utf8_bin NOT NULL COMMENT '角色名称',
   `code` varchar(100) collate utf8_bin NOT NULL COMMENT '角色编码',
+  `status` int(2) NOT NULL default '1' COMMENT '状态[1=启用,0=禁用]',
   `note` varchar(200) collate utf8_bin default NULL COMMENT '备注',
   `creater` varchar(32) collate utf8_bin default NULL COMMENT '创建人',
   `create_time` datetime default NULL COMMENT '创建时间',
   `updater` varchar(32) collate utf8_bin default NULL COMMENT '修改人',
   `update_time` datetime default NULL COMMENT '修改时间',
-  `if_del` int(2) default NULL COMMENT '是否删除[1=是,0=否]',
+  `if_del` int(2) NOT NULL default '0' COMMENT '是否删除[1=是,0=否]',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unique_code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='角色表';

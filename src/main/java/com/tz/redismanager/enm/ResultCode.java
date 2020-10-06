@@ -14,6 +14,7 @@ public enum ResultCode {
     LOGIN_FAIL("600003", "用户名或者密码不正确"),
     UPDATE_PWD_FAIL("600004", "密码修改失败，请检查原密码是否正确"),
     USER_DISABLE("600005", "账号被禁用,请联系管理员"),
+    QUERY_NULL("600006", "查询不到数据"),
 
     TOKEN_AUTH_ERR("700001", "token验证失败"),
     TOKEN_AUTH_EXPIRE("700002", "token过期,请重新登录"),

@@ -1,9 +1,9 @@
 package com.tz.redismanager.service.impl;
 
 import com.google.common.collect.Sets;
-import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.service.IAuthCacheService;
+import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.token.TokenContext;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.JsonUtils;
@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,13 +33,13 @@ public class AuthCacheServiceImpl implements IAuthCacheService {
     private static long userInfoExpireTime = 12 * 60 * 60;
 
     @Autowired
-    private EncryptConfig encryptConfig;
+    private ICipherService cipherService;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public void setAuthInfo(String userName, String encodePwd, TokenContext context) {
-        String userEncodeKey = this.getUserEncodeKey(userName, encodePwd);
+        String userEncodeKey = cipherService.encodeUserInfoByMd5(userName, encodePwd);
         String authKey = ConstInterface.CacheKey.USER_AUTH + context.getToken();
         String toAuthKey = ConstInterface.CacheKey.USER_TO_AUTH + userEncodeKey;
         context.setToToken(userEncodeKey);
@@ -51,7 +50,7 @@ public class AuthCacheServiceImpl implements IAuthCacheService {
     @Override
     public void delAuthInfo(String userName, String encodePwd) {
         Set<String> delKeys = new HashSet<>();
-        String userEncodeKey = this.getUserEncodeKey(userName, encodePwd);
+        String userEncodeKey = cipherService.encodeUserInfoByMd5(userName, encodePwd);
         String toAuthKey = ConstInterface.CacheKey.USER_TO_AUTH + userEncodeKey;
         delKeys.add(toAuthKey);
         String token = stringRedisTemplate.opsForValue().get(toAuthKey);
@@ -68,10 +67,5 @@ public class AuthCacheServiceImpl implements IAuthCacheService {
         String toAuthKey = ConstInterface.CacheKey.USER_TO_AUTH + tokenContext.getToToken();
         stringRedisTemplate.delete(Sets.newHashSet(authKey, toAuthKey));
     }
-
-    private String getUserEncodeKey(String userName, String encodePwd) {
-        return DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userName, encodePwd, encryptConfig.getMd5Salt()).getBytes());
-    }
-
 
 }

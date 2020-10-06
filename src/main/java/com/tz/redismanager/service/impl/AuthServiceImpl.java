@@ -11,15 +11,14 @@ import com.tz.redismanager.domain.vo.LoginVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.IAuthService;
+import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.token.TokenContext;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.UUIDUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +36,8 @@ public class AuthServiceImpl implements IAuthService {
 
     private static final Logger logger = TraceLoggerFactory.getLogger(AuthServiceImpl.class);
 
-    @Value("${rd.encrypt.md5Salt}")
-    private String md5Salt;
-
+    @Autowired
+    private ICipherService cipherService;
     @Autowired
     private UserPOMapper userPOMapper;
     @Autowired
@@ -49,7 +47,7 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public ApiResult<AuthResp> login(LoginVO vo) {
-        String encodePwd = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", vo.getName(), vo.getPwd(), md5Salt).getBytes());
+        String encodePwd = cipherService.encodeUserInfoByMd5(vo.getName(), vo.getPwd());
         UserPO userPO = userPOMapper.selectByNamePwd(vo.getName(), encodePwd);
         if (null == userPO) {
             return new ApiResult<>(ResultCode.LOGIN_FAIL);
@@ -60,7 +58,7 @@ public class AuthServiceImpl implements IAuthService {
 
         //删除auth缓存数据
         authCacheService.delAuthInfo(userPO.getName(), userPO.getPwd());
-        List<RolePO> roles = userRoleRelationPOMapper.selectByUser(userPO.getId());
+        List<RolePO> roles = userRoleRelationPOMapper.selectByUserRole(userPO.getId(), ConstInterface.ROLE_STATUS.ENABLE);
         AuthResp resp = this.buildLoginResp(userPO, roles);
         TokenContext context = this.buildTokenContext(userPO, resp.getToken());
         //重新设置auth缓存数据
@@ -76,14 +74,14 @@ public class AuthServiceImpl implements IAuthService {
 
     private AuthResp buildLoginResp(UserPO userPO, List<RolePO> roles) {
         AuthResp resp = new AuthResp();
-        String token = DigestUtils.md5DigestAsHex(String.format("%s_%s_%s", userPO.getName(), userPO.getPwd(), UUIDUtils.generateId()).getBytes());
+        String token = cipherService.encodeUserInfoByMd5(userPO.getName(), userPO.getPwd(), UUIDUtils.generateId());
         resp.setToken(token);
         roles = Optional.ofNullable(roles).orElse(new ArrayList<>());
         resp.setRoles(roles.stream().filter(role -> StringUtils.isNotBlank(role.getCode())).map(role -> role.getCode()).collect(Collectors.toSet()));
         return resp;
     }
 
-    private TokenContext buildTokenContext(UserPO user,String token){
+    private TokenContext buildTokenContext(UserPO user, String token) {
         TokenContext context = new TokenContext();
         context.setUserId(user.getId());
         context.setUserName(user.getName());

@@ -73,5 +73,23 @@ public interface ValidGroup {
     interface updateUserStatus {
     }
 
+    /**
+     * 添加角色信息
+     */
+    interface addRole {
+    }
+
+    /**
+     * 修改角色信息
+     */
+    interface updateRole {
+    }
+
+    /**
+     * 修改角色状态
+     */
+    interface updateRoleStatus {
+    }
+
 
 }

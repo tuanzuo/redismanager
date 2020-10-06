@@ -38,11 +38,11 @@ public class UserController {
         return userService.currentUser(tokenContext);
     }
 
-    @RequestMapping("update/info")
+    @RequestMapping("update")
     @TokenAuth
-    public ApiResult<?> updateInfo(@Validated({ValidGroup.updateUserInfo.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
+    public ApiResult<?> update(@Validated({ValidGroup.updateUserInfo.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
         vo.setId(tokenContext.getUserId());
-        return userService.updateInfo(vo);
+        return userService.update(vo);
     }
 
     @RequestMapping("update/status")

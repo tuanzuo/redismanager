@@ -20,13 +20,14 @@
     from t_user_role_relation
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectByUser" resultType="com.tz.redismanager.domain.po.RolePO">
+  <select id="selectByUserRole" resultType="com.tz.redismanager.domain.po.RolePO">
     SELECT
       rl.*
     FROM t_user_role_relation ur INNER JOIN t_role rl ON ur.role_id = rl.id
     WHERE ur.user_id = #{userId,jdbcType=INTEGER}
       AND ur.if_del = 0
       AND rl.if_del = 0
+      AND rl.status = #{roleStatus,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_user_role_relation

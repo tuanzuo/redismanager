@@ -24,7 +24,7 @@ public interface UserRoleRelationPOMapper {
 
     UserRoleRelationPO selectByPrimaryKey(Integer id);
 
-    List<RolePO> selectByUser(@Param("userId") Integer userId);
+    List<RolePO> selectByUserRole(@Param("userId") Integer userId, @Param("roleStatus") Integer roleStatus);
 
     int updateByPrimaryKeySelective(UserRoleRelationPO record);
 
