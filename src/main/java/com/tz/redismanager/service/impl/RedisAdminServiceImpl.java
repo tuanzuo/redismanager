@@ -44,23 +44,90 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     @SetRedisTemplate(whenIsNullContinueExec = true)
     @Override
     public List<RedisTreeNode> searchKey(@ConnectionId String id, String key) {
-        String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
-        RedisConfigPO configPO = redisContextService.getRedisConfigCache().get(id);
-        if (null != configPO) {
-            rootNodeTitle = configPO.getName();
-        }
         //Root树节点List
         List<RedisTreeNode> treeNodesForRoot = new ArrayList<>();
         //构建Root树节点
-        RedisTreeNode root = new RedisTreeNode(rootNodeTitle, ConstInterface.Common.ROOT_NODE_KEY, false);
-        root.setDisableCheckbox(true);
-        root.setDisabled(true);
-        root.setLeaf(true);
+        RedisTreeNode root = this.buildRootTreeNode(id);
         treeNodesForRoot.add(root);
         if (StringUtils.isBlank(key) || ConstInterface.Symbol.STAR.equals(key.trim())) {
             logger.error("[RedisAdmin] [searchKey] {查询key不能为空或者为*}");
             return treeNodesForRoot;
         }
+        //查询key集合
+        Set<String> keySet = this.getKeys(id, key);
+        if (CollectionUtils.isEmpty(keySet)) {
+            return treeNodesForRoot;
+        }
+        //设置root节点的title
+        this.setRootTreeNodeTitle(root, keySet.size());
+        //对key集合排序
+        List<String> keyList = this.sortKeys(keySet);
+        keySet = null;
+
+        long start = System.currentTimeMillis();
+        //生成树--1、将节点封装到Map中
+        List<RedisTreeNode> treeNodes = new ArrayList<>();
+        Map<String, RedisTreeNode> map = new HashMap<>();
+        Set<String> strSet = new HashSet<>();
+        this.buildTreeNode(keyList, treeNodes, map, strSet);
+        //生成树--2、设置tree的children tree
+        this.buildTreeNodeChildren(treeNodes, map, strSet);
+        keyList = null;
+
+        logger.info("wrapper keys to tree time:{}ms", (System.currentTimeMillis() - start));
+        //将查询到的keys生成的树节点List设置为Root树节点的子节点
+        this.setRootTreeNodeChildren(root, treeNodes);
+        return treeNodesForRoot;
+    }
+
+    /**
+     * 设置root节点的title
+     * @param root
+     * @param keyCount
+     */
+    private void setRootTreeNodeTitle(RedisTreeNode root, Integer keyCount) {
+        root.setTitle(root.getTitle() + ConstInterface.Symbol.BRACKET_LEFT + keyCount + ConstInterface.Symbol.BRACKET_RIGHT);
+    }
+
+    /**
+     * 构建Root树节点
+     * @param id
+     * @return
+     */
+    private RedisTreeNode buildRootTreeNode(String id) {
+        String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
+        RedisConfigPO configPO = redisContextService.getRedisConfigCache().get(id);
+        if (null != configPO) {
+            rootNodeTitle = configPO.getName();
+        }
+        RedisTreeNode root = new RedisTreeNode(rootNodeTitle, ConstInterface.Common.ROOT_NODE_KEY, false);
+        root.setDisableCheckbox(true);
+        root.setDisabled(true);
+        root.setLeaf(true);
+        return root;
+    }
+
+    /**
+     * 设置root节点的children
+     * @param root
+     * @param treeNodes
+     */
+    private void setRootTreeNodeChildren(RedisTreeNode root, List<RedisTreeNode> treeNodes) {
+        if (CollectionUtils.isNotEmpty(treeNodes)) {
+            root.setChildren(treeNodes);
+            root.setDisableCheckbox(false);
+            root.setDisabled(false);
+            root.setLeaf(false);
+        }
+    }
+
+    /**
+     * 得到key集合
+     * @param id
+     * @param key
+     * @return
+     */
+    private Set<String> getKeys(String id, String key) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         if (null == redisTemplate) {
             logger.error("[RedisAdmin] [searchKey] {id:{}查询不到redisTemplate}", id);
@@ -74,77 +141,100 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             this.reSetKeySerializer(redisTemplate);
             keySet = redisTemplate.keys(key.trim());
         }
-        logger.info("keys time:{},keys count:{}", (System.currentTimeMillis() - start), keySet.size());
-        if (CollectionUtils.isEmpty(keySet)) {
-            return treeNodesForRoot;
-        }
-        start = System.currentTimeMillis();
-        List<String> keyList = keySet.stream().sorted().collect(Collectors.toList());
-        logger.info("sort time:{}", (System.currentTimeMillis() - start));
-        start = System.currentTimeMillis();
-        keySet = null;
-        root.setTitle(root.getTitle() + "(" + keyList.size() + ")");
+        logger.info("get keys time:{}ms,keys count:{}", (System.currentTimeMillis() - start), keySet.size());
+        return keySet;
+    }
 
-        //生成树--1、将节点封装到Map中
-        List<RedisTreeNode> treeNodes = new ArrayList<>();
-        Map<String, RedisTreeNode> map = new HashMap<>();
-        Set<String> strSet = new HashSet<>();
+    /**
+     * 对key集合排序
+     * @param keySet
+     * @return
+     */
+    private List<String> sortKeys(Set<String> keySet){
+        long start = System.currentTimeMillis();
+        List<String> keyList = keySet.stream().sorted().collect(Collectors.toList());
+        logger.info("sort keys time:{}ms", (System.currentTimeMillis() - start));
+        return keyList;
+    }
+
+    /**
+     * 构建Tree节点
+     * @param keyList
+     * @param treeNodes
+     * @param map
+     * @param strSet
+     */
+    private void buildTreeNode(List<String> keyList, List<RedisTreeNode> treeNodes, Map<String, RedisTreeNode> map, Set<String> strSet) {
         keyList.forEach(temp -> {
             String[] strs = StringUtils.split(temp, ConstInterface.Symbol.COLON);
             if (ArrayUtils.isNotEmpty(strs) && strs.length > 1) {
-                String title = null;
-                Boolean isLeaf = false;
-                StringBuilder preTitle = new StringBuilder("");
-                for (int i = 0; i < strs.length; i++) {
-                    String str = strs[i];
-                    title = str;
-                    StringBuilder tempkeyBuilder = new StringBuilder();
-                    tempkeyBuilder.append(preTitle.toString()).append(title);
-                    if (i == strs.length - 1) {
-                        title = temp;
-                        tempkeyBuilder = new StringBuilder(temp);
-                        isLeaf = true;
-                    } else {
-                        tempkeyBuilder.append(ConstInterface.Symbol.COLON);
-                    }
-                    String tempkey = tempkeyBuilder.toString();
-                    strSet.add(tempkey);
-                    map.put(tempkey, new RedisTreeNode(title, title, tempkey, isLeaf, preTitle.toString()));
-                    preTitle.append(str).append(ConstInterface.Symbol.COLON);
-                }
+                this.buildTreeNodeMap(map, strSet, temp, strs);
             } else {
                 treeNodes.add(new RedisTreeNode(temp, temp, true));
             }
         });
-        //生成树--2、设置tree的children tree
-        if (CollectionUtils.isNotEmpty(strSet)) {
-            strSet.forEach(temp -> {
-                if (map.containsKey(temp)) {
-                    RedisTreeNode node = map.get(temp);
-                    if (StringUtils.isNotBlank(node.getPkey())) {
-                        RedisTreeNode parent = map.get(node.getPkey());
-                        parent.addChildren(node);
-                        //如果是叶子节点，则增加父节点,父父...节点中叶子结点的个数
-                        if (node.getIsLeaf()) {
-                            this.setParentTreeNodeInfo(map, parent);
-                        }
-                    } else {
-                        treeNodes.add(node);
-                    }
-                }
-            });
-        }
-        keyList = null;
+    }
 
-        logger.info("wrapper tree time:{}", (System.currentTimeMillis() - start));
-        //将查询到的keys生成的树节点List设置为Root树节点的子节点
-        if (CollectionUtils.isNotEmpty(treeNodes)) {
-            root.setChildren(treeNodes);
-            root.setDisableCheckbox(false);
-            root.setDisabled(false);
-            root.setLeaf(false);
+    /**
+     * 构建Tree节点的map集合
+     * @param map
+     * @param strSet
+     * @param temp
+     * @param strs
+     */
+    private void buildTreeNodeMap(Map<String, RedisTreeNode> map, Set<String> strSet, String temp, String[] strs) {
+        String title = null;
+        Boolean isLeaf = false;
+        StringBuilder preTitle = new StringBuilder("");
+        for (int i = 0; i < strs.length; i++) {
+            String str = strs[i];
+            title = str;
+            StringBuilder tempkeyBuilder = new StringBuilder();
+            tempkeyBuilder.append(preTitle.toString()).append(title);
+            if (i == strs.length - 1) {
+                title = temp;
+                tempkeyBuilder = new StringBuilder(temp);
+                isLeaf = true;
+            } else {
+                tempkeyBuilder.append(ConstInterface.Symbol.COLON);
+            }
+            String tempkey = tempkeyBuilder.toString();
+            strSet.add(tempkey);
+            map.put(tempkey, new RedisTreeNode(title, title, tempkey, isLeaf, preTitle.toString()));
+            preTitle.append(str).append(ConstInterface.Symbol.COLON);
         }
-        return treeNodesForRoot;
+    }
+
+    /**
+     * 构建Tree节点的Children
+     * @param treeNodes
+     * @param map
+     * @param strSet
+     */
+    private void buildTreeNodeChildren(List<RedisTreeNode> treeNodes, Map<String, RedisTreeNode> map, Set<String> strSet) {
+        strSet.forEach(temp -> {
+            RedisTreeNode node = map.get(temp);
+            //存在父节点
+            if (null != node && StringUtils.isNotBlank(node.getPkey())) {
+                this.setTreeNodeChildren(map, node);
+            } else {
+                treeNodes.add(node);
+            }
+        });
+    }
+
+    /**
+     * 设置Tree节点的Children
+     * @param map
+     * @param node
+     */
+    private void setTreeNodeChildren(Map<String, RedisTreeNode> map, RedisTreeNode node) {
+        RedisTreeNode parent = map.get(node.getPkey());
+        parent.addChildren(node);
+        //如果是叶子节点，则增加父节点,父父...节点中叶子结点的个数
+        if (node.getIsLeaf()) {
+            this.setParentTreeNodeInfo(map, parent);
+        }
     }
 
     /**

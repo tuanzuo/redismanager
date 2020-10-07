@@ -44,6 +44,8 @@ public interface ConstInterface {
         String UNDERLINE = "_";
         String MIDDLE_BRACKET_LEFT = "[";
         String MIDDLE_BRACKET_RIGHT = "]";
+        String BRACKET_LEFT = "(";
+        String BRACKET_RIGHT = ")";
     }
 
     interface Common {
