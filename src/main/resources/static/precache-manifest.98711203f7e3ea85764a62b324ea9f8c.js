@@ -16,11 +16,11 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "efb9e7357f3b2f86ccfe",
+    "revision": "1f09d643a66a38d60726",
     "url": "/umi.js"
   },
   {
-    "revision": "efb9e7357f3b2f86ccfe",
+    "revision": "1f09d643a66a38d60726",
     "url": "/umi.css"
   },
   {
@@ -80,7 +80,7 @@ self.__precacheManifest = [
     "url": "/favicon.png.back"
   },
   {
-    "revision": "d1e5392efe276dea4dd1",
+    "revision": "65f0a2d7dbac43f7c837",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -96,7 +96,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "d1e5392efe276dea4dd1",
+    "revision": "65f0a2d7dbac43f7c837",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
