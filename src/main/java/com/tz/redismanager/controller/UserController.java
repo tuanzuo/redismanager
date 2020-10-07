@@ -67,7 +67,7 @@ public class UserController {
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
     @TokenAuth
-    public Object list(UserPageParam param) {
+    public ApiResult<?> list(UserPageParam param) {
         return userService.queryList(param);
     }
 

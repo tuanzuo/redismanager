@@ -2,7 +2,6 @@ package com.tz.redismanager.service;
 
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.UserPageParam;
-import com.tz.redismanager.domain.vo.UserListResp;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.token.TokenContext;
 
@@ -28,5 +27,5 @@ public interface IUserService {
 
     ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext);
 
-    UserListResp queryList(UserPageParam param);
+    ApiResult<?> queryList(UserPageParam param);
 }

@@ -2,7 +2,6 @@ package com.tz.redismanager.service;
 
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
-import com.tz.redismanager.domain.vo.RoleListResp;
 import com.tz.redismanager.domain.vo.RoleVO;
 import com.tz.redismanager.token.TokenContext;
 
@@ -22,6 +21,6 @@ public interface IRoleService {
 
     ApiResult<?> updateStatus(List<Integer> ids, Integer status, TokenContext tokenContext);
 
-    RoleListResp queryList(RolePageParam param);
+    ApiResult<?> queryList(RolePageParam param);
 
 }

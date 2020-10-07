@@ -48,7 +48,7 @@ public class RoleController {
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
     @TokenAuth
-    public Object list(RolePageParam param) {
+    public ApiResult<?> list(RolePageParam param) {
         return roleService.queryList(param);
     }
 

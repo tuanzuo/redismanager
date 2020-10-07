@@ -131,15 +131,15 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserListResp queryList(UserPageParam param) {
+    public ApiResult<?> queryList(UserPageParam param) {
         Integer total = userPOMapper.countUser(param.getName(), param.getStatus());
         UserListResp resp = this.buildUserListResp(param, total);
         if (total <= 0) {
-            return resp;
+            return new ApiResult<>(ResultCode.SUCCESS, resp);
         }
         List<UserPO> list = userPOMapper.selectPage(param.getName(), param.getStatus(), param.getOffset(), param.getRows());
         this.addUserResp(resp.getList(), list);
-        return resp;
+        return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
 
     private UserPO buildRegisterUser(UserVO vo) {
