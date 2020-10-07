@@ -33,10 +33,10 @@ CREATE TABLE `t_role` (
 
 insert  into `t_role`(`id`,`name`,`code`,`status`,`note`,`creater`,`create_time`,`updater`,`update_time`,`if_del`)
 values
-(1,'超级管理员','superadmin',1,'超级管理人员',NULL,NULL,NULL,NULL,0),
-(2,'普通管理员','admin',1,'普通管理人员',NULL,NULL,NULL,NULL,0),
-(3,'测试','test',1,'测试人员',NULL,NULL,NULL,NULL,0),
-(4,'开发','develop',1,'开发人员',NULL,NULL,NULL,NULL,0);
+(1,'超级管理员','superadmin',1,'超级管理人员','superadmin',now(),'superadmin',now(),0),
+(2,'普通管理员','admin',1,'普通管理人员','superadmin',now(),'superadmin',now(),0),
+(3,'测试','test',1,'测试人员','superadmin',now(),'superadmin',now(),0),
+(4,'开发','develop',1,'开发人员','superadmin',now(),'superadmin',now(),0);
 
 
 CREATE TABLE `t_user` (
