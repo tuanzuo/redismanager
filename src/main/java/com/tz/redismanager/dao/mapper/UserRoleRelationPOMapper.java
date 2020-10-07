@@ -20,6 +20,8 @@ public interface UserRoleRelationPOMapper {
 
     int insert(UserRoleRelationPO record);
 
+    int insertBatch(@Param("userRoles") List<UserRoleRelationPO> userRoles);
+
     int insertSelective(UserRoleRelationPO record);
 
     UserRoleRelationPO selectByPrimaryKey(Integer id);

@@ -20,6 +20,7 @@ import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.token.TokenContext;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ import java.util.*;
 public class UserServiceImpl implements IUserService {
 
     private static final String DEFAULT_PWD = "123456";
+    private static final String ROLE_SUPER_ADMIN = "superadmin";
 
     private static List<String> noteList = Arrays.asList("世界那么大", "我想去看看", "生活不只是苟且", "还有诗和远方",
             "有人与我立黄昏", "有人问我粥可温", "有人与我捻熄灯", "有人共我书半生",
@@ -57,31 +59,18 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ApiResult<?> register(UserVO vo) {
-        UserPO userPO = new UserPO();
-        BeanUtils.copyProperties(vo, userPO);
-        String encodePwd = cipherService.encodeUserInfoByMd5(userPO.getName(), userPO.getPwd());
-        userPO.setPwd(encodePwd);
-        Collections.shuffle(noteList);
-        userPO.setNote(noteList.get(0));
-        userPO.setCreater(vo.getName());
-        userPO.setCreateTime(new Date());
-        userPO.setUpdater(vo.getName());
-        userPO.setUpdateTime(new Date());
-        userPO.setIfDel(ConstInterface.IF_DEL.NO);
+        UserPO userPO = this.buildRegisterUser(vo);
         List<RolePO> roles = rolePOMapper.getAll();
+        List<UserRoleRelationPO> userRoles = this.buildUserRoleRelations(vo, userPO, roles);
         transactionTemplate.execute((transactionStatus) -> {
             userPOMapper.insertSelective(userPO);
-            roles.forEach(temp -> {
-                UserRoleRelationPO userRole = new UserRoleRelationPO();
-                userRole.setUserId(userPO.getId());
-                userRole.setRoleId(temp.getId());
-                userRole.setCreater(vo.getName());
-                userRole.setCreateTime(new Date());
-                userRole.setUpdater(vo.getName());
-                userRole.setUpdateTime(new Date());
-                userRole.setIfDel(ConstInterface.IF_DEL.NO);
-                userRoleRelationPOMapper.insertSelective(userRole);
+            if (CollectionUtils.isEmpty(userRoles)) {
+                return null;
+            }
+            userRoles.forEach(temp->{
+                temp.setUserId(userPO.getId());
             });
+            userRoleRelationPOMapper.insertBatch(userRoles);
             return null;
         });
         return new ApiResult<>(ResultCode.SUCCESS);
@@ -101,16 +90,10 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ApiResult<?> update(UserVO vo) {
-        UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
-        if (null == userTemp || null == userTemp.getId()) {
+        if (this.checkUserExist(vo)) {
             return new ApiResult<>(ResultCode.QUERY_NULL);
         }
-        UserPO userPO = new UserPO();
-        userPO.setId(vo.getId());
-        userPO.setName(vo.getName());
-        userPO.setNote(vo.getNote());
-        userPO.setUpdater(vo.getName());
-        userPO.setUpdateTime(new Date());
+        UserPO userPO = this.buildUpdateUser(vo);
         userPOMapper.updateByPrimaryKeySelective(userPO);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
@@ -139,12 +122,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
-        String encodePwd = cipherService.encodeUserInfoByMd5(userTemp.getName(), DEFAULT_PWD);
-        UserPO update = new UserPO();
-        update.setId(userTemp.getId());
-        update.setPwd(encodePwd);
-        update.setUpdater(tokenContext.getUserName());
-        update.setUpdateTime(new Date());
+        UserPO update = this.buildResetPwdUser(tokenContext, userTemp);
         userPOMapper.updateByPrimaryKeySelective(update);
 
         //重置密码后删除缓存auth数据
@@ -162,6 +140,73 @@ public class UserServiceImpl implements IUserService {
         List<UserPO> list = userPOMapper.selectPage(param.getName(), param.getStatus(), param.getOffset(), param.getRows());
         this.addUserResp(resp.getList(), list);
         return resp;
+    }
+
+    private UserPO buildRegisterUser(UserVO vo) {
+        UserPO userPO = new UserPO();
+        BeanUtils.copyProperties(vo, userPO);
+        String encodePwd = cipherService.encodeUserInfoByMd5(userPO.getName(), userPO.getPwd());
+        userPO.setPwd(encodePwd);
+        Collections.shuffle(noteList);
+        userPO.setNote(noteList.get(0));
+        userPO.setCreater(vo.getName());
+        userPO.setCreateTime(new Date());
+        userPO.setUpdater(vo.getName());
+        userPO.setUpdateTime(new Date());
+        userPO.setIfDel(ConstInterface.IF_DEL.NO);
+        return userPO;
+    }
+
+    private List<UserRoleRelationPO> buildUserRoleRelations(UserVO vo, UserPO userPO, List<RolePO> roles) {
+        List<UserRoleRelationPO> userRoles = new ArrayList<>();
+        roles.forEach(temp -> {
+            if (ROLE_SUPER_ADMIN.equals(temp.getCode())) {
+                return;
+            }
+            UserRoleRelationPO userRole = this.buildUserRoleRelation(vo, userPO, temp);
+            userRoles.add(userRole);
+        });
+        return userRoles;
+    }
+
+    private UserRoleRelationPO buildUserRoleRelation(UserVO vo, UserPO userPO, RolePO temp) {
+        UserRoleRelationPO userRole = new UserRoleRelationPO();
+        userRole.setUserId(userPO.getId());
+        userRole.setRoleId(temp.getId());
+        userRole.setCreater(vo.getName());
+        userRole.setCreateTime(new Date());
+        userRole.setUpdater(vo.getName());
+        userRole.setUpdateTime(new Date());
+        userRole.setIfDel(ConstInterface.IF_DEL.NO);
+        return userRole;
+    }
+
+    private boolean checkUserExist(UserVO vo) {
+        UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
+        if (null == userTemp || null == userTemp.getId()) {
+            return true;
+        }
+        return false;
+    }
+
+    private UserPO buildUpdateUser(UserVO vo) {
+        UserPO userPO = new UserPO();
+        userPO.setId(vo.getId());
+        userPO.setName(vo.getName());
+        userPO.setNote(vo.getNote());
+        userPO.setUpdater(vo.getName());
+        userPO.setUpdateTime(new Date());
+        return userPO;
+    }
+
+    private UserPO buildResetPwdUser(TokenContext tokenContext, UserPO userTemp) {
+        String encodePwd = cipherService.encodeUserInfoByMd5(userTemp.getName(), DEFAULT_PWD);
+        UserPO update = new UserPO();
+        update.setId(userTemp.getId());
+        update.setPwd(encodePwd);
+        update.setUpdater(tokenContext.getUserName());
+        update.setUpdateTime(new Date());
+        return update;
     }
 
     private UserListResp buildUserListResp(UserPageParam param, Integer total) {

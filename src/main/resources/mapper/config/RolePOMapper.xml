@@ -45,11 +45,11 @@
     ORDER BY create_time DESC
     LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
   </select>
-  <select id="countRole" resultType="java.lang.Integer">
+  <select id="countRole" resultType="java.lang.Integer" parameterType="com.tz.redismanager.domain.po.RolePO">
     select
     count(*)
     from t_role
-    where if_del = 0
+    where
     <if test="name != null">
       AND LOCATE(#{name,jdbcType=VARCHAR},name) > 0
     </if>
@@ -58,6 +58,9 @@
     </if>
     <if test="status != null">
       AND status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="ifDel != null">
+      AND if_del = #{ifDel,jdbcType=INTEGER}
     </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

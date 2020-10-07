@@ -41,6 +41,17 @@
       #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{ifDel,jdbcType=INTEGER})
   </insert>
+  <insert id="insertBatch">
+    insert into t_user_role_relation (id, user_id, role_id,
+      creater, create_time, updater,
+      update_time, if_del)
+    values
+    <foreach collection ="userRoles" item="temp" separator =",">
+      (#{temp.id,jdbcType=INTEGER}, #{temp.userId,jdbcType=INTEGER}, #{temp.roleId,jdbcType=INTEGER},
+      #{temp.creater,jdbcType=VARCHAR}, #{temp.createTime,jdbcType=TIMESTAMP}, #{temp.updater,jdbcType=VARCHAR},
+      #{temp.updateTime,jdbcType=TIMESTAMP}, #{temp.ifDel,jdbcType=INTEGER})
+    </foreach >
+  </insert>
   <insert id="insertSelective" parameterType="com.tz.redismanager.domain.po.UserRoleRelationPO">
     insert into t_user_role_relation
     <trim prefix="(" suffix=")" suffixOverrides=",">
