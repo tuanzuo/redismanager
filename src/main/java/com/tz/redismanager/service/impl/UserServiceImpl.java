@@ -11,10 +11,7 @@ import com.tz.redismanager.domain.param.UserPageParam;
 import com.tz.redismanager.domain.po.RolePO;
 import com.tz.redismanager.domain.po.UserPO;
 import com.tz.redismanager.domain.po.UserRoleRelationPO;
-import com.tz.redismanager.domain.vo.Pagination;
-import com.tz.redismanager.domain.vo.UserListResp;
-import com.tz.redismanager.domain.vo.UserResp;
-import com.tz.redismanager.domain.vo.UserVO;
+import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.ICipherService;
@@ -27,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>用户Service</p>
@@ -60,7 +58,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ApiResult<?> register(UserVO vo) {
         UserPO userPO = this.buildRegisterUser(vo);
-        List<RolePO> roles = rolePOMapper.getAll();
+        List<RolePO> roles = rolePOMapper.getAll(ConstInterface.ROLE_STATUS.ENABLE);
         List<UserRoleRelationPO> userRoles = this.buildUserRoleRelations(vo, userPO, roles);
         transactionTemplate.execute((transactionStatus) -> {
             userPOMapper.insertSelective(userPO);
@@ -139,7 +137,20 @@ public class UserServiceImpl implements IUserService {
         }
         List<UserPO> list = userPOMapper.selectPage(param.getName(), param.getStatus(), param.getOffset(), param.getRows());
         this.addUserResp(resp.getList(), list);
+        List<RolePO> roles = rolePOMapper.getAll(ConstInterface.ROLE_STATUS.ENABLE);
+        this.setRoles(resp, roles);
         return new ApiResult<>(ResultCode.SUCCESS, resp);
+    }
+
+    private void setRoles(UserListResp resp, List<RolePO> roles) {
+        roles = Optional.ofNullable(roles).orElse(new ArrayList<>());
+        List<RoleVO> roleVOs = new ArrayList<>();
+        roles.forEach(temp->{
+            RoleVO roleVO = new RoleVO();
+            BeanUtils.copyProperties(temp,roleVO);
+            roleVOs.add(roleVO);
+        });
+        resp.setRoles(roleVOs);
     }
 
     private UserPO buildRegisterUser(UserVO vo) {
@@ -227,8 +238,15 @@ public class UserServiceImpl implements IUserService {
             user.setPwd(null);
             UserResp userResp = new UserResp();
             BeanUtils.copyProperties(user, userResp);
+            this.setUserRoles(userResp);
             userResps.add(userResp);
         });
+    }
+
+    private void setUserRoles(UserResp userResp) {
+        List<RolePO> userRoles = userRoleRelationPOMapper.selectByUserRole(userResp.getId(), ConstInterface.ROLE_STATUS.ENABLE);
+        List<Integer> roleIds = userRoles.stream().map(RolePO::getId).collect(Collectors.toList());
+        userResp.setRoleIds(roleIds);
     }
 
 }

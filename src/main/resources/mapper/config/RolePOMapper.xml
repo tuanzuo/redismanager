@@ -27,6 +27,9 @@
     <include refid="Base_Column_List" />
     from t_role
     where if_del=0
+    <if test="status != null">
+      AND status = #{status,jdbcType=INTEGER}
+    </if>
   </select>
   <select id="selectPage" resultMap="BaseResultMap">
     select
