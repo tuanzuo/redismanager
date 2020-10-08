@@ -45,12 +45,12 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public ApiResult<?> update(RoleVO vo, TokenContext tokenContext) {
-        if (this.checkRoleCodeExist(vo)) {
-            return new ApiResult<>(ResultCode.EXIST_ROLE_CODE);
-        }
         RolePO roleTemp = rolePOMapper.selectByPrimaryKey(vo.getId());
         if (null == roleTemp || null == roleTemp.getId()) {
             return new ApiResult<>(ResultCode.QUERY_NULL);
+        }
+        if (!roleTemp.getCode().equals(vo.getCode()) && this.checkRoleCodeExist(vo)) {
+            return new ApiResult<>(ResultCode.EXIST_ROLE_CODE);
         }
         RolePO rolePO = this.buildUpdateRole(vo, tokenContext);
         rolePOMapper.updateByPrimaryKeySelective(rolePO);

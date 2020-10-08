@@ -37,44 +37,57 @@ public class HandlerFactory implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         handlers.forEach((handler) -> {
             Class clazz = handler.getClass();
-            if (clazz.isAnnotationPresent(StrategyType.class) && clazz.isAnnotationPresent(HandlerType.class)) {
-                StrategyType strategyType = (StrategyType) clazz.getAnnotation(StrategyType.class);
-                HandlerType handlerType = (HandlerType) clazz.getAnnotation(HandlerType.class);
-                if (ArrayUtils.isNotEmpty(strategyType.value()) && ArrayUtils.isNotEmpty(handlerType.value())) {
-                    for (StrategyTypeEnum strategyTypeEnum : strategyType.value()) {
-                        if (null != strategyTypeEnum) {
-                            Map<HandlerTypeEnum, IHandler> handlerMap = null;
-                            if (strategyMap.containsKey(strategyTypeEnum)) {
-                                handlerMap = strategyMap.get(strategyTypeEnum);
-                            } else {
-                                handlerMap = new HashMap<>();
-                            }
-                            for (HandlerTypeEnum handlerTypeEnum : handlerType.value()) {
-                                if (null != handlerTypeEnum) {
-                                    handlerMap.put(handlerTypeEnum, handler);
-                                    logger.info("[HandlerFactory] [{}] [{}] [初始化完成]", strategyTypeEnum, handlerTypeEnum);
-                                }
-                            }
-                            strategyMap.put(strategyTypeEnum, handlerMap);
-                        }
-                    }
+            if (!clazz.isAnnotationPresent(StrategyType.class) || !clazz.isAnnotationPresent(HandlerType.class)) {
+                return;
+            }
+            StrategyType strategyType = (StrategyType) clazz.getAnnotation(StrategyType.class);
+            HandlerType handlerType = (HandlerType) clazz.getAnnotation(HandlerType.class);
+            if (ArrayUtils.isEmpty(strategyType.value()) || ArrayUtils.isEmpty(handlerType.value())) {
+                return;
+            }
+            for (StrategyTypeEnum strategyTypeEnum : strategyType.value()) {
+                if (null == strategyTypeEnum) {
+                    continue;
                 }
+                Map<HandlerTypeEnum, IHandler> handlerMap = null;
+                if (strategyMap.containsKey(strategyTypeEnum)) {
+                    handlerMap = strategyMap.get(strategyTypeEnum);
+                } else {
+                    handlerMap = new HashMap<>();
+                }
+                for (HandlerTypeEnum handlerTypeEnum : handlerType.value()) {
+                    if (null == handlerTypeEnum) {
+                        continue;
+                    }
+                    handlerMap.put(handlerTypeEnum, handler);
+                    logger.info("[HandlerFactory] [{}] [{}] [初始化完成]", strategyTypeEnum, handlerTypeEnum);
+                }
+                strategyMap.put(strategyTypeEnum, handlerMap);
             }
         });
     }
 
     public static IHandler getHandler(StrategyTypeEnum strategyType, HandlerTypeEnum handlerType) {
-        if (MapUtils.isEmpty(strategyMap) || null == strategyType || null == handlerType) {
-            logger.warn("[HandlerFactory] [getHandler] {strategyMap:{},strategyType:{},handlerType:{}不能为空}", JsonUtils.toJsonStr(strategyMap), strategyType, handlerType);
-            return null;
+        if (null == strategyType || null == handlerType) {
+            logger.warn("[HandlerFactory] [getHandler] {strategyMap:{},strategyType:{},handlerType:{}不能为空}", strategyType, handlerType);
+            return new EmptyHandler();
         }
-        if (strategyMap.containsKey(strategyType)) {
-            Map<HandlerTypeEnum, IHandler> handlerMap = strategyMap.get(strategyType);
-            if (MapUtils.isNotEmpty(handlerMap) && handlerMap.containsKey(handlerType)) {
-                return handlerMap.get(handlerType);
-            }
+        Map<HandlerTypeEnum, IHandler> handlerMap = strategyMap.get(strategyType);
+        if (MapUtils.isEmpty(handlerMap) || !handlerMap.containsKey(handlerType)) {
+            logger.warn("[HandlerFactory] [getHandler] {通过strategyMap:{},strategyType:{},handlerType:{}查询不到对应的handler!}", JsonUtils.toJsonStr(strategyMap), strategyType, handlerType);
+            return new EmptyHandler();
         }
-        logger.warn("[HandlerFactory] [getHandler] {通过strategyMap:{},strategyType:{},handlerType:{}查询不到对应的handler!}", JsonUtils.toJsonStr(strategyMap), strategyType, handlerType);
-        return null;
+        return handlerMap.get(handlerType);
+    }
+
+    /**
+     * 空Handler，减少调用处的判空和空指向
+     */
+    public static class EmptyHandler implements IHandler<Object, Object> {
+
+        @Override
+        public Object handle(Object o) {
+            return new Object();
+        }
     }
 }

@@ -278,11 +278,8 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
             return resp;
         }
-        Object value = null;
         IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.SEARCH_VALUE, HandlerTypeEnum.getEnumByType(keyType));
-        if (null != handler) {
-            value = handler.handle(vo);
-        }
+        Object value = handler.handle(vo);
         resp.setKeyType(keyType);
         resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
         resp.setValue(value);
@@ -334,11 +331,10 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     @MethodLog
     @SetRedisTemplate
     @Override
-    public void updateValue(RedisKeyUpdateVO vo) {
+    public ApiResult<Object> updateValue(RedisKeyUpdateVO vo) {
         IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.UPDATE_VALUE, HandlerTypeEnum.getEnumByType(vo.getKeyType()));
-        if (null != handler) {
-            handler.handle(vo);
-        }
+        handler.handle(vo);
+        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @MethodLog
@@ -351,9 +347,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             return new ApiResult<>(ResultCode.REDIS_KEY_EXIST.getCode(), "key:" + vo.getKey() + "已经存在,不能添加!");
         }
         IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.ADD_VALUE, HandlerTypeEnum.getEnumByType(vo.getKeyType()));
-        if (null != handler) {
-            handler.handle(vo);
-        }
+        handler.handle(vo);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
