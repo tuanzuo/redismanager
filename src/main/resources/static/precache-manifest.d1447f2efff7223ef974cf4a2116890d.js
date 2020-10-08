@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.async.js"
   },
   {
-    "revision": "871b12b35f777c3dd0ed",
+    "revision": "aa14de353da144803cb6",
     "url": "/vendors.chunk.css"
   },
   {
@@ -16,15 +16,15 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "1f09d643a66a38d60726",
+    "revision": "4b119e7f51c4d57d4c3e",
     "url": "/umi.js"
   },
   {
-    "revision": "1f09d643a66a38d60726",
+    "revision": "4b119e7f51c4d57d4c3e",
     "url": "/umi.css"
   },
   {
-    "revision": "871b12b35f777c3dd0ed",
+    "revision": "aa14de353da144803cb6",
     "url": "/vendors.async.js"
   },
   {
@@ -36,19 +36,19 @@ self.__precacheManifest = [
     "url": "/p__404.async.js"
   },
   {
-    "revision": "a52adbc6af8d341478fd",
+    "revision": "781273d2861677cc650b",
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "16f2f1aa11c87de828ee",
+    "revision": "fbeb114fe158a8f487a3",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
-    "revision": "ca65205a4840070015c2",
+    "revision": "56ebf40801769bf13d6e",
     "url": "/p__RoleManager__models__rolemanager.js.async.js"
   },
   {
-    "revision": "56db706d88816254b964",
+    "revision": "f65a04c180f1e1723e49",
     "url": "/p__UserManager__models__usermanager.js.async.js"
   },
   {
@@ -68,7 +68,7 @@ self.__precacheManifest = [
     "url": "/p__Account__Settings__models__geographic.js.async.js"
   },
   {
-    "revision": "c8d42acad18849d053c3",
+    "revision": "ce0c8b1c3b4040321abd",
     "url": "/p__User__models__register.js.async.js"
   },
   {
@@ -76,11 +76,11 @@ self.__precacheManifest = [
     "url": "/p__User__RegisterResult.async.js"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png.back"
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
   },
   {
-    "revision": "65f0a2d7dbac43f7c837",
+    "revision": "c71d890745213c111c59",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -96,7 +96,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "65f0a2d7dbac43f7c837",
+    "revision": "c71d890745213c111c59",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -120,8 +120,8 @@ self.__precacheManifest = [
     "url": "/favicon.png.redis"
   },
   {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png.back"
   },
   {
     "revision": "2bb44b51f4fb160116e2",
