@@ -50,7 +50,7 @@ public interface IRedisAdminService {
      *
      * @param vo
      */
-    void updateValue(RedisKeyUpdateVO vo);
+    ApiResult<Object> updateValue(RedisKeyUpdateVO vo);
 
     /**
      * 添加redis key

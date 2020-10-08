@@ -91,8 +91,8 @@ public class RedisAdminController {
 
     @RequestMapping("key/updateValue")
     @TokenAuth
-    public void updateValue(@Validated({ValidGroup.UpdateKeyValue.class}) @RequestBody RedisKeyUpdateVO vo) {
-        redisAdminService.updateValue(vo);
+    public ApiResult<?> updateValue(@Validated({ValidGroup.UpdateKeyValue.class}) @RequestBody RedisKeyUpdateVO vo) {
+        return redisAdminService.updateValue(vo);
     }
 
     @RequestMapping("key/addKey")

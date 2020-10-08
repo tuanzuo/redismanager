@@ -7,5 +7,8 @@ package com.tz.redismanager.enm;
  * @time 2019-06-30 17:31
  **/
 public enum StrategyTypeEnum {
-    SEARCH_VALUE;
+    SEARCH_VALUE,
+    ADD_VALUE,
+    UPDATE_VALUE,
+    ;
 }

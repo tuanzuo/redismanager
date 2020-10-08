@@ -5,6 +5,7 @@ import com.tz.redismanager.domain.po.UserRoleRelationPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,13 +19,19 @@ public interface UserRoleRelationPOMapper {
 
     int deleteByPrimaryKey(Integer id);
 
+    int delByIds(@Param("ids") List<Integer> ids, @Param("updater") String updater, @Param("updateTime") Date updateTime, @Param("ifDel") Integer ifDel);
+
     int insert(UserRoleRelationPO record);
+
+    int insertBatch(@Param("userRoles") List<UserRoleRelationPO> userRoles);
 
     int insertSelective(UserRoleRelationPO record);
 
     UserRoleRelationPO selectByPrimaryKey(Integer id);
 
     List<RolePO> selectByUserRole(@Param("userId") Integer userId, @Param("roleStatus") Integer roleStatus);
+
+    List<UserRoleRelationPO> selectByUserRoleRelation(@Param("userId") Integer userId);
 
     int updateByPrimaryKeySelective(UserRoleRelationPO record);
 

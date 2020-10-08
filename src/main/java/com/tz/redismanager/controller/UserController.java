@@ -64,10 +64,16 @@ public class UserController {
         return userService.resetPwd(vo, tokenContext);
     }
 
+    @RequestMapping("grant/role")
+    @TokenAuth
+    public ApiResult<?> grantRole(@Validated({ValidGroup.grantUserRole.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
+        return userService.grantRole(vo, tokenContext);
+    }
+
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
     @TokenAuth
-    public Object list(UserPageParam param) {
+    public ApiResult<?> list(UserPageParam param) {
         return userService.queryList(param);
     }
 

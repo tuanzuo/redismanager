@@ -1,6 +1,5 @@
 package com.tz.redismanager.service.impl;
 
-import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.annotation.MethodLog;
@@ -22,18 +21,14 @@ import com.tz.redismanager.util.CommonUtils;
 import com.tz.redismanager.util.JsonUtils;
 import com.tz.redismanager.util.RedisContextUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -43,34 +38,96 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
     private static final Logger logger = TraceLoggerFactory.getLogger(RedisAdminServiceImpl.class);
 
-    private final static Type SET_STRING_TYPE = new TypeReference<Set<String>>() {}.getType();
-    private final static Type ZSET_STRING_TYPE = new TypeReference<Set<ZSetValue>>() {}.getType();
-    private final static Type LIST_STRING_TYPE = new TypeReference<List<String>>() {}.getType();
-    private final static Type HASH_STRING_TYPE = new TypeReference<Map<String,String>>() {}.getType();
-
     @Autowired
     private IRedisContextService redisContextService;
 
     @SetRedisTemplate(whenIsNullContinueExec = true)
     @Override
     public List<RedisTreeNode> searchKey(@ConnectionId String id, String key) {
-        String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
-        RedisConfigPO configPO = redisContextService.getRedisConfigCache().get(id);
-        if (null != configPO) {
-            rootNodeTitle = configPO.getName();
-        }
         //Root树节点List
         List<RedisTreeNode> treeNodesForRoot = new ArrayList<>();
         //构建Root树节点
-        RedisTreeNode root = new RedisTreeNode(rootNodeTitle, ConstInterface.Common.ROOT_NODE_KEY, false);
-        root.setDisableCheckbox(true);
-        root.setDisabled(true);
-        root.setLeaf(true);
+        RedisTreeNode root = this.buildRootTreeNode(id);
         treeNodesForRoot.add(root);
         if (StringUtils.isBlank(key) || ConstInterface.Symbol.STAR.equals(key.trim())) {
             logger.error("[RedisAdmin] [searchKey] {查询key不能为空或者为*}");
             return treeNodesForRoot;
         }
+        //查询key集合
+        Set<String> keySet = this.getKeys(id, key);
+        if (CollectionUtils.isEmpty(keySet)) {
+            return treeNodesForRoot;
+        }
+        //设置root节点的title
+        this.setRootTreeNodeTitle(root, keySet.size());
+        //对key集合排序
+        List<String> keyList = this.sortKeys(keySet);
+        keySet = null;
+
+        long start = System.currentTimeMillis();
+        //生成树--1、将节点封装到Map中
+        List<RedisTreeNode> treeNodes = new ArrayList<>();
+        Map<String, RedisTreeNode> map = new HashMap<>();
+        Set<String> strSet = new HashSet<>();
+        this.buildTreeNode(keyList, treeNodes, map, strSet);
+        //生成树--2、设置tree的children tree
+        this.buildTreeNodeChildren(treeNodes, map, strSet);
+        keyList = null;
+
+        logger.info("wrapper keys to tree time:{}ms", (System.currentTimeMillis() - start));
+        //将查询到的keys生成的树节点List设置为Root树节点的子节点
+        this.setRootTreeNodeChildren(root, treeNodes);
+        return treeNodesForRoot;
+    }
+
+    /**
+     * 设置root节点的title
+     * @param root
+     * @param keyCount
+     */
+    private void setRootTreeNodeTitle(RedisTreeNode root, Integer keyCount) {
+        root.setTitle(root.getTitle() + ConstInterface.Symbol.BRACKET_LEFT + keyCount + ConstInterface.Symbol.BRACKET_RIGHT);
+    }
+
+    /**
+     * 构建Root树节点
+     * @param id
+     * @return
+     */
+    private RedisTreeNode buildRootTreeNode(String id) {
+        String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
+        RedisConfigPO configPO = redisContextService.getRedisConfigCache().get(id);
+        if (null != configPO) {
+            rootNodeTitle = configPO.getName();
+        }
+        RedisTreeNode root = new RedisTreeNode(rootNodeTitle, ConstInterface.Common.ROOT_NODE_KEY, false);
+        root.setDisableCheckbox(true);
+        root.setDisabled(true);
+        root.setLeaf(true);
+        return root;
+    }
+
+    /**
+     * 设置root节点的children
+     * @param root
+     * @param treeNodes
+     */
+    private void setRootTreeNodeChildren(RedisTreeNode root, List<RedisTreeNode> treeNodes) {
+        if (CollectionUtils.isNotEmpty(treeNodes)) {
+            root.setChildren(treeNodes);
+            root.setDisableCheckbox(false);
+            root.setDisabled(false);
+            root.setLeaf(false);
+        }
+    }
+
+    /**
+     * 得到key集合
+     * @param id
+     * @param key
+     * @return
+     */
+    private Set<String> getKeys(String id, String key) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         if (null == redisTemplate) {
             logger.error("[RedisAdmin] [searchKey] {id:{}查询不到redisTemplate}", id);
@@ -84,77 +141,100 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             this.reSetKeySerializer(redisTemplate);
             keySet = redisTemplate.keys(key.trim());
         }
-        logger.info("keys time:{},keys count:{}", (System.currentTimeMillis() - start), keySet.size());
-        if (CollectionUtils.isEmpty(keySet)) {
-            return treeNodesForRoot;
-        }
-        start = System.currentTimeMillis();
-        List<String> keyList = keySet.stream().sorted().collect(Collectors.toList());
-        logger.info("sort time:{}", (System.currentTimeMillis() - start));
-        start = System.currentTimeMillis();
-        keySet = null;
-        root.setTitle(root.getTitle() + "(" + keyList.size() + ")");
+        logger.info("get keys time:{}ms,keys count:{}", (System.currentTimeMillis() - start), keySet.size());
+        return keySet;
+    }
 
-        //生成树--1、将节点封装到Map中
-        List<RedisTreeNode> treeNodes = new ArrayList<>();
-        Map<String, RedisTreeNode> map = new HashMap<>();
-        Set<String> strSet = new HashSet<>();
+    /**
+     * 对key集合排序
+     * @param keySet
+     * @return
+     */
+    private List<String> sortKeys(Set<String> keySet){
+        long start = System.currentTimeMillis();
+        List<String> keyList = keySet.stream().sorted().collect(Collectors.toList());
+        logger.info("sort keys time:{}ms", (System.currentTimeMillis() - start));
+        return keyList;
+    }
+
+    /**
+     * 构建Tree节点
+     * @param keyList
+     * @param treeNodes
+     * @param map
+     * @param strSet
+     */
+    private void buildTreeNode(List<String> keyList, List<RedisTreeNode> treeNodes, Map<String, RedisTreeNode> map, Set<String> strSet) {
         keyList.forEach(temp -> {
             String[] strs = StringUtils.split(temp, ConstInterface.Symbol.COLON);
             if (ArrayUtils.isNotEmpty(strs) && strs.length > 1) {
-                String title = null;
-                Boolean isLeaf = false;
-                StringBuilder preTitle = new StringBuilder("");
-                for (int i = 0; i < strs.length; i++) {
-                    String str = strs[i];
-                    title = str;
-                    StringBuilder tempkeyBuilder = new StringBuilder();
-                    tempkeyBuilder.append(preTitle.toString()).append(title);
-                    if (i == strs.length - 1) {
-                        title = temp;
-                        tempkeyBuilder = new StringBuilder(temp);
-                        isLeaf = true;
-                    } else {
-                        tempkeyBuilder.append(ConstInterface.Symbol.COLON);
-                    }
-                    String tempkey = tempkeyBuilder.toString();
-                    strSet.add(tempkey);
-                    map.put(tempkey, new RedisTreeNode(title, title, tempkey, isLeaf, preTitle.toString()));
-                    preTitle.append(str).append(ConstInterface.Symbol.COLON);
-                }
+                this.buildTreeNodeMap(map, strSet, temp, strs);
             } else {
                 treeNodes.add(new RedisTreeNode(temp, temp, true));
             }
         });
-        //生成树--2、设置tree的children tree
-        if (CollectionUtils.isNotEmpty(strSet)) {
-            strSet.forEach(temp -> {
-                if (map.containsKey(temp)) {
-                    RedisTreeNode node = map.get(temp);
-                    if (StringUtils.isNotBlank(node.getPkey())) {
-                        RedisTreeNode parent = map.get(node.getPkey());
-                        parent.addChildren(node);
-                        //如果是叶子节点，则增加父节点,父父...节点中叶子结点的个数
-                        if (node.getIsLeaf()) {
-                            this.setParentTreeNodeInfo(map, parent);
-                        }
-                    } else {
-                        treeNodes.add(node);
-                    }
-                }
-            });
-        }
-        keyList = null;
+    }
 
-        logger.info("wrapper tree time:{}", (System.currentTimeMillis() - start));
-        //将查询到的keys生成的树节点List设置为Root树节点的子节点
-        if (CollectionUtils.isNotEmpty(treeNodes)) {
-            root.setChildren(treeNodes);
-            root.setDisableCheckbox(false);
-            root.setDisabled(false);
-            root.setLeaf(false);
+    /**
+     * 构建Tree节点的map集合
+     * @param map
+     * @param strSet
+     * @param temp
+     * @param strs
+     */
+    private void buildTreeNodeMap(Map<String, RedisTreeNode> map, Set<String> strSet, String temp, String[] strs) {
+        String title = null;
+        Boolean isLeaf = false;
+        StringBuilder preTitle = new StringBuilder("");
+        for (int i = 0; i < strs.length; i++) {
+            String str = strs[i];
+            title = str;
+            StringBuilder tempkeyBuilder = new StringBuilder();
+            tempkeyBuilder.append(preTitle.toString()).append(title);
+            if (i == strs.length - 1) {
+                title = temp;
+                tempkeyBuilder = new StringBuilder(temp);
+                isLeaf = true;
+            } else {
+                tempkeyBuilder.append(ConstInterface.Symbol.COLON);
+            }
+            String tempkey = tempkeyBuilder.toString();
+            strSet.add(tempkey);
+            map.put(tempkey, new RedisTreeNode(title, title, tempkey, isLeaf, preTitle.toString()));
+            preTitle.append(str).append(ConstInterface.Symbol.COLON);
         }
-        return treeNodesForRoot;
+    }
+
+    /**
+     * 构建Tree节点的Children
+     * @param treeNodes
+     * @param map
+     * @param strSet
+     */
+    private void buildTreeNodeChildren(List<RedisTreeNode> treeNodes, Map<String, RedisTreeNode> map, Set<String> strSet) {
+        strSet.forEach(temp -> {
+            RedisTreeNode node = map.get(temp);
+            //存在父节点
+            if (null != node && StringUtils.isNotBlank(node.getPkey())) {
+                this.setTreeNodeChildren(map, node);
+            } else {
+                treeNodes.add(node);
+            }
+        });
+    }
+
+    /**
+     * 设置Tree节点的Children
+     * @param map
+     * @param node
+     */
+    private void setTreeNodeChildren(Map<String, RedisTreeNode> map, RedisTreeNode node) {
+        RedisTreeNode parent = map.get(node.getPkey());
+        parent.addChildren(node);
+        //如果是叶子节点，则增加父节点,父父...节点中叶子结点的个数
+        if (node.getIsLeaf()) {
+            this.setParentTreeNodeInfo(map, parent);
+        }
     }
 
     /**
@@ -198,11 +278,8 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
             return resp;
         }
-        Object value = null;
         IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.SEARCH_VALUE, HandlerTypeEnum.getEnumByType(keyType));
-        if (null != handler) {
-            value = handler.handle(vo);
-        }
+        Object value = handler.handle(vo);
         resp.setKeyType(keyType);
         resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
         resp.setValue(value);
@@ -254,99 +331,10 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     @MethodLog
     @SetRedisTemplate
     @Override
-    public void updateValue(RedisKeyUpdateVO vo) {
-        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        //过期时间
-        Long expireTime = redisTemplate.getExpire(vo.getKey());
-        //string类型修改value
-        if (HandlerTypeEnum.STRING.getType().equals(vo.getKeyType())) {
-            RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
-            //1、先试用string序列化方式把value存入redis
-            redisTemplate.setValueSerializer(new StringRedisSerializer());
-            this.setValueForStringType(vo.getKey(), vo.getStringValue(), redisTemplate, expireTime);
-            if (StringRedisSerializer.class.equals(valueSerializer.getClass())) {
-                logger.info("[RedisAdmin] [updateValue] {更新Key的Value完成:{}}", JsonUtils.toJsonStr(vo));
-                return;
-            }
-            //2、再查询出value,最后使用redisTemplate本身的序列化方式把数据存入redis
-            Object valueTemp = redisTemplate.opsForValue().get(vo.getKey());
-            redisTemplate.setValueSerializer(valueSerializer);
-            this.setValueForStringType(vo.getKey(), valueTemp, redisTemplate, expireTime);
-        }
-        //set类型修改value
-        else if (HandlerTypeEnum.SET.getType().equals(vo.getKeyType())) {
-            Set<String> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), SET_STRING_TYPE);
-            Set<String> newValues = JsonUtils.parseObject(vo.getStringValue(), SET_STRING_TYPE);
-            oldValues = Optional.ofNullable(oldValues).orElse(new HashSet<>());
-            newValues = Optional.ofNullable(newValues).orElse(new HashSet<>());
-            List<String> delValues = (List<String>) CollectionUtils.removeAll(oldValues, newValues);
-            List<String> addValues = (List<String>) CollectionUtils.removeAll(newValues, oldValues);
-            if (CollectionUtils.isNotEmpty(delValues)) {
-                redisTemplate.opsForSet().remove(vo.getKey(), delValues.toArray());
-            }
-            if (CollectionUtils.isNotEmpty(addValues)) {
-                redisTemplate.opsForSet().add(vo.getKey(), addValues.toArray());
-            }
-        }
-        //zset类型修改value
-        else if (HandlerTypeEnum.ZSET.getType().equals(vo.getKeyType())) {
-            Set<ZSetValue> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), ZSET_STRING_TYPE);
-            Set<ZSetValue> newValues = JsonUtils.parseObject(vo.getStringValue(), ZSET_STRING_TYPE);
-            oldValues = Optional.ofNullable(oldValues).orElse(new HashSet<>());
-            newValues = Optional.ofNullable(newValues).orElse(new HashSet<>());
-
-            Set<String> oldMembers = oldValues.stream().map(temp -> temp.getValue()).collect(Collectors.toSet());
-            Set<String> newMembers = newValues.stream().map(temp -> temp.getValue()).collect(Collectors.toSet());
-
-            List<String> delMembers = (List<String>) CollectionUtils.removeAll(oldMembers, newMembers);
-            if (CollectionUtils.isNotEmpty(delMembers)) {
-                redisTemplate.opsForZSet().remove(vo.getKey(), delMembers.toArray());
-            }
-            if (CollectionUtils.isNotEmpty(newValues)) {
-                newValues.forEach(temp -> {
-                    redisTemplate.opsForZSet().add(vo.getKey(), temp.getValue(), temp.getScore());
-                });
-            }
-        }
-        //hash类型修改value
-        else if (HandlerTypeEnum.HASH.getType().equals(vo.getKeyType())) {
-            Map<String, String> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), HASH_STRING_TYPE);
-            Map<String, String> newValues = JsonUtils.parseObject(vo.getStringValue(), HASH_STRING_TYPE);
-            oldValues = Optional.ofNullable(oldValues).orElse(new HashMap<>());
-            newValues = Optional.ofNullable(newValues).orElse(new HashMap<>());
-            Set<String> oldKeys = oldValues.keySet();
-            Set<String> newKeys = newValues.keySet();
-
-            List<String> delValues = (List<String>) CollectionUtils.removeAll(oldKeys, newKeys);
-            if (CollectionUtils.isNotEmpty(delValues)) {
-                redisTemplate.opsForHash().delete(vo.getKey(), delValues.toArray());
-            }
-            if (MapUtils.isNotEmpty(newValues)) {
-                redisTemplate.opsForHash().putAll(vo.getKey(), newValues);
-            }
-        }
-        //list类型修改value
-        else if (HandlerTypeEnum.LIST.getType().equals(vo.getKeyType())) {
-            List<String> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), LIST_STRING_TYPE);
-            List<String> newValues = JsonUtils.parseObject(vo.getStringValue(), LIST_STRING_TYPE);
-            oldValues = Optional.ofNullable(oldValues).orElse(new ArrayList<>());
-            newValues = Optional.ofNullable(newValues).orElse(new ArrayList<>());
-            if (CollectionUtils.isNotEmpty(oldValues)) {
-                //删除旧数据
-                //FIXME 由于目前查询List数据时只返回了前1000条数据，所以旧数据可以这样删除，当后面查询支持返回中间数据后就不能这样操作了
-                redisTemplate.opsForList().trim(vo.getKey(), oldValues.size(), -1);
-            }
-            //FIXME 由于目前查询List数据时只返回了前1000条数据，所以新数据可以这样从头插入，当后面查询支持返回中间数据后就不能这样操作了
-            if (CollectionUtils.isNotEmpty(newValues)) {
-                Object[] newValueArray = newValues.toArray();
-                CollectionUtils.reverseArray(newValueArray);
-                redisTemplate.opsForList().leftPushAll(vo.getKey(), newValueArray);
-            }
-        }
-        //设置过期时间
-        if (null != expireTime && -1 != expireTime) {
-            redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
-        }
+    public ApiResult<Object> updateValue(RedisKeyUpdateVO vo) {
+        IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.UPDATE_VALUE, HandlerTypeEnum.getEnumByType(vo.getKeyType()));
+        handler.handle(vo);
+        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @MethodLog
@@ -358,99 +346,9 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             logger.warn("[RedisAdmin] [addKey] {添加Key已存在:{}}", JsonUtils.toJsonStr(vo));
             return new ApiResult<>(ResultCode.REDIS_KEY_EXIST.getCode(), "key:" + vo.getKey() + "已经存在,不能添加!");
         }
-        //过期时间
-        Long expireTime = vo.getExpireTime();
-        //string类型修改value
-        if (HandlerTypeEnum.STRING.getType().equals(vo.getKeyType())) {
-            RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
-            //1、先试用string序列化方式把value存入redis
-            redisTemplate.setValueSerializer(new StringRedisSerializer());
-            this.setValueForStringType(vo.getKey(), vo.getStringValue(), redisTemplate, expireTime);
-            if (StringRedisSerializer.class.equals(valueSerializer.getClass())) {
-                logger.info("[RedisAdmin] [addKey] {添加Key完成:{}}", JsonUtils.toJsonStr(vo));
-                return new ApiResult<>(ResultCode.SUCCESS);
-            }
-            //2、再查询出value,最后使用redisTemplate本身的序列化方式把数据存入redis
-            Object valueTemp = redisTemplate.opsForValue().get(vo.getKey());
-            redisTemplate.setValueSerializer(valueSerializer);
-            this.setValueForStringType(vo.getKey(), valueTemp, redisTemplate, expireTime);
-        }
-        //set类型修改value
-        else if (HandlerTypeEnum.SET.getType().equals(vo.getKeyType())) {
-            Set<String> newValues = JsonUtils.parseObject(vo.getStringValue(), SET_STRING_TYPE);
-            if (CollectionUtils.isNotEmpty(newValues)) {
-                redisTemplate.opsForSet().add(vo.getKey(), newValues.toArray());
-            }
-        }
-        //zset类型修改value
-        else if (HandlerTypeEnum.ZSET.getType().equals(vo.getKeyType())) {
-            Set<ZSetValue> newValues = JsonUtils.parseObject(vo.getStringValue(), ZSET_STRING_TYPE);
-            if (CollectionUtils.isNotEmpty(newValues)) {
-                newValues.forEach(temp -> {
-                    redisTemplate.opsForZSet().add(vo.getKey(), temp.getValue(), temp.getScore());
-                });
-            }
-        }
-        //hash类型修改value
-        else if (HandlerTypeEnum.HASH.getType().equals(vo.getKeyType())) {
-            Map<String, String> newValues = JsonUtils.parseObject(vo.getStringValue(), HASH_STRING_TYPE);
-            if (MapUtils.isNotEmpty(newValues)) {
-                redisTemplate.opsForHash().putAll(vo.getKey(), newValues);
-            }
-        }
-        //list类型修改value
-        else if (HandlerTypeEnum.LIST.getType().equals(vo.getKeyType())) {
-            List<String> newValues = JsonUtils.parseObject(vo.getStringValue(), LIST_STRING_TYPE);
-            if (CollectionUtils.isNotEmpty(newValues)) {
-                redisTemplate.opsForList().rightPushAll(vo.getKey(), newValues.toArray());
-            }
-        }
-        //设置过期时间
-        if (null != expireTime && -1 != expireTime) {
-            redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
-        }
+        IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.ADD_VALUE, HandlerTypeEnum.getEnumByType(vo.getKeyType()));
+        handler.handle(vo);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
-    private void setValueForStringType(String key, Object value, RedisTemplate<String, Object> redisTemplate, Long expireTime) {
-        if (null != expireTime && null != key && null != value) {
-            if (-1 == expireTime) {
-                redisTemplate.opsForValue().set(key, value);
-            } else if (expireTime > Integer.MAX_VALUE) {
-                redisTemplate.opsForValue().set(key, value);
-                redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
-            } else if (expireTime > 0) {
-                redisTemplate.opsForValue().set(key, value, expireTime, TimeUnit.SECONDS);
-            }
-        }
-    }
-
-    public static class ZSetValue{
-        private Double score;
-        private String value;
-
-        public ZSetValue() {
-        }
-
-        public ZSetValue(Double score, String value) {
-            this.score = score;
-            this.value = value;
-        }
-
-        public Double getScore() {
-            return score;
-        }
-
-        public void setScore(Double score) {
-            this.score = score;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
-    }
 }

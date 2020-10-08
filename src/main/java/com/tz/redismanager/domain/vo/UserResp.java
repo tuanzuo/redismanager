@@ -3,6 +3,7 @@ package com.tz.redismanager.domain.vo;
 import com.tz.redismanager.constant.ConstInterface;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>用户返回对象</p>
@@ -53,6 +54,11 @@ public class UserResp {
      * 修改时间
      */
     private Date updateTime;
+
+    /**
+     * 用户角色id集合
+     */
+    private List<Integer> roleIds;
 
     public Integer getId() {
         return id;
@@ -116,5 +122,13 @@ public class UserResp {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public List<Integer> getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(List<Integer> roleIds) {
+        this.roleIds = roleIds;
     }
 }

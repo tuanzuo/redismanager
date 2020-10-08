@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.async.js"
   },
   {
-    "revision": "871b12b35f777c3dd0ed",
+    "revision": "58607514c76279367b7b",
     "url": "/vendors.chunk.css"
   },
   {
@@ -16,15 +16,15 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "efb9e7357f3b2f86ccfe",
+    "revision": "0d2b950fb8eb762804b8",
     "url": "/umi.js"
   },
   {
-    "revision": "efb9e7357f3b2f86ccfe",
+    "revision": "0d2b950fb8eb762804b8",
     "url": "/umi.css"
   },
   {
-    "revision": "871b12b35f777c3dd0ed",
+    "revision": "58607514c76279367b7b",
     "url": "/vendors.async.js"
   },
   {
@@ -36,19 +36,19 @@ self.__precacheManifest = [
     "url": "/p__404.async.js"
   },
   {
-    "revision": "a52adbc6af8d341478fd",
+    "revision": "781273d2861677cc650b",
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "16f2f1aa11c87de828ee",
+    "revision": "fbeb114fe158a8f487a3",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
-    "revision": "ca65205a4840070015c2",
+    "revision": "56ebf40801769bf13d6e",
     "url": "/p__RoleManager__models__rolemanager.js.async.js"
   },
   {
-    "revision": "56db706d88816254b964",
+    "revision": "f65a04c180f1e1723e49",
     "url": "/p__UserManager__models__usermanager.js.async.js"
   },
   {
@@ -68,7 +68,7 @@ self.__precacheManifest = [
     "url": "/p__Account__Settings__models__geographic.js.async.js"
   },
   {
-    "revision": "c8d42acad18849d053c3",
+    "revision": "ce0c8b1c3b4040321abd",
     "url": "/p__User__models__register.js.async.js"
   },
   {
@@ -80,7 +80,7 @@ self.__precacheManifest = [
     "url": "/favicon.png.back"
   },
   {
-    "revision": "d1e5392efe276dea4dd1",
+    "revision": "9b5f06b970802aef2c7a",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -96,7 +96,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "d1e5392efe276dea4dd1",
+    "revision": "9b5f06b970802aef2c7a",
     "url": "/layouts__BasicLayout.async.js"
   },
   {

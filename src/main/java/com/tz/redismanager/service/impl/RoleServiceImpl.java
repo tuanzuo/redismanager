@@ -1,5 +1,6 @@
 package com.tz.redismanager.service.impl;
 
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
@@ -34,9 +35,45 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public ApiResult<?> add(RoleVO vo, TokenContext tokenContext) {
+        if (this.checkRoleCodeExist(vo)) {
+            return new ApiResult<>(ResultCode.EXIST_ROLE_CODE);
+        }
         RolePO rolePO = this.buildAddRole(vo, tokenContext);
         rolePOMapper.insertSelective(rolePO);
         return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @Override
+    public ApiResult<?> update(RoleVO vo, TokenContext tokenContext) {
+        RolePO roleTemp = rolePOMapper.selectByPrimaryKey(vo.getId());
+        if (null == roleTemp || null == roleTemp.getId()) {
+            return new ApiResult<>(ResultCode.QUERY_NULL);
+        }
+        if (!roleTemp.getCode().equals(vo.getCode()) && this.checkRoleCodeExist(vo)) {
+            return new ApiResult<>(ResultCode.EXIST_ROLE_CODE);
+        }
+        RolePO rolePO = this.buildUpdateRole(vo, tokenContext);
+        rolePOMapper.updateByPrimaryKeySelective(rolePO);
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @Override
+    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, TokenContext tokenContext) {
+        rolePOMapper.batchUpdateStatus(ids, status, tokenContext.getUserName());
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @Override
+    public ApiResult<?> queryList(RolePageParam param) {
+        RolePO queryRole = this.buildQueryRole(param);
+        Integer total = rolePOMapper.countRole(queryRole);
+        RoleListResp resp = this.buildRoleListResp(param, total);
+        if (total <= 0) {
+            return new ApiResult<>(ResultCode.SUCCESS, resp);
+        }
+        List<RolePO> list = rolePOMapper.selectPage(param.getName(), param.getCode(), param.getStatus(), param.getOffset(), param.getRows());
+        this.addRoleResp(resp.getList(), list);
+        return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
 
     private RolePO buildAddRole(RoleVO vo, TokenContext tokenContext) {
@@ -52,15 +89,14 @@ public class RoleServiceImpl implements IRoleService {
         return rolePO;
     }
 
-    @Override
-    public ApiResult<?> update(RoleVO vo, TokenContext tokenContext) {
-        RolePO roleTemp = rolePOMapper.selectByPrimaryKey(vo.getId());
-        if (null == roleTemp || null == roleTemp.getId()) {
-            return new ApiResult<>(ResultCode.QUERY_NULL);
+    private boolean checkRoleCodeExist(RoleVO vo) {
+        RolePO queryRole = new RolePO();
+        queryRole.setCode(vo.getCode());
+        int countRole = rolePOMapper.countRole(queryRole);
+        if (countRole > 0) {
+            return true;
         }
-        RolePO rolePO = this.buildUpdateRole(vo, tokenContext);
-        rolePOMapper.updateByPrimaryKeySelective(rolePO);
-        return new ApiResult<>(ResultCode.SUCCESS);
+        return false;
     }
 
     private RolePO buildUpdateRole(RoleVO vo, TokenContext tokenContext) {
@@ -75,22 +111,13 @@ public class RoleServiceImpl implements IRoleService {
         return rolePO;
     }
 
-    @Override
-    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, TokenContext tokenContext) {
-        rolePOMapper.batchUpdateStatus(ids, status, tokenContext.getUserName());
-        return new ApiResult<>(ResultCode.SUCCESS);
-    }
-
-    @Override
-    public RoleListResp queryList(RolePageParam param) {
-        Integer total = rolePOMapper.countRole(param.getName(), param.getCode(), param.getStatus());
-        RoleListResp resp = this.buildRoleListResp(param, total);
-        if (total <= 0) {
-            return resp;
-        }
-        List<RolePO> list = rolePOMapper.selectPage(param.getName(), param.getCode(), param.getStatus(), param.getOffset(), param.getRows());
-        this.addRoleResp(resp.getList(), list);
-        return resp;
+    private RolePO buildQueryRole(RolePageParam param) {
+        RolePO queryRole = new RolePO();
+        queryRole.setName(param.getName());
+        queryRole.setCode(param.getCode());
+        queryRole.setStatus(param.getStatus());
+        queryRole.setIfDel(ConstInterface.IF_DEL.NO);
+        return queryRole;
     }
 
     private RoleListResp buildRoleListResp(RolePageParam param, Integer total) {

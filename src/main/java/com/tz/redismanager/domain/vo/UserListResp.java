@@ -15,6 +15,8 @@ public class UserListResp {
 
     private List<UserResp> list;
 
+    private List<RoleVO> roles;
+
     public Pagination getPagination() {
         return pagination;
     }
@@ -29,5 +31,13 @@ public class UserListResp {
 
     public void setList(List<UserResp> list) {
         this.list = list;
+    }
+
+    public List<RoleVO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleVO> roles) {
+        this.roles = roles;
     }
 }

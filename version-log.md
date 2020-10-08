@@ -35,3 +35,8 @@
 1、优化日志追踪-TraceLoggerFactory
 
 2、增加用户管理-用户列表
+
+3、增加角色管理-角色列表
+
+备注：可以使用superadmin，admin，develop，test等几个用户登录系统，登录密码888888；
+其中superadmin用户拥有所有权限

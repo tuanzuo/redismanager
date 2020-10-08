@@ -23,11 +23,11 @@ public interface RolePOMapper {
 
     RolePO selectByPrimaryKey(Integer id);
 
-    List<RolePO> getAll();
+    List<RolePO> getAll(@Param("status") Integer status);
 
     List<RolePO> selectPage(@Param("name") String name, @Param("code") String code, @Param("status") Integer status, @Param("offset") Integer offset, @Param("rows") Integer rows);
 
-    int countRole(@Param("name") String name, @Param("code") String code, @Param("status") Integer status);
+    int countRole(RolePO record);
 
     int updateByPrimaryKeySelective(RolePO record);
 

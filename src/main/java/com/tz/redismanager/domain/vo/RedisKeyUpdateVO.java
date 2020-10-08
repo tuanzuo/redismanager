@@ -30,6 +30,7 @@ public class RedisKeyUpdateVO {
     private String oldKey;
     /**
      * key类型：string,List,set,hash,zset
+     * @see HandlerTypeEnum
      */
     @NotEmpty(message = "key类型不能为空", groups = {ValidGroup.UpdateKeyValue.class})
     private String keyType;
