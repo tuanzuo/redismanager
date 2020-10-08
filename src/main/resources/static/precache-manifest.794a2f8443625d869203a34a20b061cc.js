@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/p__User__Register.async.js"
   },
   {
-    "revision": "58607514c76279367b7b",
+    "revision": "e3cfc70fa503d3a21372",
     "url": "/vendors.chunk.css"
   },
   {
@@ -16,15 +16,15 @@ self.__precacheManifest = [
     "url": "/pwacompat.min.js"
   },
   {
-    "revision": "0d2b950fb8eb762804b8",
+    "revision": "f7709e130a0ac70a84c8",
     "url": "/umi.js"
   },
   {
-    "revision": "0d2b950fb8eb762804b8",
+    "revision": "f7709e130a0ac70a84c8",
     "url": "/umi.css"
   },
   {
-    "revision": "58607514c76279367b7b",
+    "revision": "e3cfc70fa503d3a21372",
     "url": "/vendors.async.js"
   },
   {
@@ -80,7 +80,7 @@ self.__precacheManifest = [
     "url": "/favicon.png.back"
   },
   {
-    "revision": "9b5f06b970802aef2c7a",
+    "revision": "26e3314ec21284bbdabc",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -96,7 +96,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "9b5f06b970802aef2c7a",
+    "revision": "26e3314ec21284bbdabc",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
