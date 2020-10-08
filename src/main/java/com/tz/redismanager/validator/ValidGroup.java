@@ -74,6 +74,12 @@ public interface ValidGroup {
     }
 
     /**
+     * 用户分配角色
+     */
+    interface grantUserRole {
+    }
+
+    /**
      * 添加角色信息
      */
     interface addRole {

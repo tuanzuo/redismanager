@@ -19,7 +19,7 @@ public class UserVO {
     /**
      * 用户id
      */
-    @NotNull(message = "用户id不能为空", groups = {ValidGroup.resetUserPwd.class})
+    @NotNull(message = "用户id不能为空", groups = {ValidGroup.resetUserPwd.class, ValidGroup.grantUserRole.class,})
     private Integer id;
 
     /**
@@ -59,6 +59,11 @@ public class UserVO {
      * 备注
      */
     private String note;
+
+    /**
+     * 角色id列表
+     */
+    private List<Integer> roleIds;
 
     public Integer getId() {
         return id;
@@ -122,5 +127,13 @@ public class UserVO {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public List<Integer> getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(List<Integer> roleIds) {
+        this.roleIds = roleIds;
     }
 }

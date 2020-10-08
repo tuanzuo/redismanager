@@ -27,5 +27,7 @@ public interface IUserService {
 
     ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext);
 
+    ApiResult<?> grantRole(UserVO vo, TokenContext tokenContext);
+
     ApiResult<?> queryList(UserPageParam param);
 }

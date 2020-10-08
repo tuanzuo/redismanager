@@ -65,7 +65,8 @@ CREATE TABLE `t_user_role_relation` (
   `updater` varchar(32) collate utf8_bin default NULL COMMENT '修改人',
   `update_time` datetime default NULL COMMENT '修改时间',
   `if_del` int(2) default NULL COMMENT '是否删除[1=是,0=否]',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `index_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户角色关系表';
 
 insert  into `t_user_role_relation`(`id`,`user_id`,`role_id`,`creater`,`create_time`,`updater`,`update_time`,`if_del`) values (1,1,1,'superadmin','2020-10-07 12:17:08','superadmin','2020-10-07 12:17:08',0),(2,1,2,'superadmin','2020-10-07 12:17:08','superadmin','2020-10-07 12:17:08',0),(3,1,3,'superadmin','2020-10-07 12:17:08','superadmin','2020-10-07 12:17:08',0),(4,1,4,'superadmin','2020-10-07 12:17:08','superadmin','2020-10-07 12:17:08',0),(5,2,2,'admin','2020-10-07 12:19:08','admin','2020-10-07 12:19:08',0),(6,2,3,'admin','2020-10-07 12:19:08','admin','2020-10-07 12:19:08',0),(7,2,4,'admin','2020-10-07 12:19:08','admin','2020-10-07 12:19:08',0),(8,3,2,'develop','2020-10-07 12:19:51','develop','2020-10-07 12:19:51',0),(9,3,3,'develop','2020-10-07 12:19:51','develop','2020-10-07 12:19:51',0),(10,3,4,'develop','2020-10-07 12:19:51','develop','2020-10-07 12:19:51',0),(11,4,2,'test','2020-10-07 12:20:06','test','2020-10-07 12:20:06',0),(12,4,3,'test','2020-10-07 12:20:06','test','2020-10-07 12:20:06',0),(13,4,4,'test','2020-10-07 12:20:06','test','2020-10-07 12:20:06',0);

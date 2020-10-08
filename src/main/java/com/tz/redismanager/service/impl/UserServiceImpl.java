@@ -129,6 +129,35 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public ApiResult<?> grantRole(UserVO vo, TokenContext tokenContext) {
+        List<UserRoleRelationPO> userRoles = userRoleRelationPOMapper.selectByUserRoleRelation(vo.getId());
+        //key:roleId,value:id
+        Map<Integer, Integer> userRoleMap = userRoles.stream().collect(Collectors.toMap(UserRoleRelationPO::getRoleId, UserRoleRelationPO::getId));
+        List<Integer> userRoleIdsToOld = userRoles.stream().map(UserRoleRelationPO::getRoleId).collect(Collectors.toList());
+        List<Integer> userRoleIdsToNew = Optional.ofNullable(vo.getRoleIds()).orElse(new ArrayList<>());
+
+        List<Integer> delUserRoleIds = (List<Integer>) CollectionUtils.removeAll(userRoleIdsToOld, userRoleIdsToNew);
+        List<Integer> addUserRoleIds = (List<Integer>) CollectionUtils.removeAll(userRoleIdsToNew, userRoleIdsToOld);
+
+        List<Integer> delIds = new ArrayList<>();
+        delUserRoleIds.forEach(roleId -> {
+            delIds.add(userRoleMap.get(roleId));
+        });
+        List<UserRoleRelationPO> addUserRoles = this.buildGrantUserRoleRelation(vo, addUserRoleIds, tokenContext);
+
+        transactionTemplate.execute((transactionStatus) -> {
+            if (CollectionUtils.isNotEmpty(delIds)) {
+                userRoleRelationPOMapper.delByIds(delIds, tokenContext.getUserName(), new Date(), ConstInterface.IF_DEL.YES);
+            }
+            if (CollectionUtils.isNotEmpty(addUserRoles)) {
+                userRoleRelationPOMapper.insertBatch(addUserRoles);
+            }
+            return null;
+        });
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @Override
     public ApiResult<?> queryList(UserPageParam param) {
         Integer total = userPOMapper.countUser(param.getName(), param.getStatus());
         UserListResp resp = this.buildUserListResp(param, total);
@@ -137,7 +166,7 @@ public class UserServiceImpl implements IUserService {
         }
         List<UserPO> list = userPOMapper.selectPage(param.getName(), param.getStatus(), param.getOffset(), param.getRows());
         this.addUserResp(resp.getList(), list);
-        List<RolePO> roles = rolePOMapper.getAll(ConstInterface.ROLE_STATUS.ENABLE);
+        List<RolePO> roles = rolePOMapper.getAll(null);
         this.setRoles(resp, roles);
         return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
@@ -244,9 +273,25 @@ public class UserServiceImpl implements IUserService {
     }
 
     private void setUserRoles(UserResp userResp) {
-        List<RolePO> userRoles = userRoleRelationPOMapper.selectByUserRole(userResp.getId(), ConstInterface.ROLE_STATUS.ENABLE);
+        List<RolePO> userRoles = userRoleRelationPOMapper.selectByUserRole(userResp.getId(), null);
         List<Integer> roleIds = userRoles.stream().map(RolePO::getId).collect(Collectors.toList());
         userResp.setRoleIds(roleIds);
+    }
+
+    private List<UserRoleRelationPO> buildGrantUserRoleRelation(UserVO vo, List<Integer> addUserRoleIds, TokenContext tokenContext) {
+        List<UserRoleRelationPO> userRoles = new ArrayList<>();
+        addUserRoleIds.forEach(roleId -> {
+            UserRoleRelationPO roleRelation = new UserRoleRelationPO();
+            roleRelation.setUserId(vo.getId());
+            roleRelation.setRoleId(roleId);
+            roleRelation.setCreater(tokenContext.getUserName());
+            roleRelation.setCreateTime(new Date());
+            roleRelation.setUpdater(tokenContext.getUserName());
+            roleRelation.setUpdateTime(new Date());
+            roleRelation.setIfDel(ConstInterface.IF_DEL.NO);
+            userRoles.add(roleRelation);
+        });
+        return userRoles;
     }
 
 }
