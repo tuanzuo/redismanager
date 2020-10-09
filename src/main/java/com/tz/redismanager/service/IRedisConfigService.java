@@ -3,7 +3,7 @@ package com.tz.redismanager.service;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
-import com.tz.redismanager.token.TokenContext;
+import com.tz.redismanager.security.SecurityAuthContext;
 
 import java.util.List;
 
@@ -21,19 +21,19 @@ public interface IRedisConfigService {
      *
      * @param vo
      */
-    void add(RedisConfigVO vo, TokenContext tokenContext);
+    void add(RedisConfigVO vo, SecurityAuthContext authContext);
 
     /**
      * 删除redis连接配置
      *
      * @param id
      */
-    void delete(String id, TokenContext tokenContext);
+    void delete(String id, SecurityAuthContext authContext);
 
     /**
      * 修改redis连接配置
      *
      * @param vo
      */
-    void update(RedisConfigVO vo, TokenContext tokenContext);
+    void update(RedisConfigVO vo, SecurityAuthContext authContext);
 }

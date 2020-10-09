@@ -1,4 +1,4 @@
-package com.tz.redismanager.token;
+package com.tz.redismanager.security;
 
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.enm.ResultCode;
@@ -23,11 +23,11 @@ import java.util.Set;
  * @version 1.3.0
  * @time 2020-08-29 13:50
  **/
-public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
+public class SecurityAuthInterceptor extends HandlerInterceptorAdapter {
 
     private StringRedisTemplate stringRedisTemplate;
 
-    public TokenAuthInterceptor(StringRedisTemplate stringRedisTemplate) {
+    public SecurityAuthInterceptor(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
     }
 
@@ -42,41 +42,41 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
             return;
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
-        TokenAuth tokenAuth = handlerMethod.getMethodAnnotation(TokenAuth.class);
-        if (null == tokenAuth) {
+        SecurityAuth securityAuth = handlerMethod.getMethodAnnotation(SecurityAuth.class);
+        if (null == securityAuth) {
             return;
         }
         String token = request.getHeader(ConstInterface.Auth.AUTHORIZATION);
-        TokenContext tokenContext = new TokenContext();
-        tokenContext.setToken(token);
+        SecurityAuthContext authContext = new SecurityAuthContext();
+        authContext.setToken(token);
         try {
             //验证token
             if (StringUtils.isBlank(token)) {
                 throw new RmException(ResultCode.TOKEN_AUTH_ERR);
             }
             String userInfoKey = ConstInterface.CacheKey.USER_AUTH + token;
-            String tokenContextCache = stringRedisTemplate.opsForValue().get(userInfoKey);
-            if (StringUtils.isBlank(tokenContextCache)) {
+            String authContextCache = stringRedisTemplate.opsForValue().get(userInfoKey);
+            if (StringUtils.isBlank(authContextCache)) {
                 throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
             }
-            tokenContext = JsonUtils.parseObject(tokenContextCache, TokenContext.class);
-            if (null == tokenContext) {
+            authContext = JsonUtils.parseObject(authContextCache, SecurityAuthContext.class);
+            if (null == authContext) {
                 throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
             }
             //验证角色
-            if (ArrayUtils.isNotEmpty(tokenAuth.permitRoles())) {
-                Set<String> roles = Optional.ofNullable(tokenContext.getRoles()).orElse(new HashSet<>());
-                Optional<String> roleOptional = Arrays.stream(tokenAuth.permitRoles()).filter(role -> roles.contains(role)).limit(1).findAny();
+            if (ArrayUtils.isNotEmpty(securityAuth.permitRoles())) {
+                Set<String> roles = Optional.ofNullable(authContext.getRoles()).orElse(new HashSet<>());
+                Optional<String> roleOptional = Arrays.stream(securityAuth.permitRoles()).filter(role -> roles.contains(role)).limit(1).findAny();
                 if (!roleOptional.isPresent()) {
                     throw new RmException(ResultCode.ROLE_AUTH_FAIL);
                 }
             }
         } catch (Throwable e) {
-            if (tokenAuth.required()) {
+            if (securityAuth.required()) {
                 throw e;
             }
         }
-        TokenContextHolder.set(tokenContext);
+        SecurityAuthContextHolder.set(authContext);
     }
 
     @Override
@@ -84,9 +84,9 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
         super.afterCompletion(request, response, handler, ex);
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
-            TokenAuth tokenAuth = handlerMethod.getMethodAnnotation(TokenAuth.class);
-            if (null != tokenAuth) {
-                TokenContextHolder.remove();
+            SecurityAuth securityAuth = handlerMethod.getMethodAnnotation(SecurityAuth.class);
+            if (null != securityAuth) {
+                SecurityAuthContextHolder.remove();
             }
         }
     }

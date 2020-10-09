@@ -6,8 +6,8 @@ import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.UserPageParam;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.service.IUserService;
-import com.tz.redismanager.token.TokenAuth;
-import com.tz.redismanager.token.TokenContext;
+import com.tz.redismanager.security.SecurityAuth;
+import com.tz.redismanager.security.SecurityAuthContext;
 import com.tz.redismanager.validator.ValidGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -34,49 +34,49 @@ public class UserController {
     }
 
     @RequestMapping("current")
-    @TokenAuth
-    public ApiResult<?> currentUser(TokenContext tokenContext) {
-        return userService.currentUser(tokenContext);
+    @SecurityAuth
+    public ApiResult<?> currentUser(SecurityAuthContext authContext) {
+        return userService.currentUser(authContext);
     }
 
     @RequestMapping("update")
-    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> update(@Validated({ValidGroup.updateUserInfo.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
-        vo.setId(tokenContext.getUserId());
+    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> update(@Validated({ValidGroup.updateUserInfo.class}) @RequestBody UserVO vo, SecurityAuthContext authContext) {
+        vo.setId(authContext.getUserId());
         return userService.update(vo);
     }
 
     @RequestMapping("update/status")
-    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> updateStatus(@Validated({ValidGroup.updateUserStatus.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
-        return userService.updateStatus(vo.getIds(), vo.getStatus(), tokenContext);
+    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> updateStatus(@Validated({ValidGroup.updateUserStatus.class}) @RequestBody UserVO vo, SecurityAuthContext authContext) {
+        return userService.updateStatus(vo.getIds(), vo.getStatus(), authContext);
     }
 
     /**
      * 登录用户修改自己的密码
      */
     @RequestMapping("update/pwd")
-    @TokenAuth()
-    public ApiResult<?> updatePwd(@Validated({ValidGroup.updateUserPwd.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
-        vo.setId(tokenContext.getUserId());
+    @SecurityAuth()
+    public ApiResult<?> updatePwd(@Validated({ValidGroup.updateUserPwd.class}) @RequestBody UserVO vo, SecurityAuthContext authContext) {
+        vo.setId(authContext.getUserId());
         return userService.updatePwd(vo);
     }
 
     @RequestMapping("reset/pwd")
-    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> resetPwd(@Validated({ValidGroup.resetUserPwd.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
-        return userService.resetPwd(vo, tokenContext);
+    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> resetPwd(@Validated({ValidGroup.resetUserPwd.class}) @RequestBody UserVO vo, SecurityAuthContext authContext) {
+        return userService.resetPwd(vo, authContext);
     }
 
     @RequestMapping("grant/role")
-    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> grantRole(@Validated({ValidGroup.grantUserRole.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
-        return userService.grantRole(vo, tokenContext);
+    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> grantRole(@Validated({ValidGroup.grantUserRole.class}) @RequestBody UserVO vo, SecurityAuthContext authContext) {
+        return userService.grantRole(vo, authContext);
     }
 
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
-    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> list(UserPageParam param) {
         return userService.queryList(param);
     }

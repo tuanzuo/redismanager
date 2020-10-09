@@ -16,7 +16,7 @@ import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IUserService;
-import com.tz.redismanager.token.TokenContext;
+import com.tz.redismanager.security.SecurityAuthContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,8 +79,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> currentUser(TokenContext tokenContext) {
-        UserPO userPO = userPOMapper.selectByPrimaryKey(tokenContext.getUserId());
+    public ApiResult<?> currentUser(SecurityAuthContext authContext) {
+        UserPO userPO = userPOMapper.selectByPrimaryKey(authContext.getUserId());
         userPO.setPwd(null);
         //需要返回这些数据“个人页-个人设置”页面才能正常显示出来
         JSONObject jsonObject = JSONArray.parseObject("{\"name\":\"admin\",\"avatar\":\"https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png\",\"userid\":\"00000001\",\"email\":\"antdesign@alipay.com\",\"signature\":\"海纳百川，有容乃大\",\"title\":\"交互专家\",\"group\":\"蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED\",\"tags\":[{\"key\":\"0\",\"label\":\"很有想法的\"},{\"key\":\"1\",\"label\":\"专注设计\"},{\"key\":\"2\",\"label\":\"辣~\"},{\"key\":\"3\",\"label\":\"大长腿\"},{\"key\":\"4\",\"label\":\"川妹子\"},{\"key\":\"5\",\"label\":\"海纳百川\"}],\"notifyCount\":12,\"unreadCount\":11,\"country\":\"China\",\"geographic\":{\"province\":{\"label\":\"四川省\",\"key\":\"330000\"},\"city\":{\"label\":\"成都市\",\"key\":\"330100\"}},\"address\":\"玉林路66号\",\"phone\":\"0752-268888888\"}");
@@ -101,8 +101,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, TokenContext tokenContext) {
-        userPOMapper.batchUpdateStatus(ids, status, tokenContext.getUserName());
+    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, SecurityAuthContext authContext) {
+        userPOMapper.batchUpdateStatus(ids, status, authContext.getUserName());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
@@ -122,9 +122,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> resetPwd(UserVO vo, TokenContext tokenContext) {
+    public ApiResult<?> resetPwd(UserVO vo, SecurityAuthContext authContext) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
-        UserPO update = this.buildResetPwdUser(tokenContext, userTemp);
+        UserPO update = this.buildResetPwdUser(authContext, userTemp);
         userPOMapper.updateByPrimaryKeySelective(update);
 
         //重置密码后删除缓存auth数据
@@ -133,7 +133,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> grantRole(UserVO vo, TokenContext tokenContext) {
+    public ApiResult<?> grantRole(UserVO vo, SecurityAuthContext authContext) {
         List<UserRoleRelationPO> userRoles = userRoleRelationPOMapper.selectByUserRoleRelation(vo.getId());
         //key:roleId,value:id
         Map<Integer, Integer> userRoleMap = userRoles.stream().collect(Collectors.toMap(UserRoleRelationPO::getRoleId, UserRoleRelationPO::getId));
@@ -147,11 +147,11 @@ public class UserServiceImpl implements IUserService {
         delUserRoleIds.forEach(roleId -> {
             delIds.add(userRoleMap.get(roleId));
         });
-        List<UserRoleRelationPO> addUserRoles = this.buildGrantUserRoleRelation(vo, addUserRoleIds, tokenContext);
+        List<UserRoleRelationPO> addUserRoles = this.buildGrantUserRoleRelation(vo, addUserRoleIds, authContext);
 
         transactionTemplate.execute((transactionStatus) -> {
             if (CollectionUtils.isNotEmpty(delIds)) {
-                userRoleRelationPOMapper.delByIds(delIds, tokenContext.getUserName(), new Date(), ConstInterface.IF_DEL.YES);
+                userRoleRelationPOMapper.delByIds(delIds, authContext.getUserName(), new Date(), ConstInterface.IF_DEL.YES);
             }
             if (CollectionUtils.isNotEmpty(addUserRoles)) {
                 userRoleRelationPOMapper.insertBatch(addUserRoles);
@@ -243,12 +243,12 @@ public class UserServiceImpl implements IUserService {
         return userPO;
     }
 
-    private UserPO buildResetPwdUser(TokenContext tokenContext, UserPO userTemp) {
+    private UserPO buildResetPwdUser(SecurityAuthContext authContext, UserPO userTemp) {
         String encodePwd = cipherService.encodeUserInfoByMd5(userTemp.getName(), DEFAULT_PWD);
         UserPO update = new UserPO();
         update.setId(userTemp.getId());
         update.setPwd(encodePwd);
-        update.setUpdater(tokenContext.getUserName());
+        update.setUpdater(authContext.getUserName());
         update.setUpdateTime(new Date());
         return update;
     }
@@ -282,15 +282,15 @@ public class UserServiceImpl implements IUserService {
         userResp.setRoleIds(roleIds);
     }
 
-    private List<UserRoleRelationPO> buildGrantUserRoleRelation(UserVO vo, List<Integer> addUserRoleIds, TokenContext tokenContext) {
+    private List<UserRoleRelationPO> buildGrantUserRoleRelation(UserVO vo, List<Integer> addUserRoleIds, SecurityAuthContext authContext) {
         List<UserRoleRelationPO> userRoles = new ArrayList<>();
         addUserRoleIds.forEach(roleId -> {
             UserRoleRelationPO roleRelation = new UserRoleRelationPO();
             roleRelation.setUserId(vo.getId());
             roleRelation.setRoleId(roleId);
-            roleRelation.setCreater(tokenContext.getUserName());
+            roleRelation.setCreater(authContext.getUserName());
             roleRelation.setCreateTime(new Date());
-            roleRelation.setUpdater(tokenContext.getUserName());
+            roleRelation.setUpdater(authContext.getUserName());
             roleRelation.setUpdateTime(new Date());
             roleRelation.setIfDel(ConstInterface.IF_DEL.NO);
             userRoles.add(roleRelation);

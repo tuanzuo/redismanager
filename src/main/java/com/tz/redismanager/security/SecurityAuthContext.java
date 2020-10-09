@@ -1,15 +1,15 @@
-package com.tz.redismanager.token;
+package com.tz.redismanager.security;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * <p>Token上下文</p>
+ * <p>安全认证上下文</p>
  *
  * @version 1.3.0
  * @time 2020-08-30 18:36
  **/
-public class TokenContext {
+public class SecurityAuthContext {
 
     private Integer userId;
     private String userName;
