@@ -8,7 +8,7 @@ import com.tz.redismanager.domain.po.RolePO;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IRoleService;
-import com.tz.redismanager.token.TokenContext;
+import com.tz.redismanager.security.AuthContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,17 +34,17 @@ public class RoleServiceImpl implements IRoleService {
     private RolePOMapper rolePOMapper;
 
     @Override
-    public ApiResult<?> add(RoleVO vo, TokenContext tokenContext) {
+    public ApiResult<?> add(RoleVO vo, AuthContext authContext) {
         if (this.checkRoleCodeExist(vo)) {
             return new ApiResult<>(ResultCode.EXIST_ROLE_CODE);
         }
-        RolePO rolePO = this.buildAddRole(vo, tokenContext);
+        RolePO rolePO = this.buildAddRole(vo, authContext);
         rolePOMapper.insertSelective(rolePO);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @Override
-    public ApiResult<?> update(RoleVO vo, TokenContext tokenContext) {
+    public ApiResult<?> update(RoleVO vo, AuthContext authContext) {
         RolePO roleTemp = rolePOMapper.selectByPrimaryKey(vo.getId());
         if (null == roleTemp || null == roleTemp.getId()) {
             return new ApiResult<>(ResultCode.QUERY_NULL);
@@ -52,14 +52,14 @@ public class RoleServiceImpl implements IRoleService {
         if (!roleTemp.getCode().equals(vo.getCode()) && this.checkRoleCodeExist(vo)) {
             return new ApiResult<>(ResultCode.EXIST_ROLE_CODE);
         }
-        RolePO rolePO = this.buildUpdateRole(vo, tokenContext);
+        RolePO rolePO = this.buildUpdateRole(vo, authContext);
         rolePOMapper.updateByPrimaryKeySelective(rolePO);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @Override
-    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, TokenContext tokenContext) {
-        rolePOMapper.batchUpdateStatus(ids, status, tokenContext.getUserName());
+    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, AuthContext authContext) {
+        rolePOMapper.batchUpdateStatus(ids, status, authContext.getUserName());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
@@ -76,15 +76,15 @@ public class RoleServiceImpl implements IRoleService {
         return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
 
-    private RolePO buildAddRole(RoleVO vo, TokenContext tokenContext) {
+    private RolePO buildAddRole(RoleVO vo, AuthContext authContext) {
         RolePO rolePO = new RolePO();
         rolePO.setName(vo.getName());
         rolePO.setCode(vo.getCode());
         rolePO.setStatus(vo.getStatus());
         rolePO.setNote(vo.getNote());
-        rolePO.setCreater(tokenContext.getUserName());
+        rolePO.setCreater(authContext.getUserName());
         rolePO.setCreateTime(new Date());
-        rolePO.setUpdater(tokenContext.getUserName());
+        rolePO.setUpdater(authContext.getUserName());
         rolePO.setUpdateTime(new Date());
         return rolePO;
     }
@@ -99,14 +99,14 @@ public class RoleServiceImpl implements IRoleService {
         return false;
     }
 
-    private RolePO buildUpdateRole(RoleVO vo, TokenContext tokenContext) {
+    private RolePO buildUpdateRole(RoleVO vo, AuthContext authContext) {
         RolePO rolePO = new RolePO();
         rolePO.setId(vo.getId());
         rolePO.setName(vo.getName());
         rolePO.setCode(vo.getCode());
         rolePO.setStatus(vo.getStatus());
         rolePO.setNote(vo.getNote());
-        rolePO.setUpdater(tokenContext.getUserName());
+        rolePO.setUpdater(authContext.getUserName());
         rolePO.setUpdateTime(new Date());
         return rolePO;
     }

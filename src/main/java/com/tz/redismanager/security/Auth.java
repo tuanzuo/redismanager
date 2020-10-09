@@ -1,4 +1,4 @@
-package com.tz.redismanager.token;
+package com.tz.redismanager.security;
 
 
 import java.lang.annotation.*;
@@ -13,11 +13,20 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface TokenAuth {
+public @interface Auth {
 
     /**
      * 是否必须
+     *
      * @return
      */
     boolean required() default true;
+
+    /**
+     * 允许的角色列表
+     *
+     * @return
+     */
+    String[] permitRoles() default {};
+
 }

@@ -1,4 +1,4 @@
-package com.tz.redismanager.token;
+package com.tz.redismanager.security;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionService;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @version 1.3.0
  * @time 2020-08-30 19:00
  **/
-public class TokenContextAttributeMethodProcessor extends ModelAttributeMethodProcessor {
+public class AuthContextAttributeMethodProcessor extends ModelAttributeMethodProcessor {
     /**
      * Class constructor.
      *
@@ -35,14 +35,14 @@ public class TokenContextAttributeMethodProcessor extends ModelAttributeMethodPr
      *                              return values are considered model attributes with or without a
      *                              {@code @ModelAttribute} annotation.
      */
-    public TokenContextAttributeMethodProcessor() {
+    public AuthContextAttributeMethodProcessor() {
         super(true);
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasMethodAnnotation(TokenAuth.class)
-                && parameter.getParameterType().isAssignableFrom(TokenContext.class)
+        return parameter.hasMethodAnnotation(Auth.class)
+                && parameter.getParameterType().isAssignableFrom(AuthContext.class)
                 && !parameter.hasParameterAnnotation(RequestBody.class);
     }
 
@@ -65,9 +65,9 @@ public class TokenContextAttributeMethodProcessor extends ModelAttributeMethodPr
         }
 
         //设置TokenContext参数的值
-        TokenContext tokenContext = TokenContextHolder.get();
-        if (null != tokenContext) {
-            result = tokenContext;
+        AuthContext authContext = AuthContextHolder.get();
+        if (null != authContext) {
+            result = authContext;
         }
         return result;
     }
