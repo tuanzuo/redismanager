@@ -3,7 +3,7 @@ package com.tz.redismanager.service;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
 import com.tz.redismanager.domain.vo.RoleVO;
-import com.tz.redismanager.security.SecurityAuthContext;
+import com.tz.redismanager.security.AuthContext;
 
 import java.util.List;
 
@@ -15,11 +15,11 @@ import java.util.List;
  **/
 public interface IRoleService {
 
-    ApiResult<?> add(RoleVO vo, SecurityAuthContext authContext);
+    ApiResult<?> add(RoleVO vo, AuthContext authContext);
 
-    ApiResult<?> update(RoleVO vo, SecurityAuthContext authContext);
+    ApiResult<?> update(RoleVO vo, AuthContext authContext);
 
-    ApiResult<?> updateStatus(List<Integer> ids, Integer status, SecurityAuthContext authContext);
+    ApiResult<?> updateStatus(List<Integer> ids, Integer status, AuthContext authContext);
 
     ApiResult<?> queryList(RolePageParam param);
 

@@ -16,7 +16,7 @@ import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IUserService;
-import com.tz.redismanager.security.SecurityAuthContext;
+import com.tz.redismanager.security.AuthContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +79,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> currentUser(SecurityAuthContext authContext) {
+    public ApiResult<?> currentUser(AuthContext authContext) {
         UserPO userPO = userPOMapper.selectByPrimaryKey(authContext.getUserId());
         userPO.setPwd(null);
         //需要返回这些数据“个人页-个人设置”页面才能正常显示出来
@@ -101,7 +101,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, SecurityAuthContext authContext) {
+    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, AuthContext authContext) {
         userPOMapper.batchUpdateStatus(ids, status, authContext.getUserName());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
@@ -122,7 +122,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> resetPwd(UserVO vo, SecurityAuthContext authContext) {
+    public ApiResult<?> resetPwd(UserVO vo, AuthContext authContext) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
         UserPO update = this.buildResetPwdUser(authContext, userTemp);
         userPOMapper.updateByPrimaryKeySelective(update);
@@ -133,7 +133,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> grantRole(UserVO vo, SecurityAuthContext authContext) {
+    public ApiResult<?> grantRole(UserVO vo, AuthContext authContext) {
         List<UserRoleRelationPO> userRoles = userRoleRelationPOMapper.selectByUserRoleRelation(vo.getId());
         //key:roleId,value:id
         Map<Integer, Integer> userRoleMap = userRoles.stream().collect(Collectors.toMap(UserRoleRelationPO::getRoleId, UserRoleRelationPO::getId));
@@ -243,7 +243,7 @@ public class UserServiceImpl implements IUserService {
         return userPO;
     }
 
-    private UserPO buildResetPwdUser(SecurityAuthContext authContext, UserPO userTemp) {
+    private UserPO buildResetPwdUser(AuthContext authContext, UserPO userTemp) {
         String encodePwd = cipherService.encodeUserInfoByMd5(userTemp.getName(), DEFAULT_PWD);
         UserPO update = new UserPO();
         update.setId(userTemp.getId());
@@ -282,7 +282,7 @@ public class UserServiceImpl implements IUserService {
         userResp.setRoleIds(roleIds);
     }
 
-    private List<UserRoleRelationPO> buildGrantUserRoleRelation(UserVO vo, List<Integer> addUserRoleIds, SecurityAuthContext authContext) {
+    private List<UserRoleRelationPO> buildGrantUserRoleRelation(UserVO vo, List<Integer> addUserRoleIds, AuthContext authContext) {
         List<UserRoleRelationPO> userRoles = new ArrayList<>();
         addUserRoleIds.forEach(roleId -> {
             UserRoleRelationPO roleRelation = new UserRoleRelationPO();

@@ -3,8 +3,8 @@ package com.tz.redismanager.controller;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.LoginVO;
 import com.tz.redismanager.service.IAuthService;
-import com.tz.redismanager.security.SecurityAuth;
-import com.tz.redismanager.security.SecurityAuthContext;
+import com.tz.redismanager.security.Auth;
+import com.tz.redismanager.security.AuthContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +29,8 @@ public class AuthController {
     }
 
     @RequestMapping("logout")
-    @SecurityAuth(required = false)
-    public ApiResult<?> logout(SecurityAuthContext authContext) {
+    @Auth(required = false)
+    public ApiResult<?> logout(AuthContext authContext) {
         return authService.logout(authContext);
     }
 

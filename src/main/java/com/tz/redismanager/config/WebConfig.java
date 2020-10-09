@@ -1,7 +1,7 @@
 package com.tz.redismanager.config;
 
-import com.tz.redismanager.security.SecurityAuthInterceptor;
-import com.tz.redismanager.security.SecurityAuthContextAttributeMethodProcessor;
+import com.tz.redismanager.security.AuthInterceptor;
+import com.tz.redismanager.security.AuthContextAttributeMethodProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,13 +43,13 @@ public class WebConfig {
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
                 //设置token验证的Interceptor v1.3.0
-                registry.addInterceptor(new SecurityAuthInterceptor(stringRedisTemplate));
+                registry.addInterceptor(new AuthInterceptor(stringRedisTemplate));
                 super.addInterceptors(registry);
             }
             //添加参数解析器 v1.3.0
             @Override
             public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-                argumentResolvers.add(new SecurityAuthContextAttributeMethodProcessor());
+                argumentResolvers.add(new AuthContextAttributeMethodProcessor());
                 super.addArgumentResolvers(argumentResolvers);
             }
         };

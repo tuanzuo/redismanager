@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface SecurityAuth {
+public @interface Auth {
 
     /**
      * 是否必须

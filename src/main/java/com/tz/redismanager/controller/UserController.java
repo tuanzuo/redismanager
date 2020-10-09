@@ -6,8 +6,8 @@ import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.UserPageParam;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.service.IUserService;
-import com.tz.redismanager.security.SecurityAuth;
-import com.tz.redismanager.security.SecurityAuthContext;
+import com.tz.redismanager.security.Auth;
+import com.tz.redismanager.security.AuthContext;
 import com.tz.redismanager.validator.ValidGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -34,21 +34,21 @@ public class UserController {
     }
 
     @RequestMapping("current")
-    @SecurityAuth
-    public ApiResult<?> currentUser(SecurityAuthContext authContext) {
+    @Auth
+    public ApiResult<?> currentUser(AuthContext authContext) {
         return userService.currentUser(authContext);
     }
 
     @RequestMapping("update")
-    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> update(@Validated({ValidGroup.updateUserInfo.class}) @RequestBody UserVO vo, SecurityAuthContext authContext) {
+    @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> update(@Validated({ValidGroup.updateUserInfo.class}) @RequestBody UserVO vo, AuthContext authContext) {
         vo.setId(authContext.getUserId());
         return userService.update(vo);
     }
 
     @RequestMapping("update/status")
-    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> updateStatus(@Validated({ValidGroup.updateUserStatus.class}) @RequestBody UserVO vo, SecurityAuthContext authContext) {
+    @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> updateStatus(@Validated({ValidGroup.updateUserStatus.class}) @RequestBody UserVO vo, AuthContext authContext) {
         return userService.updateStatus(vo.getIds(), vo.getStatus(), authContext);
     }
 
@@ -56,27 +56,27 @@ public class UserController {
      * 登录用户修改自己的密码
      */
     @RequestMapping("update/pwd")
-    @SecurityAuth()
-    public ApiResult<?> updatePwd(@Validated({ValidGroup.updateUserPwd.class}) @RequestBody UserVO vo, SecurityAuthContext authContext) {
+    @Auth()
+    public ApiResult<?> updatePwd(@Validated({ValidGroup.updateUserPwd.class}) @RequestBody UserVO vo, AuthContext authContext) {
         vo.setId(authContext.getUserId());
         return userService.updatePwd(vo);
     }
 
     @RequestMapping("reset/pwd")
-    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> resetPwd(@Validated({ValidGroup.resetUserPwd.class}) @RequestBody UserVO vo, SecurityAuthContext authContext) {
+    @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> resetPwd(@Validated({ValidGroup.resetUserPwd.class}) @RequestBody UserVO vo, AuthContext authContext) {
         return userService.resetPwd(vo, authContext);
     }
 
     @RequestMapping("grant/role")
-    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> grantRole(@Validated({ValidGroup.grantUserRole.class}) @RequestBody UserVO vo, SecurityAuthContext authContext) {
+    @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> grantRole(@Validated({ValidGroup.grantUserRole.class}) @RequestBody UserVO vo, AuthContext authContext) {
         return userService.grantRole(vo, authContext);
     }
 
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
-    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> list(UserPageParam param) {
         return userService.queryList(param);
     }

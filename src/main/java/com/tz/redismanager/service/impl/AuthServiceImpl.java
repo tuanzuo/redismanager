@@ -12,7 +12,7 @@ import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.IAuthService;
 import com.tz.redismanager.service.ICipherService;
-import com.tz.redismanager.security.SecurityAuthContext;
+import com.tz.redismanager.security.AuthContext;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.UUIDUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -60,14 +60,14 @@ public class AuthServiceImpl implements IAuthService {
         authCacheService.delAuthInfo(userPO.getName(), userPO.getPwd());
         List<RolePO> roles = userRoleRelationPOMapper.selectByUserRole(userPO.getId(), ConstInterface.ROLE_STATUS.ENABLE);
         AuthResp resp = this.buildLoginResp(userPO, roles);
-        SecurityAuthContext context = this.buildAuthContext(userPO, resp);
+        AuthContext context = this.buildAuthContext(userPO, resp);
         //重新设置auth缓存数据
         authCacheService.setAuthInfo(userPO.getName(), userPO.getPwd(), context);
         return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
 
     @Override
-    public ApiResult<Object> logout(SecurityAuthContext authContext) {
+    public ApiResult<Object> logout(AuthContext authContext) {
         authCacheService.delAuthInfoToLogout(authContext);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
@@ -81,8 +81,8 @@ public class AuthServiceImpl implements IAuthService {
         return resp;
     }
 
-    private SecurityAuthContext buildAuthContext(UserPO user, AuthResp resp) {
-        SecurityAuthContext context = new SecurityAuthContext();
+    private AuthContext buildAuthContext(UserPO user, AuthResp resp) {
+        AuthContext context = new AuthContext();
         context.setUserId(user.getId());
         context.setUserName(user.getName());
         context.setToken(resp.getToken());

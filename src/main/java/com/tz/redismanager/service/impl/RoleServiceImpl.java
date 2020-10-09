@@ -8,7 +8,7 @@ import com.tz.redismanager.domain.po.RolePO;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IRoleService;
-import com.tz.redismanager.security.SecurityAuthContext;
+import com.tz.redismanager.security.AuthContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class RoleServiceImpl implements IRoleService {
     private RolePOMapper rolePOMapper;
 
     @Override
-    public ApiResult<?> add(RoleVO vo, SecurityAuthContext authContext) {
+    public ApiResult<?> add(RoleVO vo, AuthContext authContext) {
         if (this.checkRoleCodeExist(vo)) {
             return new ApiResult<>(ResultCode.EXIST_ROLE_CODE);
         }
@@ -44,7 +44,7 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public ApiResult<?> update(RoleVO vo, SecurityAuthContext authContext) {
+    public ApiResult<?> update(RoleVO vo, AuthContext authContext) {
         RolePO roleTemp = rolePOMapper.selectByPrimaryKey(vo.getId());
         if (null == roleTemp || null == roleTemp.getId()) {
             return new ApiResult<>(ResultCode.QUERY_NULL);
@@ -58,7 +58,7 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, SecurityAuthContext authContext) {
+    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, AuthContext authContext) {
         rolePOMapper.batchUpdateStatus(ids, status, authContext.getUserName());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
@@ -76,7 +76,7 @@ public class RoleServiceImpl implements IRoleService {
         return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
 
-    private RolePO buildAddRole(RoleVO vo, SecurityAuthContext authContext) {
+    private RolePO buildAddRole(RoleVO vo, AuthContext authContext) {
         RolePO rolePO = new RolePO();
         rolePO.setName(vo.getName());
         rolePO.setCode(vo.getCode());
@@ -99,7 +99,7 @@ public class RoleServiceImpl implements IRoleService {
         return false;
     }
 
-    private RolePO buildUpdateRole(RoleVO vo, SecurityAuthContext authContext) {
+    private RolePO buildUpdateRole(RoleVO vo, AuthContext authContext) {
         RolePO rolePO = new RolePO();
         rolePO.setId(vo.getId());
         rolePO.setName(vo.getName());

@@ -27,7 +27,7 @@ import java.util.Map;
  * @version 1.3.0
  * @time 2020-08-30 19:00
  **/
-public class SecurityAuthContextAttributeMethodProcessor extends ModelAttributeMethodProcessor {
+public class AuthContextAttributeMethodProcessor extends ModelAttributeMethodProcessor {
     /**
      * Class constructor.
      *
@@ -35,14 +35,14 @@ public class SecurityAuthContextAttributeMethodProcessor extends ModelAttributeM
      *                              return values are considered model attributes with or without a
      *                              {@code @ModelAttribute} annotation.
      */
-    public SecurityAuthContextAttributeMethodProcessor() {
+    public AuthContextAttributeMethodProcessor() {
         super(true);
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasMethodAnnotation(SecurityAuth.class)
-                && parameter.getParameterType().isAssignableFrom(SecurityAuthContext.class)
+        return parameter.hasMethodAnnotation(Auth.class)
+                && parameter.getParameterType().isAssignableFrom(AuthContext.class)
                 && !parameter.hasParameterAnnotation(RequestBody.class);
     }
 
@@ -65,7 +65,7 @@ public class SecurityAuthContextAttributeMethodProcessor extends ModelAttributeM
         }
 
         //设置TokenContext参数的值
-        SecurityAuthContext authContext = SecurityAuthContextHolder.get();
+        AuthContext authContext = AuthContextHolder.get();
         if (null != authContext) {
             result = authContext;
         }

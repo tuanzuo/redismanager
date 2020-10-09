@@ -9,7 +9,7 @@ import java.util.Set;
  * @version 1.3.0
  * @time 2020-08-30 18:36
  **/
-public class SecurityAuthContext {
+public class AuthContext {
 
     private Integer userId;
     private String userName;

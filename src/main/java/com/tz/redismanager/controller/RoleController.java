@@ -6,8 +6,8 @@ import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
 import com.tz.redismanager.domain.vo.RoleVO;
 import com.tz.redismanager.service.IRoleService;
-import com.tz.redismanager.security.SecurityAuth;
-import com.tz.redismanager.security.SecurityAuthContext;
+import com.tz.redismanager.security.Auth;
+import com.tz.redismanager.security.AuthContext;
 import com.tz.redismanager.validator.ValidGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -29,26 +29,26 @@ public class RoleController {
     private IRoleService roleService;
 
     @RequestMapping("add")
-    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> add(@Validated({ValidGroup.addRole.class}) @RequestBody RoleVO vo, SecurityAuthContext authContext) {
+    @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> add(@Validated({ValidGroup.addRole.class}) @RequestBody RoleVO vo, AuthContext authContext) {
         return roleService.add(vo, authContext);
     }
 
     @RequestMapping("update")
-    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> update(@Validated({ValidGroup.updateRole.class}) @RequestBody RoleVO vo, SecurityAuthContext authContext) {
+    @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> update(@Validated({ValidGroup.updateRole.class}) @RequestBody RoleVO vo, AuthContext authContext) {
         return roleService.update(vo, authContext);
     }
 
     @RequestMapping("update/status")
-    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> updateStatus(@Validated({ValidGroup.updateRoleStatus.class}) @RequestBody RoleVO vo, SecurityAuthContext authContext) {
+    @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    public ApiResult<?> updateStatus(@Validated({ValidGroup.updateRoleStatus.class}) @RequestBody RoleVO vo, AuthContext authContext) {
         return roleService.updateStatus(vo.getIds(), vo.getStatus(), authContext);
     }
 
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
-    @SecurityAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> list(RolePageParam param) {
         return roleService.queryList(param);
     }

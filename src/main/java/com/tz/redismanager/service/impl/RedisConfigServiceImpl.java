@@ -8,7 +8,7 @@ import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisContextService;
-import com.tz.redismanager.security.SecurityAuthContext;
+import com.tz.redismanager.security.AuthContext;
 import com.tz.redismanager.util.RSAUtils;
 import com.tz.redismanager.util.RsaException;
 import com.tz.redismanager.util.UUIDUtils;
@@ -36,7 +36,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void add(RedisConfigVO vo, SecurityAuthContext authContext) {
+    public void add(RedisConfigVO vo, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
@@ -53,7 +53,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void delete(String id, SecurityAuthContext authContext) {
+    public void delete(String id, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO po = new RedisConfigPO();
         po.setId(id);
@@ -67,7 +67,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void update(RedisConfigVO vo, SecurityAuthContext authContext) {
+    public void update(RedisConfigVO vo, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO oldPO = redisContextService.getRedisConfigCache().get(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
