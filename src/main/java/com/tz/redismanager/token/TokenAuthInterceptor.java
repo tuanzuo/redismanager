@@ -68,7 +68,7 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
                 Set<String> roles = Optional.ofNullable(tokenContext.getRoles()).orElse(new HashSet<>());
                 Optional<String> roleOptional = Arrays.stream(tokenAuth.permitRoles()).filter(role -> roles.contains(role)).limit(1).findAny();
                 if (!roleOptional.isPresent()) {
-                    throw new RmException(ResultCode.PERMIT_AUTH_FAIL);
+                    throw new RmException(ResultCode.ROLE_AUTH_FAIL);
                 }
             }
         } catch (Throwable e) {

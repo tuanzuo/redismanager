@@ -17,7 +17,7 @@ public enum ResultCode {
     QUERY_NULL("600006", "查询不到数据"),
     EXIST_ROLE_CODE("600007", "角色编码已存在"),
     USER_EXIST("600008", "来晚啦，用户名已被其他小伙伴注册了"),
-    PERMIT_AUTH_FAIL("600009", "无操作权限"),
+    ROLE_AUTH_FAIL("600009", "无操作权限"),
 
     TOKEN_AUTH_ERR("700001", "token验证失败"),
     TOKEN_AUTH_EXPIRE("700002", "token过期,请重新登录"),
