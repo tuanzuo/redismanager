@@ -1,6 +1,6 @@
 self.__precacheManifest = [
   {
-    "revision": "26604635c35a62342145",
+    "revision": "db6e2794b60b9c97f190",
     "url": "/p__User__Register.async.js"
   },
   {
@@ -52,15 +52,15 @@ self.__precacheManifest = [
     "url": "/p__UserManager__models__usermanager.js.async.js"
   },
   {
-    "revision": "902dc0f8ab30fe121383",
+    "revision": "406b2822edff948eee7d",
     "url": "/p__User__Login.chunk.css"
   },
   {
-    "revision": "902dc0f8ab30fe121383",
+    "revision": "406b2822edff948eee7d",
     "url": "/p__User__Login.async.js"
   },
   {
-    "revision": "26604635c35a62342145",
+    "revision": "db6e2794b60b9c97f190",
     "url": "/p__User__Register.chunk.css"
   },
   {
@@ -80,7 +80,7 @@ self.__precacheManifest = [
     "url": "/favicon.png"
   },
   {
-    "revision": "079a8a181e32331ec795",
+    "revision": "32363115624406b30560",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -96,7 +96,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "079a8a181e32331ec795",
+    "revision": "32363115624406b30560",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
