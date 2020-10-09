@@ -57,6 +57,10 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ApiResult<?> register(UserVO vo) {
+        UserPO queryUser = userPOMapper.selectByName(vo.getName());
+        if (null != queryUser && null != queryUser.getId()) {
+            return new ApiResult<>(ResultCode.USER_EXIST);
+        }
         UserPO userPO = this.buildRegisterUser(vo);
         List<RolePO> roles = rolePOMapper.getAll(ConstInterface.ROLE_STATUS.ENABLE);
         List<UserRoleRelationPO> userRoles = this.buildUserRoleRelations(vo, userPO, roles);
