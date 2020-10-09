@@ -1,6 +1,7 @@
 package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
@@ -50,7 +51,7 @@ public class RedisConfigController {
     }
 
     @RequestMapping("del/{id}")
-    @TokenAuth
+    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public void del(@NotEmpty(message = "id不能为空") @PathVariable("id") String id, TokenContext tokenContext) {
         redisConfigService.delete(id, tokenContext);
     }

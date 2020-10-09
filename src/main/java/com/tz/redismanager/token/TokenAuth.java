@@ -17,7 +17,16 @@ public @interface TokenAuth {
 
     /**
      * 是否必须
+     *
      * @return
      */
     boolean required() default true;
+
+    /**
+     * 允许的角色列表
+     *
+     * @return
+     */
+    String[] permitRoles() default {};
+
 }

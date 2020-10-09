@@ -18,6 +18,13 @@ public interface ConstInterface {
         Integer DISABLE = 0;
     }
 
+    interface ROLE_CODE {
+        String SUPER_ADMIN = "superadmin";
+        String ADMIN = "admin";
+        String TEST = "test";
+        String DEVELOP = "develop";
+    }
+
     interface IF_DEL {
         Integer YES = 1;
         Integer NO = 0;

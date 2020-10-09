@@ -4,6 +4,7 @@ import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.util.JsonUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.method.HandlerMethod;
@@ -11,6 +12,10 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * <p>TokenAuth拦截器</p>
@@ -45,6 +50,7 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
         TokenContext tokenContext = new TokenContext();
         tokenContext.setToken(token);
         try {
+            //验证token
             if (StringUtils.isBlank(token)) {
                 throw new RmException(ResultCode.TOKEN_AUTH_ERR);
             }
@@ -56,6 +62,14 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
             tokenContext = JsonUtils.parseObject(tokenContextCache, TokenContext.class);
             if (null == tokenContext) {
                 throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
+            }
+            //验证角色
+            if (ArrayUtils.isNotEmpty(tokenAuth.permitRoles())) {
+                Set<String> roles = Optional.ofNullable(tokenContext.getRoles()).orElse(new HashSet<>());
+                Optional<String> roleOptional = Arrays.stream(tokenAuth.permitRoles()).filter(role -> roles.contains(role)).limit(1).findAny();
+                if (!roleOptional.isPresent()) {
+                    throw new RmException(ResultCode.PERMIT_AUTH_FAIL);
+                }
             }
         } catch (Throwable e) {
             if (tokenAuth.required()) {
@@ -76,4 +90,5 @@ public class TokenAuthInterceptor extends HandlerInterceptorAdapter {
             }
         }
     }
+
 }

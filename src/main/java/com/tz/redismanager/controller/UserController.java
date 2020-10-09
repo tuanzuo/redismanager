@@ -1,6 +1,7 @@
 package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.UserPageParam;
 import com.tz.redismanager.domain.vo.UserVO;
@@ -39,40 +40,43 @@ public class UserController {
     }
 
     @RequestMapping("update")
-    @TokenAuth
+    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> update(@Validated({ValidGroup.updateUserInfo.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
         vo.setId(tokenContext.getUserId());
         return userService.update(vo);
     }
 
     @RequestMapping("update/status")
-    @TokenAuth
+    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> updateStatus(@Validated({ValidGroup.updateUserStatus.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
         return userService.updateStatus(vo.getIds(), vo.getStatus(), tokenContext);
     }
 
+    /**
+     * 登录用户修改自己的密码
+     */
     @RequestMapping("update/pwd")
-    @TokenAuth
+    @TokenAuth()
     public ApiResult<?> updatePwd(@Validated({ValidGroup.updateUserPwd.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
         vo.setId(tokenContext.getUserId());
         return userService.updatePwd(vo);
     }
 
     @RequestMapping("reset/pwd")
-    @TokenAuth
+    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> resetPwd(@Validated({ValidGroup.resetUserPwd.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
         return userService.resetPwd(vo, tokenContext);
     }
 
     @RequestMapping("grant/role")
-    @TokenAuth
+    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> grantRole(@Validated({ValidGroup.grantUserRole.class}) @RequestBody UserVO vo, TokenContext tokenContext) {
         return userService.grantRole(vo, tokenContext);
     }
 
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
-    @TokenAuth
+    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> list(UserPageParam param) {
         return userService.queryList(param);
     }

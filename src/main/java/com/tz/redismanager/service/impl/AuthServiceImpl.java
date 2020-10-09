@@ -60,7 +60,7 @@ public class AuthServiceImpl implements IAuthService {
         authCacheService.delAuthInfo(userPO.getName(), userPO.getPwd());
         List<RolePO> roles = userRoleRelationPOMapper.selectByUserRole(userPO.getId(), ConstInterface.ROLE_STATUS.ENABLE);
         AuthResp resp = this.buildLoginResp(userPO, roles);
-        TokenContext context = this.buildTokenContext(userPO, resp.getToken());
+        TokenContext context = this.buildTokenContext(userPO, resp);
         //重新设置auth缓存数据
         authCacheService.setAuthInfo(userPO.getName(), userPO.getPwd(), context);
         return new ApiResult<>(ResultCode.SUCCESS, resp);
@@ -81,11 +81,12 @@ public class AuthServiceImpl implements IAuthService {
         return resp;
     }
 
-    private TokenContext buildTokenContext(UserPO user, String token) {
+    private TokenContext buildTokenContext(UserPO user, AuthResp resp) {
         TokenContext context = new TokenContext();
         context.setUserId(user.getId());
         context.setUserName(user.getName());
-        context.setToken(token);
+        context.setToken(resp.getToken());
+        context.setRoles(resp.getRoles());
         return context;
     }
 

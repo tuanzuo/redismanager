@@ -17,7 +17,7 @@ public class AuthResp {
     private String token;
 
     /**
-     * 用户的角色List
+     * 用户的角色编码List
      */
     private Set<String> roles = new HashSet<>();
 

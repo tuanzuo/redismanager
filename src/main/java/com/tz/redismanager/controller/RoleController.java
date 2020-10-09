@@ -1,6 +1,7 @@
 package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
 import com.tz.redismanager.domain.vo.RoleVO;
@@ -28,26 +29,26 @@ public class RoleController {
     private IRoleService roleService;
 
     @RequestMapping("add")
-    @TokenAuth
+    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> add(@Validated({ValidGroup.addRole.class}) @RequestBody RoleVO vo, TokenContext tokenContext) {
         return roleService.add(vo, tokenContext);
     }
 
     @RequestMapping("update")
-    @TokenAuth
+    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> update(@Validated({ValidGroup.updateRole.class}) @RequestBody RoleVO vo, TokenContext tokenContext) {
         return roleService.update(vo, tokenContext);
     }
 
     @RequestMapping("update/status")
-    @TokenAuth
+    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> updateStatus(@Validated({ValidGroup.updateRoleStatus.class}) @RequestBody RoleVO vo, TokenContext tokenContext) {
         return roleService.updateStatus(vo.getIds(), vo.getStatus(), tokenContext);
     }
 
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
-    @TokenAuth
+    @TokenAuth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> list(RolePageParam param) {
         return roleService.queryList(param);
     }
