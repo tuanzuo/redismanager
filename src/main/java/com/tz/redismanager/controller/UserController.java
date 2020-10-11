@@ -53,7 +53,7 @@ public class UserController {
     }
 
     /**
-     * 登录用户修改自己的密码
+     * 个人页-个人设置-修改密码
      */
     @RequestMapping("update/pwd")
     @Auth()
@@ -62,6 +62,9 @@ public class UserController {
         return userService.updatePwd(vo);
     }
 
+    /**
+     * 用户管理-用户列表-重置密码
+     */
     @RequestMapping("reset/pwd")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> resetPwd(@Validated({ValidGroup.resetUserPwd.class}) @RequestBody UserVO vo, AuthContext authContext) {
