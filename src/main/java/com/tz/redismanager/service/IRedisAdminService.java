@@ -29,33 +29,33 @@ public interface IRedisAdminService {
      *
      * @param vo
      */
-    void delKeys(RedisKeyDelVO vo);
+    ApiResult<?> delKeys(RedisKeyDelVO vo);
 
     /**
      * 重命名redis key
      *
      * @param vo
      */
-    void renameKey(RedisKeyUpdateVO vo);
+    ApiResult<?> renameKey(RedisKeyUpdateVO vo);
 
     /**
      * 设置redis key的过期时间
      *
      * @param vo
      */
-    void setTtl(RedisKeyUpdateVO vo);
+    ApiResult<?> setTtl(RedisKeyUpdateVO vo);
 
     /**
      * 更新redis key的value
      *
      * @param vo
      */
-    ApiResult<Object> updateValue(RedisKeyUpdateVO vo);
+    ApiResult<?> updateValue(RedisKeyUpdateVO vo);
 
     /**
      * 添加redis key
      *
      * @param vo
      */
-    ApiResult<Object> addKey(RedisKeyAddVO vo);
+    ApiResult<?> addKey(RedisKeyAddVO vo);
 }

@@ -3,9 +3,11 @@ package com.tz.redismanager.service.impl;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
+import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
+import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.security.AuthContext;
@@ -36,7 +38,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void add(RedisConfigVO vo, AuthContext authContext) {
+    public ApiResult<?> add(RedisConfigVO vo, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
@@ -50,10 +52,11 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         redisConfigPOMapper.insertSelective(po);
         //放入缓存
         redisContextService.getRedisConfigCache().put(po.getId(), po);
+        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @Override
-    public void delete(String id, AuthContext authContext) {
+    public ApiResult<?> delete(String id, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO po = new RedisConfigPO();
         po.setId(id);
@@ -64,10 +67,11 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         //删除缓存中的RedisTemplate
         redisContextService.getRedisTemplateMap().remove(id);
         redisContextService.getRedisConfigCache().invalidate(id);
+        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @Override
-    public void update(RedisConfigVO vo, AuthContext authContext) {
+    public ApiResult<?> update(RedisConfigVO vo, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO oldPO = redisContextService.getRedisConfigCache().get(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
@@ -83,6 +87,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         //删除缓存中的RedisTemplate
         redisContextService.getRedisTemplateMap().remove(vo.getId());
         redisContextService.getRedisConfigCache().invalidate(vo.getId());
+        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     /**

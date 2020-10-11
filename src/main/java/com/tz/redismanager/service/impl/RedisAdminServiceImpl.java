@@ -80,6 +80,109 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         return treeNodesForRoot;
     }
 
+    @SetRedisTemplate
+    @Override
+    public RedisValueResp searchKeyValue(RedisValueQueryVO vo) {
+        RedisValueResp resp = new RedisValueResp();
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        DataType dataType = null;
+        try {
+            dataType = redisTemplate.type(vo.getSearchKey());
+            if (null == dataType || dataType == DataType.NONE) {
+                //重新设置keySerializer
+                this.reSetKeySerializer(redisTemplate);
+                dataType = redisTemplate.type(vo.getSearchKey());
+            }
+        } catch (Exception e) {
+            //重新设置keySerializer
+            this.reSetKeySerializer(redisTemplate);
+            dataType = redisTemplate.type(vo.getSearchKey());
+        }
+        if (null == dataType || dataType == DataType.NONE) {
+            logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
+            return resp;
+        }
+        String keyType = dataType.code();
+        if (StringUtils.isBlank(keyType)) {
+            logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
+            return resp;
+        }
+        IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.SEARCH_VALUE, HandlerTypeEnum.getEnumByType(keyType));
+        Object value = handler.handle(vo);
+        resp.setKeyType(keyType);
+        resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
+        resp.setValue(value);
+        return resp;
+    }
+
+    /**
+     * 重新设置keySerializer
+     *
+     * @param redisTemplate
+     */
+    private void reSetKeySerializer(RedisTemplate<String, Object> redisTemplate) {
+        CommonUtils.reSetKeySerializer(redisTemplate);
+    }
+
+    @MethodLog
+    @SetRedisTemplate
+    @Override
+    public ApiResult<?> delKeys(RedisKeyDelVO vo) {
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        redisTemplate.delete(Lists.newArrayList(vo.getKeys()));
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @MethodLog
+    @SetRedisTemplate
+    @Override
+    public ApiResult<?> renameKey(RedisKeyUpdateVO vo) {
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        //过期时间
+        Long expireTime = redisTemplate.getExpire(vo.getOldKey());
+        redisTemplate.rename(vo.getOldKey(), vo.getKey());
+        if (null != expireTime && expireTime > 0) {
+            redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
+        }
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @MethodLog
+    @SetRedisTemplate
+    @Override
+    public ApiResult<?> setTtl(RedisKeyUpdateVO vo) {
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        if (ConstInterface.Common.NO_EXPIRE == vo.getExpireTime()) {
+            redisTemplate.persist(vo.getKey());
+        } else {
+            redisTemplate.expire(vo.getKey(), vo.getExpireTime(), TimeUnit.SECONDS);
+        }
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @MethodLog
+    @SetRedisTemplate
+    @Override
+    public ApiResult<?> updateValue(RedisKeyUpdateVO vo) {
+        IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.UPDATE_VALUE, HandlerTypeEnum.getEnumByType(vo.getKeyType()));
+        handler.handle(vo);
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @MethodLog
+    @SetRedisTemplate
+    @Override
+    public ApiResult<?> addKey(RedisKeyAddVO vo) {
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        if (redisTemplate.hasKey(vo.getKey())) {
+            logger.warn("[RedisAdmin] [addKey] {添加Key已存在:{}}", JsonUtils.toJsonStr(vo));
+            return new ApiResult<>(ResultCode.REDIS_KEY_EXIST.getCode(), "key:" + vo.getKey() + "已经存在,不能添加!");
+        }
+        IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.ADD_VALUE, HandlerTypeEnum.getEnumByType(vo.getKeyType()));
+        handler.handle(vo);
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
     /**
      * 设置root节点的title
      * @param root
@@ -249,106 +352,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         if (StringUtils.isNotBlank(parent.getPkey())) {
             this.setParentTreeNodeInfo(map, map.get(parent.getPkey()));
         }
-    }
-
-    @SetRedisTemplate
-    @Override
-    public RedisValueResp searchKeyValue(RedisValueQueryVO vo) {
-        RedisValueResp resp = new RedisValueResp();
-        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        DataType dataType = null;
-        try {
-            dataType = redisTemplate.type(vo.getSearchKey());
-            if (null == dataType || dataType == DataType.NONE) {
-                //重新设置keySerializer
-                this.reSetKeySerializer(redisTemplate);
-                dataType = redisTemplate.type(vo.getSearchKey());
-            }
-        } catch (Exception e) {
-            //重新设置keySerializer
-            this.reSetKeySerializer(redisTemplate);
-            dataType = redisTemplate.type(vo.getSearchKey());
-        }
-        if (null == dataType || dataType == DataType.NONE) {
-            logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
-            return resp;
-        }
-        String keyType = dataType.code();
-        if (StringUtils.isBlank(keyType)) {
-            logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
-            return resp;
-        }
-        IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.SEARCH_VALUE, HandlerTypeEnum.getEnumByType(keyType));
-        Object value = handler.handle(vo);
-        resp.setKeyType(keyType);
-        resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
-        resp.setValue(value);
-        return resp;
-    }
-
-    /**
-     * 重新设置keySerializer
-     *
-     * @param redisTemplate
-     */
-    private void reSetKeySerializer(RedisTemplate<String, Object> redisTemplate) {
-        CommonUtils.reSetKeySerializer(redisTemplate);
-    }
-
-    @MethodLog
-    @SetRedisTemplate
-    @Override
-    public void delKeys(RedisKeyDelVO vo) {
-        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        redisTemplate.delete(Lists.newArrayList(vo.getKeys()));
-    }
-
-    @MethodLog
-    @SetRedisTemplate
-    @Override
-    public void renameKey(RedisKeyUpdateVO vo) {
-        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        //过期时间
-        Long expireTime = redisTemplate.getExpire(vo.getOldKey());
-        redisTemplate.rename(vo.getOldKey(), vo.getKey());
-        if (null != expireTime && expireTime > 0) {
-            redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
-        }
-    }
-
-    @MethodLog
-    @SetRedisTemplate
-    @Override
-    public void setTtl(RedisKeyUpdateVO vo) {
-        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        if (-1 == vo.getExpireTime()) {
-            redisTemplate.persist(vo.getKey());
-        } else {
-            redisTemplate.expire(vo.getKey(), vo.getExpireTime(), TimeUnit.SECONDS);
-        }
-    }
-
-    @MethodLog
-    @SetRedisTemplate
-    @Override
-    public ApiResult<Object> updateValue(RedisKeyUpdateVO vo) {
-        IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.UPDATE_VALUE, HandlerTypeEnum.getEnumByType(vo.getKeyType()));
-        handler.handle(vo);
-        return new ApiResult<>(ResultCode.SUCCESS);
-    }
-
-    @MethodLog
-    @SetRedisTemplate
-    @Override
-    public ApiResult<Object> addKey(RedisKeyAddVO vo) {
-        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        if (redisTemplate.hasKey(vo.getKey())) {
-            logger.warn("[RedisAdmin] [addKey] {添加Key已存在:{}}", JsonUtils.toJsonStr(vo));
-            return new ApiResult<>(ResultCode.REDIS_KEY_EXIST.getCode(), "key:" + vo.getKey() + "已经存在,不能添加!");
-        }
-        IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.ADD_VALUE, HandlerTypeEnum.getEnumByType(vo.getKeyType()));
-        handler.handle(vo);
-        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
 }

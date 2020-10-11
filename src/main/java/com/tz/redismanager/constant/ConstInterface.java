@@ -58,6 +58,7 @@ public interface ConstInterface {
     interface Common {
         String ROOT_NODE_TITLE = "ROOT";
         String ROOT_NODE_KEY = "ROOT";
+        int NO_EXPIRE = -1;
     }
 
     interface Cacher {

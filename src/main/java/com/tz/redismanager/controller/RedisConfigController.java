@@ -2,9 +2,11 @@ package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
+import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.security.Auth;
 import com.tz.redismanager.security.AuthContext;
@@ -38,28 +40,28 @@ public class RedisConfigController {
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
     @Auth
-    public Object list(RedisConfigPageParam param) {
+    public ApiResult<?> list(RedisConfigPageParam param) {
         Map<String, List<RedisConfigPO>> map = new HashMap<>();
         map.put("configList", redisConfigService.searchList(param));
-        return map;
+        return new ApiResult<>(ResultCode.SUCCESS, map);
     }
 
     @RequestMapping("add")
     @Auth
-    public void add(@Validated({ValidGroup.AddConnection.class}) @RequestBody RedisConfigVO vo, AuthContext authContext) {
-        redisConfigService.add(vo, authContext);
+    public ApiResult<?> add(@Validated({ValidGroup.AddConnection.class}) @RequestBody RedisConfigVO vo, AuthContext authContext) {
+        return redisConfigService.add(vo, authContext);
     }
 
     @RequestMapping("del/{id}")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public void del(@NotEmpty(message = "id不能为空") @PathVariable("id") String id, AuthContext authContext) {
-        redisConfigService.delete(id, authContext);
+    public ApiResult<?> del(@NotEmpty(message = "id不能为空") @PathVariable("id") String id, AuthContext authContext) {
+        return redisConfigService.delete(id, authContext);
     }
 
     @RequestMapping("update")
     @Auth
-    public void update(@Validated({ValidGroup.UpdateConnection.class}) @RequestBody RedisConfigVO vo, AuthContext authContext) {
-        redisConfigService.update(vo, authContext);
+    public ApiResult<?> update(@Validated({ValidGroup.UpdateConnection.class}) @RequestBody RedisConfigVO vo, AuthContext authContext) {
+        return redisConfigService.update(vo, authContext);
     }
 
 }

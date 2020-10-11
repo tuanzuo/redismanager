@@ -110,18 +110,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
         ApiResult<String> result = new ApiResult<>(ResultCode.FAIL);
         try {
             RedisTemplate<String, Object> redisTemplate = null;
-            String passwrod = null;
-            if (StringUtils.isNotBlank(vo.getPassword())) {
-                if (null != vo.getSource() && ConstInterface.SOURCE.UPDATE.intValue() == vo.getSource()) {
-                    try {
-                        passwrod = RSAUtils.rsaPrivateDecrypt(vo.getPassword(), encryptConfig.getPrivateKey(), RSAUtils.CHARSET_UTF8);
-                    } catch (Exception e) {
-                        passwrod = vo.getPassword();
-                    }
-                } else {
-                    passwrod = vo.getPassword();
-                }
-            }
+            String passwrod = this.handleRedisPassword(vo);
             redisTemplate = RedisContextUtils.initRedisTemplate(vo.getType(), vo.getAddress(), passwrod);
             passwrod = null;
             if (null != redisTemplate && StringUtils.isNotBlank(vo.getSerCode())) {
@@ -135,6 +124,23 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
             logger.error("[redisContext] [testRedisConnection] {param:{},测试连接失败}", vo, e);
         }
         return result;
+    }
+
+    private String handleRedisPassword(RedisConfigVO vo) {
+        String passwrod = null;
+        if (StringUtils.isBlank(vo.getPassword())) {
+            return passwrod;
+        }
+        if (null != vo.getSource() && ConstInterface.SOURCE.UPDATE.intValue() == vo.getSource()) {
+            try {
+                passwrod = RSAUtils.rsaPrivateDecrypt(vo.getPassword(), encryptConfig.getPrivateKey(), RSAUtils.CHARSET_UTF8);
+            } catch (Exception e) {
+                passwrod = vo.getPassword();
+            }
+        } else {
+            passwrod = vo.getPassword();
+        }
+        return passwrod;
     }
 
     @Override
