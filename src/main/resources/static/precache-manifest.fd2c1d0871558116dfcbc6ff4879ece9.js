@@ -40,7 +40,7 @@ self.__precacheManifest = [
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "fbeb114fe158a8f487a3",
+    "revision": "693614f5e47372f306d2",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
@@ -80,7 +80,7 @@ self.__precacheManifest = [
     "url": "/favicon.png"
   },
   {
-    "revision": "32363115624406b30560",
+    "revision": "d203119b1ffa0c4fdca5",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
@@ -96,7 +96,7 @@ self.__precacheManifest = [
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "32363115624406b30560",
+    "revision": "d203119b1ffa0c4fdca5",
     "url": "/layouts__BasicLayout.async.js"
   },
   {

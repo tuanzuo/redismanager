@@ -1,5 +1,6 @@
 package com.tz.redismanager.service;
 
+import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
@@ -28,7 +29,7 @@ public interface IRedisConfigService {
      *
      * @param id
      */
-    void delete(String id, AuthContext authContext);
+    ApiResult<?> delete(String id, AuthContext authContext);
 
     /**
      * 修改redis连接配置

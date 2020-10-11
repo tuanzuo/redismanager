@@ -3,9 +3,11 @@ package com.tz.redismanager.service.impl;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
+import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
+import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.security.AuthContext;
@@ -53,7 +55,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void delete(String id, AuthContext authContext) {
+    public ApiResult<?> delete(String id, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO po = new RedisConfigPO();
         po.setId(id);
@@ -64,6 +66,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         //删除缓存中的RedisTemplate
         redisContextService.getRedisTemplateMap().remove(id);
         redisContextService.getRedisConfigCache().invalidate(id);
+        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @Override
