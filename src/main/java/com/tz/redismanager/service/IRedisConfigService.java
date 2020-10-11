@@ -22,7 +22,7 @@ public interface IRedisConfigService {
      *
      * @param vo
      */
-    void add(RedisConfigVO vo, AuthContext authContext);
+    ApiResult<?> add(RedisConfigVO vo, AuthContext authContext);
 
     /**
      * 删除redis连接配置
@@ -36,5 +36,5 @@ public interface IRedisConfigService {
      *
      * @param vo
      */
-    void update(RedisConfigVO vo, AuthContext authContext);
+    ApiResult<?> update(RedisConfigVO vo, AuthContext authContext);
 }

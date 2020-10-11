@@ -38,7 +38,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void add(RedisConfigVO vo, AuthContext authContext) {
+    public ApiResult<?> add(RedisConfigVO vo, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
@@ -52,6 +52,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         redisConfigPOMapper.insertSelective(po);
         //放入缓存
         redisContextService.getRedisConfigCache().put(po.getId(), po);
+        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public void update(RedisConfigVO vo, AuthContext authContext) {
+    public ApiResult<?> update(RedisConfigVO vo, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO oldPO = redisContextService.getRedisConfigCache().get(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
@@ -86,6 +87,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         //删除缓存中的RedisTemplate
         redisContextService.getRedisTemplateMap().remove(vo.getId());
         redisContextService.getRedisConfigCache().invalidate(vo.getId());
+        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     /**
