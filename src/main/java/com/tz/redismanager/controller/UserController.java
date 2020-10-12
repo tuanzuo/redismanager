@@ -33,6 +33,11 @@ public class UserController {
         return userService.register(vo);
     }
 
+    @RequestMapping("count/online")
+    public ApiResult<?> countOnline() {
+        return userService.countOnline();
+    }
+
     @RequestMapping("current")
     @Auth
     public ApiResult<?> currentUser(AuthContext authContext) {

@@ -71,6 +71,8 @@ public interface ConstInterface {
         String USER_AUTH = "rm:user:auth:";
         //映射到认证信息的key
         String USER_TO_AUTH = "rm:user:to:auth:";
+        //在线用户
+        String USER_ONLINE = "rm:user:online:";
     }
 
     interface Auth {

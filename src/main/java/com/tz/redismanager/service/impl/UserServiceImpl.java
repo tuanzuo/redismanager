@@ -17,6 +17,7 @@ import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.security.AuthContext;
+import com.tz.redismanager.service.IUserStatisticsService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,8 @@ public class UserServiceImpl implements IUserService {
     private ICipherService cipherService;
     @Autowired
     private IAuthCacheService authCacheService;
+    @Autowired
+    private IUserStatisticsService userStatisticsService;
     @Autowired
     private TransactionTemplate transactionTemplate;
     @Autowired
@@ -79,6 +82,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public ApiResult<?> countOnline() {
+        Long count = userStatisticsService.countOnlineUser();
+        return new ApiResult<>(ResultCode.SUCCESS, count);
+    }
+
+    @Override
     public ApiResult<?> currentUser(AuthContext authContext) {
         UserPO userPO = userPOMapper.selectByPrimaryKey(authContext.getUserId());
         userPO.setPwd(null);
@@ -87,6 +96,8 @@ public class UserServiceImpl implements IUserService {
         //覆盖某些参数
         jsonObject.put("name", userPO.getName());
         jsonObject.put("note", userPO.getNote());
+        //未读消息条数-在线人数
+        jsonObject.put("unreadCount", userStatisticsService.countOnlineUser());
         return new ApiResult<>(ResultCode.SUCCESS, jsonObject);
     }
 
