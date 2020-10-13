@@ -7,12 +7,12 @@
         <!--<version>2.3.4.RELEASE</version>-->
         <version>1.5.4.RELEASE</version>
     </parent>
+
     <groupId>com.tz</groupId>
     <artifactId>redismanager</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>redismanager</name>
     <packaging>pom</packaging>
-    <description>Redis manager project for Spring Boot</description>
 
     <modules>
         <module>redismanager-dao</module>
@@ -26,10 +26,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <springboot.version>1.5.4.RELEASE</springboot.version>
         <mybatis-spring-boot-starter.version>1.1.1</mybatis-spring-boot-starter.version>
         <druid.version>1.0.18</druid.version>
         <mysql-connector-java.version>6.0.6</mysql-connector-java.version>
-        <springboot.version>1.5.4.RELEASE</springboot.version>
     </properties>
 
     <dependencyManagement>
