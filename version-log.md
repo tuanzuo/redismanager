@@ -46,3 +46,6 @@
 #### v1.5.0
 
 1、项目调整为多模块结构
+
+2、Spring Boot从1.5.4.RELEASE升级到2.3.4.RELEASE版本<br/>
+备注：RedisConnectionFactory使用LettuceConnectionFactory替换JedisConnectionFactory

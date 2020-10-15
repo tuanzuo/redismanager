@@ -1,7 +1,7 @@
 package com.tz.redismanager.util;
 
 import com.alibaba.fastjson.parser.ParserConfig;
-import com.tz.redismanager.config.CustomRedisAutoConfiguration;
+import com.tz.redismanager.config.redis.custom.CustomLettuceConnectionConfiguration;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import groovy.lang.Binding;
@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -77,9 +77,11 @@ public class RedisContextUtils {
             redisProperties.setPassword(password.trim());
         }
 
-        CustomRedisAutoConfiguration.RedisConnectionConfiguration redisConnectionConfiguration = new
-                CustomRedisAutoConfiguration.RedisConnectionConfiguration(redisProperties, null, null);
-        JedisConnectionFactory redisConnectionFactory = redisConnectionConfiguration.redisConnectionFactory();
+        //使用自定义的LettuceConnectionConfiguration初始化redisConnectionFactory v1.5.0
+        CustomLettuceConnectionConfiguration lettuceConnectionConfiguration =
+                new CustomLettuceConnectionConfiguration(redisProperties,null,null);
+        LettuceConnectionFactory redisConnectionFactory = lettuceConnectionConfiguration.redisConnectionFactory(null,
+                lettuceConnectionConfiguration.lettuceClientResources());
         redisConnectionFactory.afterPropertiesSet();
 
         RedisTemplate<String, Object> customRedisTemplate = new RedisTemplate<>();

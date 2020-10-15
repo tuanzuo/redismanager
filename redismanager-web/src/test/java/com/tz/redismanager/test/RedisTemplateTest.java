@@ -3,8 +3,9 @@ package com.tz.redismanager.test;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.tz.redismanager.RedisManagerApplication;
-import com.tz.redismanager.domain.Person;
 import com.tz.redismanager.config.FastJson2JsonRedisSerializer;
+import com.tz.redismanager.config.redis.custom.CustomLettuceConnectionConfiguration;
+import com.tz.redismanager.domain.Person;
 import com.tz.redismanager.util.JsonUtils;
 import com.tz.redismanager.util.UUIDUtils;
 import org.junit.Before;
@@ -17,17 +18,20 @@ import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RedisManagerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RedisTemplateTest {
-	
+
     private static Logger logger = LoggerFactory.getLogger(RedisTemplateTest.class);
 
     @Autowired
@@ -48,9 +52,11 @@ public class RedisTemplateTest {
         cluster.setMaxRedirects(2);
         redisProperties.setCluster(cluster);*/
 
-        MyRedisAutoConfiguration.RedisConnectionConfiguration redisConnectionConfiguration = new
-                MyRedisAutoConfiguration.RedisConnectionConfiguration(redisProperties,null,null);
-        JedisConnectionFactory redisConnectionFactory = redisConnectionConfiguration.redisConnectionFactory();
+        /**v1.5.0*/
+        CustomLettuceConnectionConfiguration lettuceConnectionConfiguration =
+                new CustomLettuceConnectionConfiguration(redisProperties,null,null);
+        LettuceConnectionFactory redisConnectionFactory = lettuceConnectionConfiguration.redisConnectionFactory(null,
+                lettuceConnectionConfiguration.lettuceClientResources());
         redisConnectionFactory.afterPropertiesSet();
 
         RedisTemplate<String,Object> myRedisTemplate = new RedisTemplate<>();

@@ -3,8 +3,9 @@ package com.tz.redismanager.test;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.tz.redismanager.RedisManagerApplication;
-import com.tz.redismanager.domain.Person;
 import com.tz.redismanager.config.FastJson2JsonRedisSerializer;
+import com.tz.redismanager.config.redis.custom.CustomLettuceConnectionConfiguration;
+import com.tz.redismanager.domain.Person;
 import com.tz.redismanager.util.UUIDUtils;
 import groovy.lang.*;
 import groovy.util.GroovyScriptEngine;
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
@@ -49,9 +50,11 @@ public class ApplicationTest {
         cluster.setMaxRedirects(2);
         redisProperties.setCluster(cluster);*/
 
-        MyRedisAutoConfiguration.RedisConnectionConfiguration redisConnectionConfiguration = new
-                MyRedisAutoConfiguration.RedisConnectionConfiguration(redisProperties, null, null);
-        JedisConnectionFactory redisConnectionFactory = redisConnectionConfiguration.redisConnectionFactory();
+        /**v1.5.0*/
+        CustomLettuceConnectionConfiguration lettuceConnectionConfiguration =
+                new CustomLettuceConnectionConfiguration(redisProperties,null,null);
+        LettuceConnectionFactory redisConnectionFactory = lettuceConnectionConfiguration.redisConnectionFactory(null,
+                lettuceConnectionConfiguration.lettuceClientResources());
         redisConnectionFactory.afterPropertiesSet();
 
         RedisTemplate<String, Object> myRedisTemplate = new RedisTemplate<>();
