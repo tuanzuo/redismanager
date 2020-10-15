@@ -1,7 +1,7 @@
 package com.tz.redismanager.domain.vo;
 
 import com.tz.redismanager.annotation.ConnectionId;
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * redis key删除VO

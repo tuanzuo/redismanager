@@ -1,6 +1,6 @@
 package com.tz.redismanager.domain.vo;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * 登录VO

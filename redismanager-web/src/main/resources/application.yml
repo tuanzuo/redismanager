@@ -5,7 +5,9 @@ server:
     enabled: true
     #设置压缩支持的格式（默认支持text/html等，但不支持application/json）
     mime-types: application/json,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript
-
+  error:
+    #指定错误path
+    path: /error
 
 spring: 
   profiles: 

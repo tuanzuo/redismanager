@@ -3,10 +3,10 @@ package com.tz.redismanager.domain.vo;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.validator.ValidGroup;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.ScriptAssert;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**

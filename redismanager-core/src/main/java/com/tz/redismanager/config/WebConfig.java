@@ -1,7 +1,7 @@
 package com.tz.redismanager.config;
 
-import com.tz.redismanager.security.AuthInterceptor;
 import com.tz.redismanager.security.AuthContextAttributeMethodProcessor;
+import com.tz.redismanager.security.AuthInterceptor;
 import com.tz.redismanager.service.IUserStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.List;
 
@@ -31,7 +30,10 @@ public class WebConfig {
 
     @Bean
     public WebMvcConfigurer webMvcConfigurer() {
-        return new WebMvcConfigurerAdapter() {
+        /**
+         * {@link WebMvcConfigurerAdapter} 已经废弃了，直接使用WebMvcConfigurer v1.5.0
+         */
+        return new WebMvcConfigurer() {
             /**跨域设置-CROS解决跨域访问*/
             @Override
             public void addCorsMappings(CorsRegistry registry) {
@@ -47,13 +49,13 @@ public class WebConfig {
             public void addInterceptors(InterceptorRegistry registry) {
                 //设置token验证的Interceptor v1.3.0
                 registry.addInterceptor(new AuthInterceptor(stringRedisTemplate, userStatisticsService));
-                super.addInterceptors(registry);
+                //super.addInterceptors(registry);
             }
             //添加参数解析器 v1.3.0
             @Override
             public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
                 argumentResolvers.add(new AuthContextAttributeMethodProcessor());
-                super.addArgumentResolvers(argumentResolvers);
+                //super.addArgumentResolvers(argumentResolvers);
             }
         };
     }

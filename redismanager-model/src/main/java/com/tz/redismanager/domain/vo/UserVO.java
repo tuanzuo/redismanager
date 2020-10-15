@@ -2,9 +2,9 @@ package com.tz.redismanager.domain.vo;
 
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.validator.ValidGroup;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
