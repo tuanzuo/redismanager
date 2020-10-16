@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tz.redismanager.dao.mapper.UserPOMapper">
-  <resultMap id="BaseResultMap" type="com.tz.redismanager.domain.po.UserPO">
+  <resultMap id="BaseResultMap" type="com.tz.redismanager.dao.domain.po.UserPO">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="pwd" jdbcType="VARCHAR" property="pwd" />
@@ -65,7 +65,7 @@
     delete from t_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.tz.redismanager.domain.po.UserPO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+  <insert id="insert" parameterType="com.tz.redismanager.dao.domain.po.UserPO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into t_user (id, name, pwd, status,
       note, creater, create_time, 
       updater, update_time, if_del
@@ -75,7 +75,7 @@
       #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{ifDel,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.tz.redismanager.domain.po.UserPO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+  <insert id="insertSelective" parameterType="com.tz.redismanager.dao.domain.po.UserPO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into t_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -142,7 +142,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tz.redismanager.domain.po.UserPO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.tz.redismanager.dao.domain.po.UserPO">
     update t_user
     <set>
       <if test="name != null">
@@ -175,7 +175,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.domain.po.UserPO">
+  <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.dao.domain.po.UserPO">
     update t_user
     set name = #{name,jdbcType=VARCHAR},
       pwd = #{pwd,jdbcType=VARCHAR},

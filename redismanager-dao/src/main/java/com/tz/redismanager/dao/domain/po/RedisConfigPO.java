@@ -1,4 +1,4 @@
-package com.tz.redismanager.domain.po;
+package com.tz.redismanager.dao.domain.po;
 
 import java.util.Date;
 

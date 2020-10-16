@@ -4,7 +4,7 @@ import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
-import com.tz.redismanager.domain.po.RedisConfigPO;
+import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.security.Auth;

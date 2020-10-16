@@ -4,7 +4,7 @@ import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
-import com.tz.redismanager.domain.po.RolePO;
+import com.tz.redismanager.dao.domain.po.RolePO;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IRoleService;

@@ -6,7 +6,7 @@ import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.annotation.SetRedisTemplate;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
-import com.tz.redismanager.domain.po.RedisConfigPO;
+import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.enm.ResultCode;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tz.redismanager.dao.mapper.RolePOMapper">
-  <resultMap id="BaseResultMap" type="com.tz.redismanager.domain.po.RolePO">
+  <resultMap id="BaseResultMap" type="com.tz.redismanager.dao.domain.po.RolePO">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
@@ -22,7 +22,7 @@
     from t_role
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="getAll" resultType="com.tz.redismanager.domain.po.RolePO">
+  <select id="getAll" resultType="com.tz.redismanager.dao.domain.po.RolePO">
     select
     <include refid="Base_Column_List" />
     from t_role
@@ -48,7 +48,7 @@
     ORDER BY create_time DESC
     LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
   </select>
-  <select id="countRole" resultType="java.lang.Integer" parameterType="com.tz.redismanager.domain.po.RolePO">
+  <select id="countRole" resultType="java.lang.Integer" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
     select
     count(*)
     from t_role
@@ -70,7 +70,7 @@
     delete from t_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.tz.redismanager.domain.po.RolePO">
+  <insert id="insert" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
     insert into t_role (id, name, code, status,
       note, creater, create_time, 
       updater, update_time, if_del
@@ -80,7 +80,7 @@
       #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{ifDel,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.tz.redismanager.domain.po.RolePO">
+  <insert id="insertSelective" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
     insert into t_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -147,7 +147,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tz.redismanager.domain.po.RolePO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
     update t_role
     <set>
       <if test="name != null">
@@ -180,7 +180,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.domain.po.RolePO">
+  <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
     update t_role
     set name = #{name,jdbcType=VARCHAR},
       code = #{code,jdbcType=VARCHAR},

@@ -1,16 +1,14 @@
-package com.tz.redismanager.domain.po;
-
-import com.tz.redismanager.constant.ConstInterface;
+package com.tz.redismanager.dao.domain.po;
 
 import java.util.Date;
 
 /**
- * 用户PO
+ * 用户角色关系PO
  *
  * @version 1.3.0
  * @time 2020-08-29 13:43
  **/
-public class UserPO {
+public class UserRoleRelationPO {
 
     /**
      * 主键
@@ -18,25 +16,14 @@ public class UserPO {
     private Integer id;
 
     /**
-     * 用户名
+     * 用户Id
      */
-    private String name;
+    private Integer userId;
 
     /**
-     * 密码
+     * 角色id
      */
-    private String pwd;
-
-    /**
-     * 状态[1=启用,0=禁用]
-     * {@link ConstInterface.USER_STATUS}
-     */
-    private Integer status;
-
-    /**
-     * 备注
-     */
-    private String note;
+    private Integer roleId;
 
     /**
      * 创建人
@@ -60,7 +47,6 @@ public class UserPO {
 
     /**
      * 是否删除[1=是,0=否]
-     * {@link ConstInterface.IF_DEL}
      */
     private Integer ifDel;
 
@@ -72,36 +58,20 @@ public class UserPO {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public String getPwd() {
-        return pwd;
+    public Integer getRoleId() {
+        return roleId;
     }
 
-    public void setPwd(String pwd) {
-        this.pwd = pwd == null ? null : pwd.trim();
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note == null ? null : note.trim();
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
     public String getCreater() {

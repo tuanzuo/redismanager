@@ -1,6 +1,6 @@
 package com.tz.redismanager.dao.mapper;
 
-import com.tz.redismanager.domain.po.RedisConfigPO;
+import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

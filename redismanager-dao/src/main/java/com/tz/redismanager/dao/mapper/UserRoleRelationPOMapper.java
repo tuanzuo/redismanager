@@ -1,7 +1,7 @@
 package com.tz.redismanager.dao.mapper;
 
-import com.tz.redismanager.domain.po.RolePO;
-import com.tz.redismanager.domain.po.UserRoleRelationPO;
+import com.tz.redismanager.dao.domain.po.RolePO;
+import com.tz.redismanager.dao.domain.po.UserRoleRelationPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

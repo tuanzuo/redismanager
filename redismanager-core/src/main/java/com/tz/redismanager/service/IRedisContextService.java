@@ -2,7 +2,7 @@ package com.tz.redismanager.service;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.tz.redismanager.domain.ApiResult;
-import com.tz.redismanager.domain.po.RedisConfigPO;
+import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import org.springframework.data.redis.core.RedisTemplate;
 

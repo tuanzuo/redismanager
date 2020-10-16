@@ -1,6 +1,6 @@
 package com.tz.redismanager.dao.mapper;
 
-import com.tz.redismanager.domain.po.UserPO;
+import com.tz.redismanager.dao.domain.po.UserPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
