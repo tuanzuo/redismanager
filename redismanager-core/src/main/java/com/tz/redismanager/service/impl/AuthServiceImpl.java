@@ -13,7 +13,7 @@ import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.IAuthService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.security.AuthContext;
-import com.tz.redismanager.service.IUserStatisticsService;
+import com.tz.redismanager.service.IStatisticService;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.UUIDUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +46,7 @@ public class AuthServiceImpl implements IAuthService {
     @Autowired
     private IAuthCacheService authCacheService;
     @Autowired
-    private IUserStatisticsService userStatisticsService;
+    private IStatisticService userStatisticsService;
 
     @Override
     public ApiResult<AuthResp> login(LoginVO vo) {
@@ -66,7 +66,6 @@ public class AuthServiceImpl implements IAuthService {
         AuthContext context = this.buildAuthContext(userPO, resp);
         //重新设置auth缓存数据
         authCacheService.setAuthInfo(userPO.getName(), userPO.getPwd(), context);
-        userStatisticsService.addOnlineUser(userPO.getId());
         return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
 

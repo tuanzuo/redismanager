@@ -156,6 +156,13 @@
                 <artifactId>hibernate-validator</artifactId>
                 <version>6.1.6.Final</version>
             </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.8</version>
+                <!-- scope=provided，说明它只在编译阶段生效，不需要打入包中。事实正是如此，Lombok在编译期将带Lombok注解的Java文件正确编译为完整的Class文件。-->
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

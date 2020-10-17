@@ -34,6 +34,7 @@ public class UserController {
     }
 
     @RequestMapping("count/online")
+    @Auth
     public ApiResult<?> countOnline() {
         return userService.countOnline();
     }

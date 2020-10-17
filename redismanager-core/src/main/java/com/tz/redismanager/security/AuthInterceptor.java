@@ -3,7 +3,7 @@ package com.tz.redismanager.security;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
-import com.tz.redismanager.service.IUserStatisticsService;
+import com.tz.redismanager.service.IStatisticService;
 import com.tz.redismanager.util.JsonUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,11 +27,11 @@ import java.util.Set;
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
     private StringRedisTemplate stringRedisTemplate;
-    private IUserStatisticsService userStatisticsService;
+    private IStatisticService statisticService;
 
-    public AuthInterceptor(StringRedisTemplate stringRedisTemplate, IUserStatisticsService userStatisticsService) {
+    public AuthInterceptor(StringRedisTemplate stringRedisTemplate, IStatisticService statisticService) {
         this.stringRedisTemplate = stringRedisTemplate;
-        this.userStatisticsService = userStatisticsService;
+        this.statisticService = statisticService;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                 throw e;
             }
         }
-        userStatisticsService.addOnlineUser(authContext.getUserId());
+        statisticService.statisticsToAsync(authContext);
         AuthContextHolder.set(authContext);
     }
 

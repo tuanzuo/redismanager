@@ -1,5 +1,6 @@
 package com.tz.redismanager.dao.mapper;
 
+import com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,6 +25,8 @@ public interface RedisConfigPOMapper {
     RedisConfigPO selectByPrimaryKey(String id);
 
     List<RedisConfigPO> selectPage(@Param("searchKey") String searchKey, @Param("offset") Integer offset, @Param("rows") Integer rows);
+
+    List<RedisConfigAnalysisDTO> selectToAnalysis();
 
     int updateByPrimaryKeySelective(RedisConfigPO record);
 

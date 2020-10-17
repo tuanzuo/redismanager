@@ -48,7 +48,8 @@ public interface ConstInterface {
         String COMMA = ",";
         String STAR = "*";
         String SPOT = ".";
-        String UNDERLINE = "_";
+        String UNDER_LINE = "_";
+        String MIDDLE_LINE = "-";
         String MIDDLE_BRACKET_LEFT = "[";
         String MIDDLE_BRACKET_RIGHT = "]";
         String BRACKET_LEFT = "(";
@@ -73,6 +74,11 @@ public interface ConstInterface {
         String USER_TO_AUTH = "rm:user:to:auth:";
         //在线用户
         String USER_ONLINE = "rm:user:online:";
+        //访问量汇总
+        String VISIT_ALL_TOTAL = "rm:vist:all:total";
+        String VISIT_TOTAL = "rm:vist:total:";
+        //访问量明细
+        String VISIT_DETAIL = "rm:vist:detail:";
     }
 
     interface Auth {

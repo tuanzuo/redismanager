@@ -1,5 +1,6 @@
 package com.tz.redismanager.dao.mapper;
 
+import com.tz.redismanager.dao.domain.dto.UserAnalysisDTO;
 import com.tz.redismanager.dao.domain.po.UserPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -28,6 +29,8 @@ public interface UserPOMapper {
     UserPO selectByNamePwd(@Param("name") String name, @Param("pwd") String pwd);
 
     List<UserPO> selectPage(@Param("name") String name, @Param("status") Integer status, @Param("offset") Integer offset, @Param("rows") Integer rows);
+
+    List<UserAnalysisDTO> selectToAnalysis();
 
     int countUser(@Param("name") String name, @Param("status") Integer status);
 

@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 权限controller
+ * 登录controller
  *
  * @version 1.3.0
  * @time 2020-08-29 13:50
  **/
 @RestController
 @RequestMapping("/")
-public class AuthController {
+public class LoginController {
 
     @Autowired
     private IAuthService authService;

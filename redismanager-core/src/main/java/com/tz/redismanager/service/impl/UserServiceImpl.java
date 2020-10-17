@@ -17,7 +17,7 @@ import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.security.AuthContext;
-import com.tz.redismanager.service.IUserStatisticsService;
+import com.tz.redismanager.service.IStatisticService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private IAuthCacheService authCacheService;
     @Autowired
-    private IUserStatisticsService userStatisticsService;
+    private IStatisticService userStatisticsService;
     @Autowired
     private TransactionTemplate transactionTemplate;
     @Autowired
