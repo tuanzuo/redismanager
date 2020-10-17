@@ -1,6 +1,6 @@
 package com.tz.redismanager.test;
 
-import com.tz.redismanager.RedisManagerApplication;
+import com.tz.redismanager.RedisManagerWebApplication;
 import com.tz.redismanager.service.IRedisContextService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RedisManagerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = RedisManagerWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class RedisContextTest {
 	
     private static Logger logger = LoggerFactory.getLogger(RedisContextTest.class);

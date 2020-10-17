@@ -2,7 +2,7 @@ package com.tz.redismanager.test;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.parser.ParserConfig;
-import com.tz.redismanager.RedisManagerApplication;
+import com.tz.redismanager.RedisManagerWebApplication;
 import com.tz.redismanager.config.FastJson2JsonRedisSerializer;
 import com.tz.redismanager.config.redis.custom.CustomLettuceConnectionConfiguration;
 import com.tz.redismanager.domain.Person;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RedisManagerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = RedisManagerWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RedisTemplateTest {
 
     private static Logger logger = LoggerFactory.getLogger(RedisTemplateTest.class);

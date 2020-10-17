@@ -6,10 +6,10 @@ import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication(scanBasePackages = {"com.tz"})
 @PropertySource("${redis.config}")
-public class RedisManagerApplication {
+public class RedisManagerWebApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RedisManagerApplication.class, args);
+        SpringApplication.run(RedisManagerWebApplication.class, args);
     }
 
 }
