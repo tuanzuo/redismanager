@@ -146,11 +146,12 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
     @Override
     public void afterPropertiesSet() throws Exception {
         LoadingCache<String, RedisConfigPO> redisConfigCache = Caffeine.newBuilder()
+                //最后一次访问了之后多久过期
                 .expireAfterAccess(1L, TimeUnit.HOURS)
                 .initialCapacity(10)
                 .maximumSize(1000)
                 .build((id) -> {
-                    logger.info("[本地缓存] [回源查询] {id:{}对应的redis连接信息}", id);
+                    logger.info("[本地缓存] [{}] [回源查询] {id:{}对应的redis连接信息}", ConstInterface.Cacher.REDIS_CONFIG_CACHER, id);
                     return redisConfigPOMapper.selectByPrimaryKey(id);
                 });
         cacheMap.put(ConstInterface.Cacher.REDIS_CONFIG_CACHER, redisConfigCache);

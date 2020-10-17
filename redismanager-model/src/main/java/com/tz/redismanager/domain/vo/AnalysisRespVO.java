@@ -17,9 +17,36 @@ import java.util.List;
 @Setter
 public class AnalysisRespVO {
 
-    private UserData userData = new UserData();
     private VisitData visitData = new VisitData();
+    private UserData userData = new UserData();
+    private RoleData roleData = new RoleData();
     private RedisConfigData redisConfigData = new RedisConfigData();
+
+    /**
+     * 访问数据
+     */
+    @Getter
+    @Setter
+    public static class VisitData {
+        private Long total = 0L;
+        private Long currentYearTotal = 0L;
+        private Long currentMonthTotal = 0L;
+        private Long dayTotal = 0L;
+        private List<VisitDetailData> totalDatas = new ArrayList<>();
+        private List<VisitDetailData> currentDatas = new ArrayList<>();
+        public void addTotalDatas(VisitDetailData data){
+            totalDatas.add(data);
+        }
+        public void addCurrentDatas(VisitDetailData data){
+            currentDatas.add(data);
+        }
+    }
+    @Getter
+    @Setter
+    public static class VisitDetailData {
+        private String x;
+        private Long y;
+    }
 
     /**
      * 用户数据
@@ -42,37 +69,23 @@ public class AnalysisRespVO {
     }
 
     /**
-     * 访问数据
+     * 角色数据
      */
     @Getter
     @Setter
-    public static class VisitData {
-        private Long total = 0L;
-        private Long currentYearTotal = 0L;
-        private Long currentMonthTotal = 0L;
-        private Long dayTotal = 0L;
-        private List<VisitDetailData> totalDatas = new ArrayList<>();
-        private List<VisitDetailData> yearDatas = new ArrayList<>();
-        private List<VisitDetailData> monthDatas = new ArrayList<>();
-        private List<VisitDetailData> dayDatas = new ArrayList<>();
-        public void addTotalDatas(VisitDetailData data){
-            totalDatas.add(data);
-        }
-        public void addYearDatas(VisitDetailData data){
-            yearDatas.add(data);
-        }
-        public void addMonthDatas(VisitDetailData data){
-            monthDatas.add(data);
-        }
-        public void addDayDatas(VisitDetailData data){
-            dayDatas.add(data);
+    public static class RoleData {
+        private Integer total = 0;
+        private Integer dayTotal = 0;
+        private List<RoleDayData> dayDatas = new ArrayList<>();
+        private void addDayDatas(RoleDayData dayData){
+            dayDatas.add(dayData);
         }
     }
     @Getter
     @Setter
-    public static class VisitDetailData {
+    public static class RoleDayData {
         private String x;
-        private Long y;
+        private Integer y;
     }
 
     /**

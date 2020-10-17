@@ -1,5 +1,6 @@
 package com.tz.redismanager.dao.mapper;
 
+import com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO;
 import com.tz.redismanager.dao.domain.po.RolePO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,6 +27,8 @@ public interface RolePOMapper {
     List<RolePO> getAll(@Param("status") Integer status);
 
     List<RolePO> selectPage(@Param("name") String name, @Param("code") String code, @Param("status") Integer status, @Param("offset") Integer offset, @Param("rows") Integer rows);
+
+    List<RoleAnalysisDTO> selectToAnalysis();
 
     int countRole(RolePO record);
 

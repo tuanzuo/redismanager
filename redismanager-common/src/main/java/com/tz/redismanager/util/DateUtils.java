@@ -1,6 +1,7 @@
 package com.tz.redismanager.util;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import java.util.Date;
 
@@ -12,7 +13,11 @@ import java.util.Date;
  **/
 public class DateUtils {
 
+    public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+    public static final String YYYY_MM_DD_HH_MM = "yyyy-MM-dd HH:mm";
+    public static final String YYYY_MM_DD_HH = "yyyy-MM-dd HH";
     public static final String YYYY_MM_DD = "yyyy-MM-dd";
+    public static final String YYYY_MM = "yyyy-MM";
     public static final String YYYYMMDDHH = "yyyyMMddHH";
     public static final String YYYYMMDD = "yyyyMMdd";
     public static final String YYYYMM = "yyyyMM";
@@ -27,6 +32,10 @@ public class DateUtils {
 
     public static String nowDateToStr(String pattern) {
         return new DateTime().toString(pattern);
+    }
+
+    public static Date strToDate(String date, String pattern) {
+        return DateTime.parse(date, DateTimeFormat.forPattern(pattern)).toDate();
     }
 
 }

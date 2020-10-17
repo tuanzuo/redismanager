@@ -45,6 +45,7 @@ public interface ConstInterface {
     //符号
     interface Symbol {
         String COLON = ":";
+        String SPACE = " ";
         String COMMA = ",";
         String STAR = "*";
         String SPOT = ".";
@@ -64,6 +65,7 @@ public interface ConstInterface {
 
     interface Cacher {
         String REDIS_CONFIG_CACHER = "redisConfigCacher";
+        String ANALYSIS_CACHER = "analysisCacher";
     }
 
     //缓存key
@@ -75,7 +77,7 @@ public interface ConstInterface {
         //在线用户
         String USER_ONLINE = "rm:user:online:";
         //访问量汇总
-        String VISIT_ALL_TOTAL = "rm:vist:all:total";
+        String VISIT_TOTAL_ALL = "rm:vist:total:all";
         String VISIT_TOTAL = "rm:vist:total:";
         //访问量明细
         String VISIT_DETAIL = "rm:vist:detail:";

@@ -22,7 +22,9 @@ public class VisitDataDTO {
     private List<totalDeail> totalDeails = new ArrayList<>();
     private List<totalDeail> yearDeails = new ArrayList<>();
     private List<totalDeail> monthDeails = new ArrayList<>();
+    private List<totalDeail> weekDeails = new ArrayList<>();
     private List<totalDeail> dayDeails = new ArrayList<>();
+    private List<totalDeail> currentQueryDetails = new ArrayList<>();
 
     public void addTotalDeails(totalDeail deail){
         totalDeails.add(deail);
@@ -34,6 +36,10 @@ public class VisitDataDTO {
 
     public void addMonthDeails(totalDeail deail){
         monthDeails.add(deail);
+    }
+
+    public void addWeekDeails(totalDeail deail){
+        weekDeails.add(deail);
     }
 
     public void addDayDeails(totalDeail deail){

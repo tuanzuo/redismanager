@@ -1,6 +1,7 @@
 package com.tz.redismanager.service;
 
 import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.domain.param.AnalysisParam;
 
 /**
  * <p>Dashboard服务接口</p>
@@ -10,6 +11,6 @@ import com.tz.redismanager.domain.ApiResult;
  **/
 public interface IDashboardService {
 
-    ApiResult<?> analysis();
+    ApiResult<?> analysis(AnalysisParam param);
 
 }
