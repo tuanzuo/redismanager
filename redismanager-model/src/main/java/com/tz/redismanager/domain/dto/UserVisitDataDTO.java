@@ -18,32 +18,38 @@ public class UserVisitDataDTO {
     private Long currentYearTotal;
     private Long currentMonthTotal;
     private Long currentDayTotal;
-    private List<totalDeail> yearDeails = new ArrayList<>();
-    private List<totalDeail> monthDeails = new ArrayList<>();
-    private List<totalDeail> weekDeails = new ArrayList<>();
-    private List<totalDeail> dayDeails = new ArrayList<>();
-    private List<totalDeail> currentQueryDetails = new ArrayList<>();
+    private List<Detail> yearDeails = new ArrayList<>();
+    private List<Detail> monthDeails = new ArrayList<>();
+    private List<Detail> weekDeails = new ArrayList<>();
+    private List<Detail> dayDeails = new ArrayList<>();
+    private List<Detail> currentQueryDetails = new ArrayList<>();
+    private List<Detail> rangeDetails = new ArrayList<>();
 
-    public void addYearDeails(totalDeail deail){
+    public void addYearDeails(Detail deail){
         yearDeails.add(deail);
     }
 
-    public void addMonthDeails(totalDeail deail){
+    public void addMonthDeails(Detail deail){
         monthDeails.add(deail);
     }
 
-    public void addWeekDeails(totalDeail deail){
+    public void addWeekDeails(Detail deail){
         weekDeails.add(deail);
     }
 
-    public void addDayDeails(totalDeail deail){
+    public void addDayDeails(Detail deail){
         dayDeails.add(deail);
+    }
+
+    public void addRangeDeails(Detail deail){
+        rangeDetails.add(deail);
     }
 
     @Getter
     @Setter
-    public static class totalDeail{
+    public static class Detail {
         private String date;
-        private Long count;
+        //Long/Double
+        private Object count;
     }
 }

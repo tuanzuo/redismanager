@@ -85,6 +85,10 @@ public interface ConstInterface {
         String USER_VISIT_TOTAL = "rm:user:vist:total:";
         //用户访问量明细
         String USER_VISIT_DETAIL = "rm:user:vist:detail:";
+        //用户访问量排行明细
+        String USER_VISIT_RANGE_DETAIL = "rm:user:vist:range:detail:";
+        //Redis连接配置排行明细
+        String REDIS_CONFIG_VISIT_DETAIL = "rm:redis:cfg:vist:detail:";
     }
 
     interface Auth {

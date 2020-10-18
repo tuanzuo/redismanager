@@ -19,6 +19,7 @@ public class AnalysisRespVO {
 
     private VisitData visitData = new VisitData();
     private UserVisitData userVisitData = new UserVisitData();
+    private RedisConfigVisitData redisConfigVisitData = new RedisConfigVisitData();
     private UserData userData = new UserData();
     private RoleData roleData = new RoleData();
     private RedisConfigData redisConfigData = new RedisConfigData();
@@ -53,9 +54,22 @@ public class AnalysisRespVO {
         private Long dayTotal = 0L;
         private List<VisitDetailData> totalDatas = new ArrayList<>();
         private List<VisitDetailData> currentDatas = new ArrayList<>();
+        private List<VisitDetailData> rangeDatas = new ArrayList<>();
         public void addTotalDatas(VisitDetailData data){
             totalDatas.add(data);
         }
+        public void addCurrentDatas(VisitDetailData data){
+            currentDatas.add(data);
+        }
+        public void addRangeDatas(VisitDetailData data){
+            rangeDatas.add(data);
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class RedisConfigVisitData {
+        private List<VisitDetailData> currentDatas = new ArrayList<>();
         public void addCurrentDatas(VisitDetailData data){
             currentDatas.add(data);
         }
@@ -64,7 +78,8 @@ public class AnalysisRespVO {
     @Setter
     public static class VisitDetailData {
         private String x;
-        private Long y;
+        //Long/Double
+        private Object y;
     }
 
     /**

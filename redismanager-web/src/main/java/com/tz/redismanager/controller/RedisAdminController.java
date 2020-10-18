@@ -9,6 +9,7 @@ import com.tz.redismanager.security.Auth;
 import com.tz.redismanager.service.ICacheService;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisContextService;
+import com.tz.redismanager.service.IStatisticService;
 import com.tz.redismanager.validator.ValidGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -38,11 +39,14 @@ public class RedisAdminController {
     private IRedisContextService redisContextService;
     @Autowired
     private ICacheService cacheService;
+    @Autowired
+    private IStatisticService statisticService;
 
     @RequestMapping("context/init/{id}")
     @Auth
     public ApiResult<?> initContext(@NotEmpty(message = "id不能为空") @PathVariable("id") String id) {
         redisContextService.initContext(id);
+        statisticService.addRedisConfigVisit(id);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 

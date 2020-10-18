@@ -8,6 +8,7 @@ import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.dao.mapper.UserPOMapper;
 import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.domain.dto.RedisConfigVisitDataDTO;
 import com.tz.redismanager.domain.dto.UserVisitDataDTO;
 import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
@@ -57,6 +58,9 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
         UserVisitDataDTO userVisitDataDTO = statisticService.countUserVisit(param);
         this.buildUserVisitData(resp, userVisitDataDTO);
 
+        RedisConfigVisitDataDTO redisConfigVisitDataDTO = statisticService.countRedisConfigVisit(param);
+        this.buildRedisConfigVisitData(resp, redisConfigVisitDataDTO);
+
         List<UserAnalysisDTO> userList = userPOMapper.selectToAnalysis();
         this.buildUserData(resp, userList);
 
@@ -96,6 +100,21 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
             detail.setX(temp.getDate());
             detail.setY(temp.getCount());
             resp.getUserVisitData().addCurrentDatas(detail);
+        });
+        dto.getRangeDetails().forEach(temp -> {
+            AnalysisRespVO.VisitDetailData detail = new AnalysisRespVO.VisitDetailData();
+            detail.setX(temp.getDate());
+            detail.setY(temp.getCount());
+            resp.getUserVisitData().addRangeDatas(detail);
+        });
+    }
+
+    private void buildRedisConfigVisitData(AnalysisRespVO resp, RedisConfigVisitDataDTO dto) {
+        dto.getDetails().forEach(temp -> {
+            AnalysisRespVO.VisitDetailData detail = new AnalysisRespVO.VisitDetailData();
+            detail.setX(temp.getName());
+            detail.setY(temp.getCount());
+            resp.getRedisConfigVisitData().addCurrentDatas(detail);
         });
     }
 

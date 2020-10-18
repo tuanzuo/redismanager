@@ -1,5 +1,6 @@
 package com.tz.redismanager.service;
 
+import com.tz.redismanager.domain.dto.RedisConfigVisitDataDTO;
 import com.tz.redismanager.domain.dto.UserVisitDataDTO;
 import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
@@ -26,4 +27,8 @@ public interface IStatisticService {
     VisitDataDTO countVisit(AnalysisParam param);
 
     UserVisitDataDTO countUserVisit(AnalysisParam param);
+
+    void addRedisConfigVisit(String redisConfigId);
+
+    RedisConfigVisitDataDTO countRedisConfigVisit(AnalysisParam param);
 }
