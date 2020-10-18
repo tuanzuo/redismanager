@@ -8,6 +8,7 @@ import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.dao.mapper.UserPOMapper;
 import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.domain.dto.UserVisitDataDTO;
 import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
 import com.tz.redismanager.domain.vo.AnalysisRespVO;
@@ -53,6 +54,9 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
         VisitDataDTO visitDataDTO = statisticService.countVisit(param);
         this.buildVisitData(resp, visitDataDTO);
 
+        UserVisitDataDTO userVisitDataDTO = statisticService.countUserVisit(param);
+        this.buildUserVisitData(resp, userVisitDataDTO);
+
         List<UserAnalysisDTO> userList = userPOMapper.selectToAnalysis();
         this.buildUserData(resp, userList);
 
@@ -83,6 +87,17 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
         });
     }
 
+    private void buildUserVisitData(AnalysisRespVO resp, UserVisitDataDTO dto) {
+        resp.getUserVisitData().setCurrentYearTotal(dto.getCurrentYearTotal());
+        resp.getUserVisitData().setCurrentMonthTotal(dto.getCurrentMonthTotal());
+        resp.getUserVisitData().setDayTotal(dto.getCurrentDayTotal());
+        dto.getCurrentQueryDetails().forEach(temp -> {
+            AnalysisRespVO.VisitDetailData detail = new AnalysisRespVO.VisitDetailData();
+            detail.setX(temp.getDate());
+            detail.setY(temp.getCount());
+            resp.getUserVisitData().addCurrentDatas(detail);
+        });
+    }
 
     private void buildUserData(AnalysisRespVO resp, List<UserAnalysisDTO> userList) {
         String todayDate = DateUtils.dateToStr(new Date(), DateUtils.YYYY_MM_DD);

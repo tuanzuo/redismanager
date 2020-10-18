@@ -1,5 +1,6 @@
 package com.tz.redismanager.service;
 
+import com.tz.redismanager.domain.dto.UserVisitDataDTO;
 import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
 import com.tz.redismanager.security.AuthContext;
@@ -23,4 +24,6 @@ public interface IStatisticService {
     void addVisit();
 
     VisitDataDTO countVisit(AnalysisParam param);
+
+    UserVisitDataDTO countUserVisit(AnalysisParam param);
 }

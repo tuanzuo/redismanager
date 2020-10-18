@@ -18,6 +18,7 @@ import java.util.List;
 public class AnalysisRespVO {
 
     private VisitData visitData = new VisitData();
+    private UserVisitData userVisitData = new UserVisitData();
     private UserData userData = new UserData();
     private RoleData roleData = new RoleData();
     private RedisConfigData redisConfigData = new RedisConfigData();
@@ -29,6 +30,24 @@ public class AnalysisRespVO {
     @Setter
     public static class VisitData {
         private Long total = 0L;
+        private Long currentYearTotal = 0L;
+        private Long currentMonthTotal = 0L;
+        private Long dayTotal = 0L;
+        private List<VisitDetailData> totalDatas = new ArrayList<>();
+        private List<VisitDetailData> currentDatas = new ArrayList<>();
+        public void addTotalDatas(VisitDetailData data){
+            totalDatas.add(data);
+        }
+        public void addCurrentDatas(VisitDetailData data){
+            currentDatas.add(data);
+        }
+    }
+    /**
+     * 用户访问数据
+     */
+    @Getter
+    @Setter
+    public static class UserVisitData {
         private Long currentYearTotal = 0L;
         private Long currentMonthTotal = 0L;
         private Long dayTotal = 0L;

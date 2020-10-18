@@ -1,6 +1,7 @@
 package com.tz.redismanager.service.impl;
 
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.domain.dto.UserVisitDataDTO;
 import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
 import com.tz.redismanager.enm.DateTypeEnum;
@@ -36,6 +37,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
     private static final Integer DAYS_31 = 31;
     private static final Integer DAYS_7 = 7;
     private static final Integer DAYS_1 = 1;
+    private static final Integer YEAR_1 = DAYS_365;
     private static final Integer YEAR_10 = DAYS_365 * 10;
 
     @Autowired
@@ -49,6 +51,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         Integer userId = Optional.ofNullable(authContext).map(AuthContext::getUserId).orElse(null);
         this.addOnlineUser(userId);
         this.addVisit();
+        this.addUserVisit(userId);
     }
 
     @Override
@@ -106,7 +109,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
 
         String yearDetailKey = ConstInterface.CacheKey.VISIT_DETAIL + yyyy;
         redisTemplate.opsForHash().put(yearDetailKey, mm, redisTemplate.opsForHyperLogLog().size(currentMonthKey));
-        redisTemplate.expire(yearDetailKey, YEAR_10, TimeUnit.DAYS);
+        redisTemplate.expire(yearDetailKey, YEAR_1, TimeUnit.DAYS);
 
         String currentDayKey = ConstInterface.CacheKey.VISIT_TOTAL + yyyyMMdd;
         redisTemplate.opsForHyperLogLog().add(currentDayKey, uuid);
@@ -114,13 +117,13 @@ public class RedisStatisticServiceImpl implements IStatisticService {
 
         String mmDetailKey = ConstInterface.CacheKey.VISIT_DETAIL + yyyyMM;
         redisTemplate.opsForHash().put(mmDetailKey, dd, redisTemplate.opsForHyperLogLog().size(currentDayKey));
-        redisTemplate.expire(mmDetailKey, YEAR_10, TimeUnit.DAYS);
+        redisTemplate.expire(mmDetailKey, DAYS_31, TimeUnit.DAYS);
 
         int weekOfYear = new DateTime().weekOfWeekyear().get();
         int dayOfWeek = new DateTime().dayOfWeek().get();
         String weekDetailKey = ConstInterface.CacheKey.VISIT_DETAIL + yyyy + ":week:" + weekOfYear;
         redisTemplate.opsForHash().put(weekDetailKey, String.valueOf(dayOfWeek), redisTemplate.opsForHyperLogLog().size(currentDayKey));
-        redisTemplate.expire(weekDetailKey, YEAR_10, TimeUnit.DAYS);
+        redisTemplate.expire(weekDetailKey, DAYS_7, TimeUnit.DAYS);
 
         String currentHourKey = ConstInterface.CacheKey.VISIT_TOTAL + YYYYMMDDHH;
         redisTemplate.opsForHyperLogLog().add(currentHourKey, uuid);
@@ -128,7 +131,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
 
         String ddDetailKey = ConstInterface.CacheKey.VISIT_DETAIL + yyyyMMdd;
         redisTemplate.opsForHash().put(ddDetailKey, hh, redisTemplate.opsForHyperLogLog().size(currentHourKey));
-        redisTemplate.expire(ddDetailKey, YEAR_10, TimeUnit.DAYS);
+        redisTemplate.expire(ddDetailKey, DAYS_1, TimeUnit.DAYS);
     }
 
     @Override
@@ -210,6 +213,124 @@ public class RedisStatisticServiceImpl implements IStatisticService {
             Map<Object, Object> dayDetails = redisTemplate.opsForHash().entries(ddDetailKey);
             dayDetails.forEach((key, value) -> {
                 VisitDataDTO.totalDeail deail = new VisitDataDTO.totalDeail();
+                deail.setDate(yyyy_MM_dd + ConstInterface.Symbol.SPACE + key + ConstInterface.Symbol.COLON +"00");
+                deail.setCount(Long.valueOf(String.valueOf(value)));
+                dto.addDayDeails(deail);
+            });
+            dto.setCurrentQueryDetails(dto.getDayDeails().stream().sorted(Comparator.comparing(temp -> {
+                return DateUtils.strToDate(temp.getDate(), DateUtils.YYYY_MM_DD_HH_MM).getTime();
+            })).collect(Collectors.toList()));
+        }
+        return dto;
+    }
+
+    private void addUserVisit(Integer userId) {
+        String yyyy = DateUtils.nowDateToStr(DateUtils.YYYY);
+        String yyyyMM = DateUtils.nowDateToStr(DateUtils.YYYYMM);
+        String yyyyMMdd = DateUtils.nowDateToStr(DateUtils.YYYYMMDD);
+        String YYYYMMDDHH = DateUtils.nowDateToStr(DateUtils.YYYYMMDDHH);
+        String mm = DateUtils.nowDateToStr(DateUtils.MM);
+        String dd = DateUtils.nowDateToStr(DateUtils.DD);
+        String hh = DateUtils.nowDateToStr(DateUtils.HH);
+
+        String currentYearKey = ConstInterface.CacheKey.USER_VISIT_TOTAL + yyyy;
+        redisTemplate.opsForHyperLogLog().add(currentYearKey, userId);
+        redisTemplate.expire(currentYearKey, DAYS_365, TimeUnit.DAYS);
+
+        String currentMonthKey = ConstInterface.CacheKey.USER_VISIT_TOTAL + yyyyMM;
+        redisTemplate.opsForHyperLogLog().add(currentMonthKey, userId);
+        redisTemplate.expire(currentMonthKey, DAYS_31, TimeUnit.DAYS);
+
+        String yearDetailKey = ConstInterface.CacheKey.USER_VISIT_DETAIL + yyyy;
+        redisTemplate.opsForHash().put(yearDetailKey, mm, redisTemplate.opsForHyperLogLog().size(currentMonthKey));
+        redisTemplate.expire(yearDetailKey, YEAR_1, TimeUnit.DAYS);
+
+        String currentDayKey = ConstInterface.CacheKey.USER_VISIT_TOTAL + yyyyMMdd;
+        redisTemplate.opsForHyperLogLog().add(currentDayKey, userId);
+        redisTemplate.expire(currentDayKey, DAYS_1, TimeUnit.DAYS);
+
+        String mmDetailKey = ConstInterface.CacheKey.USER_VISIT_DETAIL + yyyyMM;
+        redisTemplate.opsForHash().put(mmDetailKey, dd, redisTemplate.opsForHyperLogLog().size(currentDayKey));
+        redisTemplate.expire(mmDetailKey, DAYS_31, TimeUnit.DAYS);
+
+        int weekOfYear = new DateTime().weekOfWeekyear().get();
+        int dayOfWeek = new DateTime().dayOfWeek().get();
+        String weekDetailKey = ConstInterface.CacheKey.USER_VISIT_DETAIL + yyyy + ":week:" + weekOfYear;
+        redisTemplate.opsForHash().put(weekDetailKey, String.valueOf(dayOfWeek), redisTemplate.opsForHyperLogLog().size(currentDayKey));
+        redisTemplate.expire(weekDetailKey, DAYS_7, TimeUnit.DAYS);
+
+        String currentHourKey = ConstInterface.CacheKey.USER_VISIT_TOTAL + YYYYMMDDHH;
+        redisTemplate.opsForHyperLogLog().add(currentHourKey, userId);
+        redisTemplate.expire(currentHourKey, HOURS_1, TimeUnit.HOURS);
+
+        String ddDetailKey = ConstInterface.CacheKey.USER_VISIT_DETAIL + yyyyMMdd;
+        redisTemplate.opsForHash().put(ddDetailKey, hh, redisTemplate.opsForHyperLogLog().size(currentHourKey));
+        redisTemplate.expire(ddDetailKey, DAYS_1, TimeUnit.DAYS);
+    }
+
+
+    @Override
+    public UserVisitDataDTO countUserVisit(AnalysisParam param) {
+        UserVisitDataDTO dto = new UserVisitDataDTO();
+        String currentYearKey = ConstInterface.CacheKey.USER_VISIT_TOTAL + DateUtils.nowDateToStr(DateUtils.YYYY);
+        String currentMonthKey = ConstInterface.CacheKey.USER_VISIT_TOTAL + DateUtils.nowDateToStr(DateUtils.YYYYMM);
+        String currentDayKey = ConstInterface.CacheKey.USER_VISIT_TOTAL + DateUtils.nowDateToStr(DateUtils.YYYYMMDD);
+        dto.setCurrentYearTotal(redisTemplate.opsForHyperLogLog().size(currentYearKey));
+        dto.setCurrentMonthTotal(redisTemplate.opsForHyperLogLog().size(currentMonthKey));
+        dto.setCurrentDayTotal(redisTemplate.opsForHyperLogLog().size(currentDayKey));
+
+        String yyyy = DateUtils.nowDateToStr(DateUtils.YYYY);
+        String yyyyMM = DateUtils.nowDateToStr(DateUtils.YYYYMM);
+        String yyyyMMdd = DateUtils.nowDateToStr(DateUtils.YYYYMMDD);
+        String yyyy_MM = DateUtils.nowDateToStr(DateUtils.YYYY_MM);
+        String yyyy_MM_dd = DateUtils.nowDateToStr(DateUtils.YYYY_MM_DD);
+
+        if(DateTypeEnum.YEAR.getType().equals(param.getDateType())){
+            String yearDetailKey = ConstInterface.CacheKey.USER_VISIT_DETAIL + yyyy;
+            Map<Object, Object> yearDetails = redisTemplate.opsForHash().entries(yearDetailKey);
+            yearDetails.forEach((key, value) -> {
+                UserVisitDataDTO.totalDeail deail = new UserVisitDataDTO.totalDeail();
+                deail.setDate(yyyy + ConstInterface.Symbol.MIDDLE_LINE + key);
+                deail.setCount(Long.valueOf(String.valueOf(value)));
+                dto.addYearDeails(deail);
+            });
+            dto.setCurrentQueryDetails(dto.getYearDeails().stream().sorted(Comparator.comparing(temp -> {
+                return DateUtils.strToDate(temp.getDate(), DateUtils.YYYY_MM).getTime();
+            })).collect(Collectors.toList()));
+        }
+
+        if(DateTypeEnum.MONTH.getType().equals(param.getDateType())){
+            String mmDetailKey = ConstInterface.CacheKey.USER_VISIT_DETAIL + yyyyMM;
+            Map<Object, Object> monthDetails = redisTemplate.opsForHash().entries(mmDetailKey);
+            monthDetails.forEach((key, value) -> {
+                UserVisitDataDTO.totalDeail deail = new UserVisitDataDTO.totalDeail();
+                deail.setDate(yyyy_MM + ConstInterface.Symbol.MIDDLE_LINE + key);
+                deail.setCount(Long.valueOf(String.valueOf(value)));
+                dto.addMonthDeails(deail);
+            });
+            dto.setCurrentQueryDetails(dto.getMonthDeails().stream().sorted(Comparator.comparing(temp -> {
+                return DateUtils.strToDate(temp.getDate(), DateUtils.YYYY_MM_DD).getTime();
+            })).collect(Collectors.toList()));
+        }
+
+        if(DateTypeEnum.WEEK.getType().equals(param.getDateType())){
+            int weekOfYear = new DateTime().weekOfWeekyear().get();
+            String weekDetailKey = ConstInterface.CacheKey.USER_VISIT_DETAIL + yyyy + ":week:" + weekOfYear;
+            Map<Object, Object> weekDetails = redisTemplate.opsForHash().entries(weekDetailKey);
+            weekDetails.forEach((key, value) -> {
+                UserVisitDataDTO.totalDeail deail = new UserVisitDataDTO.totalDeail();
+                deail.setDate(yyyy + "年" + weekOfYear + "周" + key + "天");
+                deail.setCount(Long.valueOf(String.valueOf(value)));
+                dto.addWeekDeails(deail);
+            });
+            dto.setCurrentQueryDetails(dto.getWeekDeails());
+        }
+
+        if(DateTypeEnum.TODAY.getType().equals(param.getDateType())){
+            String ddDetailKey = ConstInterface.CacheKey.USER_VISIT_DETAIL + yyyyMMdd;
+            Map<Object, Object> dayDetails = redisTemplate.opsForHash().entries(ddDetailKey);
+            dayDetails.forEach((key, value) -> {
+                UserVisitDataDTO.totalDeail deail = new UserVisitDataDTO.totalDeail();
                 deail.setDate(yyyy_MM_dd + ConstInterface.Symbol.SPACE + key + ConstInterface.Symbol.COLON +"00");
                 deail.setCount(Long.valueOf(String.valueOf(value)));
                 dto.addDayDeails(deail);

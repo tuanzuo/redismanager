@@ -81,6 +81,10 @@ public interface ConstInterface {
         String VISIT_TOTAL = "rm:vist:total:";
         //访问量明细
         String VISIT_DETAIL = "rm:vist:detail:";
+        //用户访问量汇总
+        String USER_VISIT_TOTAL = "rm:user:vist:total:";
+        //用户访问量明细
+        String USER_VISIT_DETAIL = "rm:user:vist:detail:";
     }
 
     interface Auth {
