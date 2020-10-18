@@ -82,13 +82,13 @@ public interface ConstInterface {
         //访问量明细
         String VISIT_DETAIL = "rm:vist:detail:";
         //用户访问量汇总
-        String USER_VISIT_TOTAL = "rm:user:vist:total:";
+        String USER_VISIT_TOTAL = "rm:vist:user:total:";
         //用户访问量明细
-        String USER_VISIT_DETAIL = "rm:user:vist:detail:";
+        String USER_VISIT_DETAIL = "rm:vist:user:dtl:";
         //用户访问量排行明细
-        String USER_VISIT_RANGE_DETAIL = "rm:user:vist:range:detail:";
+        String USER_VISIT_RANGE_DETAIL = "rm:vist:user:range:dtl:";
         //Redis连接配置排行明细
-        String REDIS_CONFIG_VISIT_DETAIL = "rm:redis:cfg:vist:detail:";
+        String REDIS_CONFIG_VISIT_DETAIL = "rm:vist:rds:cfg:range:dtl:";
     }
 
     interface Auth {
