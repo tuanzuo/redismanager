@@ -1,10 +1,12 @@
 package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.security.Auth;
+import com.tz.redismanager.service.ICacheService;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.validator.ValidGroup;
@@ -34,6 +36,8 @@ public class RedisAdminController {
     private IRedisAdminService redisAdminService;
     @Autowired
     private IRedisContextService redisContextService;
+    @Autowired
+    private ICacheService cacheService;
 
     @RequestMapping("context/init/{id}")
     @Auth
@@ -46,7 +50,7 @@ public class RedisAdminController {
     @Auth
     public ApiResult<?> clearCacheRedisTemplate(@NotEmpty(message = "id不能为空") @PathVariable("id") String id) {
         redisContextService.removeRedisTemplate(id);
-        redisContextService.getRedisConfigCache().invalidate(id);
+        cacheService.invalidateCache(ConstInterface.Cacher.REDIS_CONFIG_CACHER, id);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 

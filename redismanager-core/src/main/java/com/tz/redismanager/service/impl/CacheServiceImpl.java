@@ -49,6 +49,15 @@ public class CacheServiceImpl implements ICacheService {
         return cacherMap.get(cacherKey);
     }
 
+    @Override
+    public void invalidateCache(String cacherKey, Object cacheKey) {
+        LoadingCache cacher = this.getCacher(cacherKey);
+        if (null == cacher) {
+            return;
+        }
+        cacher.invalidate(cacheKey);
+    }
+
     private LoadingCache initAnalysisCacher(String cacherKey, ICacheInitCallbackService callback) {
         return Caffeine.newBuilder()
                 //写了之后多久过期

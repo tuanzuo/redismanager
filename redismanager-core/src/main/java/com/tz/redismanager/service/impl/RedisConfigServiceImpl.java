@@ -8,6 +8,7 @@ import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.service.ICacheService;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.security.AuthContext;
@@ -30,6 +31,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     @Autowired
     private IRedisContextService redisContextService;
     @Autowired
+    private ICacheService cacheService;
+    @Autowired
     private RedisConfigPOMapper redisConfigPOMapper;
 
     @Override
@@ -51,7 +54,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         po.setIfDel(ConstInterface.IF_DEL.NO);
         redisConfigPOMapper.insertSelective(po);
         //放入缓存
-        redisContextService.getRedisConfigCache().put(po.getId(), po);
+        cacheService.getCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER).put(po.getId(), po);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
@@ -66,14 +69,14 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         redisConfigPOMapper.updateByPrimaryKeySelective(po);
         //删除缓存中的RedisTemplate
         redisContextService.getRedisTemplateMap().remove(id);
-        redisContextService.getRedisConfigCache().invalidate(id);
+        cacheService.invalidateCache(ConstInterface.Cacher.REDIS_CONFIG_CACHER, id);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @Override
     public ApiResult<?> update(RedisConfigVO vo, AuthContext authContext) {
         String userName = authContext.getUserName();
-        RedisConfigPO oldPO = redisContextService.getRedisConfigCache().get(vo.getId());
+        RedisConfigPO oldPO = (RedisConfigPO) cacheService.getCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER).get(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
         if (!StringUtils.equals(po.getPassword(), oldPO.getPassword())) {
@@ -86,7 +89,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         redisConfigPOMapper.updateByPrimaryKeySelective(po);
         //删除缓存中的RedisTemplate
         redisContextService.getRedisTemplateMap().remove(vo.getId());
-        redisContextService.getRedisConfigCache().invalidate(vo.getId());
+        cacheService.invalidateCache(ConstInterface.Cacher.REDIS_CONFIG_CACHER, vo.getId());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 

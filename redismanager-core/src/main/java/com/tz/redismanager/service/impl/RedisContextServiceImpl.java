@@ -1,6 +1,5 @@
 package com.tz.redismanager.service.impl;
 
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
@@ -48,7 +47,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
             logger.info("[redisContext] [initContext] [已存在对应的redisTemplate] {id:{}}", id);
             return null;
         }
-        RedisConfigPO redisConfigPO = this.getRedisConfigCache().get(id);
+        RedisConfigPO redisConfigPO = (RedisConfigPO) cacheService.getCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER).get(id);
         if (null == redisConfigPO) {
             logger.error("[redisContext] [initContext] [查询不到redisConfig数据] {id:{}}", id);
             return null;
@@ -98,11 +97,6 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
     public void removeRedisTemplate(String id) {
         redisTemplateMap.remove(id);
         logger.info("[redisContext] [removeRedisTemplate] {redisTemplate清理完成,id:{}}", id);
-    }
-
-    @Override
-    public LoadingCache<String, RedisConfigPO> getRedisConfigCache() {
-        return cacheService.getCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER);
     }
 
     @Override
