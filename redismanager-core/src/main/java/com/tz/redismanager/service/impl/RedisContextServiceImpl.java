@@ -1,15 +1,15 @@
 package com.tz.redismanager.service.impl;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.domain.ApiResult;
-import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.service.ICacheService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.*;
@@ -34,12 +34,12 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
      */
     private static Map<String, RedisTemplate<String, Object>> redisTemplateMap = new ConcurrentHashMap<>();
 
-    private static Map<String, LoadingCache> cacheMap = new ConcurrentHashMap<>();
-
     @Autowired
     private EncryptConfig encryptConfig;
     @Autowired
     private RedisConfigPOMapper redisConfigPOMapper;
+    @Autowired
+    private ICacheService cacheService;
 
     @Override
     @MethodLog(logPrefix = "RedisTemplate初始化", logInputParams = false, logOutputParams = false)
@@ -102,7 +102,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
 
     @Override
     public LoadingCache<String, RedisConfigPO> getRedisConfigCache() {
-        return cacheMap.get(ConstInterface.Cacher.REDIS_CONFIG_CACHER);
+        return cacheService.getCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER);
     }
 
     @Override
@@ -145,18 +145,6 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        LoadingCache<String, RedisConfigPO> redisConfigCache = Caffeine.newBuilder()
-                //最后一次访问了之后多久过期
-                .expireAfterAccess(1L, TimeUnit.HOURS)
-                .initialCapacity(10)
-                .maximumSize(1000)
-                .build((id) -> {
-                    logger.info("[本地缓存] [{}] [回源查询] {id:{}对应的redis连接信息}", ConstInterface.Cacher.REDIS_CONFIG_CACHER, id);
-                    return redisConfigPOMapper.selectByPrimaryKey(id);
-                });
-        cacheMap.put(ConstInterface.Cacher.REDIS_CONFIG_CACHER, redisConfigCache);
-        logger.info("[本地缓存] [{}] [初始化完成]", ConstInterface.Cacher.REDIS_CONFIG_CACHER);
+        cacheService.initCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER, (param) -> redisConfigPOMapper.selectByPrimaryKey(String.valueOf(param)));
     }
-
-
 }

@@ -1,7 +1,5 @@
 package com.tz.redismanager.service.impl;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO;
 import com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO;
@@ -14,21 +12,16 @@ import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
 import com.tz.redismanager.domain.vo.AnalysisRespVO;
 import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.service.ICacheService;
 import com.tz.redismanager.service.IDashboardService;
 import com.tz.redismanager.service.IStatisticService;
-import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.DateUtils;
-import com.tz.redismanager.util.JsonUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <p>Dashboard服务实现</p>
@@ -39,10 +32,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class DashboardServiceImpl implements IDashboardService, InitializingBean {
 
-    private static final Logger logger = TraceLoggerFactory.getLogger(DashboardServiceImpl.class);
-
-    private static Map<String, LoadingCache> cacheMap = new ConcurrentHashMap<>();
-
     @Autowired
     private UserPOMapper userPOMapper;
     @Autowired
@@ -51,15 +40,12 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
     private RedisConfigPOMapper redisConfigPOMapper;
     @Autowired
     private IStatisticService statisticService;
+    @Autowired
+    private ICacheService cacheService;
 
     @Override
     public ApiResult<?> analysis(AnalysisParam param) {
-        LoadingCache<AnalysisParam, AnalysisRespVO> analysisCacher = this.getAnalysisCache();
-        return new ApiResult<>(ResultCode.SUCCESS, analysisCacher.get(param));
-    }
-
-    private LoadingCache<AnalysisParam, AnalysisRespVO> getAnalysisCache() {
-        return cacheMap.get(ConstInterface.Cacher.ANALYSIS_CACHER);
+        return new ApiResult<>(ResultCode.SUCCESS, cacheService.getCacher(ConstInterface.Cacher.ANALYSIS_CACHER).get(param));
     }
 
     private AnalysisRespVO queryAnalysisData(AnalysisParam param) {
@@ -151,17 +137,6 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        LoadingCache<AnalysisParam, AnalysisRespVO> analysisCacher = Caffeine.newBuilder()
-                //写了之后多久过期
-                .expireAfterWrite(30L, TimeUnit.SECONDS)
-                .initialCapacity(10)
-                .maximumSize(1000)
-                .build((param) -> {
-                    logger.info("[本地缓存] [{}] [回源查询] {param:{}}", ConstInterface.Cacher.ANALYSIS_CACHER, JsonUtils.toJsonStr(param));
-                    return this.queryAnalysisData(param);
-                });
-        cacheMap.put(ConstInterface.Cacher.ANALYSIS_CACHER, analysisCacher);
-        logger.info("[AnalysisCache] [本地缓存] [{}] [初始化完成]", ConstInterface.Cacher.ANALYSIS_CACHER);
+        cacheService.initCacher(ConstInterface.Cacher.ANALYSIS_CACHER, (param) -> queryAnalysisData(AnalysisParam.class.cast(param)));
     }
-
 }
