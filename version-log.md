@@ -34,9 +34,9 @@
 
 1、优化日志追踪-TraceLoggerFactory
 
-2、增加用户管理-用户列表
+2、增加用户管理-用户列表菜单
 
-3、增加角色管理-角色列表
+3、增加角色管理-角色列表菜单
 
 4、优化页面
 
@@ -50,3 +50,5 @@
 2、Spring Boot从1.5.4.RELEASE升级到2.3.4.RELEASE版本<br/>
 
 备注：RedisConnectionFactory使用LettuceConnectionFactory替换JedisConnectionFactory
+
+3、增加Dashboard-分析页菜单
