@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tz.redismanager.dao.mapper.RolePOMapper">
+  <resultMap id="BaseResultMap" type="com.tz.redismanager.dao.domain.po.RolePO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="if_del" jdbcType="INTEGER" property="ifDel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, code, status, note, creater, create_time, updater, update_time, if_del
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getAll" resultType="com.tz.redismanager.dao.domain.po.RolePO">
+    select
+    <include refid="Base_Column_List" />
+    from t_role
+    where if_del=0
+    <if test="status != null">
+      AND status = #{status,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_role
+    where if_del = 0
+    <if test="name != null">
+      AND LOCATE(#{name,jdbcType=VARCHAR},name) > 0
+    </if>
+    <if test="code != null">
+      AND LOCATE(#{code,jdbcType=VARCHAR},code) > 0
+    </if>
+    <if test="status != null">
+      AND status = #{status,jdbcType=INTEGER}
+    </if>
+    ORDER BY create_time DESC
+    LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
+  </select>
+  <select id="selectToAnalysis" resultType="com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO">
+    SELECT COUNT(id) AS roleCount,create_time AS createTime FROM t_role
+    WHERE if_del = 0
+    GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
+  </select>
+  <select id="countRole" resultType="java.lang.Integer" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
+    select
+    count(*)
+    from t_role
+    where 1=1
+    <if test="name != null">
+      AND LOCATE(#{name,jdbcType=VARCHAR},name) > 0
+    </if>
+    <if test="code != null">
+      AND LOCATE(#{code,jdbcType=VARCHAR},code) > 0
+    </if>
+    <if test="status != null">
+      AND status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="ifDel != null">
+      AND if_del = #{ifDel,jdbcType=INTEGER}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
+    insert into t_role (id, name, code, status,
+      note, creater, create_time, 
+      updater, update_time, if_del
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+      #{note,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{ifDel,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
+    insert into t_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="creater != null">
+        creater,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="ifDel != null">
+        if_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="creater != null">
+        #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ifDel != null">
+        #{ifDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
+    update t_role
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="creater != null">
+        creater = #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ifDel != null">
+        if_del = #{ifDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
+    update t_role
+    set name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      note = #{note,jdbcType=VARCHAR},
+      creater = #{creater,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      updater = #{updater,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      if_del = #{ifDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="batchUpdateStatus">
+    update t_role
+    set status = #{status,jdbcType=INTEGER},
+    updater = #{updater,jdbcType=VARCHAR},
+    update_time = now()
+    where id in
+    <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+      #{id,jdbcType=INTEGER}
+    </foreach>
+  </update>
+</mapper>

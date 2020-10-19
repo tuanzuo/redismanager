@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tz.redismanager.dao.mapper.UserRoleRelationPOMapper">
+  <resultMap id="BaseResultMap" type="com.tz.redismanager.dao.domain.po.UserRoleRelationPO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="if_del" jdbcType="INTEGER" property="ifDel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, role_id, creater, create_time, updater, update_time, if_del
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user_role_relation
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByUserRole" resultType="com.tz.redismanager.dao.domain.po.RolePO">
+    SELECT
+      rl.*
+    FROM t_user_role_relation ur INNER JOIN t_role rl ON ur.role_id = rl.id
+    WHERE ur.user_id = #{userId,jdbcType=INTEGER}
+      AND ur.if_del = 0
+      AND rl.if_del = 0
+      <if test="roleStatus != null">
+      AND rl.status = #{roleStatus,jdbcType=INTEGER}
+      </if>
+  </select>
+  <select id="selectByUserRoleRelation" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_user_role_relation
+    WHERE user_id = #{userId,jdbcType=INTEGER} AND if_del = 0
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_user_role_relation
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <update id="delByIds">
+    update t_user_role_relation
+    set updater = #{updater,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      if_del = #{ifDel,jdbcType=INTEGER}
+    where id IN
+    <foreach collection ="ids" item="temp" open="(" separator ="," close=")">
+      #{temp,jdbcType=INTEGER}
+    </foreach>
+  </update>
+  <insert id="insert" parameterType="com.tz.redismanager.dao.domain.po.UserRoleRelationPO">
+    insert into t_user_role_relation (id, user_id, role_id,
+      creater, create_time, updater, 
+      update_time, if_del)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, 
+      #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{ifDel,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertBatch">
+    insert into t_user_role_relation (id, user_id, role_id,
+      creater, create_time, updater,
+      update_time, if_del)
+    values
+    <foreach collection ="userRoles" item="temp" separator =",">
+      (#{temp.id,jdbcType=INTEGER}, #{temp.userId,jdbcType=INTEGER}, #{temp.roleId,jdbcType=INTEGER},
+      #{temp.creater,jdbcType=VARCHAR}, #{temp.createTime,jdbcType=TIMESTAMP}, #{temp.updater,jdbcType=VARCHAR},
+      #{temp.updateTime,jdbcType=TIMESTAMP}, #{temp.ifDel,jdbcType=INTEGER})
+    </foreach >
+  </insert>
+  <insert id="insertSelective" parameterType="com.tz.redismanager.dao.domain.po.UserRoleRelationPO">
+    insert into t_user_role_relation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="creater != null">
+        creater,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="ifDel != null">
+        if_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null">
+        #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ifDel != null">
+        #{ifDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tz.redismanager.dao.domain.po.UserRoleRelationPO">
+    update t_user_role_relation
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null">
+        creater = #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ifDel != null">
+        if_del = #{ifDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.dao.domain.po.UserRoleRelationPO">
+    update t_user_role_relation
+    set user_id = #{userId,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      creater = #{creater,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      updater = #{updater,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      if_del = #{ifDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
