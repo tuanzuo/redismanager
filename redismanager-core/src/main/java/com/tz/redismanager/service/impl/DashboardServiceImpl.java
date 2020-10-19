@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>Dashboard服务实现</p>
@@ -123,7 +124,8 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
         Integer userTotal = 0;
         Integer userTodayTotal = 0;
         for (UserAnalysisDTO temp : userList) {
-            String date = DateUtils.dateToStr(temp.getRegisterDate(), DateUtils.YYYY_MM_DD);
+            Date createTime = Optional.ofNullable(temp).map(UserAnalysisDTO::getCreateTime).orElse(new Date());
+            String date = DateUtils.dateToStr(createTime, DateUtils.YYYY_MM_DD);
             userTotal += temp.getUserCount();
             userTodayTotal = todayDate.equals(date) ? temp.getUserCount() : 0;
             AnalysisRespVO.UserDayData dayData = new AnalysisRespVO.UserDayData();
@@ -140,7 +142,8 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
         Integer userTotal = 0;
         Integer userTodayTotal = 0;
         for (RoleAnalysisDTO temp : roleList) {
-            String date = DateUtils.dateToStr(temp.getCreateDate(), DateUtils.YYYY_MM_DD);
+            Date createTime = Optional.ofNullable(temp).map(RoleAnalysisDTO::getCreateTime).orElse(new Date());
+            String date = DateUtils.dateToStr(createTime, DateUtils.YYYY_MM_DD);
             userTotal += temp.getRoleCount();
             userTodayTotal = todayDate.equals(date) ? temp.getRoleCount() : 0;
             AnalysisRespVO.RoleDayData dayData = new AnalysisRespVO.RoleDayData();
@@ -157,7 +160,8 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
         Integer configTotal = 0;
         Integer configTodayTotal = 0;
         for (RedisConfigAnalysisDTO temp : configList) {
-            String date = DateUtils.dateToStr(temp.getCreateDate(), DateUtils.YYYY_MM_DD);
+            Date createTime = Optional.ofNullable(temp).map(RedisConfigAnalysisDTO::getCreateTime).orElse(new Date());
+            String date = DateUtils.dateToStr(createTime, DateUtils.YYYY_MM_DD);
             configTotal += temp.getConfigCount();
             configTodayTotal = todayDate.equals(date) ? temp.getConfigCount() : 0;
             AnalysisRespVO.RedisConfigDayData dayData = new AnalysisRespVO.RedisConfigDayData();

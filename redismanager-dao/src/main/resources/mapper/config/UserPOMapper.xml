@@ -50,7 +50,7 @@
     LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
   </select>
   <select id="selectToAnalysis" resultType="com.tz.redismanager.dao.domain.dto.UserAnalysisDTO">
-    SELECT COUNT(id) AS userCount,create_time AS registerDate FROM t_user
+    SELECT COUNT(id) AS userCount,create_time AS createTime FROM t_user
     WHERE if_del = 0
     GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
   </select>

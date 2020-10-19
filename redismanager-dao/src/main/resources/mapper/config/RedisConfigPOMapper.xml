@@ -38,7 +38,7 @@
     LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
   </select>
   <select id="selectToAnalysis" resultType="com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO">
-    SELECT COUNT(id) AS configCount,create_time AS createDate FROM t_redis_config
+    SELECT COUNT(id) AS configCount,create_time AS createTime FROM t_redis_config
     WHERE if_del = 0
     GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
   </select>

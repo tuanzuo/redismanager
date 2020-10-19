@@ -15,6 +15,6 @@ import java.util.Date;
 @Setter
 public class RedisConfigAnalysisDTO {
 
-    private Date createDate;
+    private Date createTime;
     private Integer configCount;
 }

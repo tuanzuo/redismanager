@@ -15,6 +15,6 @@ import java.util.Date;
 @Setter
 public class UserAnalysisDTO {
 
-    private Date registerDate;
+    private Date createTime;
     private Integer userCount;
 }
