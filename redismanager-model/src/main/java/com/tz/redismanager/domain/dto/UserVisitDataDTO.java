@@ -15,9 +15,6 @@ import java.util.List;
 @Getter
 @Setter
 public class UserVisitDataDTO {
-    private Long currentYearTotal;
-    private Long currentMonthTotal;
-    private Long currentDayTotal;
     private List<Detail> yearDeails = new ArrayList<>();
     private List<Detail> monthDeails = new ArrayList<>();
     private List<Detail> weekDeails = new ArrayList<>();

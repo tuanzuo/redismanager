@@ -30,19 +30,25 @@ public interface ConstInterface {
         Integer NO = 0;
     }
 
-    //类型[1=单机,2=集群]
+    /**
+     * 类型[1=单机,2=集群]
+     */
     interface TYPE {
         Integer SINGLE = 1;
         Integer CLUSTER = 2;
     }
 
-    //来源[1添加,2修改]
+    /**
+     * 来源[1添加,2修改]
+     */
     interface SOURCE {
         Integer ADD = 1;
         Integer UPDATE = 2;
     }
 
-    //符号
+    /**
+     * 符号
+     */
     interface Symbol {
         String COLON = ":";
         String SPACE = " ";
@@ -68,27 +74,47 @@ public interface ConstInterface {
         String ANALYSIS_CACHER = "analysisCacher";
     }
 
-    //缓存key
+    /**
+     * 缓存key
+     */
     interface CacheKey {
-        //认证信息的key
+        /**
+         * 认证信息的key
+         */
         String USER_AUTH = "rm:user:auth:";
-        //映射到认证信息的key
+        /**
+         * 映射到认证信息的key
+         */
         String USER_TO_AUTH = "rm:user:to:auth:";
-        //在线用户
+        /**
+         * 在线用户
+         */
         String USER_ONLINE = "rm:user:online:";
-        //访问量汇总
+        /**
+         * 访问量汇总
+         */
         String VISIT_TOTAL_ALL = "rm:vist:total:all";
         String VISIT_TOTAL = "rm:vist:total:";
-        //访问量明细
+        /**
+         * 访问量明细
+         */
         String VISIT_DETAIL = "rm:vist:detail:";
-        //用户访问量汇总
+        /**
+         * 用户访问量汇总
+         */
         String USER_VISIT_TOTAL = "rm:vist:user:total:";
-        //用户访问量明细
+        /**
+         * 用户访问量明细
+         */
         String USER_VISIT_DETAIL = "rm:vist:user:dtl:";
-        //用户访问量排行明细
-        String USER_VISIT_RANGE_DETAIL = "rm:vist:user:range:dtl:";
-        //Redis连接配置排行明细
-        String REDIS_CONFIG_VISIT_DETAIL = "rm:vist:rds:cfg:range:dtl:";
+        /**
+         * 用户访问量排行明细
+         */
+        String USER_VISIT_RANK_DETAIL = "rm:vist:user:rank:dtl:";
+        /**
+         * Redis连接配置排行明细
+         */
+        String REDIS_CONFIG_VISIT_RANK_DETAIL = "rm:vist:rds:cfg:rank:dtl:";
     }
 
     interface Auth {

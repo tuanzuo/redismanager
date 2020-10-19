@@ -93,9 +93,6 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
     }
 
     private void buildUserVisitData(AnalysisRespVO resp, UserVisitDataDTO dto) {
-        resp.getUserVisitData().setCurrentYearTotal(dto.getCurrentYearTotal());
-        resp.getUserVisitData().setCurrentMonthTotal(dto.getCurrentMonthTotal());
-        resp.getUserVisitData().setDayTotal(dto.getCurrentDayTotal());
         dto.getCurrentQueryDetails().forEach(temp -> {
             AnalysisRespVO.VisitDetailData detail = new AnalysisRespVO.VisitDetailData();
             detail.setX(temp.getDate());

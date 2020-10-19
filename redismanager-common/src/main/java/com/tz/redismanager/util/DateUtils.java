@@ -1,5 +1,7 @@
 package com.tz.redismanager.util;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -36,6 +38,24 @@ public class DateUtils {
 
     public static Date strToDate(String date, String pattern) {
         return DateTime.parse(date, DateTimeFormat.forPattern(pattern)).toDate();
+    }
+
+    public static CurrentDate getCurrentDate() {
+        return new CurrentDate();
+    }
+
+    @Getter
+    @Setter
+    public static class CurrentDate {
+        String YYYY = DateUtils.nowDateToStr(DateUtils.YYYY);
+        String YYYYMM = DateUtils.nowDateToStr(DateUtils.YYYYMM);
+        String YYYYMMDD = DateUtils.nowDateToStr(DateUtils.YYYYMMDD);
+        String YYYYMMDDHH = DateUtils.nowDateToStr(DateUtils.YYYYMMDDHH);
+        String MM = DateUtils.nowDateToStr(DateUtils.MM);
+        String DD = DateUtils.nowDateToStr(DateUtils.DD);
+        String HH = DateUtils.nowDateToStr(DateUtils.HH);
+        String YYYY_MM = DateUtils.nowDateToStr(DateUtils.YYYY_MM);
+        String YYYY_MM_DD = DateUtils.nowDateToStr(DateUtils.YYYY_MM_DD);
     }
 
 }
