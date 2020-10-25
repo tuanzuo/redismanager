@@ -22,7 +22,6 @@ public class SearchStringValueHandler extends AbstractSearchValueHandler {
 
     private static final Logger logger = TraceLoggerFactory.getLogger(SearchStringValueHandler.class);
 
-
     @Override
     public Object handle(RedisValueQueryVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
@@ -35,8 +34,8 @@ public class SearchStringValueHandler extends AbstractSearchValueHandler {
                 value = redisTemplate.opsForValue().get(vo.getSearchKey());
             }
         } catch (Exception e) {
-            logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
-            logger.info("[RedisAdmin] [searchKeyValue] {ValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
+            logger.error("{id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
+            logger.info("{ValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
             redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
             value = redisTemplate.opsForValue().get(vo.getSearchKey());
         }

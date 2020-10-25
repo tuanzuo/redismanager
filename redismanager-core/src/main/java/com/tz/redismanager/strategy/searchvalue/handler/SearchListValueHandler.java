@@ -27,7 +27,6 @@ public class SearchListValueHandler extends AbstractSearchValueHandler {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         Object value = null;
         try {
-            //result = redisTemplate.opsForList().range(vo.getSearchKey(), 0, -1);
             value = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
             if (null == value) {
                 //重新设置keySerializer
@@ -35,8 +34,8 @@ public class SearchListValueHandler extends AbstractSearchValueHandler {
                 value = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
             }
         } catch (Exception e) {
-            logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
-            logger.info("[RedisAdmin] [searchKeyValue] {ValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
+            logger.error("{id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
+            logger.info("{ValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
             redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
             value = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
         }

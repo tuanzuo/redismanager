@@ -33,21 +33,18 @@ public class SearchHashValueHandler extends AbstractSearchValueHandler {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         Object value = null;
         try {
-            //value = redisTemplate.opsForHash().entries(vo.getSearchKey());
             value = this.getValue(vo, redisTemplate);
             if (null == value) {
                 //重新设置keySerializer
                 this.reSetKeySerializer(redisTemplate);
-                //value = redisTemplate.opsForHash().entries(vo.getSearchKey());
                 value = this.getValue(vo, redisTemplate);
             }
         } catch (Exception e) {
-            logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
-            logger.info("[RedisAdmin] [searchKeyValue] {ValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
-            logger.info("[RedisAdmin] [searchKeyValue] {HashValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getHashValueSerializer().getClass().getSimpleName());
+            logger.error("{id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
+            logger.info("{ValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
+            logger.info("{HashValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getHashValueSerializer().getClass().getSimpleName());
             redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
             redisTemplate.setHashValueSerializer(redisTemplate.getStringSerializer());
-            //value = redisTemplate.opsForHash().entries(vo.getSearchKey());
             value = this.getValue(vo, redisTemplate);
         }
         return value;

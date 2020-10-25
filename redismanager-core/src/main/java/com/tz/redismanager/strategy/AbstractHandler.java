@@ -22,16 +22,20 @@ public abstract class AbstractHandler<T, R> implements IHandler<T, R> {
     public final static Type LIST_STRING_TYPE = new TypeReference<List<String>>() {}.getType();
     public final static Type HASH_STRING_TYPE = new TypeReference<Map<String,String>>() {}.getType();
 
-    public void setValueForStringType(String key, Object value, RedisTemplate<String, Object> redisTemplate, Long expireTime) {
-        if (null != expireTime && null != key && null != value) {
-            if (-1 == expireTime) {
-                redisTemplate.opsForValue().set(key, value);
-            } else if (expireTime > Integer.MAX_VALUE) {
-                redisTemplate.opsForValue().set(key, value);
-                redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
-            } else if (expireTime > 0) {
-                redisTemplate.opsForValue().set(key, value, expireTime, TimeUnit.SECONDS);
-            }
+    public void setValueAndExpireTimeForStringType(String key, Object value, RedisTemplate<String, Object> redisTemplate, Long expireTime) {
+        if (-1 == expireTime) {
+            redisTemplate.opsForValue().set(key, value);
+        } else if (expireTime > Integer.MAX_VALUE) {
+            redisTemplate.opsForValue().set(key, value);
+            this.setKeyExpireTime(redisTemplate, key, expireTime);
+        } else if (expireTime > 0) {
+            redisTemplate.opsForValue().set(key, value, expireTime, TimeUnit.SECONDS);
+        }
+    }
+
+    public void setKeyExpireTime(RedisTemplate<String, Object> redisTemplate, String key, Long expireTime) {
+        if (null != expireTime && expireTime > 0) {
+            redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
         }
     }
 

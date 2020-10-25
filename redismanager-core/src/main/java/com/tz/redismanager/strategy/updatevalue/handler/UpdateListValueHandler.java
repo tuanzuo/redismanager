@@ -6,18 +6,15 @@ import com.tz.redismanager.domain.vo.RedisKeyUpdateVO;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.strategy.updatevalue.AbstractUpdateValueHandler;
-import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.JsonUtils;
 import com.tz.redismanager.util.RedisContextUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 修改list的value处理器
@@ -29,13 +26,9 @@ import java.util.concurrent.TimeUnit;
 @HandlerType({HandlerTypeEnum.LIST})
 public class UpdateListValueHandler extends AbstractUpdateValueHandler {
 
-    private static final Logger logger = TraceLoggerFactory.getLogger(UpdateListValueHandler.class);
-
     @Override
     public Object handle(RedisKeyUpdateVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        //过期时间
-        Long expireTime = redisTemplate.getExpire(vo.getKey());
         //list类型修改value
         List<String> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), LIST_STRING_TYPE);
         List<String> newValues = JsonUtils.parseObject(vo.getStringValue(), LIST_STRING_TYPE);
@@ -53,9 +46,7 @@ public class UpdateListValueHandler extends AbstractUpdateValueHandler {
             redisTemplate.opsForList().leftPushAll(vo.getKey(), newValueArray);
         }
         //设置过期时间
-        if (null != expireTime && -1 != expireTime) {
-            redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
-        }
+        this.setKeyExpireTime(redisTemplate, vo.getKey(), redisTemplate.getExpire(vo.getKey()));
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 

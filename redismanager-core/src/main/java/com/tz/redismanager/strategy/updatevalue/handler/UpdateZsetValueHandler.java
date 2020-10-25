@@ -6,11 +6,9 @@ import com.tz.redismanager.domain.vo.RedisKeyUpdateVO;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.strategy.updatevalue.AbstractUpdateValueHandler;
-import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.JsonUtils;
 import com.tz.redismanager.util.RedisContextUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -31,13 +28,9 @@ import java.util.stream.Collectors;
 @HandlerType({HandlerTypeEnum.ZSET})
 public class UpdateZsetValueHandler extends AbstractUpdateValueHandler {
 
-    private static final Logger logger = TraceLoggerFactory.getLogger(UpdateZsetValueHandler.class);
-    
     @Override
     public Object handle(RedisKeyUpdateVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        //过期时间
-        Long expireTime = redisTemplate.getExpire(vo.getKey());
         //zset类型修改value
         Set<ZSetValue> oldValues = JsonUtils.parseObject(vo.getOldStringValue(), ZSET_STRING_TYPE);
         Set<ZSetValue> newValues = JsonUtils.parseObject(vo.getStringValue(), ZSET_STRING_TYPE);
@@ -57,9 +50,7 @@ public class UpdateZsetValueHandler extends AbstractUpdateValueHandler {
             });
         }
         //设置过期时间
-        if (null != expireTime && -1 != expireTime) {
-            redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
-        }
+        this.setKeyExpireTime(redisTemplate, vo.getKey(), redisTemplate.getExpire(vo.getKey()));
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
