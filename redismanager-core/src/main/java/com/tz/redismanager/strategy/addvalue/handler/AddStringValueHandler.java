@@ -15,8 +15,6 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * 添加string的value处理器
  *
@@ -32,25 +30,19 @@ public class AddStringValueHandler extends AbstractAddValueHandler {
     @Override
     public Object handle(RedisKeyAddVO vo) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
-        //过期时间
-        Long expireTime = vo.getExpireTime();
         //string类型添加
         RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
         //1、先试用string序列化方式把value存入redis
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-        this.setValueForStringType(vo.getKey(), vo.getStringValue(), redisTemplate, expireTime);
+        this.setValueAndExpireTimeForStringType(vo.getKey(), vo.getStringValue(), redisTemplate, vo.getExpireTime());
         if (StringRedisSerializer.class.equals(valueSerializer.getClass())) {
-            logger.info("[RedisAdmin] [addKey] {添加Key完成:{}}", JsonUtils.toJsonStr(vo));
+            logger.info("{添加Key完成:{}}", JsonUtils.toJsonStr(vo));
             return new ApiResult<>(ResultCode.SUCCESS);
         }
         //2、再查询出value,最后使用redisTemplate本身的序列化方式把数据存入redis
         Object valueTemp = redisTemplate.opsForValue().get(vo.getKey());
         redisTemplate.setValueSerializer(valueSerializer);
-        this.setValueForStringType(vo.getKey(), valueTemp, redisTemplate, expireTime);
-        //设置过期时间
-        if (null != expireTime && -1 != expireTime) {
-            redisTemplate.expire(vo.getKey(), expireTime, TimeUnit.SECONDS);
-        }
+        this.setValueAndExpireTimeForStringType(vo.getKey(), valueTemp, redisTemplate, vo.getExpireTime());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 

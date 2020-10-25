@@ -34,8 +34,8 @@ public class SearchZsetValueHandler extends AbstractSearchValueHandler {
                 value = redisTemplate.opsForZSet().rangeWithScores(vo.getSearchKey(), 0, 1000);
             }
         } catch (Exception e) {
-            logger.error("[RedisAdmin] [searchKeyValue] {id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
-            logger.info("[RedisAdmin] [searchKeyValue] {ValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
+            logger.error("{id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
+            logger.info("{ValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
             redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
             value = redisTemplate.opsForZSet().rangeWithScores(vo.getSearchKey(), 0, 1000);
         }
