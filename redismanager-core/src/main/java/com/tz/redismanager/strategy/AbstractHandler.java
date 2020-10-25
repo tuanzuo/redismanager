@@ -34,7 +34,7 @@ public abstract class AbstractHandler<T, R> implements IHandler<T, R> {
     }
 
     public void setKeyExpireTime(RedisTemplate<String, Object> redisTemplate, String key, Long expireTime) {
-        if (null != expireTime && -1 != expireTime) {
+        if (null != expireTime && expireTime > 0) {
             redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
         }
     }
