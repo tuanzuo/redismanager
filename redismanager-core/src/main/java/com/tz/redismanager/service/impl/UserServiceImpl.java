@@ -97,7 +97,8 @@ public class UserServiceImpl implements IUserService {
         jsonObject.put("name", userPO.getName());
         jsonObject.put("note", userPO.getNote());
         //未读消息条数-在线人数
-        jsonObject.put("unreadCount", userStatisticsService.countOnlineUser());
+        //jsonObject.put("unreadCount", userStatisticsService.countOnlineUser());
+        jsonObject.put("unreadCount", 0);
         return new ApiResult<>(ResultCode.SUCCESS, jsonObject);
     }
 
