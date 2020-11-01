@@ -12,7 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * <p>JWT测试</p>
- *
+ * https://jwt.io/
+ * https://github.com/jwtk/jjwt
  * @version 1.5.0
  * @time 2020-11-01 22:05
  **/
