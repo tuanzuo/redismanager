@@ -99,6 +99,8 @@ public class UserServiceImpl implements IUserService {
         //未读消息条数-在线人数
         //jsonObject.put("unreadCount", userStatisticsService.countOnlineUser());
         jsonObject.put("unreadCount", 0);
+        //右上角用户头像 v1.5.0
+        jsonObject.put("avatar","/img/BiazfanxmamNRoxxVxka.png");
         return new ApiResult<>(ResultCode.SUCCESS, jsonObject);
     }
 
