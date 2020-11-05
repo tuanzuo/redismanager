@@ -64,14 +64,14 @@ public class AuthConfigurationSelector implements ImportAware, EnvironmentAware,
 
     @Bean
     public ITokenAuthService authService(IAuthCacheService authCacheService, ICipherService cipherService, StringRedisTemplate stringRedisTemplate) {
-        String type = enableAuth.getString(ENABLEAUTH_AUTHTYPE);
-        if (ConstInterface.AuthType.REDIS.equals(type)) {
+        String authType = enableAuth.getString(ENABLEAUTH_AUTHTYPE);
+        if (ConstInterface.AuthType.REDIS.equals(authType)) {
             return new RedisTokenAuthServiceImpl(authCacheService, cipherService, stringRedisTemplate);
         }
-        if (ConstInterface.AuthType.JWT.equals(type)) {
+        if (ConstInterface.AuthType.JWT.equals(authType)) {
             return new JWTTokenAuthServiceImpl();
         }
-        throw new RmException(ResultCode.ENABLE_AUTH_TYPE_NOT_SUPPORT.getCode(), "@EnableAuth is not support type-->" + type);
+        throw new RmException(ResultCode.ENABLE_AUTH_TYPE_NOT_SUPPORT.getCode(), "@EnableAuth is not support authType-->" + authType);
     }
 
 }
