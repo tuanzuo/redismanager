@@ -2,11 +2,11 @@ package com.tz.redismanager.config;
 
 import com.tz.redismanager.security.AuthContextAttributeMethodProcessor;
 import com.tz.redismanager.security.AuthInterceptor;
+import com.tz.redismanager.security.ITokenAuthService;
 import com.tz.redismanager.service.IStatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -24,7 +24,7 @@ import java.util.List;
 public class WebConfig {
 
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private ITokenAuthService tokenAuthService;
     @Autowired
     private IStatisticService statisticService;
 
@@ -53,7 +53,7 @@ public class WebConfig {
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
                 //设置token验证的Interceptor v1.3.0
-                registry.addInterceptor(new AuthInterceptor(stringRedisTemplate, statisticService));
+                registry.addInterceptor(new AuthInterceptor(tokenAuthService, statisticService));
                 //super.addInterceptors(registry);
             }
             //添加参数解析器 v1.3.0

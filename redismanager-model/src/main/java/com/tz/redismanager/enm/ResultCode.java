@@ -21,6 +21,9 @@ public enum ResultCode {
 
     TOKEN_AUTH_ERR("700001", "token验证失败"),
     TOKEN_AUTH_EXPIRE("700002", "token过期,请重新登录"),
+
+    ENABLE_AUTH_NOT_PRESENT("800001", "@EnableAuth is not present"),
+    ENABLE_AUTH_TYPE_NOT_SUPPORT("800002", "@EnableAuth type is not support"),
     ;
 
     private String code;

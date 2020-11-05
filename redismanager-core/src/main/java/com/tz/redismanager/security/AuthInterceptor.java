@@ -4,10 +4,8 @@ import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.service.IStatisticService;
-import com.tz.redismanager.util.JsonUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -26,11 +24,11 @@ import java.util.Set;
  **/
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
-    private StringRedisTemplate stringRedisTemplate;
+    private ITokenAuthService tokenAuthService;
     private IStatisticService statisticService;
 
-    public AuthInterceptor(StringRedisTemplate stringRedisTemplate, IStatisticService statisticService) {
-        this.stringRedisTemplate = stringRedisTemplate;
+    public AuthInterceptor(ITokenAuthService tokenAuthService, IStatisticService statisticService) {
+        this.tokenAuthService = tokenAuthService;
         this.statisticService = statisticService;
     }
 
@@ -57,15 +55,8 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             if (StringUtils.isBlank(token)) {
                 throw new RmException(ResultCode.TOKEN_AUTH_ERR);
             }
-            String userInfoKey = ConstInterface.CacheKey.USER_AUTH + token;
-            String authContextCache = stringRedisTemplate.opsForValue().get(userInfoKey);
-            if (StringUtils.isBlank(authContextCache)) {
-                throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
-            }
-            authContext = JsonUtils.parseObject(authContextCache, AuthContext.class);
-            if (null == authContext) {
-                throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
-            }
+            //得到AuthContext
+            authContext = tokenAuthService.getAuthContext(token);
             //验证角色
             if (ArrayUtils.isNotEmpty(auth.permitRoles())) {
                 Set<String> roles = Optional.ofNullable(authContext.getRoles()).orElse(new HashSet<>());
