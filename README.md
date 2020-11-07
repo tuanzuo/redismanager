@@ -53,3 +53,5 @@
 备注：RedisConnectionFactory使用LettuceConnectionFactory替换JedisConnectionFactory
 
 3、增加Dashboard-分析页菜单
+
+4、支持JWT或者Redis方式来生成Token
