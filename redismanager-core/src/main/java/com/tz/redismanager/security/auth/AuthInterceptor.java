@@ -1,8 +1,11 @@
-package com.tz.redismanager.security;
+package com.tz.redismanager.security.auth;
 
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
+import com.tz.redismanager.security.domain.Auth;
+import com.tz.redismanager.security.domain.AuthContext;
+import com.tz.redismanager.security.token.ITokenService;
 import com.tz.redismanager.service.IStatisticService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,10 +27,10 @@ import java.util.Set;
  **/
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
-    private ITokenAuthService tokenAuthService;
+    private ITokenService tokenAuthService;
     private IStatisticService statisticService;
 
-    public AuthInterceptor(ITokenAuthService tokenAuthService, IStatisticService statisticService) {
+    public AuthInterceptor(ITokenService tokenAuthService, IStatisticService statisticService) {
         this.tokenAuthService = tokenAuthService;
         this.statisticService = statisticService;
     }

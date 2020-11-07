@@ -1,6 +1,7 @@
 package com.tz.redismanager.test;
 
 import com.tz.redismanager.util.DateUtils;
+import com.tz.redismanager.util.UUIDUtils;
 import io.jsonwebtoken.*;
 import org.joda.time.DateTime;
 
@@ -20,12 +21,14 @@ import java.util.concurrent.TimeUnit;
 public class JwtTest {
 
     public static void main(String[] args) throws InterruptedException {
-        String base64EncodedSecretKey = Base64.getEncoder().encodeToString("tuanzuo".getBytes());
+        String base64EncodedSecretKey = Base64.getEncoder().encodeToString(UUIDUtils.generateId().getBytes());
+        System.err.println(base64EncodedSecretKey);
         Map<String, Object> claims = new HashMap<>();
         claims.put("name","tuanzuo");
         claims.put("age",18);
-        String token = Jwts.builder().addClaims(claims)
-                .setExpiration(new DateTime(new Date().getTime()).plusSeconds(5).toDate())
+        String token = Jwts.builder()
+                .addClaims(claims)
+                .setExpiration(new DateTime().plusSeconds(5).toDate())
                 .signWith(SignatureAlgorithm.HS512, base64EncodedSecretKey)
                 .compact();
         System.out.println(token);

@@ -1,8 +1,8 @@
 package com.tz.redismanager.config;
 
-import com.tz.redismanager.security.AuthContextAttributeMethodProcessor;
-import com.tz.redismanager.security.AuthInterceptor;
-import com.tz.redismanager.security.ITokenAuthService;
+import com.tz.redismanager.security.auth.AuthContextAttributeMethodProcessor;
+import com.tz.redismanager.security.auth.AuthInterceptor;
+import com.tz.redismanager.security.token.ITokenService;
 import com.tz.redismanager.service.IStatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +24,7 @@ import java.util.List;
 public class WebConfig {
 
     @Autowired
-    private ITokenAuthService tokenAuthService;
+    private ITokenService tokenAuthService;
     @Autowired
     private IStatisticService statisticService;
 

@@ -1,5 +1,7 @@
-package com.tz.redismanager.security;
+package com.tz.redismanager.security.auth;
 
+import com.tz.redismanager.security.domain.Auth;
+import com.tz.redismanager.security.domain.AuthContext;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
@@ -26,6 +28,7 @@ import java.util.Map;
  *
  * @version 1.3.0
  * @time 2020-08-30 19:00
+ * @see ServletModelAttributeMethodProcessor
  **/
 public class AuthContextAttributeMethodProcessor extends ModelAttributeMethodProcessor {
     /**

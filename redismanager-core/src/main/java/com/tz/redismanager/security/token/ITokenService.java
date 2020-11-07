@@ -1,14 +1,15 @@
-package com.tz.redismanager.security;
+package com.tz.redismanager.security.token;
 
 import com.tz.redismanager.dao.domain.po.UserPO;
+import com.tz.redismanager.security.domain.AuthContext;
 
 /**
- * <p>Token认证服务接口</p>
+ * <p>Token服务接口</p>
  *
  * @version 1.5.0
  * @time 2020-11-06 0:38
  **/
-public interface ITokenAuthService {
+public interface ITokenService {
 
     String handleLogin(UserPO userPO, AuthContext context);
 

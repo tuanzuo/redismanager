@@ -16,7 +16,7 @@ import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IUserService;
-import com.tz.redismanager.security.AuthContext;
+import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IStatisticService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;

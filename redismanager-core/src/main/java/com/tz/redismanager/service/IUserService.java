@@ -3,7 +3,7 @@ package com.tz.redismanager.service;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.UserPageParam;
 import com.tz.redismanager.domain.vo.UserVO;
-import com.tz.redismanager.security.AuthContext;
+import com.tz.redismanager.security.domain.AuthContext;
 
 import java.util.List;
 

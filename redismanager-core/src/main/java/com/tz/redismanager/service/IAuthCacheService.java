@@ -1,6 +1,6 @@
 package com.tz.redismanager.service;
 
-import com.tz.redismanager.security.AuthContext;
+import com.tz.redismanager.security.domain.AuthContext;
 
 /**
  * <p>Auth缓存服务</p>
@@ -11,7 +11,7 @@ import com.tz.redismanager.security.AuthContext;
  **/
 public interface IAuthCacheService {
 
-    void setAuthInfo(String userName, String encodePwd, AuthContext authContext);
+    void setAuthInfo(String userName, String encodePwd, Integer expireTime, AuthContext authContext);
 
     void delAuthInfo(String userName, String encodePwd);
 

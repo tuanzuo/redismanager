@@ -9,8 +9,8 @@ import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.AuthResp;
 import com.tz.redismanager.domain.vo.LoginVO;
 import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.security.AuthContext;
-import com.tz.redismanager.security.ITokenAuthService;
+import com.tz.redismanager.security.domain.AuthContext;
+import com.tz.redismanager.security.token.ITokenService;
 import com.tz.redismanager.service.IAuthService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IStatisticService;
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements IAuthService {
     @Autowired
     private UserRoleRelationPOMapper userRoleRelationPOMapper;
     @Autowired
-    private ITokenAuthService tokenAuthService;
+    private ITokenService tokenAuthService;
     @Autowired
     private IStatisticService userStatisticsService;
 

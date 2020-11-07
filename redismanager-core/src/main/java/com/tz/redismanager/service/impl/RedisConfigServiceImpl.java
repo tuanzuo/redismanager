@@ -11,7 +11,7 @@ import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.ICacheService;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisContextService;
-import com.tz.redismanager.security.AuthContext;
+import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.util.RSAUtils;
 import com.tz.redismanager.util.RsaException;
 import com.tz.redismanager.util.UUIDUtils;

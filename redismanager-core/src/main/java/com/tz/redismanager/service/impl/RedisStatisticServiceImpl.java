@@ -7,7 +7,7 @@ import com.tz.redismanager.domain.dto.UserVisitDataDTO;
 import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
 import com.tz.redismanager.enm.DateTypeEnum;
-import com.tz.redismanager.security.AuthContext;
+import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.ICacheService;
 import com.tz.redismanager.service.IRedisTemplateExtService;
 import com.tz.redismanager.service.IStatisticService;
