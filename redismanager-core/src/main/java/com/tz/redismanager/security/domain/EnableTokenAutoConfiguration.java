@@ -23,6 +23,6 @@ import java.lang.annotation.*;
 public @interface EnableTokenAutoConfiguration {
 
     //token类型
-    String tokenType() default ConstInterface.TokenType.REDIS;
+    String tokenType() default ConstInterface.TokenType.JWT;
 
 }

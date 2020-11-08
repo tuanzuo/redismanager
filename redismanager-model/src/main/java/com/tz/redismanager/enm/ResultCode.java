@@ -24,6 +24,7 @@ public enum ResultCode {
 
     ENABLE_TOKEN_NOT_PRESENT("800001", "@EnableTokenAutoConfiguration is not present"),
     ENABLE_TOKEN_TYPE_NOT_SUPPORT("800002", "@EnableTokenAutoConfiguration tokenType is not support"),
+
     ;
 
     private String code;

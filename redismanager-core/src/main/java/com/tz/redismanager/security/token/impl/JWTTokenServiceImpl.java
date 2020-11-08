@@ -6,6 +6,8 @@ import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.security.token.ITokenService;
 import com.tz.redismanager.security.token.config.TokenProperties;
+import com.tz.redismanager.trace.TraceLoggerFactory;
+import com.tz.redismanager.util.AESUtils;
 import com.tz.redismanager.util.JsonUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -13,6 +15,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +29,10 @@ import java.util.Optional;
  **/
 public class JWTTokenServiceImpl implements ITokenService {
 
-    private static final String KEY = "authContext";
+    private static final Logger logger = TraceLoggerFactory.getLogger(JWTTokenServiceImpl.class);
+
+    private static final String AUTH_CONTEXT_KEY = "authContext";
+
     private TokenProperties tokenProperties;
 
     public JWTTokenServiceImpl(TokenProperties tokenProperties) {
@@ -35,8 +41,18 @@ public class JWTTokenServiceImpl implements ITokenService {
 
     @Override
     public String handleLogin(UserPO userPO, AuthContext context) {
+        String jsonContext = JsonUtils.toJsonStr(context);
+        this.checkJWTConfig();
+        try {
+            if (tokenProperties.getJwt().getPayloadEncryptEnable()) {
+                jsonContext = AESUtils.encrypt(jsonContext, tokenProperties.getJwt().getPayloadEncryptToAESKey());
+            }
+        } catch (Exception e) {
+            logger.error("[JWT]-[加密payload异常]", e);
+            throw new RmException(ResultCode.TOKEN_AUTH_ERR);
+        }
         Map<String, Object> claims = new HashMap<>();
-        claims.put(KEY, JsonUtils.toJsonStr(context));
+        claims.put(AUTH_CONTEXT_KEY, jsonContext);
         String token = Jwts.builder()
                 .addClaims(claims)
                 .setExpiration(new DateTime().plusMinutes(tokenProperties.getExpireTimeToMinutes().intValue()).toDate())
@@ -54,18 +70,45 @@ public class JWTTokenServiceImpl implements ITokenService {
     public AuthContext getAuthContext(String token) {
         Claims clm = null;
         try {
-            clm = Jwts.parser().setSigningKey(tokenProperties.getJwt().getSignKey()).parseClaimsJws(token).getBody();
+            clm = Jwts.parser()
+                    .setSigningKey(tokenProperties.getJwt().getSignKey())
+                    .parseClaimsJws(token)
+                    .getBody();
         } catch (ExpiredJwtException e) {
             throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
         } catch (Exception e) {
             throw new RmException(ResultCode.TOKEN_AUTH_ERR);
         }
         clm = Optional.ofNullable(clm).orElseThrow(() -> new RmException(ResultCode.TOKEN_AUTH_EXPIRE));
-        String authContextStr = String.valueOf(clm.get(KEY));
+        String authContextStr = String.valueOf(clm.get(AUTH_CONTEXT_KEY));
         if (StringUtils.isBlank(authContextStr)) {
             throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
         }
-        AuthContext authContext = JsonUtils.parseObject(authContextStr, AuthContext.class);
-        return Optional.ofNullable(authContext).orElseThrow(() -> new RmException(ResultCode.TOKEN_AUTH_EXPIRE));
+        this.checkJWTConfig();
+        try {
+            if (tokenProperties.getJwt().getPayloadEncryptEnable()) {
+                authContextStr = AESUtils.decrypt(authContextStr, tokenProperties.getJwt().getPayloadEncryptToAESKey());
+            }
+        } catch (Exception e) {
+            logger.error("[JWT]-[解密payload异常]-EncryptContext:{}", authContextStr, e);
+            throw new RmException(ResultCode.TOKEN_AUTH_ERR);
+        }
+        try {
+            AuthContext authContext = JsonUtils.parseObject(authContextStr, AuthContext.class);
+            return Optional.ofNullable(authContext).orElseThrow(() -> new RmException(ResultCode.TOKEN_AUTH_EXPIRE));
+        } catch (Exception e) {
+            logger.error("[JWT]-[解析AuthContext异常]-AuthContext:{}", authContextStr, e);
+            throw new RmException(ResultCode.TOKEN_AUTH_ERR);
+        }
+    }
+
+    private void checkJWTConfig() {
+        Boolean payloadEncryptEnable = tokenProperties.getJwt().getPayloadEncryptEnable();
+        payloadEncryptEnable = Optional.ofNullable(payloadEncryptEnable).orElse(false);
+        String aesKey = tokenProperties.getJwt().getPayloadEncryptToAESKey();
+        if (payloadEncryptEnable && StringUtils.isBlank(aesKey)) {
+            logger.error("[JWT]-[已开启payload加密]-[请设置加密的key]-->rm.token.jwt.payloadEncryptToAESKey");
+            throw new RmException(ResultCode.FAIL);
+        }
     }
 }

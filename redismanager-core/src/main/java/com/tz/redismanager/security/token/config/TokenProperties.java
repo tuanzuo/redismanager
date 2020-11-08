@@ -34,6 +34,17 @@ public class TokenProperties {
          */
         private String signKey;
 
+        /**
+         * payload是否开启加密
+         */
+        private Boolean payloadEncryptEnable = false;
+
+        /**
+         * payload使用AES加密的密钥(Base64编码)
+         */
+        private String payloadEncryptToAESKey;
+
+
     }
 
 }
