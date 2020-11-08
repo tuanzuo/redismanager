@@ -1,15 +1,15 @@
 self.__precacheManifest = [
   {
     "revision": "0fdc107c2dba16301a1d",
-    "url": "/19.chunk.css"
+    "url": "/19.async.js"
   },
   {
     "revision": "7f2e4c36f783945b9e06",
     "url": "/vendors.chunk.css"
   },
   {
-    "revision": "0fdc107c2dba16301a1d",
-    "url": "/19.async.js"
+    "revision": "e68eeb6b3c14d1649d4d",
+    "url": "/20.chunk.css"
   },
   {
     "revision": "9ef055bcf0c4b1f0ac5663173730b010",
@@ -28,8 +28,8 @@ self.__precacheManifest = [
     "url": "/umi.css"
   },
   {
-    "revision": "e68eeb6b3c14d1649d4d",
-    "url": "/20.async.js"
+    "revision": "44102cb2ba73f1263f61",
+    "url": "/21.async.js"
   },
   {
     "revision": "25c2e1c9da321b2c1809",
@@ -92,8 +92,8 @@ self.__precacheManifest = [
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "b0982779be17d7c344a5",
-    "url": "/25.async.js"
+    "revision": "ab905cfbf04b244468d5",
+    "url": "/27.async.js"
   },
   {
     "revision": "88ca1a0ada1cbbdde99e",
@@ -104,36 +104,36 @@ self.__precacheManifest = [
     "url": "/manifest.json"
   },
   {
-    "revision": "ab905cfbf04b244468d5",
-    "url": "/27.async.js"
+    "revision": "2749f82dca7832e64d8d",
+    "url": "/28.async.js"
   },
   {
-    "revision": "4809989aab7b90af5b86",
+    "revision": "97d9233a46e057ac3e47",
     "url": "/layouts__BasicLayout.chunk.css"
-  },
-  {
-    "revision": "9bd7d0a8d305a6790799",
-    "url": "/layouts__BlankLayout.async.js"
   },
   {
     "revision": "88ca1a0ada1cbbdde99e",
     "url": "/layouts__UserLayout.async.js"
   },
   {
-    "revision": "27a683a390379c060d46",
-    "url": "/29.async.js"
+    "revision": "9bd7d0a8d305a6790799",
+    "url": "/layouts__BlankLayout.async.js"
   },
   {
-    "revision": "e68eeb6b3c14d1649d4d",
-    "url": "/20.chunk.css"
+    "revision": "b6dc99bceaeeaee84840",
+    "url": "/30.async.js"
+  },
+  {
+    "revision": "97d9233a46e057ac3e47",
+    "url": "/layouts__BasicLayout.async.js"
+  },
+  {
+    "revision": "d59756b11fac1129fc35",
+    "url": "/31.async.js"
   },
   {
     "revision": "44102cb2ba73f1263f61",
     "url": "/21.chunk.css"
-  },
-  {
-    "revision": "44102cb2ba73f1263f61",
-    "url": "/21.async.js"
   },
   {
     "revision": "60d678ff314e4c1fb3bf",
@@ -156,32 +156,32 @@ self.__precacheManifest = [
     "url": "/24.async.js"
   },
   {
-    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
-    "url": "/icons\\icon-512x512.png"
+    "revision": "b0982779be17d7c344a5",
+    "url": "/25.async.js"
   },
   {
     "revision": "69bafe9b682bb4e2bf4b",
     "url": "/26.async.js"
   },
   {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons\\icon-128x128.png"
+    "revision": "cc066a07d96950e5caf29cd49492b48f",
+    "url": "/js\\BizCharts.min.js"
   },
   {
-    "revision": "2749f82dca7832e64d8d",
-    "url": "/28.async.js"
+    "revision": "c7e4bf8b39b97f3b8605f1b3895e751d",
+    "url": "/js\\data-set.min.js"
   },
   {
-    "revision": "4809989aab7b90af5b86",
-    "url": "/layouts__BasicLayout.async.js"
+    "revision": "27a683a390379c060d46",
+    "url": "/29.async.js"
   },
   {
-    "revision": "b6dc99bceaeeaee84840",
-    "url": "/30.async.js"
+    "revision": "e147bdebf32ef9cb7ce137ed0ed5d3a6",
+    "url": "/img\\BiazfanxmamNRoxxVxka.png"
   },
   {
-    "revision": "d59756b11fac1129fc35",
-    "url": "/31.async.js"
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons\\icon-192x192.png"
   },
   {
     "revision": "7feab2123059f87d9061",
@@ -192,6 +192,10 @@ self.__precacheManifest = [
     "url": "/index.html"
   },
   {
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png.back"
+  },
+  {
     "revision": "c891db020b04fc5afaccff5439d843cd",
     "url": "/favicon.png"
   },
@@ -200,12 +204,20 @@ self.__precacheManifest = [
     "url": "/favicon.png.redis"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png.back"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons\\icon-128x128.png"
   },
   {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons\\icon-192x192.png"
+    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
+    "url": "/icons\\icon-512x512.png"
+  },
+  {
+    "revision": "e68eeb6b3c14d1649d4d",
+    "url": "/20.async.js"
+  },
+  {
+    "revision": "0fdc107c2dba16301a1d",
+    "url": "/19.chunk.css"
   },
   {
     "revision": "53f363d33d99ae5d1515",

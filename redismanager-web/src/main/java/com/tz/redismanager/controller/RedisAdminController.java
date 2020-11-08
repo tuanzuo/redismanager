@@ -5,7 +5,7 @@ import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.security.Auth;
+import com.tz.redismanager.security.domain.Auth;
 import com.tz.redismanager.service.ICacheService;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisContextService;

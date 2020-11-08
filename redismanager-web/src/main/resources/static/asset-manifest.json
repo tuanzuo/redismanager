@@ -52,9 +52,12 @@
   "/icons/icon-128x128.png": "/icons/icon-128x128.png",
   "/icons/icon-192x192.png": "/icons/icon-192x192.png",
   "/icons/icon-512x512.png": "/icons/icon-512x512.png",
+  "/img/BiazfanxmamNRoxxVxka.png": "/img/BiazfanxmamNRoxxVxka.png",
   "/index.html": "/index.html",
+  "/js/BizCharts.min.js": "/js/BizCharts.min.js",
+  "/js/data-set.min.js": "/js/data-set.min.js",
   "/manifest.json": "/manifest.json",
-  "/precache-manifest.d111ce475c4acd78b5aba662e9db7d39.js": "/precache-manifest.d111ce475c4acd78b5aba662e9db7d39.js",
+  "/precache-manifest.d7f07f12a574661d6f55941187b5a1c5.js": "/precache-manifest.d7f07f12a574661d6f55941187b5a1c5.js",
   "/pwacompat.min.js": "/pwacompat.min.js",
   "/service-worker.js": "/service-worker.js"
 }

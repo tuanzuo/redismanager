@@ -16,7 +16,7 @@ import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IUserService;
-import com.tz.redismanager.security.AuthContext;
+import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IStatisticService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -99,6 +99,8 @@ public class UserServiceImpl implements IUserService {
         //未读消息条数-在线人数
         //jsonObject.put("unreadCount", userStatisticsService.countOnlineUser());
         jsonObject.put("unreadCount", 0);
+        //右上角用户头像 v1.5.0
+        jsonObject.put("avatar","/img/BiazfanxmamNRoxxVxka.png");
         return new ApiResult<>(ResultCode.SUCCESS, jsonObject);
     }
 

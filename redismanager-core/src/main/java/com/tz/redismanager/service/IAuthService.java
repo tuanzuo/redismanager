@@ -3,7 +3,7 @@ package com.tz.redismanager.service;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.AuthResp;
 import com.tz.redismanager.domain.vo.LoginVO;
-import com.tz.redismanager.security.AuthContext;
+import com.tz.redismanager.security.domain.AuthContext;
 
 /**
  * <p></p>

@@ -1,11 +1,14 @@
 package com.tz.redismanager;
 
+import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.security.domain.EnableTokenAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication(scanBasePackages = {"com.tz"})
 @PropertySource("${redis.config}")
+@EnableTokenAutoConfiguration(tokenType = ConstInterface.TokenType.REDIS)
 public class RedisManagerWebApplication {
 
     public static void main(String[] args) {

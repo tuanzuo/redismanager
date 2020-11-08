@@ -44,6 +44,10 @@ public class DateUtils {
         return new CurrentDate();
     }
 
+    public static Date addHours(Date date, int hours) {
+        return new DateTime(date.getTime()).plusHours(hours).toDate();
+    }
+
     @Getter
     @Setter
     public static class CurrentDate {

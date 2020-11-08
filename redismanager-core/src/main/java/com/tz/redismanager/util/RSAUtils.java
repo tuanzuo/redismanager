@@ -43,7 +43,7 @@ public class RSAUtils {
      * @param keySize 至少1024，否则不安全
      * @return
      */
-    public static RsaKey generateKey(int keySize) {
+    public static RsaKey generatorKey(int keySize) {
         keySize = keySize > 0 ? keySize : KEYSIZE_1024;
 
         KeyPairGenerator keyPairGen = null;

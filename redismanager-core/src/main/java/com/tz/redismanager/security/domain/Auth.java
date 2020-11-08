@@ -1,4 +1,4 @@
-package com.tz.redismanager.security;
+package com.tz.redismanager.security.domain;
 
 
 import java.lang.annotation.*;

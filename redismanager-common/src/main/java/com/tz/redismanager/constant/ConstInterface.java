@@ -120,4 +120,9 @@ public interface ConstInterface {
     interface Auth {
         String AUTHORIZATION = "Authorization";
     }
+
+    interface TokenType {
+        String JWT = "jwt";
+        String REDIS = "redis";
+    }
 }

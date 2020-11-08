@@ -4,7 +4,6 @@ import com.tz.redismanager.domain.Person
 
 /**
  * <p></p>
- * @author Administrator
  * @time 2019-01-26 22:44
  * @version 1.0
  * */

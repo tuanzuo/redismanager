@@ -1,6 +1,7 @@
-package com.tz.redismanager.security;
+package com.tz.redismanager.security.auth;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
+import com.tz.redismanager.security.domain.AuthContext;
 
 /**
  * <p>安全认证上下文Hodler</p>

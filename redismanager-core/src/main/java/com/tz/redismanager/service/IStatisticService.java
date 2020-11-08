@@ -4,7 +4,7 @@ import com.tz.redismanager.domain.dto.RedisConfigVisitDataDTO;
 import com.tz.redismanager.domain.dto.UserVisitDataDTO;
 import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
-import com.tz.redismanager.security.AuthContext;
+import com.tz.redismanager.security.domain.AuthContext;
 
 /**
  * <p>统计接口</p>
