@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @Version:1.1.0
  */
 @Configuration
-@ConfigurationProperties(prefix = "rd.encrypt")
+@ConfigurationProperties(prefix = "rm.encrypt")
 public class EncryptConfig {
 
     /**
