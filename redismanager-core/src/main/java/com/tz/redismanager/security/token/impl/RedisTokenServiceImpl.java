@@ -12,7 +12,9 @@ import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.util.JsonUtils;
 import com.tz.redismanager.util.UUIDUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
@@ -22,18 +24,21 @@ import java.util.Optional;
  * @version 1.5.0
  * @time 2020-11-06 0:39
  **/
+@Service
 public class RedisTokenServiceImpl implements ITokenService {
 
+    @Autowired
     private TokenProperties tokenProperties;
+    @Autowired
     private IAuthCacheService authCacheService;
+    @Autowired
     private ICipherService cipherService;
+    @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    public RedisTokenServiceImpl(TokenProperties tokenProperties, IAuthCacheService authCacheService, ICipherService cipherService, StringRedisTemplate stringRedisTemplate) {
-        this.tokenProperties = tokenProperties;
-        this.authCacheService = authCacheService;
-        this.cipherService = cipherService;
-        this.stringRedisTemplate = stringRedisTemplate;
+    @Override
+    public boolean support(String tokenType) {
+        return ConstInterface.TokenType.REDIS.equals(tokenType);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tz.redismanager.security.token.impl;
 
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.po.UserPO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
@@ -16,6 +17,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,16 +30,19 @@ import java.util.Optional;
  * @version 1.5.0
  * @time 2020-11-06 0:39
  **/
+@Service
 public class JWTTokenServiceImpl implements ITokenService {
 
     private static final Logger logger = TraceLoggerFactory.getLogger(JWTTokenServiceImpl.class);
 
     private static final String AUTH_CONTEXT_KEY = "authContext";
 
+    @Autowired
     private TokenProperties tokenProperties;
 
-    public JWTTokenServiceImpl(TokenProperties tokenProperties) {
-        this.tokenProperties = tokenProperties;
+    @Override
+    public boolean support(String tokenType) {
+        return ConstInterface.TokenType.JWT.equals(tokenType);
     }
 
     @Override
