@@ -69,8 +69,7 @@ public class TokenConfigurationSelector implements ImportAware, EnvironmentAware
         return tokenServices.stream()
                 .filter((tokenService) -> tokenService.support(tokenType))
                 .findFirst()
-                .orElseThrow(() ->
-                        new RmException(ResultCode.ENABLE_TOKEN_TYPE_NOT_SUPPORT.getCode(), "@EnableTokenAutoConfiguration is not support tokenType-->" + tokenType));
+                .orElseThrow(() -> new RmException(ResultCode.ENABLE_TOKEN_TYPE_NOT_SUPPORT.getCode(), "@EnableTokenAutoConfiguration is not support tokenType-->" + tokenType));
     }
 
 }
