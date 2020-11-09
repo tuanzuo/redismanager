@@ -11,6 +11,8 @@ import com.tz.redismanager.security.domain.AuthContext;
  **/
 public interface ITokenService {
 
+    boolean support(String tokenType);
+
     String handleLogin(UserPO userPO, AuthContext context);
 
     void handleLogout(AuthContext context);
