@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication(scanBasePackages = {"com.tz"})
-@PropertySource("${redis.config}")
+@PropertySource("${rm.config}")
 @EnableTokenAutoConfiguration()
 public class RedisManagerWebApplication {
 

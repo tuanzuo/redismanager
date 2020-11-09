@@ -78,7 +78,7 @@ logging:
     com.tz.redismanager.dao.mapper: debug
   path: /home/tz/Logs/redismanager
 
-redis:
+rm:
   config: classpath:config/config-local.properties
 ---
 #\u5f00\u53d1\u73af\u5883    
@@ -101,7 +101,7 @@ logging:
     com.tz.redismanager.dao.mapper: debug
   path: /home/tz/Logs/redismanager
 
-redis: 
+rm:
   config: classpath:config/config-dev.properties
 ---
 #\u6d4b\u8bd5\u73af\u5883      
@@ -119,7 +119,7 @@ logging:
     root: info
   path: /home/tz/Logs/redismanager
 
-redis: 
+rm:
   config: classpath:config/config-test.properties
 ---
 #online\u73af\u5883      
@@ -142,6 +142,6 @@ logging:
     com.tz.redismanager.dao.mapper: debug
   path: /home/tz/Logs/redismanager
 
-redis: 
+rm:
   #config: file:/home/tz/Logs/redismanager/config-online.properties
   config: classpath:config/config-online.properties
