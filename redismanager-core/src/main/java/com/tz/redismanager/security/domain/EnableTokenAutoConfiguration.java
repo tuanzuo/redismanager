@@ -11,6 +11,7 @@ import java.lang.annotation.*;
 /**
  * <p>启用Token自动配置的注解</p>
  *
+ * @author tuanzuo
  * @version 1.5.0
  * @time 2020-11-05 23:55
  * @see org.springframework.context.annotation.EnableMBeanExport

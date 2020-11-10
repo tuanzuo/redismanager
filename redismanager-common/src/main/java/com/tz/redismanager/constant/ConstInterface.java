@@ -121,6 +121,9 @@ public interface ConstInterface {
         String AUTHORIZATION = "Authorization";
     }
 
+    /**
+     * token类型
+     */
     interface TokenType {
         String JWT = "jwt";
         String REDIS = "redis";

@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * <p>Token属性</p>
  *
+ * @author tuanzuo
  * @version 1.5.0
  * @time 2020-11-07 20:59
  **/
