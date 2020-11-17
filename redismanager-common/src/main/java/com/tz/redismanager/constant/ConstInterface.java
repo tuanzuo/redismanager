@@ -25,6 +25,16 @@ public interface ConstInterface {
         String DEVELOP = "develop";
     }
 
+    interface IS_SUPER_ADMIN {
+        Integer YES = 1;
+        Integer NO = 0;
+    }
+
+    interface IS_PUBLIC {
+        Integer YES = 1;
+        Integer NO = 0;
+    }
+
     interface IF_DEL {
         Integer YES = 1;
         Integer NO = 0;
@@ -121,6 +131,9 @@ public interface ConstInterface {
         String AUTHORIZATION = "Authorization";
     }
 
+    /**
+     * token类型
+     */
     interface TokenType {
         String JWT = "jwt";
         String REDIS = "redis";

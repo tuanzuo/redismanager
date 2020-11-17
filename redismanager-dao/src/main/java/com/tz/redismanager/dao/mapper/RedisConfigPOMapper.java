@@ -24,7 +24,9 @@ public interface RedisConfigPOMapper {
 
     RedisConfigPO selectByPrimaryKey(String id);
 
-    List<RedisConfigPO> selectPage(@Param("searchKey") String searchKey, @Param("offset") Integer offset, @Param("rows") Integer rows);
+    List<RedisConfigPO> selectPage(@Param("searchKey") String searchKey, @Param("isPublic") Integer isPublic,
+                                   @Param("userName") String userName, @Param("isSuperAdmin") Integer isSuperAdmin,
+                                   @Param("offset") Integer offset, @Param("rows") Integer rows);
 
     List<RedisConfigAnalysisDTO> selectToAnalysis();
 
