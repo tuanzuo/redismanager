@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.tz.redismanager.dao.domain.po.RedisConfigPO">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="is_public" jdbcType="INTEGER" property="isPublic" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="password" jdbcType="VARCHAR" property="password" />
@@ -16,7 +17,7 @@
     <result column="if_del" jdbcType="INTEGER" property="ifDel" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, type, address, password, ser_code, note, creater, create_time, updater,
+    id, name, is_public, type, address, password, ser_code, note, creater, create_time, updater,
     update_time, if_del
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -34,6 +35,22 @@
       <!--AND (name LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%') OR address LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%'))-->
       AND (LOCATE(#{searchKey,jdbcType=VARCHAR},name) > 0 OR LOCATE(#{searchKey,jdbcType=VARCHAR},address) > 0)
     </if>
+    <if test="isSuperAdmin == 1">
+      <if test="isPublic != null">
+        AND is_public = #{isPublic,jdbcType=INTEGER}
+      </if>
+    </if>
+    <if test="isSuperAdmin == 0">
+      <if test="isPublic == null">
+        AND (is_public = 1 OR (is_public = 0 AND creater = #{userName,jdbcType=VARCHAR}))
+      </if>
+      <if test="isPublic == 1">
+        AND is_public = #{isPublic,jdbcType=INTEGER}
+      </if>
+      <if test="isPublic == 0">
+        AND (is_public = #{isPublic,jdbcType=INTEGER} AND creater = #{userName,jdbcType=VARCHAR})
+      </if>
+    </if>
     ORDER BY create_time DESC
     LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
   </select>
@@ -47,12 +64,12 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.tz.redismanager.dao.domain.po.RedisConfigPO">
-    insert into t_redis_config (id, name, type,
+    insert into t_redis_config (id, name, is_public, type,
       address, password, ser_code,
       note, creater, create_time,
       updater, update_time, if_del
       )
-    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{isPublic,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
       #{address,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{serCode,jdbcType=VARCHAR},
       #{note,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
       #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{ifDel,jdbcType=INTEGER}
@@ -66,6 +83,9 @@
       </if>
       <if test="name != null">
         name,
+      </if>
+      <if test="isPublic != null">
+        is_public,
       </if>
       <if test="type != null">
         type,
@@ -105,6 +125,9 @@
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
+      <if test="isPublic != null">
+        #{isPublic,jdbcType=INTEGER},
+      </if>
       <if test="type != null">
         #{type,jdbcType=INTEGER},
       </if>
@@ -143,6 +166,9 @@
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="isPublic != null">
+        is_public = #{isPublic,jdbcType=INTEGER},
+      </if>
       <if test="type != null">
         type = #{type,jdbcType=INTEGER},
       </if>
@@ -179,6 +205,7 @@
   <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.dao.domain.po.RedisConfigPO">
     update t_redis_config
     set name = #{name,jdbcType=VARCHAR},
+      is_public = #{isPublic,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
       address = #{address,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},

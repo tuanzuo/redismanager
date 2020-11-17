@@ -37,7 +37,9 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
 
     @Override
     public List<RedisConfigPO> searchList(RedisConfigPageParam param) {
-        return redisConfigPOMapper.selectPage(param.getSearchKey(), param.getOffset(), param.getRows());
+        return redisConfigPOMapper.selectPage(param.getSearchKey(),
+                param.getIsPublic(), param.getUserName(), param.getIsSuperAdmin(),
+                param.getOffset(), param.getRows());
     }
 
     @Override

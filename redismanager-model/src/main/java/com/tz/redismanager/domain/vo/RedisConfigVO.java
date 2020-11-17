@@ -31,6 +31,14 @@ public class RedisConfigVO {
     private String name;
 
     /**
+     * 是否公开[1=是,0=否] v1.5.0
+     * @see ConstInterface.IS_PUBLIC
+     */
+    @NotNull(message = "是否公开不能为空", groups = {ValidGroup.AddConnection.class, ValidGroup.UpdateConnection.class})
+    @Range(min = 0, max = 1, message = "是否公开只能为0或者1", groups = {ValidGroup.AddConnection.class, ValidGroup.UpdateConnection.class})
+    private Integer isPublic;
+
+    /**
      * 类型[1=单机,2=集群]
      *
      * @see ConstInterface.TYPE
@@ -104,6 +112,14 @@ public class RedisConfigVO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Integer isPublic) {
+        this.isPublic = isPublic;
     }
 
     public Integer getType() {

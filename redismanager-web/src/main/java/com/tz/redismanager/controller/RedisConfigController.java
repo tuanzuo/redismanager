@@ -40,8 +40,10 @@ public class RedisConfigController {
     @RequestMapping("list")
     @MethodLog(logInputParams = false, logOutputParams = false)
     @Auth
-    public ApiResult<?> list(RedisConfigPageParam param) {
+    public ApiResult<?> list(RedisConfigPageParam param, AuthContext authContext) {
         Map<String, List<RedisConfigPO>> map = new HashMap<>();
+        param.setUserName(authContext.getUserName());
+        param.setIsSuperAdmin(authContext.getRoles().contains(ConstInterface.ROLE_CODE.SUPER_ADMIN) ? ConstInterface.IS_SUPER_ADMIN.YES : ConstInterface.IS_SUPER_ADMIN.NO);
         map.put("configList", redisConfigService.searchList(param));
         return new ApiResult<>(ResultCode.SUCCESS, map);
     }

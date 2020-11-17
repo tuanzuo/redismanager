@@ -1,5 +1,7 @@
 package com.tz.redismanager.dao.domain.po;
 
+import com.tz.redismanager.constant.ConstInterface;
+
 import java.util.Date;
 
 /**
@@ -21,9 +23,15 @@ public class RedisConfigPO {
     private String name;
 
     /**
+     * 是否公开[1=是,0=否] v1.5.0
+     * @see ConstInterface.IS_PUBLIC
+     */
+    private Integer isPublic;
+
+    /**
      * 类型[1=单机,2=集群]
      *
-     * @see com.tz.redismanager.constant.ConstInterface.TYPE
+     * @see ConstInterface.TYPE
      */
     private Integer type;
 
@@ -70,7 +78,7 @@ public class RedisConfigPO {
     /**
      * 是否删除[1=是,0=否]
      *
-     * @see com.tz.redismanager.constant.ConstInterface.IF_DEL
+     * @see ConstInterface.IF_DEL
      */
     private Integer ifDel;
 
@@ -88,6 +96,14 @@ public class RedisConfigPO {
 
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
+    }
+
+    public Integer getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Integer isPublic) {
+        this.isPublic = isPublic;
     }
 
     public Integer getType() {
