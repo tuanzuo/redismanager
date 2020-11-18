@@ -19,6 +19,7 @@ import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IStatisticService;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -138,7 +139,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ApiResult<?> resetPwd(UserVO vo, AuthContext authContext) {
         UserPO userTemp = userPOMapper.selectByPrimaryKey(vo.getId());
-        UserPO update = this.buildResetPwdUser(authContext, userTemp);
+        UserPO update = this.buildResetPwdUser(authContext, vo, userTemp);
         userPOMapper.updateByPrimaryKeySelective(update);
 
         //重置密码后删除缓存auth数据
@@ -257,8 +258,9 @@ public class UserServiceImpl implements IUserService {
         return userPO;
     }
 
-    private UserPO buildResetPwdUser(AuthContext authContext, UserPO userTemp) {
-        String encodePwd = cipherService.encodeUserInfoByMd5(userTemp.getName(), DEFAULT_PWD);
+    private UserPO buildResetPwdUser(AuthContext authContext, UserVO vo, UserPO userTemp) {
+        String newPwd = StringUtils.isNotBlank(vo.getPwd()) ? vo.getPwd() : DEFAULT_PWD;
+        String encodePwd = cipherService.encodeUserInfoByMd5(userTemp.getName(), newPwd);
         UserPO update = new UserPO();
         update.setId(userTemp.getId());
         update.setPwd(encodePwd);
