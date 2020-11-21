@@ -8,11 +8,11 @@ self.__precacheManifest = [
     "url": "/vendors.async.js"
   },
   {
-    "revision": "5a270e922052098b07d2",
+    "revision": "306bab8d757ffafeac1b",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "5a270e922052098b07d2",
+    "revision": "306bab8d757ffafeac1b",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -192,16 +192,16 @@ self.__precacheManifest = [
     "url": "/index.html"
   },
   {
+    "revision": "5423f638851bd441057fb363969ac6c9",
+    "url": "/favicon.png.redis"
+  },
+  {
     "revision": "c891db020b04fc5afaccff5439d843cd",
     "url": "/favicon.png"
   },
   {
     "revision": "5661ce8e2472d2727e8fd0390b22ba37",
     "url": "/icons\\icon-512x512.png"
-  },
-  {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons\\icon-128x128.png"
   },
   {
     "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
@@ -212,8 +212,8 @@ self.__precacheManifest = [
     "url": "/favicon.png.back"
   },
   {
-    "revision": "5423f638851bd441057fb363969ac6c9",
-    "url": "/favicon.png.redis"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons\\icon-128x128.png"
   },
   {
     "revision": "e147bdebf32ef9cb7ce137ed0ed5d3a6",
