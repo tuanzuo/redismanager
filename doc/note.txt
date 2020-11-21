@@ -6,10 +6,14 @@
 5、TraceLoggerFactory-ok
 6、MethodExecTimeAspect增加url和sessionId输出-ok
 7、home列表自动加载-ok
+8、RedisManager启动时不依赖redis
+9、SetRedisTemplateAspect中代码层级太深，考虑使用Optional优化
+10、缓存使用注解实现
 
-RedisManager-->
+RedisHomePage-->
+1、添加redis连接信息时，增加一项“环境”做成下拉列表选择(下拉列表的值保存到数据字典中,下拉列表动态读取下拉列表)
+
+RedisDataPage-->
 1、过期时间为0了，小时钟从红色变为灰色-no pass
 2、缓存增加一个添加的功能，支持各种类型数据的添加-ok
 3、查询set类型缓存的数据默认返回1000个数据，修改为支持翻页查询数据
-4、RedisManager启动时不依赖redis
-5、SetRedisTemplateAspect中代码层级太深，考虑使用Optional优化
