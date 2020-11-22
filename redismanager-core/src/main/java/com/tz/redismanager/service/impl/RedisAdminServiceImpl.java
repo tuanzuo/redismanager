@@ -49,8 +49,8 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         //构建Root树节点
         RedisTreeNode root = this.buildRootTreeNode(id);
         treeNodesForRoot.add(root);
-        if (StringUtils.isBlank(key) || ConstInterface.Symbol.STAR.equals(key.trim())) {
-            logger.error("[RedisAdmin] [searchKey] {查询key不能为空或者为*}");
+        if (ConstInterface.Symbol.STAR.equals(key.trim()) || StringUtils.isBlank(StringUtils.replace(key.trim(), ConstInterface.Symbol.STAR, ConstInterface.Symbol.BLANK))) {
+            logger.error("[RedisAdmin] [searchKey] {查询key不能为*或者全部为*}");
             return treeNodesForRoot;
         }
         //查询key集合
