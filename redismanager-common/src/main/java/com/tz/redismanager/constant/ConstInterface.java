@@ -62,6 +62,7 @@ public interface ConstInterface {
     interface Symbol {
         String COLON = ":";
         String SPACE = " ";
+        String BLANK = "";
         String COMMA = ",";
         String STAR = "*";
         String SPOT = ".";
