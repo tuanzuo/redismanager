@@ -60,6 +60,7 @@ public class RolePO {
 
     /**
      * 是否删除[1=是,0=否]
+     * @see ConstInterface.IF_DEL
      */
     private Integer ifDel;
 
