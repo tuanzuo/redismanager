@@ -86,6 +86,7 @@ public class RoleServiceImpl implements IRoleService {
         rolePO.setCreateTime(new Date());
         rolePO.setUpdater(authContext.getUserName());
         rolePO.setUpdateTime(new Date());
+        rolePO.setIfDel(ConstInterface.IF_DEL.NO);
         return rolePO;
     }
 
