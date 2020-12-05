@@ -3,10 +3,13 @@ package com.tz.redismanager.domain.vo;
 import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.validator.ValidGroup;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * redis key修改VO
@@ -20,6 +23,8 @@ import javax.validation.constraints.NotEmpty;
         @ScriptAssert(lang = "javascript", groups = {ValidGroup.SetTTL.class},
                 script = "_this.setTtlValidate(_this.expireTime)", message = "expireTime:过期时间为-1或者大于0")
 })
+@Setter
+@Getter
 public class RedisKeyUpdateVO {
 
     @NotEmpty(message = "id不能为空", groups = {ValidGroup.RenameKey.class, ValidGroup.SetTTL.class, ValidGroup.UpdateKeyValue.class})
@@ -48,6 +53,17 @@ public class RedisKeyUpdateVO {
      */
     private String oldStringValue;
 
+    /**
+     * 开始位置-list类型修改使用
+     */
+    @NotNull(message = "开始位置不能为空", groups = {ValidGroup.UpdateKeyValue.class})
+    private Long start;
+    /**
+     * 结束位置-list类型修改使用
+     */
+    @NotNull(message = "结束位置不能为空", groups = {ValidGroup.UpdateKeyValue.class})
+    private Long end;
+
     public boolean updateValueValidate(String keyType, String stringValue) {
         if (HandlerTypeEnum.STRING.getType().equals(keyType)) {
             if (StringUtils.isBlank(stringValue)) {
@@ -66,61 +82,5 @@ public class RedisKeyUpdateVO {
         } else {
             return false;
         }
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public Long getExpireTime() {
-        return expireTime;
-    }
-
-    public void setExpireTime(Long expireTime) {
-        this.expireTime = expireTime;
-    }
-
-    public String getOldKey() {
-        return oldKey;
-    }
-
-    public void setOldKey(String oldKey) {
-        this.oldKey = oldKey;
-    }
-
-    public String getKeyType() {
-        return keyType;
-    }
-
-    public void setKeyType(String keyType) {
-        this.keyType = keyType;
-    }
-
-    public String getStringValue() {
-        return stringValue;
-    }
-
-    public void setStringValue(String stringValue) {
-        this.stringValue = stringValue;
-    }
-
-    public String getOldStringValue() {
-        return oldStringValue;
-    }
-
-    public void setOldStringValue(String oldStringValue) {
-        this.oldStringValue = oldStringValue;
     }
 }

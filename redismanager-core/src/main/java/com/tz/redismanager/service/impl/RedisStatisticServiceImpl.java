@@ -438,8 +438,11 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         Set<ZSetOperations.TypedTuple<Object>> details = redisTemplate.opsForZSet().reverseRangeWithScores(detailKey, 0, 50);
         details.forEach(temp -> {
             String id = String.valueOf(temp.getValue());
-            RedisConfigVisitDataDTO.Detail deail = new RedisConfigVisitDataDTO.Detail();
             RedisConfigPO configPO = (RedisConfigPO) cacheService.getCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER).get(id);
+            if (null == configPO) {
+                return;
+            }
+            RedisConfigVisitDataDTO.Detail deail = new RedisConfigVisitDataDTO.Detail();
             deail.setName(configPO.getName());
             deail.setCount(temp.getScore());
             dto.addDetails(deail);

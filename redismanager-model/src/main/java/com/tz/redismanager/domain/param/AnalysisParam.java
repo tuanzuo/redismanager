@@ -20,7 +20,7 @@ public class AnalysisParam {
      * 日期类型
      * {@link com.tz.redismanager.enm.DateTypeEnum}
      */
-    private String dateType = DateTypeEnum.TODAY.getType();
+    private String dateType = DateTypeEnum.YEAR.getType();
 
     @Override
     public boolean equals(Object o) {
