@@ -113,6 +113,8 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
         resp.setValue(value);
         resp.setPageNum(vo.getPageNum());
+        resp.setStart(vo.getStart());
+        resp.setEnd(vo.getEnd());
         return resp;
     }
 

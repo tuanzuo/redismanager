@@ -14,7 +14,7 @@ import javax.validation.constraints.NotEmpty;
 public class RedisValueQueryVO {
 
     private static final Integer DEFAULT_PAGE_NUM = 1;
-    private static final Integer DEFAULT_PAGE_SIZE = 1000;
+    private static final Integer DEFAULT_PAGE_SIZE = 2;
 
     @NotEmpty(message = "id不能为空")
     @ConnectionId
