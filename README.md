@@ -11,6 +11,8 @@
 
 4、支持JWT或者Redis方式来生成Token
 
+5、支持list，zset类型分页查询和修改数据
+
 #### v1.4.0
 
 1、优化日志追踪-TraceLoggerFactory
