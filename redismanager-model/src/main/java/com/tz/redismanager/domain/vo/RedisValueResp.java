@@ -19,6 +19,10 @@ public class RedisValueResp {
      * key对应的value
      */
     private Object value;
+    /**
+     * 当前value对应的页数
+     */
+    private Integer pageNum;
 
     public Long getExpireTime() {
         return expireTime;
@@ -42,5 +46,13 @@ public class RedisValueResp {
 
     public void setKeyType(String keyType) {
         this.keyType = keyType;
+    }
+
+    public Integer getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
     }
 }

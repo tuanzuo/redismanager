@@ -27,11 +27,11 @@ public class SearchListValueHandler extends AbstractSearchValueHandler {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         Object value = null;
         try {
-            value = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
+            value = redisTemplate.opsForList().range(vo.getSearchKey(), vo.getStart(), vo.getEnd());
             if (null == value) {
                 //重新设置keySerializer
                 this.reSetKeySerializer(redisTemplate);
-                value = redisTemplate.opsForList().range(vo.getSearchKey(), 0, 1000);
+                value = redisTemplate.opsForList().range(vo.getSearchKey(), vo.getStart(), vo.getEnd());
             }
         } catch (Exception e) {
             logger.error("{id:{}查询出错,message:{}}", vo.getId(), e.getMessage());

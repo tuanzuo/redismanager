@@ -1,6 +1,7 @@
 package com.tz.redismanager.strategy.searchvalue.handler;
 
 import com.tz.redismanager.annotation.HandlerType;
+import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.vo.RedisValueQueryVO;
 import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.strategy.searchvalue.AbstractSearchValueHandler;
@@ -52,7 +53,7 @@ public class SearchHashValueHandler extends AbstractSearchValueHandler {
 
     private Object getValue(RedisValueQueryVO vo, RedisTemplate<String, Object> redisTemplate) {
         Map<Object, Object> map = new HashMap<>();
-        try (Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(vo.getSearchKey(), ScanOptions.scanOptions().match("*").count(1000).build())) {
+        try (Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(vo.getSearchKey(), ScanOptions.scanOptions().match(ConstInterface.Symbol.STAR).count(1000).build())) {
             while (cursor.hasNext()) {
                 Map.Entry<Object, Object> entry = cursor.next();
                 map.put(entry.getKey(), entry.getValue());
