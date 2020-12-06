@@ -68,18 +68,22 @@ public class UpdateListValueHandler extends AbstractUpdateValueHandler {
                     //把之前List对应的index的value设置为新List的value
                     redisTemplate.opsForList().set(vo.getKey(), index, newValues.get(i));
                 } else {
-                    if (oldSize == 0) {
+                    /**新加的value都添加到列表的右边(尾部)*/
+                    redisTemplate.opsForList().rightPush(vo.getKey(), newValues.get(i));
+                    /*if (oldSize == 0) {
                         //之前List为空，就直接将新List的value添加到集合的右边
                         redisTemplate.opsForList().rightPush(vo.getKey(), newValues.get(i));
                     } else {
                         //将新List的value添加到前一个value的后面
                         redisTemplate.opsForList().rightPush(vo.getKey(), preValue, newValues.get(i));
-                    }
+                    }*/
                 }
             } else {
                 if (i < newSize) {
+                    //把之前List对应的index的value设置为新List的value
                     redisTemplate.opsForList().set(vo.getKey(), index, newValues.get(i));
                 } else {
+                    //把之前list对应index的位置设置成需要删除的value
                     redisTemplate.opsForList().set(vo.getKey(), index, LIST_REMOVE_VALUE);
                 }
             }
