@@ -83,7 +83,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     @SetRedisTemplate
     @Override
     public RedisValueResp searchKeyValue(RedisValueQueryVO vo) {
-        RedisValueResp resp = new RedisValueResp();
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         DataType dataType = null;
         try {
@@ -100,19 +99,32 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         }
         if (null == dataType || dataType == DataType.NONE) {
             logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
-            return resp;
+            return new RedisValueResp();
         }
         String keyType = dataType.code();
         if (StringUtils.isBlank(keyType)) {
             logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
-            return resp;
+            return new RedisValueResp();
         }
         IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.SEARCH_VALUE, HandlerTypeEnum.getEnumByType(keyType));
         Object value = handler.handle(vo);
+        return this.buildValueResp(vo, redisTemplate, keyType, value);
+    }
+
+    private RedisValueResp buildValueResp(RedisValueQueryVO vo, RedisTemplate<String, Object> redisTemplate, String keyType, Object value) {
+        RedisValueResp resp = new RedisValueResp();
+        resp.setValue(value);
         resp.setKeyType(keyType);
         resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
-        resp.setValue(value);
         resp.setPageNum(vo.getPageNum());
+        resp.setPageSize(vo.getPageSize());
+        Long totalSize = null;
+        if (HandlerTypeEnum.LIST.getType().equals(keyType)) {
+            totalSize = redisTemplate.opsForList().size(vo.getSearchKey());
+        } else if (HandlerTypeEnum.ZSET.getType().equals(keyType)) {
+            totalSize = redisTemplate.opsForZSet().size(vo.getSearchKey());
+        }
+        resp.setTotalSize(totalSize);
         resp.setStart(vo.getStart());
         resp.setEnd(vo.getEnd());
         return resp;
