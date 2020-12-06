@@ -28,7 +28,7 @@ public class RedisValueQueryVO {
     /**
      * 每页大小
      */
-    private Integer pagesize = DEFAULT_PAGE_SIZE;
+    private Integer pageSize = DEFAULT_PAGE_SIZE;
     /**
      * 开始位置
      */
@@ -51,9 +51,9 @@ public class RedisValueQueryVO {
         return (null == pageNum || pageNum <= 0) ? DEFAULT_PAGE_NUM : pageNum;
     }
 
-    public Integer getPagesize() {
+    public Integer getPageSize() {
         //有参数处理逻辑
-        return (null == pagesize || pagesize <= 0) ? DEFAULT_PAGE_SIZE : pagesize;
+        return (null == pageSize || pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
     }
 
     /**
@@ -61,13 +61,13 @@ public class RedisValueQueryVO {
      */
     public long getStart() {
         //有参数处理逻辑
-        return (this.getPageNum() - 1) * this.getPagesize();
+        return (this.getPageNum() - 1) * this.getPageSize();
     }
     /**
      * 得到结束位置
      */
     public long getEnd() {
         //有参数处理逻辑
-        return (this.getPageNum() * this.getPagesize()) - 1;
+        return (this.getPageNum() * this.getPageSize()) - 1;
     }
 }

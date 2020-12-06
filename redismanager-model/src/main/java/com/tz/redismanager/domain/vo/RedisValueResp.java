@@ -29,6 +29,14 @@ public class RedisValueResp {
      */
     private Integer pageNum;
     /**
+     * 每页大小
+     */
+    private Integer pageSize;
+    /**
+     * 总大小
+     */
+    private Long totalSize;
+    /**
      * 开始位置-list类型修改使用
      */
     private long start;
