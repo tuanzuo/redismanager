@@ -1,5 +1,8 @@
 package com.tz.redismanager.domain.vo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.NotEmpty;
 
 /**
@@ -8,6 +11,8 @@ import javax.validation.constraints.NotEmpty;
  * @version 1.3.0
  * @time 2020-08-29 13:50
  **/
+@Getter
+@Setter
 public class LoginVO {
 
     /**
@@ -22,19 +27,4 @@ public class LoginVO {
     @NotEmpty(message = "密码不能为空")
     private String pwd;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
 }

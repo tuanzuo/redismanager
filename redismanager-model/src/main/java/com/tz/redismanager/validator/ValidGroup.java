@@ -46,55 +46,55 @@ public interface ValidGroup {
     /**
      * 添加用户信息
      */
-    interface addUserInfo {
+    interface AddUserInfo {
     }
 
     /**
      * 修改用户信息
      */
-    interface updateUserInfo {
+    interface UpdateUserInfo {
     }
 
     /**
      * 修改用户密码
      */
-    interface updateUserPwd {
+    interface UpdateUserPwd {
     }
 
     /**
      * 重置用户密码
      */
-    interface resetUserPwd {
+    interface ResetUserPwd {
     }
 
     /**
      * 修改用户状态
      */
-    interface updateUserStatus {
+    interface UpdateUserStatus {
     }
 
     /**
      * 用户分配角色
      */
-    interface grantUserRole {
+    interface GrantUserRole {
     }
 
     /**
      * 添加角色信息
      */
-    interface addRole {
+    interface AddRole {
     }
 
     /**
      * 修改角色信息
      */
-    interface updateRole {
+    interface UpdateRole {
     }
 
     /**
      * 修改角色状态
      */
-    interface updateRoleStatus {
+    interface UpdateRoleStatus {
     }
 
 

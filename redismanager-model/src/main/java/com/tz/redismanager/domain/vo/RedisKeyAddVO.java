@@ -1,6 +1,8 @@
 package com.tz.redismanager.domain.vo;
 
 import com.tz.redismanager.annotation.ConnectionId;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.validation.constraints.NotEmpty;
@@ -15,6 +17,8 @@ import javax.validation.constraints.NotEmpty;
         @ScriptAssert(lang = "javascript",
                 script = "_this.setTtlValidate(_this.expireTime)", message = "expireTime:过期时间为-1或者大于0")
 })
+@Getter
+@Setter
 public class RedisKeyAddVO {
 
     @NotEmpty(message = "id不能为空")
@@ -48,43 +52,4 @@ public class RedisKeyAddVO {
         }
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getKeyType() {
-        return keyType;
-    }
-
-    public void setKeyType(String keyType) {
-        this.keyType = keyType;
-    }
-
-    public Long getExpireTime() {
-        return expireTime;
-    }
-
-    public void setExpireTime(Long expireTime) {
-        this.expireTime = expireTime;
-    }
-
-    public String getStringValue() {
-        return stringValue;
-    }
-
-    public void setStringValue(String stringValue) {
-        this.stringValue = stringValue;
-    }
 }

@@ -2,6 +2,8 @@ package com.tz.redismanager.domain.vo;
 
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.validator.ValidGroup;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.ScriptAssert;
@@ -19,6 +21,8 @@ import javax.validation.constraints.NotNull;
         @ScriptAssert(lang = "javascript", groups = {ValidGroup.TestConnection.class},
                 script = "_this.testConnectionValidate(_this.password,_this.source)", message = "source不能为空")
 })
+@Getter
+@Setter
 public class RedisConfigVO {
 
     @NotEmpty(message = "id不能为空", groups = {ValidGroup.UpdateConnection.class})
@@ -98,107 +102,4 @@ public class RedisConfigVO {
         return true;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getIsPublic() {
-        return isPublic;
-    }
-
-    public void setIsPublic(Integer isPublic) {
-        this.isPublic = isPublic;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getSerCode() {
-        return serCode;
-    }
-
-    public void setSerCode(String serCode) {
-        this.serCode = serCode;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public String getCreater() {
-        return creater;
-    }
-
-    public void setCreater(String creater) {
-        this.creater = creater;
-    }
-
-    public String getUpdater() {
-        return updater;
-    }
-
-    public void setUpdater(String updater) {
-        this.updater = updater;
-    }
-
-    public Integer getSource() {
-        return source;
-    }
-
-    public void setSource(Integer source) {
-        this.source = source;
-    }
-
-    @Override
-    public String toString() {
-        return "RedisConfigVO{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", address='" + address + '\'' +
-                ", password='" + password + '\'' +
-                ", serCode='" + serCode + '\'' +
-                ", note='" + note + '\'' +
-                ", creater='" + creater + '\'' +
-                ", updater='" + updater + '\'' +
-                ", source='" + source + '\'' +
-                '}';
-    }
 }

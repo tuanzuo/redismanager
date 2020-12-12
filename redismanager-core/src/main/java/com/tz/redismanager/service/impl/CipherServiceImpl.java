@@ -9,7 +9,7 @@ import org.springframework.util.DigestUtils;
 /**
  * <p>密码service</p>
  *
- * @author Administrator
+ * @author tuanzuo
  * @version 1.4.0
  * @time 2020-10-02 20:07
  **/

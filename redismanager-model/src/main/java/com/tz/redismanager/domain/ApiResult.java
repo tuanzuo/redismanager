@@ -1,6 +1,8 @@
 package com.tz.redismanager.domain;
 
 import com.tz.redismanager.enm.ResultCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 接口返回对象
@@ -8,6 +10,8 @@ import com.tz.redismanager.enm.ResultCode;
  * @version 1.0
  * @time 2019-07-29 19:51
  **/
+@Getter
+@Setter
 public class ApiResult<T> {
     /**
      * @see ResultCode
@@ -42,36 +46,4 @@ public class ApiResult<T> {
         this.datas = datas;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public T getDatas() {
-        return datas;
-    }
-
-    public void setDatas(T datas) {
-        this.datas = datas;
-    }
-
-    @Override
-    public String toString() {
-        return "ApiResult{" +
-                "code='" + code + '\'' +
-                ", msg='" + msg + '\'' +
-                ", datas=" + datas +
-                '}';
-    }
 }

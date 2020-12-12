@@ -5,7 +5,7 @@ import com.tz.redismanager.constant.ConstInterface;
 /**
  * <p>角色分页param</p>
  *
- * @author Administrator
+ * @author tuanzuo
  * @version 1.4.0
  * @time 2020-10-02 13:28
  **/

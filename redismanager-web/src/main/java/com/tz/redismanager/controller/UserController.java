@@ -29,7 +29,7 @@ public class UserController {
     private IUserService userService;
 
     @RequestMapping("register")
-    public ApiResult<?> register(@Validated({ValidGroup.addUserInfo.class}) @RequestBody UserVO vo) {
+    public ApiResult<?> register(@Validated({ValidGroup.AddUserInfo.class}) @RequestBody UserVO vo) {
         return userService.register(vo);
     }
 
@@ -47,14 +47,14 @@ public class UserController {
 
     @RequestMapping("update")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> update(@Validated({ValidGroup.updateUserInfo.class}) @RequestBody UserVO vo, AuthContext authContext) {
+    public ApiResult<?> update(@Validated({ValidGroup.UpdateUserInfo.class}) @RequestBody UserVO vo, AuthContext authContext) {
         vo.setId(authContext.getUserId());
         return userService.update(vo);
     }
 
     @RequestMapping("update/status")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> updateStatus(@Validated({ValidGroup.updateUserStatus.class}) @RequestBody UserVO vo, AuthContext authContext) {
+    public ApiResult<?> updateStatus(@Validated({ValidGroup.UpdateUserStatus.class}) @RequestBody UserVO vo, AuthContext authContext) {
         return userService.updateStatus(vo.getIds(), vo.getStatus(), authContext);
     }
 
@@ -63,7 +63,7 @@ public class UserController {
      */
     @RequestMapping("update/pwd")
     @Auth()
-    public ApiResult<?> updatePwd(@Validated({ValidGroup.updateUserPwd.class}) @RequestBody UserVO vo, AuthContext authContext) {
+    public ApiResult<?> updatePwd(@Validated({ValidGroup.UpdateUserPwd.class}) @RequestBody UserVO vo, AuthContext authContext) {
         vo.setId(authContext.getUserId());
         return userService.updatePwd(vo);
     }
@@ -73,13 +73,13 @@ public class UserController {
      */
     @RequestMapping("reset/pwd")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> resetPwd(@Validated({ValidGroup.resetUserPwd.class}) @RequestBody UserVO vo, AuthContext authContext) {
+    public ApiResult<?> resetPwd(@Validated({ValidGroup.ResetUserPwd.class}) @RequestBody UserVO vo, AuthContext authContext) {
         return userService.resetPwd(vo, authContext);
     }
 
     @RequestMapping("grant/role")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> grantRole(@Validated({ValidGroup.grantUserRole.class}) @RequestBody UserVO vo, AuthContext authContext) {
+    public ApiResult<?> grantRole(@Validated({ValidGroup.GrantUserRole.class}) @RequestBody UserVO vo, AuthContext authContext) {
         return userService.grantRole(vo, authContext);
     }
 

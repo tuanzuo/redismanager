@@ -1,5 +1,8 @@
 package com.tz.redismanager.domain.vo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,6 +12,8 @@ import java.util.Set;
  * @version 1.3.0
  * @time 2020-08-29 13:50
  **/
+@Getter
+@Setter
 public class AuthResp {
 
     /**
@@ -21,19 +26,4 @@ public class AuthResp {
      */
     private Set<String> roles = new HashSet<>();
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
 }
