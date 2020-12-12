@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * 日志msg注解
  *
- * @author Administrator
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-08-30 20:19
  **/

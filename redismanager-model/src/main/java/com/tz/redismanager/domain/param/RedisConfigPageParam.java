@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * <p>Redis配置信息分页param</p>
  *
- * @author Administrator
+ * @author tuanzuo
  * @version 1.4.0
  * @time 2020-10-02 13:42
  **/

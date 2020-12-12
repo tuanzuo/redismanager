@@ -30,19 +30,19 @@ public class RoleController {
 
     @RequestMapping("add")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> add(@Validated({ValidGroup.addRole.class}) @RequestBody RoleVO vo, AuthContext authContext) {
+    public ApiResult<?> add(@Validated({ValidGroup.AddRole.class}) @RequestBody RoleVO vo, AuthContext authContext) {
         return roleService.add(vo, authContext);
     }
 
     @RequestMapping("update")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> update(@Validated({ValidGroup.updateRole.class}) @RequestBody RoleVO vo, AuthContext authContext) {
+    public ApiResult<?> update(@Validated({ValidGroup.UpdateRole.class}) @RequestBody RoleVO vo, AuthContext authContext) {
         return roleService.update(vo, authContext);
     }
 
     @RequestMapping("update/status")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> updateStatus(@Validated({ValidGroup.updateRoleStatus.class}) @RequestBody RoleVO vo, AuthContext authContext) {
+    public ApiResult<?> updateStatus(@Validated({ValidGroup.UpdateRoleStatus.class}) @RequestBody RoleVO vo, AuthContext authContext) {
         return roleService.updateStatus(vo.getIds(), vo.getStatus(), authContext);
     }
 

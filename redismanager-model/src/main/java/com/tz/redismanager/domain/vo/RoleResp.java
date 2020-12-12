@@ -1,16 +1,20 @@
 package com.tz.redismanager.domain.vo;
 
 import com.tz.redismanager.constant.ConstInterface;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
 /**
  * <p>角色返回对象</p>
  *
- * @author Administrator
+ * @author tuanzuo
  * @version 1.4.0
  * @time 2020-09-26 16:43
  **/
+@Getter
+@Setter
 public class RoleResp {
 
     /**
@@ -59,75 +63,4 @@ public class RoleResp {
      */
     private Date updateTime;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public String getCreater() {
-        return creater;
-    }
-
-    public void setCreater(String creater) {
-        this.creater = creater;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdater() {
-        return updater;
-    }
-
-    public void setUpdater(String updater) {
-        this.updater = updater;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 }

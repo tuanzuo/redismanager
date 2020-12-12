@@ -41,7 +41,7 @@ public class UpdateListValueHandler extends AbstractUpdateValueHandler {
         } else {
             this.handleNotEmptyList(vo, oldValues, newValues);
         }
-        //删除数据
+        //移除被标记需要删除的数据
         redisTemplate.opsForList().remove(vo.getKey(), 0, LIST_REMOVE_VALUE);
         //设置过期时间
         this.setKeyExpireTime(redisTemplate, vo.getKey(), redisTemplate.getExpire(vo.getKey()));
@@ -61,7 +61,6 @@ public class UpdateListValueHandler extends AbstractUpdateValueHandler {
         int oldSize = oldValues.size();
         int newSize = newValues.size();
         int maxSize = Math.max(oldSize, newSize);
-        String preValue = "";
         for (int i = 0, index = vo.getStart().intValue(); i < maxSize; i++, index++) {
             if (oldSize <= newSize) {
                 if (i < oldSize) {
@@ -70,13 +69,6 @@ public class UpdateListValueHandler extends AbstractUpdateValueHandler {
                 } else {
                     /**新加的value都添加到列表的右边(尾部)*/
                     redisTemplate.opsForList().rightPush(vo.getKey(), newValues.get(i));
-                    /*if (oldSize == 0) {
-                        //之前List为空，就直接将新List的value添加到集合的右边
-                        redisTemplate.opsForList().rightPush(vo.getKey(), newValues.get(i));
-                    } else {
-                        //将新List的value添加到前一个value的后面
-                        redisTemplate.opsForList().rightPush(vo.getKey(), preValue, newValues.get(i));
-                    }*/
                 }
             } else {
                 if (i < newSize) {
@@ -86,9 +78,6 @@ public class UpdateListValueHandler extends AbstractUpdateValueHandler {
                     //把之前list对应index的位置设置成需要删除的value
                     redisTemplate.opsForList().set(vo.getKey(), index, LIST_REMOVE_VALUE);
                 }
-            }
-            if (i < newSize) {
-                preValue = newValues.get(i);
             }
         }
     }
