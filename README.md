@@ -13,6 +13,8 @@
 
 5、支持list，zset类型分页查询和修改数据
 
+6、优化页面
+
 #### v1.4.0
 
 1、优化日志追踪-TraceLoggerFactory
