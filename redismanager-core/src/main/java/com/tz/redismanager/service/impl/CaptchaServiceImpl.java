@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * <p>验证码服务实现</p>
- *
+ * {@link https://github.com/whvcse/EasyCaptcha }
  * @author tuanzuo
  * @version 1.6.0
  * @time 2020-12-19 19:11
