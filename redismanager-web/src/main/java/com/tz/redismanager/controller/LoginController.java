@@ -5,7 +5,9 @@ import com.tz.redismanager.domain.vo.LoginVO;
 import com.tz.redismanager.service.IAuthService;
 import com.tz.redismanager.security.domain.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
+import com.tz.redismanager.validator.ValidGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +26,7 @@ public class LoginController {
     private IAuthService authService;
 
     @RequestMapping("login")
-    public ApiResult<?> login(@RequestBody LoginVO vo) {
+    public ApiResult<?> login(@Validated({ValidGroup.Login.class}) @RequestBody LoginVO vo) {
         return authService.login(vo);
     }
 

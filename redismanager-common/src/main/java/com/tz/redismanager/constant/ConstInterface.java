@@ -126,6 +126,10 @@ public interface ConstInterface {
          * Redis连接配置排行明细
          */
         String REDIS_CONFIG_VISIT_RANK_DETAIL = "rm:vist:rds:cfg:rank:dtl:";
+        /**
+         * 验证码key
+         */
+        String CAPTCHA_KEY = "rm:captcha:";
     }
 
     interface Auth {
