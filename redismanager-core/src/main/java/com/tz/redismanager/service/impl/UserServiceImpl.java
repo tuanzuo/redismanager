@@ -3,21 +3,18 @@ package com.tz.redismanager.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.dao.domain.po.RolePO;
+import com.tz.redismanager.dao.domain.po.UserPO;
+import com.tz.redismanager.dao.domain.po.UserRoleRelationPO;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.dao.mapper.UserPOMapper;
 import com.tz.redismanager.dao.mapper.UserRoleRelationPOMapper;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.UserPageParam;
-import com.tz.redismanager.dao.domain.po.RolePO;
-import com.tz.redismanager.dao.domain.po.UserPO;
-import com.tz.redismanager.dao.domain.po.UserRoleRelationPO;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.service.IAuthCacheService;
-import com.tz.redismanager.service.ICipherService;
-import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.security.domain.AuthContext;
-import com.tz.redismanager.service.IStatisticService;
+import com.tz.redismanager.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -45,6 +42,8 @@ public class UserServiceImpl implements IUserService {
             "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰", "有人醒我茶已冷");
 
     @Autowired
+    private ICaptchaService captchaService;
+    @Autowired
     private ICipherService cipherService;
     @Autowired
     private IAuthCacheService authCacheService;
@@ -61,11 +60,20 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ApiResult<?> register(UserVO vo) {
+        //校验验证码
+        ApiResult<?> validCaptchaResult = captchaService.validCaptcha(new CaptchaVO(vo.getCaptchaKey(), vo.getCaptcha()));
+        if (!ResultCode.SUCCESS.getCode().equals(validCaptchaResult.getCode())) {
+            return new ApiResult<>(validCaptchaResult.getCode(), validCaptchaResult.getMsg());
+        }
+
+        //校验用户名是否存在
         UserPO queryUser = userPOMapper.selectByName(vo.getName());
         if (null != queryUser && null != queryUser.getId()) {
             return new ApiResult<>(ResultCode.USER_EXIST);
         }
+        //构建注册对象
         UserPO userPO = this.buildRegisterUser(vo);
+        //给用户设置角色
         List<RolePO> roles = rolePOMapper.getAll(ConstInterface.ROLE_STATUS.ENABLE);
         List<UserRoleRelationPO> userRoles = this.buildUserRoleRelations(vo, userPO, roles);
         transactionTemplate.execute((transactionStatus) -> {
@@ -73,7 +81,7 @@ public class UserServiceImpl implements IUserService {
             if (CollectionUtils.isEmpty(userRoles)) {
                 return null;
             }
-            userRoles.forEach(temp->{
+            userRoles.forEach(temp -> {
                 temp.setUserId(userPO.getId());
             });
             userRoleRelationPOMapper.insertBatch(userRoles);
@@ -101,7 +109,7 @@ public class UserServiceImpl implements IUserService {
         //jsonObject.put("unreadCount", userStatisticsService.countOnlineUser());
         jsonObject.put("unreadCount", 0);
         //右上角用户头像 v1.5.0
-        jsonObject.put("avatar","/img/BiazfanxmamNRoxxVxka.png");
+        jsonObject.put("avatar", "/img/BiazfanxmamNRoxxVxka.png");
         return new ApiResult<>(ResultCode.SUCCESS, jsonObject);
     }
 
@@ -193,9 +201,9 @@ public class UserServiceImpl implements IUserService {
     private void setRoles(UserListResp resp, List<RolePO> roles) {
         roles = Optional.ofNullable(roles).orElse(new ArrayList<>());
         List<RoleVO> roleVOs = new ArrayList<>();
-        roles.forEach(temp->{
+        roles.forEach(temp -> {
             RoleVO roleVO = new RoleVO();
-            BeanUtils.copyProperties(temp,roleVO);
+            BeanUtils.copyProperties(temp, roleVO);
             roleVOs.add(roleVO);
         });
         resp.setRoles(roleVOs);

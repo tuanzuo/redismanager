@@ -18,6 +18,8 @@ public enum ResultCode {
     EXIST_ROLE_CODE("600007", "角色编码已存在"),
     USER_EXIST("600008", "来晚啦，用户名已被其他小伙伴注册了"),
     ROLE_AUTH_FAIL("600009", "无操作权限"),
+    CAPTCHA_EXPIRE("600010", "验证码已过期，请重新输入"),
+    CAPTCHA_ERROR("600011", "验证码不正确，请重新输入"),
 
     TOKEN_AUTH_ERR("700001", "token验证失败"),
     TOKEN_AUTH_EXPIRE("700002", "token过期,请重新登录"),

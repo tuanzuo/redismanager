@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
  **/
 @Getter
 @Setter
-public class LoginVO {
+public class LoginVO extends CaptchaVO{
 
     /**
      * 用户名

@@ -18,7 +18,7 @@ import java.util.List;
  **/
 @Getter
 @Setter
-public class UserVO {
+public class UserVO extends CaptchaVO{
 
     /**
      * 用户id
@@ -68,5 +68,6 @@ public class UserVO {
      * 角色id列表
      */
     private List<Integer> roleIds;
+
 
 }

@@ -7,11 +7,13 @@ import com.tz.redismanager.dao.mapper.UserPOMapper;
 import com.tz.redismanager.dao.mapper.UserRoleRelationPOMapper;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.AuthResp;
+import com.tz.redismanager.domain.vo.CaptchaVO;
 import com.tz.redismanager.domain.vo.LoginVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.security.token.ITokenService;
 import com.tz.redismanager.service.IAuthService;
+import com.tz.redismanager.service.ICaptchaService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IStatisticService;
 import com.tz.redismanager.trace.TraceLoggerFactory;
@@ -37,6 +39,8 @@ public class AuthServiceImpl implements IAuthService {
     private static final Logger logger = TraceLoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Autowired
+    private ICaptchaService captchaService;
+    @Autowired
     private ICipherService cipherService;
     @Autowired
     private UserPOMapper userPOMapper;
@@ -49,6 +53,12 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public ApiResult<AuthResp> login(LoginVO vo) {
+        //校验验证码
+        ApiResult<?> validCaptchaResult = captchaService.validCaptcha(new CaptchaVO(vo.getCaptchaKey(), vo.getCaptcha()));
+        if (!ResultCode.SUCCESS.getCode().equals(validCaptchaResult.getCode())) {
+            return new ApiResult<>(validCaptchaResult.getCode(), validCaptchaResult.getMsg());
+        }
+
         String encodePwd = cipherService.encodeUserInfoByMd5(vo.getName(), vo.getPwd());
         UserPO userPO = userPOMapper.selectByNamePwd(vo.getName(), encodePwd);
         if (null == userPO) {

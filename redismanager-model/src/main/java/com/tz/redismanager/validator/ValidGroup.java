@@ -97,5 +97,11 @@ public interface ValidGroup {
     interface UpdateRoleStatus {
     }
 
+    /**
+     * 登录
+     */
+    interface Login {
+    }
+
 
 }
