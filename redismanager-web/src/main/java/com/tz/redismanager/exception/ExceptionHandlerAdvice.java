@@ -3,6 +3,7 @@ package com.tz.redismanager.exception;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.limiter.exception.LimiterException;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -61,6 +62,14 @@ public class ExceptionHandlerAdvice {
             //往header中写入code='700'的数据，前端的/utils/request.js中会判断如果header中的code='700'，就强制退出系统
             response.setHeader(CODE_NAME, CODE_700);
         }
+        return new ApiResult<>(e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(LimiterException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Object handleLimiterException(HttpServletRequest request, HttpServletResponse response, LimiterException e) {
+        this.getParams(request, e);
         return new ApiResult<>(e.getCode(), e.getMessage());
     }
 

@@ -19,6 +19,7 @@
         <module>redismanager-core</module>
         <module>redismanager-web</module>
         <module>redismanager-model</module>
+        <module>redismanager-limiter</module>
     </modules>
 
     <properties>
