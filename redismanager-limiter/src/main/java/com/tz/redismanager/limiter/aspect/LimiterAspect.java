@@ -9,9 +9,7 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 /**
  * <p>限流器切面</p>
@@ -21,12 +19,14 @@ import org.springframework.stereotype.Component;
  * @time 2020-12-20 23:08
  **/
 @Aspect
-@Component
 @Order(100)
 public class LimiterAspect {
 
-    @Autowired
     private ILimiterService limiterService;
+
+    public LimiterAspect(ILimiterService limiterService) {
+        this.limiterService = limiterService;
+    }
 
     @Around("@annotation(limiter)")
     public Object annotationPointCut(ProceedingJoinPoint joinPoint, Limiter limiter) throws Throwable {

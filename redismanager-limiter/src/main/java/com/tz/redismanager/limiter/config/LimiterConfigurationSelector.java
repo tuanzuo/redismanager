@@ -1,5 +1,6 @@
 package com.tz.redismanager.limiter.config;
 
+import com.tz.redismanager.limiter.aspect.LimiterAspect;
 import com.tz.redismanager.limiter.domain.ResultCode;
 import com.tz.redismanager.limiter.exception.LimiterException;
 import com.tz.redismanager.limiter.service.ILimiterService;
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationAttributes;
@@ -25,7 +25,6 @@ import java.util.Map;
  * @time 2020-12-20 23:05
  * @see org.springframework.context.annotation.MBeanExportConfiguration
  **/
-@Configuration
 public class LimiterConfigurationSelector implements ImportAware, EnvironmentAware, BeanFactoryAware {
 
     /**
@@ -67,6 +66,11 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
                 .findFirst()
                 .orElseThrow(() -> new LimiterException(ResultCode.ENABLE_LIMITER_TYPE_NOT_SUPPORT.getCode(), "@EnableLimiterAutoConfiguration is not support limiterType-->" + limiterType));
         return limiterService;
+    }
+
+    @Bean
+    public LimiterAspect limiterAspect(ILimiterService limiterService) {
+        return new LimiterAspect(limiterService);
     }
 
 }
