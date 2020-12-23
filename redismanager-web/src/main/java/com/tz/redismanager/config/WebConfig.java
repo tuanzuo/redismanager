@@ -2,8 +2,8 @@ package com.tz.redismanager.config;
 
 import com.tz.redismanager.security.auth.AuthContextAttributeMethodProcessor;
 import com.tz.redismanager.security.auth.AuthInterceptor;
-import com.tz.redismanager.security.token.ITokenService;
 import com.tz.redismanager.service.IStatisticService;
+import com.tz.redismanager.token.service.ITokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

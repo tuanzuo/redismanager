@@ -11,12 +11,14 @@ import com.tz.redismanager.domain.vo.CaptchaVO;
 import com.tz.redismanager.domain.vo.LoginVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.security.domain.AuthContext;
-import com.tz.redismanager.security.token.ITokenService;
+import com.tz.redismanager.security.domain.AuthContextToRedis;
 import com.tz.redismanager.service.IAuthService;
 import com.tz.redismanager.service.ICaptchaService;
 import com.tz.redismanager.service.ICipherService;
 import com.tz.redismanager.service.IStatisticService;
+import com.tz.redismanager.token.service.ITokenService;
 import com.tz.redismanager.trace.TraceLoggerFactory;
+import com.tz.redismanager.util.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,14 +72,21 @@ public class AuthServiceImpl implements IAuthService {
         List<RolePO> roles = userRoleRelationPOMapper.selectByUserRole(userPO.getId(), ConstInterface.ROLE_STATUS.ENABLE);
         AuthResp resp = this.buildLoginResp(roles);
         AuthContext context = this.buildAuthContext(userPO, resp);
-        String token = tokenAuthService.handleLogin(userPO, context);
+        String tokenContext = JsonUtils.toJsonStr(context);
+        if (tokenAuthService.support(ConstInterface.TokenType.REDIS)) {
+            AuthContextToRedis authContextToRedis = new AuthContextToRedis();
+            authContextToRedis.setUserPO(userPO);
+            authContextToRedis.setAuthContext(context);
+            tokenContext = JsonUtils.toJsonStr(authContextToRedis);
+        }
+        String token = tokenAuthService.getToken(tokenContext);
         resp.setToken(token);
         return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
 
     @Override
     public ApiResult<Object> logout(AuthContext context) {
-        tokenAuthService.handleLogout(context);
+        tokenAuthService.clearToken(JsonUtils.toJsonStr(context));
         userStatisticsService.removeOnlineUser(context.getUserId());
         return new ApiResult<>(ResultCode.SUCCESS);
     }

@@ -24,8 +24,8 @@ public enum ResultCode {
     TOKEN_AUTH_ERR("700001", "token验证失败"),
     TOKEN_AUTH_EXPIRE("700002", "token过期,请重新登录"),
 
-    ENABLE_TOKEN_NOT_PRESENT("800001", "@EnableTokenAutoConfiguration is not present"),
-    ENABLE_TOKEN_TYPE_NOT_SUPPORT("800002", "@EnableTokenAutoConfiguration tokenType is not support"),
+    ENABLE_TOKEN_NOT_PRESENT("700003", "@EnableTokenAutoConfiguration is not present"),
+    ENABLE_TOKEN_TYPE_NOT_SUPPORT("700004", "@EnableTokenAutoConfiguration tokenType is not support"),
 
     ;
 

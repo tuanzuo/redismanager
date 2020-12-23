@@ -1,14 +1,15 @@
-package com.tz.redismanager.security.token.impl;
+package com.tz.redismanager.security.token;
 
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.po.UserPO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.security.domain.AuthContext;
-import com.tz.redismanager.security.token.ITokenService;
-import com.tz.redismanager.security.token.config.TokenProperties;
+import com.tz.redismanager.security.domain.AuthContextToRedis;
 import com.tz.redismanager.service.IAuthCacheService;
 import com.tz.redismanager.service.ICipherService;
+import com.tz.redismanager.token.config.TokenProperties;
+import com.tz.redismanager.token.service.ITokenService;
 import com.tz.redismanager.util.JsonUtils;
 import com.tz.redismanager.util.UUIDUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,13 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 /**
- * <p>Redis实现Token</p>
+ * <p></p>
  *
- * @version 1.5.0
- * @time 2020-11-06 0:39
+ * @author admin
+ * @version 1.0
+ * @time 2020-12-23 21:43
  **/
 @Service
 public class RedisTokenServiceImpl implements ITokenService {
@@ -42,7 +42,10 @@ public class RedisTokenServiceImpl implements ITokenService {
     }
 
     @Override
-    public String handleLogin(UserPO userPO, AuthContext context) {
+    public String getToken(String tokenContext) {
+        AuthContextToRedis authContextToRedis = JsonUtils.parseObject(tokenContext, AuthContextToRedis.class);
+        UserPO userPO = authContextToRedis.getUserPO();
+        AuthContext context = authContextToRedis.getAuthContext();
         String token = cipherService.encodeUserInfoByMd5(userPO.getName(), userPO.getPwd(), UUIDUtils.generateId());
         context.setToken(token);
         //删除auth缓存数据
@@ -53,19 +56,17 @@ public class RedisTokenServiceImpl implements ITokenService {
     }
 
     @Override
-    public void handleLogout(AuthContext context) {
-        authCacheService.delAuthInfoToLogout(context);
-    }
-
-    @Override
-    public AuthContext getAuthContext(String token) {
+    public String resolveToken(String token) {
         String userInfoKey = ConstInterface.CacheKey.USER_AUTH + token;
         String authContextCache = stringRedisTemplate.opsForValue().get(userInfoKey);
         if (StringUtils.isBlank(authContextCache)) {
             throw new RmException(ResultCode.TOKEN_AUTH_EXPIRE);
         }
-        AuthContext authContext = JsonUtils.parseObject(authContextCache, AuthContext.class);
-        return Optional.ofNullable(authContext).orElseThrow(() -> new RmException(ResultCode.TOKEN_AUTH_EXPIRE));
+        return authContextCache;
     }
 
+    @Override
+    public void clearToken(String token) {
+        authCacheService.delAuthInfoToLogout(JsonUtils.parseObject(token, AuthContext.class));
+    }
 }

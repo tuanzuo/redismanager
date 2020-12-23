@@ -140,7 +140,6 @@ public interface ConstInterface {
      * token类型
      */
     interface TokenType {
-        String JWT = "jwt";
         String REDIS = "redis";
     }
 }
