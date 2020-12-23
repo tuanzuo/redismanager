@@ -14,6 +14,5 @@ public interface ConstInterface {
      */
     interface TokenType {
         String JWT = "jwt";
-        String REDIS = "redis";
     }
 }
