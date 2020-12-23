@@ -1,4 +1,4 @@
-package com.tz.redismanager.security.token.config;
+package com.tz.redismanager.token.config;
 
 import lombok.Getter;
 import lombok.Setter;

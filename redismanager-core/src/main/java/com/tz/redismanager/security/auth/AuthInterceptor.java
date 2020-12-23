@@ -5,10 +5,13 @@ import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.security.domain.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
-import com.tz.redismanager.security.token.ITokenService;
 import com.tz.redismanager.service.IStatisticService;
+import com.tz.redismanager.token.service.ITokenService;
+import com.tz.redismanager.trace.TraceLoggerFactory;
+import com.tz.redismanager.util.JsonUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -26,6 +29,8 @@ import java.util.Set;
  * @time 2020-08-29 13:50
  **/
 public class AuthInterceptor extends HandlerInterceptorAdapter {
+
+    private static final Logger logger = TraceLoggerFactory.getLogger(AuthInterceptor.class);
 
     private ITokenService tokenAuthService;
     private IStatisticService statisticService;
@@ -59,7 +64,14 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                 throw new RmException(ResultCode.TOKEN_AUTH_ERR);
             }
             //得到AuthContext
-            authContext = tokenAuthService.getAuthContext(token);
+            String authContextStr = tokenAuthService.resolveToken(token);
+            try {
+                AuthContext authContextParse = JsonUtils.parseObject(authContextStr, AuthContext.class);
+                authContext = Optional.ofNullable(authContextParse).orElseThrow(() -> new RmException(ResultCode.TOKEN_AUTH_EXPIRE));
+            } catch (Exception e) {
+                logger.error("[解析AuthContext异常]-AuthContext:{}", authContextStr, e);
+                throw new RmException(ResultCode.TOKEN_AUTH_ERR);
+            }
             //验证角色
             if (ArrayUtils.isNotEmpty(auth.permitRoles())) {
                 Set<String> roles = Optional.ofNullable(authContext.getRoles()).orElse(new HashSet<>());

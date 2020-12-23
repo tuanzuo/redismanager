@@ -1,14 +1,12 @@
-package com.tz.redismanager.security.token.config;
+package com.tz.redismanager.token.config;
 
-import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.exception.RmException;
-import com.tz.redismanager.security.domain.EnableTokenAutoConfiguration;
-import com.tz.redismanager.security.token.ITokenService;
+import com.tz.redismanager.token.domain.ResultCode;
+import com.tz.redismanager.token.exception.TokenException;
+import com.tz.redismanager.token.service.ITokenService;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationAttributes;
@@ -26,7 +24,6 @@ import java.util.Map;
  * @time 2020-11-05 23:55
  * @see org.springframework.context.annotation.MBeanExportConfiguration
  **/
-@Configuration
 public class TokenConfigurationSelector implements ImportAware, EnvironmentAware, BeanFactoryAware {
 
     /**
@@ -48,7 +45,7 @@ public class TokenConfigurationSelector implements ImportAware, EnvironmentAware
         Map<String, Object> map = importMetadata.getAnnotationAttributes(EnableTokenAutoConfiguration.class.getName());
         this.tokenAutoConfiguration = AnnotationAttributes.fromMap(map);
         if (this.tokenAutoConfiguration == null) {
-            throw new RmException(ResultCode.ENABLE_TOKEN_NOT_PRESENT.getCode(), "@EnableTokenAutoConfiguration is not present on importing class " + importMetadata.getClassName());
+            throw new TokenException(ResultCode.ENABLE_TOKEN_NOT_PRESENT.getCode(), "@EnableTokenAutoConfiguration is not present on importing class " + importMetadata.getClassName());
         }
     }
 
@@ -69,7 +66,7 @@ public class TokenConfigurationSelector implements ImportAware, EnvironmentAware
         return tokenServices.stream()
                 .filter((tokenService) -> tokenService.support(tokenType))
                 .findFirst()
-                .orElseThrow(() -> new RmException(ResultCode.ENABLE_TOKEN_TYPE_NOT_SUPPORT.getCode(), "@EnableTokenAutoConfiguration is not support tokenType-->" + tokenType));
+                .orElseThrow(() -> new TokenException(ResultCode.ENABLE_TOKEN_TYPE_NOT_SUPPORT.getCode(), "@EnableTokenAutoConfiguration is not support tokenType-->" + tokenType));
     }
 
 }

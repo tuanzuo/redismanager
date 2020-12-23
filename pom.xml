@@ -20,6 +20,7 @@
         <module>redismanager-web</module>
         <module>redismanager-model</module>
         <module>redismanager-limiter</module>
+        <module>redismanager-token</module>
     </modules>
 
     <properties>
