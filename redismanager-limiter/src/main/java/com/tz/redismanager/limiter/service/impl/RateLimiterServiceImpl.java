@@ -22,13 +22,13 @@ public class RateLimiterServiceImpl implements ILimiterService {
     private static ConcurrentHashMap<String, RateLimiter> limiterMap = new ConcurrentHashMap<>();
 
     @Override
-    public boolean support(String tokenType) {
-        return ConstInterface.LimiterType.GUAVA_RATE_LIMITER.equals(tokenType);
+    public boolean support(String limiterType) {
+        return ConstInterface.LimiterType.GUAVA_RATE_LIMITER.equals(limiterType);
     }
 
     @Override
     public boolean tryAcquire(Limiter limiter) {
-        return this.getLimiter(limiter).tryAcquire();
+        return this.getLimiter(limiter).tryAcquire(limiter.permits(), limiter.timeout(), limiter.unit());
     }
 
     private RateLimiter getLimiter(Limiter limiter) {

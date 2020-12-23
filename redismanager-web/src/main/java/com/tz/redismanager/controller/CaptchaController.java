@@ -23,7 +23,7 @@ public class CaptchaController {
     private ICaptchaService captchaService;
 
     @RequestMapping("/captcha")
-    @Limiter(name = "验证码请求限流器", key = "CAPTCHA_API", qps = 100)
+    @Limiter(name = "验证码请求限流", key = "CAPTCHA_API", qps = 100)
     public ApiResult<CaptchaResp> captcha() {
         return new ApiResult<>(ResultCode.SUCCESS, captchaService.captcha());
     }

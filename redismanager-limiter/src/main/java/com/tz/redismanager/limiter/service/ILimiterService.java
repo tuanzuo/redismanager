@@ -11,8 +11,20 @@ import com.tz.redismanager.limiter.enm.Limiter;
  **/
 public interface ILimiterService {
 
-    boolean support(String tokenType);
+    /**
+     * 判断是否支持限流器类型
+     *
+     * @param limiterType 限流器类型
+     * @return true:支持,false:不支持
+     */
+    boolean support(String limiterType);
 
+    /**
+     * 尝试获得许可
+     *
+     * @param limiter
+     * @return true:获取成功,false:获取失败
+     */
     boolean tryAcquire(Limiter limiter);
 
 }
