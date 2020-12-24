@@ -21,12 +21,6 @@ public enum ResultCode {
     CAPTCHA_EXPIRE("600010", "验证码已过期，请重新输入"),
     CAPTCHA_ERROR("600011", "验证码不正确，请重新输入"),
 
-    TOKEN_AUTH_ERR("700001", "token验证失败"),
-    TOKEN_AUTH_EXPIRE("700002", "token过期,请重新登录"),
-
-    ENABLE_TOKEN_NOT_PRESENT("700003", "@EnableTokenAutoConfiguration is not present"),
-    ENABLE_TOKEN_TYPE_NOT_SUPPORT("700004", "@EnableTokenAutoConfiguration tokenType is not support"),
-
     ;
 
     private String code;

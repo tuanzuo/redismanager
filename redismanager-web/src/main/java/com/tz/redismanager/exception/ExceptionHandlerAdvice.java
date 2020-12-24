@@ -4,6 +4,7 @@ import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.limiter.exception.LimiterException;
+import com.tz.redismanager.token.exception.TokenException;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -57,11 +58,6 @@ public class ExceptionHandlerAdvice {
     @ResponseBody
     public Object handleRmException(HttpServletRequest request, HttpServletResponse response, RmException e) {
         this.getParams(request, e);
-        //v1.4.0 如果code以7开头，表示token验证不同过的code
-        if (null != e.getCode() && e.getCode().startsWith(CODE_PRE_7)) {
-            //往header中写入code='700'的数据，前端的/utils/request.js中会判断如果header中的code='700'，就强制退出系统
-            response.setHeader(CODE_NAME, CODE_700);
-        }
         return new ApiResult<>(e.getCode(), e.getMessage());
     }
 
@@ -70,6 +66,19 @@ public class ExceptionHandlerAdvice {
     @ResponseBody
     public Object handleLimiterException(HttpServletRequest request, HttpServletResponse response, LimiterException e) {
         this.getParams(request, e);
+        return new ApiResult<>(e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(TokenException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Object handleTokenException(HttpServletRequest request, HttpServletResponse response, TokenException e) {
+        this.getParams(request, e);
+        //v1.4.0 如果code以7开头，表示token验证不同过的code
+        if (null != e.getCode() && e.getCode().startsWith(CODE_PRE_7)) {
+            //往header中写入code='700'的数据，前端的/utils/request.js中会判断如果header中的code='700'，就强制退出系统
+            response.setHeader(CODE_NAME, CODE_700);
+        }
         return new ApiResult<>(e.getCode(), e.getMessage());
     }
 

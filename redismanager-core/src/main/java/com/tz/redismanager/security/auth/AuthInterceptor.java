@@ -6,6 +6,7 @@ import com.tz.redismanager.exception.RmException;
 import com.tz.redismanager.security.domain.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IStatisticService;
+import com.tz.redismanager.token.exception.TokenException;
 import com.tz.redismanager.token.service.ITokenService;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.JsonUtils;
@@ -61,16 +62,16 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         try {
             //验证token
             if (StringUtils.isBlank(token)) {
-                throw new RmException(ResultCode.TOKEN_AUTH_ERR);
+                throw new TokenException(com.tz.redismanager.token.domain.ResultCode.TOKEN_AUTH_ERR);
             }
             //得到AuthContext
             String authContextStr = tokenAuthService.resolveToken(token);
             try {
                 AuthContext authContextParse = JsonUtils.parseObject(authContextStr, AuthContext.class);
-                authContext = Optional.ofNullable(authContextParse).orElseThrow(() -> new RmException(ResultCode.TOKEN_AUTH_EXPIRE));
+                authContext = Optional.ofNullable(authContextParse).orElseThrow(() -> new TokenException(com.tz.redismanager.token.domain.ResultCode.TOKEN_AUTH_EXPIRE));
             } catch (Exception e) {
                 logger.error("[解析AuthContext异常]-AuthContext:{}", authContextStr, e);
-                throw new RmException(ResultCode.TOKEN_AUTH_ERR);
+                throw new TokenException(com.tz.redismanager.token.domain.ResultCode.TOKEN_AUTH_ERR);
             }
             //验证角色
             if (ArrayUtils.isNotEmpty(auth.permitRoles())) {
