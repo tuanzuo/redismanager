@@ -2,7 +2,7 @@ package com.tz.redismanager.limiter.service.impl;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.tz.redismanager.limiter.constant.ConstInterface;
-import com.tz.redismanager.limiter.enm.Limiter;
+import com.tz.redismanager.limiter.domain.Limiter;
 import com.tz.redismanager.limiter.service.ILimiterService;
 import org.springframework.stereotype.Service;
 
