@@ -22,12 +22,12 @@ public interface ICacheService {
      */
     boolean support(String cacherType);
 
-    Object getCache(Cacher cacher, String cacherKey, Type returnType, Function<Object, Object> initCache);
+    Object getCache(Cacher cacher, String cacheKey, Type returnType, Function<Object, Object> initCache);
 
     /**
      * 失效缓存
      *
-     * @param cacherKey 缓存器key
+     * @param cacheKey 缓存key
      */
-    void invalidateCache(Cacher cacher, String cacherKey);
+    void invalidateCache(Cacher cacher, String cacheKey);
 }

@@ -44,8 +44,8 @@ public class CacherAspect {
         }
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Type genericReturnType = methodSignature.getMethod().getGenericReturnType();
-        String key = this.resolveCacherKey(joinPoint, cacher);
-        return cacheService.getCache(cacher, key, genericReturnType, (temp) -> {
+        String cacheKey = this.resolveCacheKey(joinPoint, cacher);
+        return cacheService.getCache(cacher, cacheKey, genericReturnType, (temp) -> {
             try {
                 return joinPoint.proceed();
             } catch (Throwable throwable) {
@@ -54,7 +54,7 @@ public class CacherAspect {
         });
     }
 
-    private String resolveCacherKey(ProceedingJoinPoint joinPoint, Cacher cacher) {
+    private String resolveCacheKey(ProceedingJoinPoint joinPoint, Cacher cacher) {
         Object[] args = joinPoint.getArgs();
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         methodSignature.getMethod().getGenericReturnType();
@@ -68,7 +68,7 @@ public class CacherAspect {
             }
         }
         ExpressionParser parser = new SpelExpressionParser();
-        return parser.parseExpression(cacher.key()).getValue(context, String.class);
+        return cacher.key() + ":" + parser.parseExpression(cacher.var()).getValue(context, String.class);
     }
 
 }
