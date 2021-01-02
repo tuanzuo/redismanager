@@ -21,6 +21,7 @@
         <module>redismanager-model</module>
         <module>redismanager-limiter</module>
         <module>redismanager-token</module>
+        <module>redismanager-cacher</module>
     </modules>
 
     <properties>
