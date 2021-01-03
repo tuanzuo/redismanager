@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -52,26 +53,28 @@ public class CacheServiceImpl implements ICacheService {
         if (l1Cache.enable()) {
             value = this.getL1Cache(cacher, cacheKey, initCache);
             if (StringUtils.isBlank(value) && l2Cache.enable()) {
-                value = stringRedisTemplate.opsForValue().get(cacheKey);
+                value = this.getL2Cache(cacher, cacheKey);
             }
         } else if (l2Cache.enable()) {
-            value = stringRedisTemplate.opsForValue().get(cacheKey);
+            value = this.getL2Cache(cacher, cacheKey);
         }
         if (CACHE_EMPTY_VALUE.equals(value)) {
             return null;
         }
-        if (StringUtils.isBlank(value)) {
-            Object result = initCache.apply(null);
-            String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
-            if (l1Cache.enable()) {
-                this.getL1Cacher(cacher, initCache).put(cacheKey, json);
-            }
-            if (l2Cache.enable()) {
-                stringRedisTemplate.opsForValue().set(cacheKey, json, l2Cache.expireDuration(), l2Cache.expireUnit());
-            }
-            return result;
+        if (StringUtils.isNotBlank(value)) {
+            return JsonUtils.parseObject(value, returnType);
         }
-        return JsonUtils.parseObject(value, returnType);
+
+        //FIXME 这里需要使用分布式加锁，防止多个线程都去查询数据
+        Object result = initCache.apply(null);
+        String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
+        if (l2Cache.enable()) {
+            this.setL2Cache(cacher, cacheKey, json);
+        }
+        if (l1Cache.enable()) {
+            this.setL1Cache(cacher, cacheKey, initCache, json);
+        }
+        return result;
     }
 
     @Override
@@ -79,7 +82,7 @@ public class CacheServiceImpl implements ICacheService {
         L1Cache l1Cache = cacher.l1Cache();
         L2Cache l2Cache = cacher.l2Cache();
         if (l1Cache.enable()) {
-            this.getL1Cacher(cacher, null).invalidate(cacheKey);
+            this.getL1Cacher(cacher, cacheKey, null).invalidate(cacheKey);
         }
         if (l2Cache.enable()) {
             stringRedisTemplate.delete(cacheKey);
@@ -87,10 +90,27 @@ public class CacheServiceImpl implements ICacheService {
     }
 
     private String getL1Cache(Cacher cacher, String cacheKey, Function<Object, Object> initCache) {
-        return this.getL1Cacher(cacher, initCache).get(cacheKey);
+        return this.getL1Cacher(cacher, cacheKey, initCache).get(cacheKey);
     }
 
-    private LoadingCache<String, String> getL1Cacher(Cacher cacher, Function<Object, Object> initCache) {
+    private String getL2Cache(Cacher cacher, String cacheKey) {
+        return stringRedisTemplate.opsForValue().get(cacheKey);
+    }
+
+    private void setL1Cache(Cacher cacher, String cacheKey, Function<Object, Object> initCache, String cacheValue) {
+        this.getL1Cacher(cacher, cacheKey, initCache).put(cacheKey, cacheValue);
+    }
+
+    private void setL2Cache(Cacher cacher, String cacheKey, String cacheValue) {
+        L2Cache l2Cache = cacher.l2Cache();
+        if (l2Cache.expireDuration() > 0) {
+            stringRedisTemplate.opsForValue().set(cacheKey, cacheValue, l2Cache.expireDuration(), l2Cache.expireUnit());
+        } else {
+            stringRedisTemplate.opsForValue().set(cacheKey, cacheValue);
+        }
+    }
+
+    private LoadingCache<String, String> getL1Cacher(Cacher cacher, String cacheKey, Function<Object, Object> initCache) {
         String cacherKey = cacher.key();
         L1Cache l1Cache = cacher.l1Cache();
         if (l1CacherMap.containsKey(cacherKey)) {
@@ -105,16 +125,19 @@ public class CacheServiceImpl implements ICacheService {
                 caffeine.expireAfterWrite(l1Cache.expireDuration(), l1Cache.expireUnit());
                 break;
         }
-        LoadingCache<String, String> loadingCache = caffeine.initialCapacity(l1Cache.initialCapacity())
-                .maximumSize(l1Cache.maximumSize())
-                .build((param) -> {
-                    if (null == initCache) {
-                        return null;
-                    }
-                    return JsonUtils.toJsonStr(initCache.apply(param));
-                });
-        LoadingCache<String, String> cacherTemp = l1CacherMap.putIfAbsent(cacherKey, loadingCache);
-        return null != cacherTemp ? cacherTemp : loadingCache;
+        LoadingCache<String, String> loadingCache =
+                caffeine.initialCapacity(l1Cache.initialCapacity())
+                        .maximumSize(l1Cache.maximumSize())
+                        .build((param) -> {
+                            if (cacher.l2Cache().enable()) {
+                                return stringRedisTemplate.opsForValue().get(cacheKey);
+                            }
+                            if (null == initCache) {
+                                return null;
+                            }
+                            return JsonUtils.toJsonStr(initCache.apply(param));
+                        });
+        return Optional.ofNullable(l1CacherMap.putIfAbsent(cacherKey, loadingCache)).orElse(loadingCache);
     }
 
 }

@@ -33,13 +33,10 @@ public class RateLimiterServiceImpl implements ILimiterService {
 
     private RateLimiter getLimiter(Limiter limiter) {
         String key = limiter.key();
-        RateLimiter rateLimiter;
         if (limiterMap.containsKey(key)) {
-            rateLimiter = limiterMap.get(key);
-        } else {
-            rateLimiter = RateLimiter.create(limiter.qps());
-            rateLimiter = Optional.ofNullable(limiterMap.putIfAbsent(key, rateLimiter)).orElse(rateLimiter);
+            return limiterMap.get(key);
         }
-        return rateLimiter;
+        RateLimiter rateLimiter = RateLimiter.create(limiter.qps());
+        return Optional.ofNullable(limiterMap.putIfAbsent(key, rateLimiter)).orElse(rateLimiter);
     }
 }
