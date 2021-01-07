@@ -74,15 +74,13 @@ public interface ConstInterface {
         String BRACKET_RIGHT = ")";
     }
 
+    /**
+     * 公共
+     */
     interface Common {
         String ROOT_NODE_TITLE = "ROOT";
         String ROOT_NODE_KEY = "ROOT";
         int NO_EXPIRE = -1;
-    }
-
-    interface Cacher {
-        String REDIS_CONFIG_CACHER = "redisConfigCacher";
-        String ANALYSIS_CACHER = "analysisCacher";
     }
 
     /**
@@ -90,48 +88,63 @@ public interface ConstInterface {
      */
     interface CacheKey {
         /**
+         * 公共前缀key
+         */
+        String COMMON_PRE_KEY = "rm:";
+        /**
+         * redis连接信息的key
+         */
+        String REDIS_CONFIG = COMMON_PRE_KEY + "rds:conf";
+        /**
+         * 分析页的key
+         */
+        String ANALYSIS = COMMON_PRE_KEY + "analysis";
+        /**
          * 认证信息的key
          */
-        String USER_AUTH = "rm:user:auth:";
+        String USER_AUTH = COMMON_PRE_KEY + "user:auth:";
         /**
          * 映射到认证信息的key
          */
-        String USER_TO_AUTH = "rm:user:to:auth:";
+        String USER_TO_AUTH = COMMON_PRE_KEY + "user:to:auth:";
         /**
          * 在线用户
          */
-        String USER_ONLINE = "rm:user:online:";
+        String USER_ONLINE = COMMON_PRE_KEY + "user:online:";
         /**
          * 访问量汇总
          */
-        String VISIT_TOTAL_ALL = "rm:vist:total:all";
-        String VISIT_TOTAL = "rm:vist:total:";
+        String VISIT_TOTAL_ALL = COMMON_PRE_KEY + "vist:total:all";
+        String VISIT_TOTAL = COMMON_PRE_KEY + "vist:total:";
         /**
          * 访问量明细
          */
-        String VISIT_DETAIL = "rm:vist:detail:";
+        String VISIT_DETAIL = COMMON_PRE_KEY + "vist:detail:";
         /**
          * 用户访问量汇总
          */
-        String USER_VISIT_TOTAL = "rm:vist:user:total:";
+        String USER_VISIT_TOTAL = COMMON_PRE_KEY + "vist:user:total:";
         /**
          * 用户访问量明细
          */
-        String USER_VISIT_DETAIL = "rm:vist:user:dtl:";
+        String USER_VISIT_DETAIL = COMMON_PRE_KEY + "vist:user:dtl:";
         /**
          * 用户访问量排行明细
          */
-        String USER_VISIT_RANK_DETAIL = "rm:vist:user:rank:dtl:";
+        String USER_VISIT_RANK_DETAIL = COMMON_PRE_KEY + "vist:user:rank:dtl:";
         /**
          * Redis连接配置排行明细
          */
-        String REDIS_CONFIG_VISIT_RANK_DETAIL = "rm:vist:rds:cfg:rank:dtl:";
+        String REDIS_CONFIG_VISIT_RANK_DETAIL = COMMON_PRE_KEY + "vist:rds:cfg:rank:dtl:";
         /**
          * 验证码key
          */
-        String CAPTCHA_KEY = "rm:captcha:";
+        String CAPTCHA_KEY = COMMON_PRE_KEY + "captcha:";
     }
 
+    /**
+     * 认证
+     */
     interface Auth {
         String AUTHORIZATION = "Authorization";
     }

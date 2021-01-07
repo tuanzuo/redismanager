@@ -3,12 +3,13 @@ package com.tz.redismanager.cacher.service.impl;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.tz.redismanager.cacher.constant.ConstInterface;
-import com.tz.redismanager.cacher.domain.Cacher;
-import com.tz.redismanager.cacher.domain.L1Cache;
-import com.tz.redismanager.cacher.domain.L2Cache;
+import com.tz.redismanager.cacher.domain.*;
+import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
 import com.tz.redismanager.cacher.util.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,14 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
- * <p></p>
+ * <p>缓存服务实现</p>
  *
- * @author admin
- * @version 1.0
+ * @author tuanzuo
+ * @version 1.6.0
  * @time 2021-01-02 20:57
  **/
 @Service
@@ -33,12 +35,16 @@ public class CacheServiceImpl implements ICacheService {
 
     private static final Logger logger = LoggerFactory.getLogger(CacheServiceImpl.class);
 
+    private static final String CACHE_LOCK_KEY_PRE = "rm:cache:lck:";
+
     private static final String CACHE_EMPTY_VALUE = "RM_CACHE_EMPTY_VALUE";
 
     private static Map<String, LoadingCache<String, String>> l1CacherMap = new ConcurrentHashMap<>();
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Override
     public boolean support(String cacherType) {
@@ -64,27 +70,46 @@ public class CacheServiceImpl implements ICacheService {
         if (StringUtils.isNotBlank(value)) {
             return JsonUtils.parseObject(value, returnType);
         }
+        return this.setCache(cacher, cacheKey, initCache);
+    }
 
-        //FIXME 这里需要使用分布式加锁，防止多个线程都去查询数据
-        Object result = initCache.apply(null);
-        String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
-        if (l2Cache.enable()) {
-            this.setL2Cache(cacher, cacheKey, json);
-        }
-        if (l1Cache.enable()) {
-            this.setL1Cache(cacher, cacheKey, initCache, json);
+    private Object setCache(Cacher cacher, String cacheKey, Function<Object, Object> initCache) {
+        Object result = null;
+        String lockKey = CACHE_LOCK_KEY_PRE + cacheKey;
+        RLock rLock = redissonClient.getLock(lockKey);
+        try {
+            // 尝试加锁，最多等待200毫秒，上锁以后10秒自动解锁
+            if (!rLock.tryLock(200, 10 * 1000, TimeUnit.MILLISECONDS)) {
+                throw new CacherException(ResultCode.CACHE_TRY_LOCK_WAIT_TIMEOUT);
+            }
+            result = initCache.apply(null);
+            String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
+            if (cacher.l2Cache().enable()) {
+                this.setL2Cache(cacher, cacheKey, json);
+            }
+            if (cacher.l1Cache().enable()) {
+                this.setL1Cache(cacher, cacheKey, initCache, json);
+            }
+        } catch (CacherException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CacherException(ResultCode.CACHE_LOCK_EXCEPTION);
+        } finally {
+            try {
+                rLock.unlock();
+            } catch (Exception e) {
+                logger.warn("[解锁异常] lockKey:{}", lockKey, e);
+            }
         }
         return result;
     }
 
     @Override
-    public void invalidateCache(Cacher cacher, String cacheKey) {
-        L1Cache l1Cache = cacher.l1Cache();
-        L2Cache l2Cache = cacher.l2Cache();
-        if (l1Cache.enable()) {
-            this.getL1Cacher(cacher, cacheKey, null).invalidate(cacheKey);
+    public void invalidateCache(CacherEvict cacherEvict, String cacheKey) {
+        if (cacherEvict.l1Cache().enable()) {
+            this.getL1Cacher(cacherEvict.key(), cacherEvict.l1Cache(), cacherEvict.l2Cache(), cacheKey, null).invalidate(cacheKey);
         }
-        if (l2Cache.enable()) {
+        if (cacherEvict.l2Cache().enable()) {
             stringRedisTemplate.delete(cacheKey);
         }
     }
@@ -111,8 +136,10 @@ public class CacheServiceImpl implements ICacheService {
     }
 
     private LoadingCache<String, String> getL1Cacher(Cacher cacher, String cacheKey, Function<Object, Object> initCache) {
-        String cacherKey = cacher.key();
-        L1Cache l1Cache = cacher.l1Cache();
+        return this.getL1Cacher(cacher.key(), cacher.l1Cache(), cacher.l2Cache(), cacheKey, initCache);
+    }
+
+    private LoadingCache<String, String> getL1Cacher(String cacherKey, L1Cache l1Cache, L2Cache l2Cache, String cacheKey, Function<Object, Object> initCache) {
         if (l1CacherMap.containsKey(cacherKey)) {
             return l1CacherMap.get(cacherKey);
         }
@@ -128,9 +155,10 @@ public class CacheServiceImpl implements ICacheService {
         LoadingCache<String, String> loadingCache =
                 caffeine.initialCapacity(l1Cache.initialCapacity())
                         .maximumSize(l1Cache.maximumSize())
+                        /**param的值等于{@link com.github.benmanes.caffeine.cache.LoadingCache#get(java.lang.Object)方法的入参}*/
                         .build((param) -> {
-                            if (cacher.l2Cache().enable()) {
-                                return stringRedisTemplate.opsForValue().get(cacheKey);
+                            if (l2Cache.enable()) {
+                                return stringRedisTemplate.opsForValue().get(param);
                             }
                             if (null == initCache) {
                                 return null;

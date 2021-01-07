@@ -1,6 +1,7 @@
 package com.tz.redismanager.cacher.config;
 
 import com.tz.redismanager.cacher.aspect.CacherAspect;
+import com.tz.redismanager.cacher.aspect.CacherEvictAspect;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
@@ -21,6 +22,7 @@ import java.util.Map;
 /**
  * <p>Cacher ConfigurationSelector</p>
  *
+ * @author tuanzuo
  * @version 1.6.0
  * @time 2020-12-20 23:05
  * @see org.springframework.context.annotation.MBeanExportConfiguration
@@ -59,18 +61,23 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
 
     @Bean
     @Primary
-    public ICacheService limiterService(List<ICacheService> services) {
-        String limiterType = cacherAutoConfiguration.getString(CACHER_TYPE);
-        ICacheService limiterService = services.stream()
-                .filter((service) -> service.support(limiterType))
+    public ICacheService cacheService(List<ICacheService> services) {
+        String cacherType = cacherAutoConfiguration.getString(CACHER_TYPE);
+        ICacheService cacheService = services.stream()
+                .filter((service) -> service.support(cacherType))
                 .findFirst()
-                .orElseThrow(() -> new CacherException(ResultCode.ENABLE_CACHER_TYPE_NOT_SUPPORT.getCode(), "@EnableLimiterAutoConfiguration is not support limiterType-->" + limiterType));
-        return limiterService;
+                .orElseThrow(() -> new CacherException(ResultCode.ENABLE_CACHER_TYPE_NOT_SUPPORT.getCode(), "@EnableCacherAutoConfiguration is not support cacherType-->" + cacherType));
+        return cacheService;
     }
 
     @Bean
-    public CacherAspect limiterAspect(ICacheService cacheService) {
+    public CacherAspect cacherAspect(ICacheService cacheService) {
         return new CacherAspect(cacheService);
+    }
+
+    @Bean
+    public CacherEvictAspect cacherEvictAspect(ICacheService cacheService) {
+        return new CacherEvictAspect(cacheService);
     }
 
 }

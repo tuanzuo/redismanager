@@ -1,12 +1,13 @@
 package com.tz.redismanager.cacher.service;
 
 import com.tz.redismanager.cacher.domain.Cacher;
+import com.tz.redismanager.cacher.domain.CacherEvict;
 
 import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
- * <p></p>
+ * <p>缓存服务接口</p>
  *
  * @author tuanzuo
  * @version 1.6.0
@@ -22,6 +23,14 @@ public interface ICacheService {
      */
     boolean support(String cacherType);
 
+    /**
+     * 得到缓存
+     * @param cacher
+     * @param cacheKey
+     * @param returnType
+     * @param initCache
+     * @return
+     */
     Object getCache(Cacher cacher, String cacheKey, Type returnType, Function<Object, Object> initCache);
 
     /**
@@ -29,5 +38,5 @@ public interface ICacheService {
      *
      * @param cacheKey 缓存key
      */
-    void invalidateCache(Cacher cacher, String cacheKey);
+    void invalidateCache(CacherEvict cacherEvict, String cacheKey);
 }

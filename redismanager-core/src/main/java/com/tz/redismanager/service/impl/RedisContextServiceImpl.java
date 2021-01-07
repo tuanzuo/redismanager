@@ -4,17 +4,15 @@ import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
-import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.service.ICacheService;
+import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class RedisContextServiceImpl implements IRedisContextService, InitializingBean {
+public class RedisContextServiceImpl implements IRedisContextService {
 
     private static final Logger logger = TraceLoggerFactory.getLogger(RedisContextServiceImpl.class);
 
@@ -34,11 +32,9 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
     private static Map<String, RedisTemplate<String, Object>> redisTemplateMap = new ConcurrentHashMap<>();
 
     @Autowired
+    private IRedisConfigService redisConfigService;
+    @Autowired
     private EncryptConfig encryptConfig;
-    @Autowired
-    private RedisConfigPOMapper redisConfigPOMapper;
-    @Autowired
-    private ICacheService cacheService;
 
     @Override
     @MethodLog(logPrefix = "RedisTemplate初始化", logInputParams = false, logOutputParams = false)
@@ -47,7 +43,7 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
             logger.info("[redisContext] [initContext] [已存在对应的redisTemplate] {id:{}}", id);
             return null;
         }
-        RedisConfigPO redisConfigPO = (RedisConfigPO) cacheService.getCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER).get(id);
+        RedisConfigPO redisConfigPO = redisConfigService.query(id);
         if (null == redisConfigPO) {
             logger.error("[redisContext] [initContext] [查询不到redisConfig数据] {id:{}}", id);
             return null;
@@ -135,10 +131,5 @@ public class RedisContextServiceImpl implements IRedisContextService, Initializi
             passwrod = vo.getPassword();
         }
         return passwrod;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        cacheService.initCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER, (param) -> redisConfigPOMapper.selectByPrimaryKey(String.valueOf(param)));
     }
 }

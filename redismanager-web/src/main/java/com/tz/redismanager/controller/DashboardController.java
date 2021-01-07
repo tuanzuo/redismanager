@@ -3,6 +3,7 @@ package com.tz.redismanager.controller;
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.AnalysisParam;
+import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.security.domain.Auth;
 import com.tz.redismanager.service.IDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class DashboardController {
     @Auth
     @MethodLog(logPrefix = "查询分析数据", logInputParams = false, logOutputParams = false)
     public ApiResult<?> analysis(@RequestBody AnalysisParam param) {
-        return dashboardService.analysis(param);
+        return new ApiResult<>(ResultCode.SUCCESS, dashboardService.analysis(param));
     }
 
 }

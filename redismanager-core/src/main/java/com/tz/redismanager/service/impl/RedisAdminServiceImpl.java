@@ -12,8 +12,8 @@ import com.tz.redismanager.enm.HandlerTypeEnum;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.enm.StrategyTypeEnum;
 import com.tz.redismanager.exception.RmException;
-import com.tz.redismanager.service.ICacheService;
 import com.tz.redismanager.service.IRedisAdminService;
+import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.strategy.HandlerFactory;
 import com.tz.redismanager.strategy.IHandler;
 import com.tz.redismanager.trace.TraceLoggerFactory;
@@ -39,7 +39,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     private static final Logger logger = TraceLoggerFactory.getLogger(RedisAdminServiceImpl.class);
 
     @Autowired
-    private ICacheService cacheService;
+    private IRedisConfigService redisConfigService;
 
     @SetRedisTemplate(whenIsNullContinueExec = true)
     @Override
@@ -214,7 +214,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
      */
     private RedisTreeNode buildRootTreeNode(String id) {
         String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
-        RedisConfigPO configPO = (RedisConfigPO) cacheService.getCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER).get(id);
+        RedisConfigPO configPO = redisConfigService.query(id);
         if (null != configPO) {
             rootNodeTitle = configPO.getName();
         }

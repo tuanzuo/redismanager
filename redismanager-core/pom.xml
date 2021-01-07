@@ -27,6 +27,11 @@
             <artifactId>redismanager-token</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.tz</groupId>
+            <artifactId>redismanager-cacher</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
