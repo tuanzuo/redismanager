@@ -10,6 +10,7 @@ import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.security.domain.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IRedisConfigService;
+import com.tz.redismanager.util.UUIDUtils;
 import com.tz.redismanager.validator.ValidGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -51,7 +52,9 @@ public class RedisConfigController {
     @RequestMapping("add")
     @Auth
     public ApiResult<?> add(@Validated({ValidGroup.AddConnection.class}) @RequestBody RedisConfigVO vo, AuthContext authContext) {
-        return redisConfigService.add(vo, authContext);
+        vo.setId(UUIDUtils.generateId());
+        redisConfigService.add(vo, authContext);
+        return new ApiResult<>(ResultCode.SUCCESS);
     }
 
     @RequestMapping("del/{id}")

@@ -1,5 +1,8 @@
 package com.tz.redismanager.service.impl;
 
+import com.tz.redismanager.cacher.domain.Cacher;
+import com.tz.redismanager.cacher.domain.L1Cache;
+import com.tz.redismanager.cacher.domain.L2Cache;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO;
 import com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO;
@@ -7,24 +10,21 @@ import com.tz.redismanager.dao.domain.dto.UserAnalysisDTO;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.dao.mapper.UserPOMapper;
-import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.dto.RedisConfigVisitDataDTO;
 import com.tz.redismanager.domain.dto.UserVisitDataDTO;
 import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
 import com.tz.redismanager.domain.vo.AnalysisRespVO;
-import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.service.ICacheService;
 import com.tz.redismanager.service.IDashboardService;
 import com.tz.redismanager.service.IStatisticService;
 import com.tz.redismanager.util.DateUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>Dashboard服务实现</p>
@@ -33,7 +33,7 @@ import java.util.Optional;
  * @time 2020-10-17 15:37
  **/
 @Service
-public class DashboardServiceImpl implements IDashboardService, InitializingBean {
+public class DashboardServiceImpl implements IDashboardService {
 
     @Autowired
     private UserPOMapper userPOMapper;
@@ -43,12 +43,11 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
     private RedisConfigPOMapper redisConfigPOMapper;
     @Autowired
     private IStatisticService statisticService;
-    @Autowired
-    private ICacheService cacheService;
 
+    @Cacher(name = "分析页缓存", key = ConstInterface.CacheKey.ANALYSIS, var = "#param.dateType", l1Cache = @L1Cache(expireDuration = 10, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 30, expireUnit = TimeUnit.SECONDS))
     @Override
-    public ApiResult<?> analysis(AnalysisParam param) {
-        return new ApiResult<>(ResultCode.SUCCESS, cacheService.getCacher(ConstInterface.Cacher.ANALYSIS_CACHER).get(param));
+    public AnalysisRespVO analysis(AnalysisParam param) {
+        return this.queryAnalysisData(param);
     }
 
     private AnalysisRespVO queryAnalysisData(AnalysisParam param) {
@@ -170,8 +169,4 @@ public class DashboardServiceImpl implements IDashboardService, InitializingBean
         resp.getRedisConfigData().setDayTotal(configTodayTotal);
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        cacheService.initCacher(ConstInterface.Cacher.ANALYSIS_CACHER, (param) -> queryAnalysisData(AnalysisParam.class.cast(param)));
-    }
 }

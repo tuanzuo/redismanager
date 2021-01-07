@@ -8,7 +8,7 @@ import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
 import com.tz.redismanager.enm.DateTypeEnum;
 import com.tz.redismanager.security.domain.AuthContext;
-import com.tz.redismanager.service.ICacheService;
+import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisTemplateExtService;
 import com.tz.redismanager.service.IStatisticService;
 import com.tz.redismanager.util.DateUtils;
@@ -51,7 +51,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
     @Autowired
     private IRedisTemplateExtService redisTemplateExtService;
     @Autowired
-    private ICacheService cacheService;
+    private IRedisConfigService redisConfigService;
 
     @Override
     @Async
@@ -438,7 +438,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         Set<ZSetOperations.TypedTuple<Object>> details = redisTemplate.opsForZSet().reverseRangeWithScores(detailKey, 0, 50);
         details.forEach(temp -> {
             String id = String.valueOf(temp.getValue());
-            RedisConfigPO configPO = (RedisConfigPO) cacheService.getCacher(ConstInterface.Cacher.REDIS_CONFIG_CACHER).get(id);
+            RedisConfigPO configPO = redisConfigService.query(id);
             if (null == configPO) {
                 return;
             }

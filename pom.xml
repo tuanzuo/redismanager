@@ -21,6 +21,7 @@
         <module>redismanager-model</module>
         <module>redismanager-limiter</module>
         <module>redismanager-token</module>
+        <module>redismanager-cacher</module>
     </modules>
 
     <properties>
@@ -177,6 +178,12 @@
                 <groupId>com.github.whvcse</groupId>
                 <artifactId>easy-captcha</artifactId>
                 <version>1.6.2</version>
+            </dependency>
+            <!-- https://github.com/redisson/redisson -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>3.14.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

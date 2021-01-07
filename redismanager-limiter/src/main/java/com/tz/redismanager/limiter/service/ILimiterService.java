@@ -1,6 +1,6 @@
 package com.tz.redismanager.limiter.service;
 
-import com.tz.redismanager.limiter.enm.Limiter;
+import com.tz.redismanager.limiter.domain.Limiter;
 
 /**
  * <p>限流器接口</p>

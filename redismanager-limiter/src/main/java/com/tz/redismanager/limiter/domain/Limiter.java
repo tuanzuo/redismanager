@@ -1,4 +1,4 @@
-package com.tz.redismanager.limiter.enm;
+package com.tz.redismanager.limiter.domain;
 
 
 import java.lang.annotation.*;
