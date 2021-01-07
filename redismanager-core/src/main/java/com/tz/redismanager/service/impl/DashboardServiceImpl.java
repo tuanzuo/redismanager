@@ -1,6 +1,8 @@
 package com.tz.redismanager.service.impl;
 
 import com.tz.redismanager.cacher.domain.Cacher;
+import com.tz.redismanager.cacher.domain.L1Cache;
+import com.tz.redismanager.cacher.domain.L2Cache;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO;
 import com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>Dashboard服务实现</p>
@@ -41,7 +44,7 @@ public class DashboardServiceImpl implements IDashboardService {
     @Autowired
     private IStatisticService statisticService;
 
-    @Cacher(name = "分析页缓存", key = ConstInterface.CacheKey.ANALYSIS, var = "#param.dateType")
+    @Cacher(name = "分析页缓存", key = ConstInterface.CacheKey.ANALYSIS, var = "#param.dateType", l1Cache = @L1Cache(expireDuration = 10, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 30, expireUnit = TimeUnit.SECONDS))
     @Override
     public AnalysisRespVO analysis(AnalysisParam param) {
         return this.queryAnalysisData(param);
