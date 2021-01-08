@@ -27,4 +27,11 @@ public interface ILimiterService {
      */
     boolean tryAcquire(Limiter limiter);
 
+    /**
+     * 初始化限流器
+     *
+     * @param limiter
+     */
+    void initLimiter(Limiter limiter);
+
 }

@@ -143,6 +143,10 @@ public class CacheServiceImpl implements ICacheService {
         if (l1CacherMap.containsKey(cacherKey)) {
             return l1CacherMap.get(cacherKey);
         }
+        return this.initL1Cacher(cacherKey, l1Cache, l2Cache, initCache);
+    }
+
+    private LoadingCache<String, String> initL1Cacher(String cacherKey, L1Cache l1Cache, L2Cache l2Cache, Function<Object, Object> initCache) {
         Caffeine<Object, Object> caffeine = Caffeine.newBuilder();
         switch (l1Cache.expireStrategy()) {
             case EXPIRE_AFTER_ACCESS:
@@ -155,7 +159,7 @@ public class CacheServiceImpl implements ICacheService {
         LoadingCache<String, String> loadingCache =
                 caffeine.initialCapacity(l1Cache.initialCapacity())
                         .maximumSize(l1Cache.maximumSize())
-                        /**param的值等于{@link com.github.benmanes.caffeine.cache.LoadingCache#get(java.lang.Object)方法的入参}*/
+                        /**param的值等于{@link LoadingCache#get(Object)方法的入参}*/
                         .build((param) -> {
                             if (l2Cache.enable()) {
                                 return stringRedisTemplate.opsForValue().get(param);

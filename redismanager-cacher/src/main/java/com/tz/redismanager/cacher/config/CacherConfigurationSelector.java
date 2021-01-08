@@ -5,6 +5,8 @@ import com.tz.redismanager.cacher.aspect.CacherEvictAspect;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.context.EnvironmentAware;
@@ -28,6 +30,8 @@ import java.util.Map;
  * @see org.springframework.context.annotation.MBeanExportConfiguration
  **/
 public class CacherConfigurationSelector implements ImportAware, EnvironmentAware, BeanFactoryAware {
+
+    private static final Logger logger = LoggerFactory.getLogger(CacherConfigurationSelector.class);
 
     /**
      * @see EnableCacherAutoConfiguration#cacherType()
