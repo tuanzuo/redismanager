@@ -1,4 +1,4 @@
-package com.tz.redismanager.cacher.domain;
+package com.tz.redismanager.cacher.annotation;
 
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;

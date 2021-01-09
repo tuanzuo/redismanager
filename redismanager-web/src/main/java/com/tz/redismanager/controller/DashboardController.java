@@ -4,7 +4,7 @@ import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.AnalysisParam;
 import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.security.domain.Auth;
+import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.service.IDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;

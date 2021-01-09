@@ -1,6 +1,6 @@
 package com.tz.redismanager.cacher.aspect;
 
-import com.tz.redismanager.cacher.domain.CacherEvict;
+import com.tz.redismanager.cacher.annotation.CacherEvict;
 import com.tz.redismanager.cacher.service.ICacheService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;

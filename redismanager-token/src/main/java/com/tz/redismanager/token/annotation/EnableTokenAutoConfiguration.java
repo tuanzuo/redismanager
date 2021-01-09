@@ -1,5 +1,7 @@
-package com.tz.redismanager.token.config;
+package com.tz.redismanager.token.annotation;
 
+import com.tz.redismanager.token.config.TokenConfigurationSelector;
+import com.tz.redismanager.token.config.TokenProperties;
 import com.tz.redismanager.token.constant.ConstInterface;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;

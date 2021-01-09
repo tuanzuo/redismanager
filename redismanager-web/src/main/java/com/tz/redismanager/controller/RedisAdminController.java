@@ -4,7 +4,7 @@ import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.security.domain.Auth;
+import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisContextService;

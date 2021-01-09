@@ -1,7 +1,8 @@
 package com.tz.redismanager.limiter.config;
 
+import com.tz.redismanager.limiter.annotation.EnableLimiterAutoConfiguration;
 import com.tz.redismanager.limiter.aspect.LimiterAspect;
-import com.tz.redismanager.limiter.domain.Limiter;
+import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.limiter.domain.ResultCode;
 import com.tz.redismanager.limiter.exception.LimiterException;
 import com.tz.redismanager.limiter.service.ILimiterService;
@@ -24,6 +25,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -99,6 +101,7 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
         if (StringUtils.isBlank(initScanPackage)) {
             return;
         }
+        Set<String> keyMap = new HashSet();
         //设置扫描路径
         Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(initScanPackage)).setScanners(new MethodAnnotationsScanner()));
         //扫描包内带有@Limiter注解的所有方法集合
@@ -106,8 +109,13 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
         //循环获取方法
         methods.forEach(method -> {
             Limiter limiter = method.getDeclaredAnnotation(Limiter.class);
+            if (keyMap.contains(limiter.key())) {
+                return;
+            } else {
+                keyMap.add(limiter.key());
+            }
             limiterService.initLimiter(limiter);
-            logger.info("[初始化限流器] [{}({})完成]",limiter.key(),limiter.name());
+            logger.info("[初始化限流器] [{}] [{}] [完成]", limiter.key(), limiter.name());
         });
     }
 

@@ -1,5 +1,6 @@
-package com.tz.redismanager.limiter.config;
+package com.tz.redismanager.limiter.annotation;
 
+import com.tz.redismanager.limiter.config.LimiterConfigurationSelector;
 import com.tz.redismanager.limiter.constant.ConstInterface;
 import org.springframework.context.annotation.Import;
 

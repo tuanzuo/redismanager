@@ -1,5 +1,6 @@
-package com.tz.redismanager.cacher.config;
+package com.tz.redismanager.cacher.annotation;
 
+import com.tz.redismanager.cacher.config.CacherConfigurationSelector;
 import com.tz.redismanager.cacher.constant.ConstInterface;
 import org.springframework.context.annotation.Import;
 
@@ -20,5 +21,17 @@ import java.lang.annotation.*;
 public @interface EnableCacherAutoConfiguration {
 
     String cacherType() default ConstInterface.CacherType.CACHER_DEFAULT;
+
+    /**
+     * 是否在应用启动的时候初始化缓存器，默认是(true)
+     * @return
+     */
+    boolean initCacherInStart() default true;
+
+    /**
+     * 初始化缓存器扫描的路径
+     * @return
+     */
+    String initCacherToScanPackage() default "com.tz";
 
 }

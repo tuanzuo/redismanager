@@ -3,7 +3,7 @@ package com.tz.redismanager.controller;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.CaptchaResp;
 import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.limiter.domain.Limiter;
+import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.service.ICaptchaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

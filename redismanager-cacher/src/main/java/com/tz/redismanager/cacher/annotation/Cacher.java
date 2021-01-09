@@ -1,19 +1,19 @@
-package com.tz.redismanager.cacher.domain;
+package com.tz.redismanager.cacher.annotation;
 
 import java.lang.annotation.*;
 
 /**
- * <p>缓存失效注解</p>
+ * <p>缓存器注解</p>
  *
  * @author tuanzuo
  * @version 1.6.0
- * @time 2021-01-06 0:39
+ * @time 2020-12-25 21:51
  **/
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface CacherEvict {
+public @interface Cacher {
 
     /**
      * 缓存器名称

@@ -1,6 +1,6 @@
 package com.tz.redismanager.cacher.aspect;
 
-import com.tz.redismanager.cacher.domain.Cacher;
+import com.tz.redismanager.cacher.annotation.Cacher;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;

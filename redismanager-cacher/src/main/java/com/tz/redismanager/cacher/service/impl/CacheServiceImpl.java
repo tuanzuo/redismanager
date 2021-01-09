@@ -2,6 +2,10 @@ package com.tz.redismanager.cacher.service.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.tz.redismanager.cacher.annotation.Cacher;
+import com.tz.redismanager.cacher.annotation.CacherEvict;
+import com.tz.redismanager.cacher.annotation.L1Cache;
+import com.tz.redismanager.cacher.annotation.L2Cache;
 import com.tz.redismanager.cacher.constant.ConstInterface;
 import com.tz.redismanager.cacher.domain.*;
 import com.tz.redismanager.cacher.exception.CacherException;
@@ -58,11 +62,8 @@ public class CacheServiceImpl implements ICacheService {
         String value = null;
         if (l1Cache.enable()) {
             value = this.getL1Cache(cacher, cacheKey, initCache);
-            if (StringUtils.isBlank(value) && l2Cache.enable()) {
-                value = this.getL2Cache(cacher, cacheKey);
-            }
         } else if (l2Cache.enable()) {
-            value = this.getL2Cache(cacher, cacheKey);
+            value = this.getL2Cache(cacheKey);
         }
         if (CACHE_EMPTY_VALUE.equals(value)) {
             return null;
@@ -83,12 +84,15 @@ public class CacheServiceImpl implements ICacheService {
                 throw new CacherException(ResultCode.CACHE_TRY_LOCK_WAIT_TIMEOUT);
             }
             result = initCache.apply(null);
+            logger.info("[缓存器] [{}] [{}] [回源查询数据完成] [{}]", cacher.key(), cacher.name(), cacheKey);
             String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
             if (cacher.l2Cache().enable()) {
                 this.setL2Cache(cacher, cacheKey, json);
+                logger.info("[缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", cacher.key(), cacher.name(), cacheKey);
             }
             if (cacher.l1Cache().enable()) {
                 this.setL1Cache(cacher, cacheKey, initCache, json);
+                logger.info("[缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", cacher.key(), cacher.name(), cacheKey);
             }
         } catch (CacherException e) {
             throw e;
@@ -107,23 +111,28 @@ public class CacheServiceImpl implements ICacheService {
     @Override
     public void invalidateCache(CacherEvict cacherEvict, String cacheKey) {
         if (cacherEvict.l1Cache().enable()) {
-            this.getL1Cacher(cacherEvict.key(), cacherEvict.l1Cache(), cacherEvict.l2Cache(), cacheKey, null).invalidate(cacheKey);
+            this.getL1Cacher(cacherEvict.key(), cacherEvict.l1Cache(), cacherEvict.l2Cache()).invalidate(cacheKey);
         }
         if (cacherEvict.l2Cache().enable()) {
             stringRedisTemplate.delete(cacheKey);
         }
     }
 
-    private String getL1Cache(Cacher cacher, String cacheKey, Function<Object, Object> initCache) {
-        return this.getL1Cacher(cacher, cacheKey, initCache).get(cacheKey);
+    @Override
+    public void initCacher(Cacher cacher) {
+        this.initL1Cacher(cacher.key(), cacher.l1Cache(), cacher.l2Cache());
     }
 
-    private String getL2Cache(Cacher cacher, String cacheKey) {
+    private String getL1Cache(Cacher cacher, String cacheKey, Function<Object, Object> initCache) {
+        return this.getL1Cacher(cacher).get(cacheKey);
+    }
+
+    private String getL2Cache(String cacheKey) {
         return stringRedisTemplate.opsForValue().get(cacheKey);
     }
 
     private void setL1Cache(Cacher cacher, String cacheKey, Function<Object, Object> initCache, String cacheValue) {
-        this.getL1Cacher(cacher, cacheKey, initCache).put(cacheKey, cacheValue);
+        this.getL1Cacher(cacher).put(cacheKey, cacheValue);
     }
 
     private void setL2Cache(Cacher cacher, String cacheKey, String cacheValue) {
@@ -135,18 +144,18 @@ public class CacheServiceImpl implements ICacheService {
         }
     }
 
-    private LoadingCache<String, String> getL1Cacher(Cacher cacher, String cacheKey, Function<Object, Object> initCache) {
-        return this.getL1Cacher(cacher.key(), cacher.l1Cache(), cacher.l2Cache(), cacheKey, initCache);
+    private LoadingCache<String, String> getL1Cacher(Cacher cacher) {
+        return this.getL1Cacher(cacher.key(), cacher.l1Cache(), cacher.l2Cache());
     }
 
-    private LoadingCache<String, String> getL1Cacher(String cacherKey, L1Cache l1Cache, L2Cache l2Cache, String cacheKey, Function<Object, Object> initCache) {
+    private LoadingCache<String, String> getL1Cacher(String cacherKey, L1Cache l1Cache, L2Cache l2Cache) {
         if (l1CacherMap.containsKey(cacherKey)) {
             return l1CacherMap.get(cacherKey);
         }
-        return this.initL1Cacher(cacherKey, l1Cache, l2Cache, initCache);
+        return this.initL1Cacher(cacherKey, l1Cache, l2Cache);
     }
 
-    private LoadingCache<String, String> initL1Cacher(String cacherKey, L1Cache l1Cache, L2Cache l2Cache, Function<Object, Object> initCache) {
+    private LoadingCache<String, String> initL1Cacher(String cacherKey, L1Cache l1Cache, L2Cache l2Cache) {
         Caffeine<Object, Object> caffeine = Caffeine.newBuilder();
         switch (l1Cache.expireStrategy()) {
             case EXPIRE_AFTER_ACCESS:
@@ -156,19 +165,13 @@ public class CacheServiceImpl implements ICacheService {
                 caffeine.expireAfterWrite(l1Cache.expireDuration(), l1Cache.expireUnit());
                 break;
         }
-        LoadingCache<String, String> loadingCache =
-                caffeine.initialCapacity(l1Cache.initialCapacity())
-                        .maximumSize(l1Cache.maximumSize())
-                        /**param的值等于{@link LoadingCache#get(Object)方法的入参}*/
-                        .build((param) -> {
-                            if (l2Cache.enable()) {
-                                return stringRedisTemplate.opsForValue().get(param);
-                            }
-                            if (null == initCache) {
-                                return null;
-                            }
-                            return JsonUtils.toJsonStr(initCache.apply(param));
-                        });
+        LoadingCache<String, String> loadingCache = caffeine.initialCapacity(l1Cache.initialCapacity())
+                .maximumSize(l1Cache.maximumSize())
+                /**
+                 * 1、param的值等于{@link LoadingCache#get(Object)方法的入参}<br/>
+                 * 2、当一级缓存的数据不存在时如果开启了二级缓存就查询二级缓存的数据返回，否则返回null<br/>
+                 */
+                .build((param) -> l2Cache.enable() ? this.getL2Cache(param) : null);
         return Optional.ofNullable(l1CacherMap.putIfAbsent(cacherKey, loadingCache)).orElse(loadingCache);
     }
 

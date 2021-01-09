@@ -1,10 +1,17 @@
 package com.tz.redismanager.cacher.config;
 
+import com.tz.redismanager.cacher.annotation.Cacher;
+import com.tz.redismanager.cacher.annotation.EnableCacherAutoConfiguration;
 import com.tz.redismanager.cacher.aspect.CacherAspect;
 import com.tz.redismanager.cacher.aspect.CacherEvictAspect;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
+import org.apache.commons.lang3.StringUtils;
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -18,8 +25,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * <p>Cacher ConfigurationSelector</p>
@@ -37,6 +44,8 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
      * @see EnableCacherAutoConfiguration#cacherType()
      */
     private static final String CACHER_TYPE = "cacherType";
+    private static final String INIT_TO_START = "initCacherInStart";
+    private static final String INIT_SCAN_PACKAGE = "initCacherToScanPackage";
 
     @Nullable
     private AnnotationAttributes cacherAutoConfiguration;
@@ -71,6 +80,8 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
                 .filter((service) -> service.support(cacherType))
                 .findFirst()
                 .orElseThrow(() -> new CacherException(ResultCode.ENABLE_CACHER_TYPE_NOT_SUPPORT.getCode(), "@EnableCacherAutoConfiguration is not support cacherType-->" + cacherType));
+        //初始化缓存器
+        this.initCacher(cacheService);
         return cacheService;
     }
 
@@ -84,4 +95,30 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
         return new CacherEvictAspect(cacheService);
     }
 
+    private void initCacher(ICacheService cacheService) {
+        boolean initToStart = cacherAutoConfiguration.getBoolean(INIT_TO_START);
+        if (!initToStart) {
+            return;
+        }
+        String initScanPackage = cacherAutoConfiguration.getString(INIT_SCAN_PACKAGE);
+        if (StringUtils.isBlank(initScanPackage)) {
+            return;
+        }
+        Set<String> keyMap = new HashSet();
+        //设置扫描路径
+        Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(initScanPackage)).setScanners(new MethodAnnotationsScanner()));
+        //扫描包内带有@Cacher注解的所有方法集合
+        Set<Method> methods = reflections.getMethodsAnnotatedWith(Cacher.class);
+        //循环获取方法
+        methods.forEach(method -> {
+            Cacher cacher = method.getDeclaredAnnotation(Cacher.class);
+            if (keyMap.contains(cacher.key())) {
+                return;
+            } else {
+                keyMap.add(cacher.key());
+            }
+            cacheService.initCacher(cacher);
+            logger.info("[初始化缓存器] [{}] [{}] [完成]", cacher.key(), cacher.name());
+        });
+    }
 }
