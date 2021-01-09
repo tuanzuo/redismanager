@@ -100,6 +100,10 @@ public interface ConstInterface {
          */
         String ANALYSIS = COMMON_PRE_KEY + "analysis";
         /**
+         * 当前用户的key
+         */
+        String CURRENT_USER = COMMON_PRE_KEY + "crt:usr";
+        /**
          * 认证信息的key
          */
         String USER_AUTH = COMMON_PRE_KEY + "user:auth:";

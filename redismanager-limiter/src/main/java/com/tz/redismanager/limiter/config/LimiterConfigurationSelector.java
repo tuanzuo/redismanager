@@ -108,7 +108,7 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
         Set<Method> methods = reflections.getMethodsAnnotatedWith(Limiter.class);
         //循环获取方法
         methods.forEach(method -> {
-            Limiter limiter = method.getDeclaredAnnotation(Limiter.class);
+            Limiter limiter = method.getAnnotation(Limiter.class);
             if (keyMap.contains(limiter.key())) {
                 return;
             } else {

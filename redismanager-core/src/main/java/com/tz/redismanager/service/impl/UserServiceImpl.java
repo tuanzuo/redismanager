@@ -2,6 +2,9 @@ package com.tz.redismanager.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.tz.redismanager.cacher.annotation.Cacher;
+import com.tz.redismanager.cacher.annotation.L1Cache;
+import com.tz.redismanager.cacher.annotation.L2Cache;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.po.RolePO;
 import com.tz.redismanager.dao.domain.po.UserPO;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -96,6 +100,7 @@ public class UserServiceImpl implements IUserService {
         return new ApiResult<>(ResultCode.SUCCESS, count);
     }
 
+    @Cacher(name = "当前用户信息缓存", key = ConstInterface.CacheKey.CURRENT_USER, var = "#authContext.userId", l1Cache = @L1Cache(expireDuration = 2, expireUnit = TimeUnit.MINUTES), l2Cache = @L2Cache(expireDuration = 5, expireUnit = TimeUnit.MINUTES))
     @Override
     public ApiResult<?> currentUser(AuthContext authContext) {
         UserPO userPO = userPOMapper.selectByPrimaryKey(authContext.getUserId());
