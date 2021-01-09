@@ -1,4 +1,6 @@
-package com.tz.redismanager.cacher.domain;
+package com.tz.redismanager.cacher.annotation;
+
+import com.tz.redismanager.cacher.domain.ExpireStrategy;
 
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +24,7 @@ public @interface L1Cache {
 
     long maximumSize() default 1000;
 
-    ExpireStrategy expireStrategy() default ExpireStrategy.EXPIRE_AFTER_ACCESS;
+    ExpireStrategy expireStrategy() default ExpireStrategy.EXPIRE_AFTER_WRITE;
 
     long expireDuration() default 2;
 

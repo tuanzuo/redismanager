@@ -46,4 +46,11 @@ public class ApiResult<T> {
         this.datas = datas;
     }
 
+    public static ApiResult buildSuccess() {
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    public static <T> ApiResult buildSuccess(T datas) {
+        return new ApiResult<>(ResultCode.SUCCESS, datas);
+    }
 }

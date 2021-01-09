@@ -1,8 +1,8 @@
 package com.tz.redismanager.service.impl;
 
-import com.tz.redismanager.cacher.domain.Cacher;
-import com.tz.redismanager.cacher.domain.L1Cache;
-import com.tz.redismanager.cacher.domain.L2Cache;
+import com.tz.redismanager.cacher.annotation.Cacher;
+import com.tz.redismanager.cacher.annotation.L1Cache;
+import com.tz.redismanager.cacher.annotation.L2Cache;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO;
 import com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO;
@@ -44,7 +44,7 @@ public class DashboardServiceImpl implements IDashboardService {
     @Autowired
     private IStatisticService statisticService;
 
-    @Cacher(name = "分析页缓存", key = ConstInterface.CacheKey.ANALYSIS, var = "#param.dateType", l1Cache = @L1Cache(expireDuration = 10, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 30, expireUnit = TimeUnit.SECONDS))
+    @Cacher(name = "分析页缓存", key = ConstInterface.CacheKey.ANALYSIS, var = "#param.dateType", l1Cache = @L1Cache(expireDuration = 60, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 120, expireUnit = TimeUnit.SECONDS))
     @Override
     public AnalysisRespVO analysis(AnalysisParam param) {
         return this.queryAnalysisData(param);

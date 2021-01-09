@@ -7,7 +7,7 @@ import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.security.domain.Auth;
+import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.util.UUIDUtils;

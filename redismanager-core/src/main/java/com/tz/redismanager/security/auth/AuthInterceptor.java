@@ -3,7 +3,7 @@ package com.tz.redismanager.security.auth;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.exception.RmException;
-import com.tz.redismanager.security.domain.Auth;
+import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IStatisticService;
 import com.tz.redismanager.token.exception.TokenException;

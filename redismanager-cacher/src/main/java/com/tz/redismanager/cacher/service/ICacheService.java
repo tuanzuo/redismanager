@@ -1,7 +1,7 @@
 package com.tz.redismanager.cacher.service;
 
-import com.tz.redismanager.cacher.domain.Cacher;
-import com.tz.redismanager.cacher.domain.CacherEvict;
+import com.tz.redismanager.cacher.annotation.Cacher;
+import com.tz.redismanager.cacher.annotation.CacherEvict;
 
 import java.lang.reflect.Type;
 import java.util.function.Function;
@@ -39,4 +39,10 @@ public interface ICacheService {
      * @param cacheKey 缓存key
      */
     void invalidateCache(CacherEvict cacherEvict, String cacheKey);
+
+    /**
+     * 初始化缓存器
+     * @param cacher
+     */
+    void initCacher(Cacher cacher);
 }

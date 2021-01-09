@@ -1,5 +1,6 @@
 package com.tz.redismanager.token.config;
 
+import com.tz.redismanager.token.annotation.EnableTokenAutoConfiguration;
 import com.tz.redismanager.token.domain.ResultCode;
 import com.tz.redismanager.token.exception.TokenException;
 import com.tz.redismanager.token.service.ITokenService;

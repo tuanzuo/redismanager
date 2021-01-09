@@ -1,7 +1,7 @@
 package com.tz.redismanager.limiter.aspect;
 
 import com.tz.redismanager.limiter.domain.ResultCode;
-import com.tz.redismanager.limiter.domain.Limiter;
+import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.limiter.exception.LimiterException;
 import com.tz.redismanager.limiter.service.ILimiterService;
 import org.aspectj.lang.ProceedingJoinPoint;

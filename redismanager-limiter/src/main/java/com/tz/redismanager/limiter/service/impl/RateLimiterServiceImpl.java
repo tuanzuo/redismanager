@@ -2,7 +2,7 @@ package com.tz.redismanager.limiter.service.impl;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.tz.redismanager.limiter.constant.ConstInterface;
-import com.tz.redismanager.limiter.domain.Limiter;
+import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.limiter.service.ILimiterService;
 import org.springframework.stereotype.Service;
 
@@ -31,12 +31,21 @@ public class RateLimiterServiceImpl implements ILimiterService {
         return this.getLimiter(limiter).tryAcquire(limiter.permits(), limiter.timeout(), limiter.unit());
     }
 
+    @Override
+    public void initLimiter(Limiter limiter) {
+        this.initRateLimiter(limiter);
+    }
+
     private RateLimiter getLimiter(Limiter limiter) {
         String key = limiter.key();
         if (limiterMap.containsKey(key)) {
             return limiterMap.get(key);
         }
+        return this.initRateLimiter(limiter);
+    }
+
+    private RateLimiter initRateLimiter(Limiter limiter) {
         RateLimiter rateLimiter = RateLimiter.create(limiter.qps());
-        return Optional.ofNullable(limiterMap.putIfAbsent(key, rateLimiter)).orElse(rateLimiter);
+        return Optional.ofNullable(limiterMap.putIfAbsent(limiter.key(), rateLimiter)).orElse(rateLimiter);
     }
 }

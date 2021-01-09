@@ -1,8 +1,8 @@
 package com.tz.redismanager;
 
-import com.tz.redismanager.cacher.config.EnableCacherAutoConfiguration;
-import com.tz.redismanager.limiter.config.EnableLimiterAutoConfiguration;
-import com.tz.redismanager.token.config.EnableTokenAutoConfiguration;
+import com.tz.redismanager.cacher.annotation.EnableCacherAutoConfiguration;
+import com.tz.redismanager.limiter.annotation.EnableLimiterAutoConfiguration;
+import com.tz.redismanager.token.annotation.EnableTokenAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;

@@ -1,6 +1,6 @@
 package com.tz.redismanager.limiter.service;
 
-import com.tz.redismanager.limiter.domain.Limiter;
+import com.tz.redismanager.limiter.annotation.Limiter;
 
 /**
  * <p>限流器接口</p>
@@ -26,5 +26,12 @@ public interface ILimiterService {
      * @return true:获取成功,false:获取失败
      */
     boolean tryAcquire(Limiter limiter);
+
+    /**
+     * 初始化限流器
+     *
+     * @param limiter
+     */
+    void initLimiter(Limiter limiter);
 
 }

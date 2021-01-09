@@ -1,6 +1,6 @@
 package com.tz.redismanager.security.auth;
 
-import com.tz.redismanager.security.domain.Auth;
+import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionService;
