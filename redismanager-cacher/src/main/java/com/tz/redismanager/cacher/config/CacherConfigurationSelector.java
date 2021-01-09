@@ -111,7 +111,7 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
         Set<Method> methods = reflections.getMethodsAnnotatedWith(Cacher.class);
         //循环获取方法
         methods.forEach(method -> {
-            Cacher cacher = method.getDeclaredAnnotation(Cacher.class);
+            Cacher cacher = method.getAnnotation(Cacher.class);
             if (keyMap.contains(cacher.key())) {
                 return;
             } else {
