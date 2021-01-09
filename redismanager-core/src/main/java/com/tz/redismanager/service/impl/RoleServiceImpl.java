@@ -1,18 +1,20 @@
 package com.tz.redismanager.service.impl;
 
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.dao.domain.po.RolePO;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
-import com.tz.redismanager.dao.domain.po.RolePO;
-import com.tz.redismanager.domain.vo.*;
+import com.tz.redismanager.domain.vo.Pagination;
+import com.tz.redismanager.domain.vo.RoleListResp;
+import com.tz.redismanager.domain.vo.RoleResp;
+import com.tz.redismanager.domain.vo.RoleVO;
 import com.tz.redismanager.enm.ResultCode;
-import com.tz.redismanager.service.IRoleService;
 import com.tz.redismanager.security.domain.AuthContext;
+import com.tz.redismanager.service.IRoleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,8 +30,6 @@ import java.util.Optional;
 @Service
 public class RoleServiceImpl implements IRoleService {
 
-    @Autowired
-    private TransactionTemplate transactionTemplate;
     @Autowired
     private RolePOMapper rolePOMapper;
 
