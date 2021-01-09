@@ -58,6 +58,32 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     @Cacher(name = "redis连接配置信息缓存", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#vo.id")
     @Override
     public RedisConfigPO add(RedisConfigVO vo, AuthContext authContext) {
+        RedisConfigPO po = this.buildAddRedisConfigPO(vo, authContext);
+        redisConfigPOMapper.insertSelective(po);
+        return po;
+    }
+
+    @Override
+    public ApiResult<?> delete(String id, AuthContext authContext) {
+        RedisConfigPO po = this.buildDelRedisConfigPO(id, authContext);
+        redisConfigPOMapper.updateByPrimaryKeySelective(po);
+        //删除缓存中的RedisTemplate
+        redisContextService.getRedisTemplateMap().remove(id);
+        springUtils.getBean(IRedisConfigService.class).invalidateCache(id);
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @Override
+    public ApiResult<?> update(RedisConfigVO vo, AuthContext authContext) {
+        RedisConfigPO po = this.buildUpdateRedisConfigPO(vo, authContext);
+        redisConfigPOMapper.updateByPrimaryKeySelective(po);
+        //删除缓存中的RedisTemplate
+        redisContextService.getRedisTemplateMap().remove(vo.getId());
+        springUtils.getBean(IRedisConfigService.class).invalidateCache(vo.getId());
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    private RedisConfigPO buildAddRedisConfigPO(RedisConfigVO vo, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
@@ -68,27 +94,20 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         po.setUpdater(userName);
         po.setUpdateTime(new Date());
         po.setIfDel(ConstInterface.IF_DEL.NO);
-        redisConfigPOMapper.insertSelective(po);
         return po;
     }
 
-    @Override
-    public ApiResult<?> delete(String id, AuthContext authContext) {
+    private RedisConfigPO buildDelRedisConfigPO(String id, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO po = new RedisConfigPO();
         po.setId(id);
         po.setUpdater(userName);
         po.setUpdateTime(new Date());
         po.setIfDel(ConstInterface.IF_DEL.YES);
-        redisConfigPOMapper.updateByPrimaryKeySelective(po);
-        //删除缓存中的RedisTemplate
-        redisContextService.getRedisTemplateMap().remove(id);
-        springUtils.getBean(IRedisConfigService.class).invalidateCache(id);
-        return new ApiResult<>(ResultCode.SUCCESS);
+        return po;
     }
 
-    @Override
-    public ApiResult<?> update(RedisConfigVO vo, AuthContext authContext) {
+    private RedisConfigPO buildUpdateRedisConfigPO(RedisConfigVO vo, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO oldPO = springUtils.getBean(IRedisConfigService.class).query(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
@@ -100,11 +119,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         }
         po.setUpdater(userName);
         po.setUpdateTime(new Date());
-        redisConfigPOMapper.updateByPrimaryKeySelective(po);
-        //删除缓存中的RedisTemplate
-        redisContextService.getRedisTemplateMap().remove(vo.getId());
-        springUtils.getBean(IRedisConfigService.class).invalidateCache(vo.getId());
-        return new ApiResult<>(ResultCode.SUCCESS);
+        return po;
     }
 
     /**
