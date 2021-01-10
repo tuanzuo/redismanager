@@ -102,7 +102,7 @@ public interface ConstInterface {
         /**
          * 当前用户的key
          */
-        String CURRENT_USER = COMMON_PRE_KEY + "crt:usr";
+        String CURRENT_USER = COMMON_PRE_KEY + "usr:curt";
         /**
          * 认证信息的key
          */
