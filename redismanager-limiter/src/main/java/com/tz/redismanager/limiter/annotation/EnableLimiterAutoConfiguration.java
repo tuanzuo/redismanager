@@ -30,12 +30,12 @@ public @interface EnableLimiterAutoConfiguration {
      * 是否在应用启动的时候初始化限流器，默认是(true)
      * @return
      */
-    boolean initLimiterInStart() default true;
+    boolean initLimiter() default true;
 
     /**
      * 初始化限流器扫描的路径
      * @return
      */
-    String initLimiterToScanPackage() default "com.tz";
+    String initLimiterScanPackage() default "com.tz";
 
 }

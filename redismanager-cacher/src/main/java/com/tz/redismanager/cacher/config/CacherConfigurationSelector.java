@@ -44,8 +44,14 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
      * @see EnableCacherAutoConfiguration#cacherType()
      */
     private static final String CACHER_TYPE = "cacherType";
-    private static final String INIT_TO_START = "initCacherInStart";
-    private static final String INIT_SCAN_PACKAGE = "initCacherToScanPackage";
+    /**
+     * @see EnableCacherAutoConfiguration#initCacher()
+     */
+    private static final String INIT_CACHER = "initCacher";
+    /**
+     * @see EnableCacherAutoConfiguration#initCacherScanPackage()
+     */
+    private static final String INIT_CACHER_SCAN_PACKAGE = "initCacherScanPackage";
 
     @Nullable
     private AnnotationAttributes cacherAutoConfiguration;
@@ -96,15 +102,16 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
     }
 
     private void initCacher(ICacheService cacheService) {
-        boolean initToStart = cacherAutoConfiguration.getBoolean(INIT_TO_START);
-        if (!initToStart) {
+        if (!cacherAutoConfiguration.getBoolean(INIT_CACHER)) {
+            logger.info("[未开启初始化缓存器] [{@link @EnableCacherAutoConfiguration#initCacher()}]");
             return;
         }
-        String initScanPackage = cacherAutoConfiguration.getString(INIT_SCAN_PACKAGE);
+        String initScanPackage = cacherAutoConfiguration.getString(INIT_CACHER_SCAN_PACKAGE);
         if (StringUtils.isBlank(initScanPackage)) {
+            logger.info("[初始化缓存器] [扫描的包路径不能为空] [{@link EnableCacherAutoConfiguration#initCacherScanPackage()}]");
             return;
         }
-        Set<String> keyMap = new HashSet();
+        Map<String, String> keyMap = new HashMap();
         //设置扫描路径
         Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(initScanPackage)).setScanners(new MethodAnnotationsScanner()));
         //扫描包内带有@Cacher注解的所有方法集合
@@ -112,13 +119,10 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
         //循环获取方法
         methods.forEach(method -> {
             Cacher cacher = method.getAnnotation(Cacher.class);
-            if (keyMap.contains(cacher.key())) {
-                return;
-            } else {
-                keyMap.add(cacher.key());
+            if (null == keyMap.putIfAbsent(cacher.key(), cacher.key())) {
+                cacheService.initCacher(cacher);
+                logger.info("[初始化缓存器] [{}] [{}] [完成]", cacher.key(), cacher.name());
             }
-            cacheService.initCacher(cacher);
-            logger.info("[初始化缓存器] [{}] [{}] [完成]", cacher.key(), cacher.name());
         });
     }
 }

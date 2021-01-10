@@ -20,18 +20,18 @@ import java.lang.annotation.*;
 @Import(CacherConfigurationSelector.class)
 public @interface EnableCacherAutoConfiguration {
 
-    String cacherType() default ConstInterface.CacherType.CACHER_DEFAULT;
+    String cacherType() default ConstInterface.CacherType.DEFAULT_CACHER;
 
     /**
      * 是否在应用启动的时候初始化缓存器，默认是(true)
      * @return
      */
-    boolean initCacherInStart() default true;
+    boolean initCacher() default true;
 
     /**
      * 初始化缓存器扫描的路径
      * @return
      */
-    String initCacherToScanPackage() default "com.tz";
+    String initCacherScanPackage() default "com.tz";
 
 }

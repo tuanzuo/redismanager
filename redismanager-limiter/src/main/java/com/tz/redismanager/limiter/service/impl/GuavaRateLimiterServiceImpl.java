@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @time 2020-12-21 22:12
  **/
 @Service
-public class RateLimiterServiceImpl implements ILimiterService {
+public class GuavaRateLimiterServiceImpl implements ILimiterService {
 
     private static ConcurrentHashMap<String, RateLimiter> limiterMap = new ConcurrentHashMap<>();
 
