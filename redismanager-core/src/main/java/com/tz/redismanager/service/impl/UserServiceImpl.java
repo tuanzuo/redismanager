@@ -2,10 +2,11 @@ package com.tz.redismanager.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.tz.redismanager.cacher.annotation.Cacher;
+import com.tz.redismanager.cacher.annotation.Cacheable;
 import com.tz.redismanager.cacher.annotation.L1Cache;
 import com.tz.redismanager.cacher.annotation.L2Cache;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.dao.domain.dto.UserAnalysisDTO;
 import com.tz.redismanager.dao.domain.po.RolePO;
 import com.tz.redismanager.dao.domain.po.UserPO;
 import com.tz.redismanager.dao.domain.po.UserRoleRelationPO;
@@ -100,9 +101,9 @@ public class UserServiceImpl implements IUserService {
         return new ApiResult<>(ResultCode.SUCCESS, count);
     }
 
-    @Cacher(name = "当前用户信息缓存", key = ConstInterface.CacheKey.CURRENT_USER, var = "#authContext.userId", l1Cache = @L1Cache(expireDuration = 2, expireUnit = TimeUnit.MINUTES), l2Cache = @L2Cache(expireDuration = 5, expireUnit = TimeUnit.MINUTES))
+    @Cacheable(name = "当前用户信息缓存", key = ConstInterface.CacheKey.CURRENT_USER, var = "#authContext.userId", l1Cache = @L1Cache(expireDuration = 2, expireUnit = TimeUnit.MINUTES), l2Cache = @L2Cache(expireDuration = 5, expireUnit = TimeUnit.MINUTES))
     @Override
-    public ApiResult<?> currentUser(AuthContext authContext) {
+    public Object currentUser(AuthContext authContext) {
         UserPO userPO = userPOMapper.selectByPrimaryKey(authContext.getUserId());
         userPO.setPwd(null);
         //需要返回这些数据“个人页-个人设置”页面才能正常显示出来
@@ -115,7 +116,7 @@ public class UserServiceImpl implements IUserService {
         jsonObject.put("unreadCount", 0);
         //右上角用户头像 v1.5.0
         jsonObject.put("avatar", "/img/BiazfanxmamNRoxxVxka.png");
-        return new ApiResult<>(ResultCode.SUCCESS, jsonObject);
+        return jsonObject;
     }
 
     @Override
@@ -201,6 +202,12 @@ public class UserServiceImpl implements IUserService {
         List<RolePO> roles = rolePOMapper.getAll(null);
         this.setRoles(resp, roles);
         return new ApiResult<>(ResultCode.SUCCESS, resp);
+    }
+
+    @Cacheable(name = "用户分析页缓存", key = ConstInterface.CacheKey.ANALYSIS_USER, l1Cache = @L1Cache(expireDuration = 60, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 120, expireUnit = TimeUnit.SECONDS))
+    @Override
+    public List<UserAnalysisDTO> queryUserAnalysis() {
+        return userPOMapper.selectToAnalysis();
     }
 
     private void setRoles(UserListResp resp, List<RolePO> roles) {

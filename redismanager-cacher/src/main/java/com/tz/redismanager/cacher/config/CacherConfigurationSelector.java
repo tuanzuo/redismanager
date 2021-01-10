@@ -1,9 +1,9 @@
 package com.tz.redismanager.cacher.config;
 
-import com.tz.redismanager.cacher.annotation.Cacher;
+import com.tz.redismanager.cacher.annotation.Cacheable;
 import com.tz.redismanager.cacher.annotation.EnableCacherAutoConfiguration;
-import com.tz.redismanager.cacher.aspect.CacherAspect;
-import com.tz.redismanager.cacher.aspect.CacherEvictAspect;
+import com.tz.redismanager.cacher.aspect.CacheableAspect;
+import com.tz.redismanager.cacher.aspect.CacheEvictAspect;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * <p>Cacher ConfigurationSelector</p>
+ * <p>Cache ConfigurationSelector</p>
  *
  * @author tuanzuo
  * @version 1.6.0
@@ -44,8 +44,14 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
      * @see EnableCacherAutoConfiguration#cacherType()
      */
     private static final String CACHER_TYPE = "cacherType";
-    private static final String INIT_TO_START = "initCacherInStart";
-    private static final String INIT_SCAN_PACKAGE = "initCacherToScanPackage";
+    /**
+     * @see EnableCacherAutoConfiguration#initCacher()
+     */
+    private static final String INIT_CACHER = "initCacher";
+    /**
+     * @see EnableCacherAutoConfiguration#initCacherScanPackage()
+     */
+    private static final String INIT_CACHER_SCAN_PACKAGE = "initCacherScanPackage";
 
     @Nullable
     private AnnotationAttributes cacherAutoConfiguration;
@@ -86,39 +92,37 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
     }
 
     @Bean
-    public CacherAspect cacherAspect(ICacheService cacheService) {
-        return new CacherAspect(cacheService);
+    public CacheableAspect cacheableAspect(ICacheService cacheService) {
+        return new CacheableAspect(cacheService);
     }
 
     @Bean
-    public CacherEvictAspect cacherEvictAspect(ICacheService cacheService) {
-        return new CacherEvictAspect(cacheService);
+    public CacheEvictAspect cacheEvictAspect(ICacheService cacheService) {
+        return new CacheEvictAspect(cacheService);
     }
 
     private void initCacher(ICacheService cacheService) {
-        boolean initToStart = cacherAutoConfiguration.getBoolean(INIT_TO_START);
-        if (!initToStart) {
+        if (!cacherAutoConfiguration.getBoolean(INIT_CACHER)) {
+            logger.info("[未开启初始化缓存器] [{@link @EnableCacherAutoConfiguration#initCacher()}]");
             return;
         }
-        String initScanPackage = cacherAutoConfiguration.getString(INIT_SCAN_PACKAGE);
+        String initScanPackage = cacherAutoConfiguration.getString(INIT_CACHER_SCAN_PACKAGE);
         if (StringUtils.isBlank(initScanPackage)) {
+            logger.info("[初始化缓存器] [扫描的包路径不能为空] [{@link EnableCacherAutoConfiguration#initCacherScanPackage()}]");
             return;
         }
-        Set<String> keyMap = new HashSet();
+        Map<String, String> keyMap = new HashMap();
         //设置扫描路径
         Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(initScanPackage)).setScanners(new MethodAnnotationsScanner()));
         //扫描包内带有@Cacher注解的所有方法集合
-        Set<Method> methods = reflections.getMethodsAnnotatedWith(Cacher.class);
+        Set<Method> methods = reflections.getMethodsAnnotatedWith(Cacheable.class);
         //循环获取方法
         methods.forEach(method -> {
-            Cacher cacher = method.getAnnotation(Cacher.class);
-            if (keyMap.contains(cacher.key())) {
-                return;
-            } else {
-                keyMap.add(cacher.key());
+            Cacheable cacheable = method.getAnnotation(Cacheable.class);
+            if (null == keyMap.putIfAbsent(cacheable.key(), cacheable.key())) {
+                cacheService.initCacher(cacheable);
+                logger.info("[初始化缓存器] [{}] [{}] [完成]", cacheable.key(), cacheable.name());
             }
-            cacheService.initCacher(cacher);
-            logger.info("[初始化缓存器] [{}] [{}] [完成]", cacher.key(), cacher.name());
         });
     }
 }

@@ -13,6 +13,7 @@ public interface ConstInterface {
      * 缓存器类型
      */
     interface CacherType {
-        String CACHER_DEFAULT = "cacherDefault";
+        //默认缓存器类型
+        String DEFAULT_CACHER = "defaultCacher";
     }
 }

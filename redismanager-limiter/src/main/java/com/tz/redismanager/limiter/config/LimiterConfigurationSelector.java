@@ -25,10 +25,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>Limiter ConfigurationSelector</p>
@@ -46,8 +43,14 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
      * @see EnableLimiterAutoConfiguration#limiterType()
      */
     private static final String LIMITER_TYPE = "limiterType";
-    private static final String INIT_TO_START = "initLimiterInStart";
-    private static final String INIT_SCAN_PACKAGE = "initLimiterToScanPackage";
+    /**
+     * @see EnableLimiterAutoConfiguration#initLimiter()
+     */
+    private static final String INIT_LIMITER = "initLimiter";
+    /**
+     * @see EnableLimiterAutoConfiguration#initLimiterScanPackage()
+     */
+    private static final String INIT_LIMITER_SCAN_PACKAGE = "initLimiterScanPackage";
 
     @Nullable
     private AnnotationAttributes limiterAutoConfiguration;
@@ -93,15 +96,16 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
     }
 
     private void initLimiter(ILimiterService limiterService) {
-        boolean initToStart = limiterAutoConfiguration.getBoolean(INIT_TO_START);
-        if (!initToStart) {
+        if (!limiterAutoConfiguration.getBoolean(INIT_LIMITER)) {
+            logger.info("[未开启初始化限流器] [{@link EnableLimiterAutoConfiguration#initLimiter()}]");
             return;
         }
-        String initScanPackage = limiterAutoConfiguration.getString(INIT_SCAN_PACKAGE);
+        String initScanPackage = limiterAutoConfiguration.getString(INIT_LIMITER_SCAN_PACKAGE);
         if (StringUtils.isBlank(initScanPackage)) {
+            logger.info("[初始化限流器] [扫描的包路径不能为空] [{@link EnableLimiterAutoConfiguration#initLimiterScanPackage()}]");
             return;
         }
-        Set<String> keyMap = new HashSet();
+        Map<String, String> keyMap = new HashMap();
         //设置扫描路径
         Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(initScanPackage)).setScanners(new MethodAnnotationsScanner()));
         //扫描包内带有@Limiter注解的所有方法集合
@@ -109,13 +113,10 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
         //循环获取方法
         methods.forEach(method -> {
             Limiter limiter = method.getAnnotation(Limiter.class);
-            if (keyMap.contains(limiter.key())) {
-                return;
-            } else {
-                keyMap.add(limiter.key());
+            if (null == keyMap.putIfAbsent(limiter.key(), limiter.key())) {
+                limiterService.initLimiter(limiter);
+                logger.info("[初始化限流器] [{}] [{}] [完成]", limiter.key(), limiter.name());
             }
-            limiterService.initLimiter(limiter);
-            logger.info("[初始化限流器] [{}] [{}] [完成]", limiter.key(), limiter.name());
         });
     }
 

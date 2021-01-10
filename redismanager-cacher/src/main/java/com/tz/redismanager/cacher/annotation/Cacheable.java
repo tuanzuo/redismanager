@@ -3,20 +3,20 @@ package com.tz.redismanager.cacher.annotation;
 import java.lang.annotation.*;
 
 /**
- * <p>缓存失效注解</p>
+ * <p>缓存注解</p>
  *
  * @author tuanzuo
  * @version 1.6.0
- * @time 2021-01-06 0:39
+ * @time 2020-12-25 21:51
  **/
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface CacherEvict {
+public @interface Cacheable {
 
     /**
-     * 缓存器名称
+     * 缓存名称
      *
      * @return
      */
@@ -30,7 +30,7 @@ public @interface CacherEvict {
     /**
      * 缓存器key的变量,支持Spring Expression Language (SpEL)
      */
-    String var();
+    String var() default "";
 
     /**
      * 一级缓存

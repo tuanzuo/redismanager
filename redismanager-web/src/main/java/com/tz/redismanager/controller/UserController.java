@@ -5,9 +5,9 @@ import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.UserPageParam;
 import com.tz.redismanager.domain.vo.UserVO;
-import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
+import com.tz.redismanager.service.IUserService;
 import com.tz.redismanager.validator.ValidGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -42,7 +42,7 @@ public class UserController {
     @RequestMapping("current")
     @Auth
     public ApiResult<?> currentUser(AuthContext authContext) {
-        return userService.currentUser(authContext);
+        return ApiResult.buildSuccess(userService.currentUser(authContext));
     }
 
     @RequestMapping("update")
