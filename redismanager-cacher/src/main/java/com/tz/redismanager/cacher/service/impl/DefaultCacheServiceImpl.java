@@ -2,12 +2,9 @@ package com.tz.redismanager.cacher.service.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.tz.redismanager.cacher.annotation.Cacher;
-import com.tz.redismanager.cacher.annotation.CacherEvict;
-import com.tz.redismanager.cacher.annotation.L1Cache;
-import com.tz.redismanager.cacher.annotation.L2Cache;
+import com.tz.redismanager.cacher.annotation.*;
 import com.tz.redismanager.cacher.constant.ConstInterface;
-import com.tz.redismanager.cacher.domain.*;
+import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
 import com.tz.redismanager.cacher.util.JsonUtils;
@@ -56,11 +53,11 @@ public class DefaultCacheServiceImpl implements ICacheService {
     }
 
     @Override
-    public Object getCache(Cacher cacher, String cacheKey, Type returnType, Function<Object, Object> initCache) {
+    public Object getCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
         String value = null;
-        if (cacher.l1Cache().enable()) {
-            value = this.getL1Cache(cacher, cacheKey, initCache);
-        } else if (cacher.l2Cache().enable()) {
+        if (cacheable.l1Cache().enable()) {
+            value = this.getL1Cache(cacheable, cacheKey, initCache);
+        } else if (cacheable.l2Cache().enable()) {
             value = this.getL2Cache(cacheKey);
         }
         if (CACHE_EMPTY_VALUE.equals(value)) {
@@ -69,34 +66,34 @@ public class DefaultCacheServiceImpl implements ICacheService {
         if (StringUtils.isNotBlank(value)) {
             return JsonUtils.parseObject(value, returnType);
         }
-        return this.setCache(cacher, cacheKey, initCache);
+        return this.setCache(cacheable, cacheKey, initCache);
     }
 
     @Override
-    public void invalidateCache(CacherEvict cacherEvict, String cacheKey) {
-        if (cacherEvict.l1Cache().enable()) {
-            this.getL1Cacher(cacherEvict.key(), cacherEvict.l1Cache(), cacherEvict.l2Cache()).invalidate(cacheKey);
+    public void invalidateCache(CacheEvict cacheEvict, String cacheKey) {
+        if (cacheEvict.l1Cache().enable()) {
+            this.getL1Cacher(cacheEvict.key(), cacheEvict.l1Cache(), cacheEvict.l2Cache()).invalidate(cacheKey);
         }
-        if (cacherEvict.l2Cache().enable()) {
+        if (cacheEvict.l2Cache().enable()) {
             stringRedisTemplate.delete(cacheKey);
         }
     }
 
     @Override
-    public void initCacher(Cacher cacher) {
-        this.initL1Cacher(cacher.key(), cacher.l1Cache(), cacher.l2Cache());
+    public void initCacher(Cacheable cacheable) {
+        this.initL1Cacher(cacheable.key(), cacheable.l1Cache(), cacheable.l2Cache());
     }
 
-    private String getL1Cache(Cacher cacher, String cacheKey, Function<Object, Object> initCache) {
-        return this.getL1Cacher(cacher).get(cacheKey);
+    private String getL1Cache(Cacheable cacheable, String cacheKey, Function<Object, Object> initCache) {
+        return this.getL1Cacher(cacheable).get(cacheKey);
     }
 
     private String getL2Cache(String cacheKey) {
         return stringRedisTemplate.opsForValue().get(cacheKey);
     }
 
-    private LoadingCache<String, String> getL1Cacher(Cacher cacher) {
-        return this.getL1Cacher(cacher.key(), cacher.l1Cache(), cacher.l2Cache());
+    private LoadingCache<String, String> getL1Cacher(Cacheable cacheable) {
+        return this.getL1Cacher(cacheable.key(), cacheable.l1Cache(), cacheable.l2Cache());
     }
 
     private LoadingCache<String, String> getL1Cacher(String cacherKey, L1Cache l1Cache, L2Cache l2Cache) {
@@ -126,7 +123,7 @@ public class DefaultCacheServiceImpl implements ICacheService {
         return Optional.ofNullable(l1CacherMap.putIfAbsent(cacherKey, loadingCache)).orElse(loadingCache);
     }
 
-    private Object setCache(Cacher cacher, String cacheKey, Function<Object, Object> initCache) {
+    private Object setCache(Cacheable cacheable, String cacheKey, Function<Object, Object> initCache) {
         Object result = null;
         String lockKey = CACHE_LOCK_KEY_PRE + cacheKey;
         RLock rLock = redissonClient.getLock(lockKey);
@@ -136,15 +133,15 @@ public class DefaultCacheServiceImpl implements ICacheService {
                 throw new CacherException(ResultCode.CACHE_TRY_LOCK_WAIT_TIMEOUT);
             }
             result = initCache.apply(null);
-            logger.info("[缓存器] [{}] [{}] [回源查询数据完成] [{}]", cacher.key(), cacher.name(), cacheKey);
+            logger.info("[缓存器] [{}] [{}] [回源查询数据完成] [{}]", cacheable.key(), cacheable.name(), cacheKey);
             String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
-            if (cacher.l2Cache().enable()) {
-                this.setL2Cache(cacher, cacheKey, json);
-                logger.info("[缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", cacher.key(), cacher.name(), cacheKey);
+            if (cacheable.l2Cache().enable()) {
+                this.setL2Cache(cacheable, cacheKey, json);
+                logger.info("[缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", cacheable.key(), cacheable.name(), cacheKey);
             }
-            if (cacher.l1Cache().enable()) {
-                this.setL1Cache(cacher, cacheKey, initCache, json);
-                logger.info("[缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", cacher.key(), cacher.name(), cacheKey);
+            if (cacheable.l1Cache().enable()) {
+                this.setL1Cache(cacheable, cacheKey, initCache, json);
+                logger.info("[缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", cacheable.key(), cacheable.name(), cacheKey);
             }
         } catch (CacherException e) {
             throw e;
@@ -160,12 +157,12 @@ public class DefaultCacheServiceImpl implements ICacheService {
         return result;
     }
 
-    private void setL1Cache(Cacher cacher, String cacheKey, Function<Object, Object> initCache, String cacheValue) {
-        this.getL1Cacher(cacher).put(cacheKey, cacheValue);
+    private void setL1Cache(Cacheable cacheable, String cacheKey, Function<Object, Object> initCache, String cacheValue) {
+        this.getL1Cacher(cacheable).put(cacheKey, cacheValue);
     }
 
-    private void setL2Cache(Cacher cacher, String cacheKey, String cacheValue) {
-        L2Cache l2Cache = cacher.l2Cache();
+    private void setL2Cache(Cacheable cacheable, String cacheKey, String cacheValue) {
+        L2Cache l2Cache = cacheable.l2Cache();
         if (l2Cache.expireDuration() > 0) {
             stringRedisTemplate.opsForValue().set(cacheKey, cacheValue, l2Cache.expireDuration(), l2Cache.expireUnit());
         } else {

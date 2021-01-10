@@ -21,7 +21,7 @@ import java.lang.annotation.*;
 public @interface EnableLimiterAutoConfiguration {
 
     /**
-     * 限流器类型，默认为Guava限流
+     * 限流器实现类型，默认为Guava限流
      * @return
      */
     String limiterType() default ConstInterface.LimiterType.GUAVA_RATE_LIMITER;

@@ -12,5 +12,6 @@ public enum ExpireStrategy {
     EXPIRE_AFTER_WRITE(),
     //最后一次访问了之后多久过期
     EXPIRE_AFTER_ACCESS(),
+    ;
 
 }

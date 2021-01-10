@@ -28,6 +28,9 @@ public class GuavaRateLimiterServiceImpl implements ILimiterService {
 
     @Override
     public boolean tryAcquire(Limiter limiter) {
+        if (limiter.permits() <= 0) {
+            return true;
+        }
         return this.getLimiter(limiter).tryAcquire(limiter.permits(), limiter.timeout(), limiter.unit());
     }
 

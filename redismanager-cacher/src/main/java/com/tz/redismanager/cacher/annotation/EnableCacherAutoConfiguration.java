@@ -20,6 +20,10 @@ import java.lang.annotation.*;
 @Import(CacherConfigurationSelector.class)
 public @interface EnableCacherAutoConfiguration {
 
+    /**
+     * 缓存器实现类型
+     * @return
+     */
     String cacherType() default ConstInterface.CacherType.DEFAULT_CACHER;
 
     /**

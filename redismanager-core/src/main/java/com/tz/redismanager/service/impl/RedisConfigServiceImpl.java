@@ -1,7 +1,7 @@
 package com.tz.redismanager.service.impl;
 
-import com.tz.redismanager.cacher.annotation.Cacher;
-import com.tz.redismanager.cacher.annotation.CacherEvict;
+import com.tz.redismanager.cacher.annotation.CacheEvict;
+import com.tz.redismanager.cacher.annotation.Cacheable;
 import com.tz.redismanager.cacher.util.SpringUtils;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
@@ -43,19 +43,19 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
                 param.getOffset(), param.getRows());
     }
 
-    @Cacher(name = "redis连接配置信息缓存", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
+    @Cacheable(name = "redis连接配置信息缓存", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
     @Override
     public RedisConfigPO query(String id) {
         return redisConfigPOMapper.selectByPrimaryKey(id);
     }
 
-    @CacherEvict(name = "redis连接配置信息失效", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
+    @CacheEvict(name = "redis连接配置信息失效", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
     @Override
     public void invalidateCache(String id) {
 
     }
 
-    @Cacher(name = "redis连接配置信息缓存", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#vo.id")
+    @Cacheable(name = "redis连接配置信息缓存", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#vo.id")
     @Override
     public RedisConfigPO add(RedisConfigVO vo, AuthContext authContext) {
         RedisConfigPO po = this.buildAddRedisConfigPO(vo, authContext);

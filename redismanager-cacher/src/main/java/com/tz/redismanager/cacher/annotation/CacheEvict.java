@@ -1,22 +1,24 @@
 package com.tz.redismanager.cacher.annotation;
 
+import com.tz.redismanager.cacher.domain.InvocationStrategy;
+
 import java.lang.annotation.*;
 
 /**
- * <p>缓存器注解</p>
+ * <p>缓存失效注解</p>
  *
  * @author tuanzuo
  * @version 1.6.0
- * @time 2020-12-25 21:51
+ * @time 2021-01-06 0:39
  **/
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface Cacher {
+public @interface CacheEvict {
 
     /**
-     * 缓存器名称
+     * 缓存名称
      *
      * @return
      */
@@ -31,6 +33,11 @@ public @interface Cacher {
      * 缓存器key的变量,支持Spring Expression Language (SpEL)
      */
     String var();
+
+    /**
+     * 在方法执行前或者执行后清理缓存
+     */
+    InvocationStrategy invocation() default InvocationStrategy.AFTER;
 
     /**
      * 一级缓存
