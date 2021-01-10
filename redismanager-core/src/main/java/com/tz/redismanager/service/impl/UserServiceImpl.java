@@ -102,7 +102,7 @@ public class UserServiceImpl implements IUserService {
 
     @Cacher(name = "当前用户信息缓存", key = ConstInterface.CacheKey.CURRENT_USER, var = "#authContext.userId", l1Cache = @L1Cache(expireDuration = 2, expireUnit = TimeUnit.MINUTES), l2Cache = @L2Cache(expireDuration = 5, expireUnit = TimeUnit.MINUTES))
     @Override
-    public ApiResult<?> currentUser(AuthContext authContext) {
+    public Object currentUser(AuthContext authContext) {
         UserPO userPO = userPOMapper.selectByPrimaryKey(authContext.getUserId());
         userPO.setPwd(null);
         //需要返回这些数据“个人页-个人设置”页面才能正常显示出来
@@ -115,7 +115,7 @@ public class UserServiceImpl implements IUserService {
         jsonObject.put("unreadCount", 0);
         //右上角用户头像 v1.5.0
         jsonObject.put("avatar", "/img/BiazfanxmamNRoxxVxka.png");
-        return new ApiResult<>(ResultCode.SUCCESS, jsonObject);
+        return jsonObject;
     }
 
     @Override

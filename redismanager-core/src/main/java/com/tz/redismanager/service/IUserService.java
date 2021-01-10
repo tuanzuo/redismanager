@@ -19,7 +19,7 @@ public interface IUserService {
 
     ApiResult<?> countOnline();
 
-    ApiResult<?> currentUser(AuthContext authContext);
+    Object currentUser(AuthContext authContext);
 
     ApiResult<?> update(UserVO vo);
 
