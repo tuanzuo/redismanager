@@ -6,6 +6,7 @@ import com.tz.redismanager.cacher.annotation.Cacheable;
 import com.tz.redismanager.cacher.annotation.L1Cache;
 import com.tz.redismanager.cacher.annotation.L2Cache;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.dao.domain.dto.UserAnalysisDTO;
 import com.tz.redismanager.dao.domain.po.RolePO;
 import com.tz.redismanager.dao.domain.po.UserPO;
 import com.tz.redismanager.dao.domain.po.UserRoleRelationPO;
@@ -201,6 +202,12 @@ public class UserServiceImpl implements IUserService {
         List<RolePO> roles = rolePOMapper.getAll(null);
         this.setRoles(resp, roles);
         return new ApiResult<>(ResultCode.SUCCESS, resp);
+    }
+
+    @Cacheable(name = "用户分析页缓存", key = ConstInterface.CacheKey.ANALYSIS_USER, l1Cache = @L1Cache(expireDuration = 60, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 120, expireUnit = TimeUnit.SECONDS))
+    @Override
+    public List<UserAnalysisDTO> queryUserAnalysis() {
+        return userPOMapper.selectToAnalysis();
     }
 
     private void setRoles(UserListResp resp, List<RolePO> roles) {

@@ -1,5 +1,6 @@
 package com.tz.redismanager.service;
 
+import com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
@@ -21,6 +22,12 @@ public interface IRedisConfigService {
      * 查询redis连接配置
      */
     RedisConfigPO query(String id);
+
+    /**
+     * 查询redis连接配置分析页数据
+     * @return
+     */
+    List<RedisConfigAnalysisDTO> queryRedisConfigAnalysis();
 
     /**
      * 失效redis连接配置缓存

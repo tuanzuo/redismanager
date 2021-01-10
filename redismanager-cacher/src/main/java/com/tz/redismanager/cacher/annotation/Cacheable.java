@@ -30,7 +30,7 @@ public @interface Cacheable {
     /**
      * 缓存器key的变量,支持Spring Expression Language (SpEL)
      */
-    String var();
+    String var() default "";
 
     /**
      * 一级缓存

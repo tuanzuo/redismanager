@@ -54,19 +54,15 @@ public class DefaultCacheServiceImpl implements ICacheService {
 
     @Override
     public Object getCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
-        String value = null;
-        if (cacheable.l1Cache().enable()) {
-            value = this.getL1Cache(cacheable, cacheKey, initCache);
-        } else if (cacheable.l2Cache().enable()) {
-            value = this.getL2Cache(cacheKey);
-        }
+        String value = this.getCache(cacheable, cacheKey);
         if (CACHE_EMPTY_VALUE.equals(value)) {
             return null;
         }
         if (StringUtils.isNotBlank(value)) {
+            logger.info("[首次查询命中缓存] [{}]", cacheKey);
             return JsonUtils.parseObject(value, returnType);
         }
-        return this.setCache(cacheable, cacheKey, initCache);
+        return this.setCache(cacheable, cacheKey, returnType, initCache);
     }
 
     @Override
@@ -84,7 +80,18 @@ public class DefaultCacheServiceImpl implements ICacheService {
         this.initL1Cacher(cacheable.key(), cacheable.l1Cache(), cacheable.l2Cache());
     }
 
-    private String getL1Cache(Cacheable cacheable, String cacheKey, Function<Object, Object> initCache) {
+    private String getCache(Cacheable cacheable, String cacheKey) {
+        String value = null;
+        if (cacheable.l1Cache().enable()) {
+            /**当一级缓存不存在时如果二级缓存开启则会查询二级缓存-->{@link DefaultCacheServiceImpl#initL1Cacher}中LoadingCache.build时*/
+            value = this.getL1Cache(cacheable, cacheKey);
+        } else if (cacheable.l2Cache().enable()) {
+            value = this.getL2Cache(cacheKey);
+        }
+        return value;
+    }
+
+    private String getL1Cache(Cacheable cacheable, String cacheKey) {
         return this.getL1Cacher(cacheable).get(cacheKey);
     }
 
@@ -123,22 +130,34 @@ public class DefaultCacheServiceImpl implements ICacheService {
         return Optional.ofNullable(l1CacherMap.putIfAbsent(cacherKey, loadingCache)).orElse(loadingCache);
     }
 
-    private Object setCache(Cacheable cacheable, String cacheKey, Function<Object, Object> initCache) {
+    private Object setCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
         Object result = null;
         String lockKey = CACHE_LOCK_KEY_PRE + cacheKey;
         RLock rLock = redissonClient.getLock(lockKey);
         try {
-            // 尝试加锁，最多等待200毫秒，上锁以后10秒自动解锁
+            //1、尝试加锁，最多等待200毫秒，加锁10秒后自动解锁
             if (!rLock.tryLock(200, 10 * 1000, TimeUnit.MILLISECONDS)) {
                 throw new CacherException(ResultCode.CACHE_TRY_LOCK_WAIT_TIMEOUT);
             }
+            //2、加锁成功，再次查询
+            String value = this.getCache(cacheable, cacheKey);
+            if (CACHE_EMPTY_VALUE.equals(value)) {
+                return null;
+            }
+            if (StringUtils.isNotBlank(value)) {
+                logger.info("[再次查询命中缓存] [{}]", cacheKey);
+                return JsonUtils.parseObject(value, returnType);
+            }
+            //3、回源查询
             result = initCache.apply(null);
             logger.info("[缓存器] [{}] [{}] [回源查询数据完成] [{}]", cacheable.key(), cacheable.name(), cacheKey);
             String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
+            //4.1、缓存数据到二级缓存
             if (cacheable.l2Cache().enable()) {
                 this.setL2Cache(cacheable, cacheKey, json);
                 logger.info("[缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", cacheable.key(), cacheable.name(), cacheKey);
             }
+            //4.2、缓存数据到一级缓存
             if (cacheable.l1Cache().enable()) {
                 this.setL1Cache(cacheable, cacheKey, initCache, json);
                 logger.info("[缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", cacheable.key(), cacheable.name(), cacheKey);

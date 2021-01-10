@@ -7,16 +7,12 @@ import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO;
 import com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO;
 import com.tz.redismanager.dao.domain.dto.UserAnalysisDTO;
-import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
-import com.tz.redismanager.dao.mapper.RolePOMapper;
-import com.tz.redismanager.dao.mapper.UserPOMapper;
 import com.tz.redismanager.domain.dto.RedisConfigVisitDataDTO;
 import com.tz.redismanager.domain.dto.UserVisitDataDTO;
 import com.tz.redismanager.domain.dto.VisitDataDTO;
 import com.tz.redismanager.domain.param.AnalysisParam;
 import com.tz.redismanager.domain.vo.AnalysisRespVO;
-import com.tz.redismanager.service.IDashboardService;
-import com.tz.redismanager.service.IStatisticService;
+import com.tz.redismanager.service.*;
 import com.tz.redismanager.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,11 +32,11 @@ import java.util.concurrent.TimeUnit;
 public class DashboardServiceImpl implements IDashboardService {
 
     @Autowired
-    private UserPOMapper userPOMapper;
+    private IUserService userService;
     @Autowired
-    private RolePOMapper rolePOMapper;
+    private IRoleService roleService;
     @Autowired
-    private RedisConfigPOMapper redisConfigPOMapper;
+    private IRedisConfigService redisConfigService;
     @Autowired
     private IStatisticService statisticService;
 
@@ -61,13 +57,13 @@ public class DashboardServiceImpl implements IDashboardService {
         RedisConfigVisitDataDTO redisConfigVisitDataDTO = statisticService.countRedisConfigVisit(param);
         this.buildRedisConfigVisitData(resp, redisConfigVisitDataDTO);
 
-        List<UserAnalysisDTO> userList = userPOMapper.selectToAnalysis();
+        List<UserAnalysisDTO> userList = userService.queryUserAnalysis();
         this.buildUserData(resp, userList);
 
-        List<RoleAnalysisDTO> roleList = rolePOMapper.selectToAnalysis();
+        List<RoleAnalysisDTO> roleList = roleService.queryRoleAnalysis();
         this.buildRoleData(resp, roleList);
 
-        List<RedisConfigAnalysisDTO> configList = redisConfigPOMapper.selectToAnalysis();
+        List<RedisConfigAnalysisDTO> configList = redisConfigService.queryRedisConfigAnalysis();
         this.buildRedisConfigData(resp, configList);
         return resp;
     }

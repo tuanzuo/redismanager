@@ -1,5 +1,6 @@
 package com.tz.redismanager.service;
 
+import com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
 import com.tz.redismanager.domain.vo.RoleVO;
@@ -23,4 +24,8 @@ public interface IRoleService {
 
     ApiResult<?> queryList(RolePageParam param);
 
+    /**
+     * 查询角色分析页数据
+     */
+    List<RoleAnalysisDTO> queryRoleAnalysis();
 }

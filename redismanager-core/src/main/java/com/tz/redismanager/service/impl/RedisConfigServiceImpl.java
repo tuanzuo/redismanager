@@ -2,9 +2,12 @@ package com.tz.redismanager.service.impl;
 
 import com.tz.redismanager.cacher.annotation.CacheEvict;
 import com.tz.redismanager.cacher.annotation.Cacheable;
+import com.tz.redismanager.cacher.annotation.L1Cache;
+import com.tz.redismanager.cacher.annotation.L2Cache;
 import com.tz.redismanager.cacher.util.SpringUtils;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.domain.ApiResult;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class RedisConfigServiceImpl implements IRedisConfigService {
@@ -47,6 +51,12 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     @Override
     public RedisConfigPO query(String id) {
         return redisConfigPOMapper.selectByPrimaryKey(id);
+    }
+
+    @Cacheable(name = "redis连接配置分析页缓存", key = ConstInterface.CacheKey.ANALYSIS_REDIS_CONFIG, l1Cache = @L1Cache(expireDuration = 60, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 120, expireUnit = TimeUnit.SECONDS))
+    @Override
+    public List<RedisConfigAnalysisDTO> queryRedisConfigAnalysis() {
+        return redisConfigPOMapper.selectToAnalysis();
     }
 
     @CacheEvict(name = "redis连接配置信息失效", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")

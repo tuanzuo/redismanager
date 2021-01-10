@@ -99,6 +99,9 @@ public interface ConstInterface {
          * 分析页的key
          */
         String ANALYSIS = COMMON_PRE_KEY + "analysis";
+        String ANALYSIS_USER = COMMON_PRE_KEY + "analysis:usr";
+        String ANALYSIS_ROLE = COMMON_PRE_KEY + "analysis:role";
+        String ANALYSIS_REDIS_CONFIG = COMMON_PRE_KEY + "analysis:rds:conf";
         /**
          * 当前用户的key
          */

@@ -1,6 +1,10 @@
 package com.tz.redismanager.service.impl;
 
+import com.tz.redismanager.cacher.annotation.Cacheable;
+import com.tz.redismanager.cacher.annotation.L1Cache;
+import com.tz.redismanager.cacher.annotation.L2Cache;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO;
 import com.tz.redismanager.dao.domain.po.RolePO;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.domain.ApiResult;
@@ -20,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>角色Service</p>
@@ -74,6 +79,12 @@ public class RoleServiceImpl implements IRoleService {
         List<RolePO> list = rolePOMapper.selectPage(param.getName(), param.getCode(), param.getStatus(), param.getOffset(), param.getRows());
         this.addRoleResp(resp.getList(), list);
         return new ApiResult<>(ResultCode.SUCCESS, resp);
+    }
+
+    @Cacheable(name = "角色分析页缓存", key = ConstInterface.CacheKey.ANALYSIS_ROLE, l1Cache = @L1Cache(expireDuration = 60, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 120, expireUnit = TimeUnit.SECONDS))
+    @Override
+    public List<RoleAnalysisDTO> queryRoleAnalysis() {
+        return rolePOMapper.selectToAnalysis();
     }
 
     private RolePO buildAddRole(RoleVO vo, AuthContext authContext) {

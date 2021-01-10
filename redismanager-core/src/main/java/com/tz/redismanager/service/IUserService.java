@@ -1,5 +1,6 @@
 package com.tz.redismanager.service;
 
+import com.tz.redismanager.dao.domain.dto.UserAnalysisDTO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.UserPageParam;
 import com.tz.redismanager.domain.vo.UserVO;
@@ -32,4 +33,9 @@ public interface IUserService {
     ApiResult<?> grantRole(UserVO vo, AuthContext authContext);
 
     ApiResult<?> queryList(UserPageParam param);
+
+    /**
+     * 查询用户分析页数据
+     */
+    List<UserAnalysisDTO> queryUserAnalysis();
 }
