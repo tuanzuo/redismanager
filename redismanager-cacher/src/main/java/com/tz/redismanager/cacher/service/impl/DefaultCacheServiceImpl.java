@@ -2,8 +2,12 @@ package com.tz.redismanager.cacher.service.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.tz.redismanager.cacher.annotation.*;
+import com.tz.redismanager.cacher.annotation.CacheEvict;
+import com.tz.redismanager.cacher.annotation.Cacheable;
+import com.tz.redismanager.cacher.annotation.L1Cache;
+import com.tz.redismanager.cacher.annotation.L2Cache;
 import com.tz.redismanager.cacher.constant.ConstInterface;
+import com.tz.redismanager.cacher.domain.CacheData;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
@@ -15,12 +19,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.TimeoutUtils;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -37,8 +44,11 @@ public class DefaultCacheServiceImpl implements ICacheService {
     private static final Logger logger = LoggerFactory.getLogger(DefaultCacheServiceImpl.class);
 
     private static final String CACHE_LOCK_KEY_PRE = "rm:cache:lck:";
-
     private static final String CACHE_EMPTY_VALUE = "RM_CACHE_EMPTY_VALUE";
+    private static final String CACHE_L1 = "L1";
+    private static final String CACHE_L2 = "L2";
+
+    private ExecutorService refreshCacheExecutor = Executors.newFixedThreadPool(20);
 
     private static Map<String, LoadingCache<String, String>> l1CacherMap = new ConcurrentHashMap<>();
 
@@ -54,15 +64,35 @@ public class DefaultCacheServiceImpl implements ICacheService {
 
     @Override
     public Object getCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
+        Object result = null;
         String value = this.getCache(cacheable, cacheKey);
-        if (CACHE_EMPTY_VALUE.equals(value)) {
-            return null;
-        }
         if (StringUtils.isNotBlank(value)) {
-            logger.info("[首次查询命中缓存] [{}]", cacheKey);
-            return JsonUtils.parseObject(value, returnType);
+            CacheData cacheData = JsonUtils.parseObject(value, CacheData.class);
+            logger.info("[首次查询命中{}缓存] [{}]", cacheData.getType(), cacheKey);
+            String data = cacheData.getData();
+            result = CACHE_EMPTY_VALUE.equals(data) ? null : JsonUtils.parseObject(data, returnType);
+        } else {
+            result = this.setCache(cacheable, cacheKey, returnType, true, initCache);
         }
-        return this.setCache(cacheable, cacheKey, returnType, initCache);
+        //异步刷新缓存
+        this.asyncRefreshCache(cacheable, cacheKey, returnType, initCache);
+        return result;
+    }
+
+    /**
+     * 异步刷新缓存
+     */
+    private void asyncRefreshCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
+        if (!cacheable.l2Cache().enable()) {
+            return;
+        }
+        Long ttl = this.getL2CacheExpireTime(cacheKey);
+        if (null != ttl && -1 != ttl && ttl <= (TimeoutUtils.toSeconds(cacheable.l2Cache().expireDuration(), cacheable.l2Cache().expireUnit()) >> 1)) {
+            refreshCacheExecutor.execute(() -> {
+                logger.info("[异步刷新缓存] [{}]", cacheKey);
+                this.setCache(cacheable, cacheKey, returnType, false, initCache);
+            });
+        }
     }
 
     @Override
@@ -99,6 +129,10 @@ public class DefaultCacheServiceImpl implements ICacheService {
         return stringRedisTemplate.opsForValue().get(cacheKey);
     }
 
+    private Long getL2CacheExpireTime(String cacheKey) {
+        return stringRedisTemplate.getExpire(cacheKey);
+    }
+
     private LoadingCache<String, String> getL1Cacher(Cacheable cacheable) {
         return this.getL1Cacher(cacheable.key(), cacheable.l1Cache(), cacheable.l2Cache());
     }
@@ -130,7 +164,7 @@ public class DefaultCacheServiceImpl implements ICacheService {
         return Optional.ofNullable(l1CacherMap.putIfAbsent(cacherKey, loadingCache)).orElse(loadingCache);
     }
 
-    private Object setCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
+    private Object setCache(Cacheable cacheable, String cacheKey, Type returnType, boolean reQueryCache, Function<Object, Object> initCache) {
         Object result = null;
         String lockKey = CACHE_LOCK_KEY_PRE + cacheKey;
         RLock rLock = redissonClient.getLock(lockKey);
@@ -139,44 +173,51 @@ public class DefaultCacheServiceImpl implements ICacheService {
             if (!rLock.tryLock(200, 10 * 1000, TimeUnit.MILLISECONDS)) {
                 throw new CacherException(ResultCode.CACHE_TRY_LOCK_WAIT_TIMEOUT);
             }
-            //2、加锁成功，再次查询
-            String value = this.getCache(cacheable, cacheKey);
-            if (CACHE_EMPTY_VALUE.equals(value)) {
-                return null;
-            }
-            if (StringUtils.isNotBlank(value)) {
-                logger.info("[再次查询命中缓存] [{}]", cacheKey);
-                return JsonUtils.parseObject(value, returnType);
+            if (reQueryCache) {
+                //2、加锁成功，再次查询
+                String value = this.getCache(cacheable, cacheKey);
+                if (CACHE_EMPTY_VALUE.equals(value)) {
+                    return null;
+                }
+                if (StringUtils.isNotBlank(value)) {
+                    logger.info("[再次查询命中缓存] [{}]", cacheKey);
+                    return JsonUtils.parseObject(value, returnType);
+                }
             }
             //3、回源查询
             result = initCache.apply(null);
-            logger.info("[缓存器] [{}] [{}] [回源查询数据完成] [{}]", cacheable.key(), cacheable.name(), cacheKey);
+            logger.info("[{}缓存器] [{}] [{}] [回源查询数据完成] [{}]", !reQueryCache ? "刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
             String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
+            CacheData cacheData = new CacheData();
+            cacheData.setData(json);
             //4.1、缓存数据到二级缓存
             if (cacheable.l2Cache().enable()) {
-                this.setL2Cache(cacheable, cacheKey, json);
-                logger.info("[缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", cacheable.key(), cacheable.name(), cacheKey);
+                cacheData.setType(CACHE_L2);
+                this.setL2Cache(cacheable, cacheKey, JsonUtils.toJsonStr(cacheData));
+                logger.info("[{}缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", !reQueryCache ? "刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
             }
             //4.2、缓存数据到一级缓存
             if (cacheable.l1Cache().enable()) {
-                this.setL1Cache(cacheable, cacheKey, initCache, json);
-                logger.info("[缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", cacheable.key(), cacheable.name(), cacheKey);
+                cacheData.setType(CACHE_L1);
+                this.setL1Cache(cacheable, cacheKey, JsonUtils.toJsonStr(cacheData));
+                logger.info("[{}缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", !reQueryCache ? "刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
             }
         } catch (CacherException e) {
             throw e;
         } catch (Exception e) {
+            logger.error("[{}缓存器] [设置缓存异常] [{}]", !reQueryCache ? "刷新" : "", cacheKey, e);
             throw new CacherException(ResultCode.CACHE_LOCK_EXCEPTION);
         } finally {
             try {
                 rLock.unlock();
             } catch (Exception e) {
-                logger.warn("[解锁异常] lockKey:{}", lockKey, e);
+                logger.warn("[{}缓存器] [解锁异常] lockKey:{}", !reQueryCache ? "刷新" : "", lockKey, e);
             }
         }
         return result;
     }
 
-    private void setL1Cache(Cacheable cacheable, String cacheKey, Function<Object, Object> initCache, String cacheValue) {
+    private void setL1Cache(Cacheable cacheable, String cacheKey, String cacheValue) {
         this.getL1Cacher(cacheable).put(cacheKey, cacheValue);
     }
 
