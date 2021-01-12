@@ -25,10 +25,8 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
@@ -48,7 +46,42 @@ public class DefaultCacheServiceImpl implements ICacheService {
     private static final String CACHE_L1 = "L1";
     private static final String CACHE_L2 = "L2";
 
-    private ExecutorService refreshCacheExecutor = Executors.newFixedThreadPool(20);
+    private ExecutorService refreshCacheExecutor = new ThreadPoolExecutor(10, 20,
+            500L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<>(), new RefreshCacheThreadFactory(), new ThreadPoolExecutor.DiscardPolicy());
+
+    /**
+     * 自定义ThreadFactory：重新设置线程的名称
+     * @see Executors#defaultThreadFactory()
+     */
+    static class RefreshCacheThreadFactory implements ThreadFactory {
+        private static final AtomicInteger poolNumber = new AtomicInteger(1);
+        private final ThreadGroup group;
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final String namePrefix;
+
+        RefreshCacheThreadFactory() {
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup() :
+                    Thread.currentThread().getThreadGroup();
+            //重新设置线程的名称
+            namePrefix = "refresh-cache-" +
+                    poolNumber.getAndIncrement() +
+                    "-thread-";
+        }
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(group, r,
+                    namePrefix + threadNumber.getAndIncrement(),
+                    0);
+            if (t.isDaemon())
+                t.setDaemon(false);
+            if (t.getPriority() != Thread.NORM_PRIORITY)
+                t.setPriority(Thread.NORM_PRIORITY);
+            return t;
+        }
+    }
 
     private static Map<String, LoadingCache<String, String>> l1CacherMap = new ConcurrentHashMap<>();
 
