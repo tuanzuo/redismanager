@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
  * @time 2020-12-20 23:08
  **/
 @Aspect
-@Order(100)
+@Order(200)
 public class CacheableAspect extends AbstractAspect {
 
     private ICacheService cacheService;
