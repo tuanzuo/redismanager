@@ -1,13 +1,14 @@
 package com.tz.redismanager.limiter.util;
 
+import com.tz.redismanager.limiter.exception.LimiterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,15 +36,13 @@ public class AnnotationUtils {
             A annotation = org.springframework.core.annotation.AnnotationUtils.findAnnotation(clazz, annotationType);
             //Map<String, Object> memberValues = AnnotationUtils.getAnnotationAttributes(CacheableAspect.class.getAnnotation(Order.class));
             InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
-            Field value = invocationHandler.getClass().getDeclaredField(MEMBER_VALUES);
-            value.setAccessible(true);
-            Map<String, Object> memberValues = (Map<String, Object>) value.get(invocationHandler);
-            return memberValues;
+            Field memberValuesField = invocationHandler.getClass().getDeclaredField(MEMBER_VALUES);
+            ReflectionUtils.makeAccessible(memberValuesField);
+            return (Map<String, Object>) memberValuesField.get(invocationHandler);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            throw new LimiterException(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new LimiterException(e);
         }
-        return new HashMap<>();
     }
 }
