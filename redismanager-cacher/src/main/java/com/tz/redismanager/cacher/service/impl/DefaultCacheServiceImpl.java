@@ -52,6 +52,7 @@ public class DefaultCacheServiceImpl implements ICacheService {
 
     /**
      * 自定义ThreadFactory：重新设置线程的名称
+     *
      * @see Executors#defaultThreadFactory()
      */
     static class RefreshCacheThreadFactory implements ThreadFactory {
@@ -251,10 +252,13 @@ public class DefaultCacheServiceImpl implements ICacheService {
      * 异步刷新缓存
      */
     private void asyncRefreshCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
-        if (!cacheable.l2Cache().enable()) {
+        //未开启异步刷新 或者 未开启二级缓存 或者 二级缓存的过期时间小于等于0 --> 不执行异步刷新缓存
+        if (!cacheable.asyncRefresh() || !cacheable.l2Cache().enable() || cacheable.l2Cache().expireDuration() <= 0) {
             return;
         }
+        //查询剩余过期时间
         Long ttl = this.getL2CacheExpireTime(cacheKey);
+        //当剩余过期时间<=配置的过期时间的一半时才执行异步刷新缓存
         if (null != ttl && -1 != ttl && ttl <= (TimeoutUtils.toSeconds(cacheable.l2Cache().expireDuration(), cacheable.l2Cache().expireUnit()) >> 1)) {
             refreshCacheExecutor.execute(() -> {
                 logger.info("[异步刷新缓存] [{}]", cacheKey);
