@@ -2,11 +2,14 @@ package com.tz.redismanager.cacher.config;
 
 import com.tz.redismanager.cacher.annotation.Cacheable;
 import com.tz.redismanager.cacher.annotation.EnableCacherAutoConfiguration;
-import com.tz.redismanager.cacher.aspect.CacheableAspect;
 import com.tz.redismanager.cacher.aspect.CacheEvictAspect;
+import com.tz.redismanager.cacher.aspect.CacheableAspect;
+import com.tz.redismanager.cacher.aspect.ICacheEvictAspectConfigCustomizer;
+import com.tz.redismanager.cacher.aspect.ICacheableAspectConfigCustomizer;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
+import com.tz.redismanager.cacher.util.AnnotationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -16,17 +19,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>Cache ConfigurationSelector</p>
@@ -92,12 +100,24 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
     }
 
     @Bean
-    public CacheableAspect cacheableAspect(ICacheService cacheService) {
+    public CacheableAspect cacheableAspect(ICacheService cacheService, @Autowired(required = false) ICacheableAspectConfigCustomizer configCustomizer) {
+        if (null != configCustomizer) {
+            int customizeOrder = configCustomizer.customizeOrder();
+            Map<String, Object> memberValues = AnnotationUtils.getAnnotationAttributes(CacheableAspect.class, Order.class);
+            //重新设置Order注解的值
+            memberValues.put("value", customizeOrder);
+        }
         return new CacheableAspect(cacheService);
     }
 
     @Bean
-    public CacheEvictAspect cacheEvictAspect(ICacheService cacheService) {
+    public CacheEvictAspect cacheEvictAspect(ICacheService cacheService, @Autowired(required = false) ICacheEvictAspectConfigCustomizer configCustomizer) {
+        if (null != configCustomizer) {
+            int customizeOrder = configCustomizer.customizeOrder();
+            Map<String, Object> memberValues = AnnotationUtils.getAnnotationAttributes(CacheEvictAspect.class, Order.class);
+            //重新设置Order注解的值
+            memberValues.put("value", customizeOrder);
+        }
         return new CacheEvictAspect(cacheService);
     }
 

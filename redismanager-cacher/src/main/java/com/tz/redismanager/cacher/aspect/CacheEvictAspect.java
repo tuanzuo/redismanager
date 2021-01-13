@@ -18,7 +18,7 @@ import org.springframework.core.annotation.Order;
  * @time 2020-12-20 23:08
  **/
 @Aspect
-@Order(200)
+@Order(200) //https://blog.csdn.net/zzhongcy/article/details/109504563
 public class CacheEvictAspect extends AbstractAspect {
 
     private ICacheService cacheService;
