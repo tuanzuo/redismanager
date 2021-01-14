@@ -26,7 +26,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  */
 @Aspect
 @Component
-@Order(100)
+@Order(50) //https://blog.csdn.net/zzhongcy/article/details/109504563
 public class MethodLogAspect {
 
     private static final Logger logger = TraceLoggerFactory.getLogger(MethodLogAspect.class);

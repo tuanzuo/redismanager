@@ -52,6 +52,7 @@ public class DefaultCacheServiceImpl implements ICacheService {
 
     /**
      * 自定义ThreadFactory：重新设置线程的名称
+     *
      * @see Executors#defaultThreadFactory()
      */
     static class RefreshCacheThreadFactory implements ThreadFactory {
@@ -110,22 +111,6 @@ public class DefaultCacheServiceImpl implements ICacheService {
         //异步刷新缓存
         this.asyncRefreshCache(cacheable, cacheKey, returnType, initCache);
         return result;
-    }
-
-    /**
-     * 异步刷新缓存
-     */
-    private void asyncRefreshCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
-        if (!cacheable.l2Cache().enable()) {
-            return;
-        }
-        Long ttl = this.getL2CacheExpireTime(cacheKey);
-        if (null != ttl && -1 != ttl && ttl <= (TimeoutUtils.toSeconds(cacheable.l2Cache().expireDuration(), cacheable.l2Cache().expireUnit()) >> 1)) {
-            refreshCacheExecutor.execute(() -> {
-                logger.info("[异步刷新缓存] [{}]", cacheKey);
-                this.setCache(cacheable, cacheKey, returnType, false, initCache);
-            });
-        }
     }
 
     @Override
@@ -219,7 +204,7 @@ public class DefaultCacheServiceImpl implements ICacheService {
             }
             //3、回源查询
             result = initCache.apply(null);
-            logger.info("[{}缓存器] [{}] [{}] [回源查询数据完成] [{}]", !reQueryCache ? "刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
+            logger.info("[{}缓存器] [{}] [{}] [回源查询数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
             String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
             CacheData cacheData = new CacheData();
             cacheData.setData(json);
@@ -227,24 +212,24 @@ public class DefaultCacheServiceImpl implements ICacheService {
             if (cacheable.l2Cache().enable()) {
                 cacheData.setType(CACHE_L2);
                 this.setL2Cache(cacheable, cacheKey, JsonUtils.toJsonStr(cacheData));
-                logger.info("[{}缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", !reQueryCache ? "刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
+                logger.info("[{}缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
             }
             //4.2、缓存数据到一级缓存
             if (cacheable.l1Cache().enable()) {
                 cacheData.setType(CACHE_L1);
                 this.setL1Cache(cacheable, cacheKey, JsonUtils.toJsonStr(cacheData));
-                logger.info("[{}缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", !reQueryCache ? "刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
+                logger.info("[{}缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
             }
         } catch (CacherException e) {
             throw e;
         } catch (Exception e) {
-            logger.error("[{}缓存器] [设置缓存异常] [{}]", !reQueryCache ? "刷新" : "", cacheKey, e);
+            logger.error("[{}缓存器] [设置缓存异常] [{}]", !reQueryCache ? "异步刷新" : "", cacheKey, e);
             throw new CacherException(ResultCode.CACHE_LOCK_EXCEPTION);
         } finally {
             try {
                 rLock.unlock();
             } catch (Exception e) {
-                logger.warn("[{}缓存器] [解锁异常] lockKey:{}", !reQueryCache ? "刷新" : "", lockKey, e);
+                logger.warn("[{}缓存器] [解锁异常] lockKey:{}", !reQueryCache ? "异步刷新" : "", lockKey, e);
             }
         }
         return result;
@@ -260,6 +245,25 @@ public class DefaultCacheServiceImpl implements ICacheService {
             stringRedisTemplate.opsForValue().set(cacheKey, cacheValue, l2Cache.expireDuration(), l2Cache.expireUnit());
         } else {
             stringRedisTemplate.opsForValue().set(cacheKey, cacheValue);
+        }
+    }
+
+    /**
+     * 异步刷新缓存
+     */
+    private void asyncRefreshCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
+        //未开启异步刷新 或者 未开启二级缓存 或者 二级缓存的过期时间小于等于0 --> 不执行异步刷新缓存
+        if (!cacheable.asyncRefresh() || !cacheable.l2Cache().enable() || cacheable.l2Cache().expireDuration() <= 0) {
+            return;
+        }
+        //查询剩余过期时间
+        Long ttl = this.getL2CacheExpireTime(cacheKey);
+        //当剩余过期时间<=配置的过期时间的一半时才执行异步刷新缓存
+        if (null != ttl && -1 != ttl && ttl <= (TimeoutUtils.toSeconds(cacheable.l2Cache().expireDuration(), cacheable.l2Cache().expireUnit()) >> 1)) {
+            refreshCacheExecutor.execute(() -> {
+                logger.info("[异步刷新缓存] [{}]", cacheKey);
+                this.setCache(cacheable, cacheKey, returnType, false, initCache);
+            });
         }
     }
 

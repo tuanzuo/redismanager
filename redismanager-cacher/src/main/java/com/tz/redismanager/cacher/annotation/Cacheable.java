@@ -33,6 +33,11 @@ public @interface Cacheable {
     String var() default "";
 
     /**
+     * 是否开启异步刷新缓存，默认true(开启)
+     */
+    boolean asyncRefresh() default true;
+
+    /**
      * 一级缓存
      */
     L1Cache l1Cache() default @L1Cache;

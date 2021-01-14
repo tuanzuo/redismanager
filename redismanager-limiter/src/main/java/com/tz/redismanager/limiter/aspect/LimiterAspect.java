@@ -19,7 +19,7 @@ import org.springframework.core.annotation.Order;
  * @time 2020-12-20 23:08
  **/
 @Aspect
-@Order(100)
+@Order(100) //https://blog.csdn.net/zzhongcy/article/details/109504563
 public class LimiterAspect {
 
     private ILimiterService limiterService;

@@ -1,11 +1,13 @@
 package com.tz.redismanager.limiter.config;
 
 import com.tz.redismanager.limiter.annotation.EnableLimiterAutoConfiguration;
-import com.tz.redismanager.limiter.aspect.LimiterAspect;
 import com.tz.redismanager.limiter.annotation.Limiter;
+import com.tz.redismanager.limiter.aspect.ILimiterAspectConfigCustomizer;
+import com.tz.redismanager.limiter.aspect.LimiterAspect;
 import com.tz.redismanager.limiter.domain.ResultCode;
 import com.tz.redismanager.limiter.exception.LimiterException;
 import com.tz.redismanager.limiter.service.ILimiterService;
+import com.tz.redismanager.limiter.util.AnnotationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -15,17 +17,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>Limiter ConfigurationSelector</p>
@@ -91,7 +98,13 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
     }
 
     @Bean
-    public LimiterAspect limiterAspect(ILimiterService limiterService) {
+    public LimiterAspect limiterAspect(ILimiterService limiterService, @Autowired(required = false) ILimiterAspectConfigCustomizer configCustomizer) {
+        if (null != configCustomizer) {
+            int customizeOrder = configCustomizer.customizeOrder();
+            Map<String, Object> memberValues = AnnotationUtils.getAnnotationAttributes(LimiterAspect.class, Order.class);
+            //重新设置Order注解的值
+            memberValues.put("value", customizeOrder);
+        }
         return new LimiterAspect(limiterService);
     }
 

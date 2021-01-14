@@ -34,7 +34,7 @@ import java.util.Optional;
  */
 @Aspect
 @Component
-@Order(200)
+@Order(150) //https://blog.csdn.net/zzhongcy/article/details/109504563
 public class SetRedisTemplateAspect {
 
     private static final Logger logger = TraceLoggerFactory.getLogger(SetRedisTemplateAspect.class);
