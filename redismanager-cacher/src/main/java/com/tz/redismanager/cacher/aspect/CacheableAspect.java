@@ -9,7 +9,7 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 
 import java.lang.reflect.Type;
 
@@ -21,13 +21,15 @@ import java.lang.reflect.Type;
  * @time 2020-12-20 23:08
  **/
 @Aspect
-@Order(200) //https://blog.csdn.net/zzhongcy/article/details/109504563
-public class CacheableAspect extends AbstractAspect {
+//@Order(200) //https://blog.csdn.net/zzhongcy/article/details/109504563
+public class CacheableAspect extends AbstractAspect implements Ordered {
 
     private ICacheService cacheService;
+    private ICacheableAspectConfigCustomizer configCustomizer;
 
-    public CacheableAspect(ICacheService cacheService) {
+    public CacheableAspect(ICacheService cacheService, ICacheableAspectConfigCustomizer configCustomizer) {
         this.cacheService = cacheService;
+        this.configCustomizer = configCustomizer;
     }
 
     @Around("@annotation(cacheable)")
@@ -49,4 +51,9 @@ public class CacheableAspect extends AbstractAspect {
         });
     }
 
+    @Override
+    public int getOrder() {
+        /**通过实现自定义切面配置服务来修改切面的order*/
+        return null != configCustomizer ? configCustomizer.customizeOrder() : 200;
+    }
 }

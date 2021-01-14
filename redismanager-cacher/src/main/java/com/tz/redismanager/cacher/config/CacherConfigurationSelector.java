@@ -101,17 +101,13 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
 
     @Bean
     public CacheableAspect cacheableAspect(ICacheService cacheService, @Autowired(required = false) ICacheableAspectConfigCustomizer configCustomizer) {
-        if (null != configCustomizer) {
-            int customizeOrder = configCustomizer.customizeOrder();
-            Map<String, Object> memberValues = AnnotationUtils.getAnnotationAttributes(CacheableAspect.class, Order.class);
-            //重新设置Order注解的值
-            memberValues.put("value", customizeOrder);
-        }
-        return new CacheableAspect(cacheService);
+        /**【1】通过注入ICacheableAspectConfigCustomizer服务的方式修改缓存生效切面({@link CacheableAspect})的Order*/
+        return new CacheableAspect(cacheService, configCustomizer);
     }
 
     @Bean
     public CacheEvictAspect cacheEvictAspect(ICacheService cacheService, @Autowired(required = false) ICacheEvictAspectConfigCustomizer configCustomizer) {
+        /**【2】通过反射直接修改@Order注解的value值的方式修改缓存失效切面({@link CacheEvictAspect})的Order*/
         if (null != configCustomizer) {
             int customizeOrder = configCustomizer.customizeOrder();
             Map<String, Object> memberValues = AnnotationUtils.getAnnotationAttributes(CacheEvictAspect.class, Order.class);
