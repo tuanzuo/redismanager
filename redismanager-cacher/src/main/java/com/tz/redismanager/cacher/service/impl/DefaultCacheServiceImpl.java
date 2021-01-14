@@ -208,13 +208,13 @@ public class DefaultCacheServiceImpl implements ICacheService {
             String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
             CacheData cacheData = new CacheData();
             cacheData.setData(json);
-            //4.1、缓存数据到二级缓存
+            //4.1、数据设置到二级缓存
             if (cacheable.l2Cache().enable()) {
                 cacheData.setType(CACHE_L2);
                 this.setL2Cache(cacheable, cacheKey, JsonUtils.toJsonStr(cacheData));
                 logger.info("[{}缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
             }
-            //4.2、缓存数据到一级缓存
+            //4.2、数据设置到一级缓存
             if (cacheable.l1Cache().enable()) {
                 cacheData.setType(CACHE_L1);
                 this.setL1Cache(cacheable, cacheKey, JsonUtils.toJsonStr(cacheData));
