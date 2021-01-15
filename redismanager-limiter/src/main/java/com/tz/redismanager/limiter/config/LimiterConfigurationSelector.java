@@ -104,7 +104,7 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
             //重新设置Order注解的值
             memberValues.put("value", customizeOrder);
         }*/
-        /**【1】通过注入ICacheableAspectConfigCustomizer服务的方式修改缓存生效切面({@link LimiterAspect})的Order*/
+        /**【1】通过注入ILimiterAspectConfigCustomizer服务的方式修改缓存生效切面({@link LimiterAspect})的Order*/
         return new LimiterAspect(limiterService, configCustomizer);
     }
 
