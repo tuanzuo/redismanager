@@ -7,7 +7,6 @@ import com.tz.redismanager.limiter.aspect.LimiterAspect;
 import com.tz.redismanager.limiter.domain.ResultCode;
 import com.tz.redismanager.limiter.exception.LimiterException;
 import com.tz.redismanager.limiter.service.ILimiterService;
-import com.tz.redismanager.limiter.util.AnnotationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -23,7 +22,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationAttributes;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
@@ -99,13 +97,15 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
 
     @Bean
     public LimiterAspect limiterAspect(ILimiterService limiterService, @Autowired(required = false) ILimiterAspectConfigCustomizer configCustomizer) {
-        if (null != configCustomizer) {
+        /**【2】通过反射直接修改@Order注解的value值的方式修改缓存失效切面({@link LimiterAspect})的Order*/
+        /*if (null != configCustomizer) {
             int customizeOrder = configCustomizer.customizeOrder();
             Map<String, Object> memberValues = AnnotationUtils.getAnnotationAttributes(LimiterAspect.class, Order.class);
             //重新设置Order注解的值
             memberValues.put("value", customizeOrder);
-        }
-        return new LimiterAspect(limiterService);
+        }*/
+        /**【1】通过注入ILimiterAspectConfigCustomizer服务的方式修改缓存生效切面({@link LimiterAspect})的Order*/
+        return new LimiterAspect(limiterService, configCustomizer);
     }
 
     private void initLimiter(ILimiterService limiterService) {
