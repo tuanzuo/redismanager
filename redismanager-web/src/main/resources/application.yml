@@ -9,6 +9,13 @@ server:
     #指定错误path
     path: /error
 
+#暴露loggers,caches这几个endpoint
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,caches
+
 spring: 
   profiles: 
     active: local
