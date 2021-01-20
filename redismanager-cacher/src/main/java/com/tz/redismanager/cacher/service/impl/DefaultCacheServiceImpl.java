@@ -128,6 +128,11 @@ public class DefaultCacheServiceImpl implements ICacheService {
         this.initL1Cacher(cacheable.key(), cacheable.l1Cache(), cacheable.l2Cache());
     }
 
+    @Override
+    public Map<String, LoadingCache<String, String>> getL1Cachers() {
+        return l1CacherMap;
+    }
+
     private String getCache(Cacheable cacheable, String cacheKey) {
         String value = null;
         if (cacheable.l1Cache().enable()) {
@@ -171,6 +176,10 @@ public class DefaultCacheServiceImpl implements ICacheService {
             case EXPIRE_AFTER_WRITE:
                 caffeine.expireAfterWrite(l1Cache.expireDuration(), l1Cache.expireUnit());
                 break;
+        }
+        if (l1Cache.recordStats()) {
+            //打开数据收集功能
+            caffeine.recordStats();
         }
         LoadingCache<String, String> loadingCache = caffeine.initialCapacity(l1Cache.initialCapacity())
                 .maximumSize(l1Cache.maximumSize())
