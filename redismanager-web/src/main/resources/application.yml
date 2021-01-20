@@ -14,7 +14,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,loggers,caches
+        include: health,info,loggers,caches,cachers
 
 spring: 
   profiles: 

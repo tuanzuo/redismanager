@@ -1,9 +1,11 @@
 package com.tz.redismanager.cacher.service;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.tz.redismanager.cacher.annotation.CacheEvict;
 import com.tz.redismanager.cacher.annotation.Cacheable;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -45,4 +47,7 @@ public interface ICacheService {
      * @param cacheable
      */
     void initCacher(Cacheable cacheable);
+
+    Map<String, LoadingCache<String, String>> getL1Cachers();
+
 }

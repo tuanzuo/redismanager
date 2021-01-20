@@ -30,4 +30,6 @@ public @interface L1Cache {
 
     TimeUnit expireUnit() default TimeUnit.MINUTES;
 
+    boolean recordStats() default true;
+
 }
