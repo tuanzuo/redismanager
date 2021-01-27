@@ -7,6 +7,7 @@ import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IRedisConfigService;
@@ -39,8 +40,9 @@ public class RedisConfigController {
     private IRedisConfigService redisConfigService;
 
     @RequestMapping("list")
-    @MethodLog(logInputParams = false, logOutputParams = false)
+    @MethodLog(logPrefix = "查询Redis连接信息", logInputParams = false, logOutputParams = false)
     @Auth
+    @Limiter(name = "查询Redis连接信息请求限流", key = "REDIS_CONFIG_LIST_API", qps = 200)
     public ApiResult<?> list(RedisConfigPageParam param, AuthContext authContext) {
         Map<String, List<RedisConfigPO>> map = new HashMap<>();
         param.setUserName(authContext.getUserName());
