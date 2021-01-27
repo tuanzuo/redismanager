@@ -81,8 +81,6 @@ public class CachersEndpoint {
         cacheStats.setTotalLoadTime(stats.totalLoadTime());
         cacheStats.setEvictionCount(stats.evictionCount());
         cacheStats.setEvictionWeight(stats.evictionWeight());
-        stats.missRate();
-        stats.hitRate();
         return cacheStats;
     }
 

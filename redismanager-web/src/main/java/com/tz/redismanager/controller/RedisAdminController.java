@@ -4,6 +4,7 @@ import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.ResultCode;
+import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.service.IRedisAdminService;
 import com.tz.redismanager.service.IRedisConfigService;
@@ -66,6 +67,7 @@ public class RedisAdminController {
     @RequestMapping("key/list")
     @Auth
     @MethodLog(logPrefix = "查询Redis的Key接口", logInputParams = false, logOutputParams = false)
+    @Limiter(name = "查询Redis的Key请求限流", key = "REDIS_ADMIN_KEY_LIST_API", qps = 200)
     public ApiResult<?> keyList(@NotEmpty(message = "id不能为空") String id, @NotEmpty(message = "查询条件不能为空") String searchKey) {
         Map<String, Object> map = new HashMap<>();
         map.put("keyList", redisAdminService.searchKey(id, searchKey));
@@ -75,6 +77,7 @@ public class RedisAdminController {
     @RequestMapping("key/value")
     @Auth
     @MethodLog(logPrefix = "查询Redis的Key对应value接口", logInputParams = false, logOutputParams = false)
+    @Limiter(name = "查询Redis的Key对应value请求限流", key = "REDIS_ADMIN_KEY_VALUE_API", qps = 200)
     public ApiResult<?> keyValue(@Validated @RequestBody RedisValueQueryVO vo) {
         Map<String, Object> map = new HashMap<>();
         map.put("keyValue", redisAdminService.searchKeyValue(vo));

@@ -5,6 +5,7 @@ import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.UserPageParam;
 import com.tz.redismanager.domain.vo.UserVO;
+import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IUserService;
@@ -84,8 +85,9 @@ public class UserController {
     }
 
     @RequestMapping("list")
-    @MethodLog(logInputParams = false, logOutputParams = false)
+    @MethodLog(logPrefix = "查询用户列表", logInputParams = false, logOutputParams = false)
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    @Limiter(name = "查询用户列表请求限流", key = "USER_LIST_API", qps = 200)
     public ApiResult<?> list(UserPageParam param) {
         return userService.queryList(param);
     }

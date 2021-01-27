@@ -5,6 +5,7 @@ import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
 import com.tz.redismanager.domain.vo.RoleVO;
+import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.service.IRoleService;
 import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
@@ -47,8 +48,9 @@ public class RoleController {
     }
 
     @RequestMapping("list")
-    @MethodLog(logInputParams = false, logOutputParams = false)
+    @MethodLog(logPrefix = "查询角色列表", logInputParams = false, logOutputParams = false)
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
+    @Limiter(name = "查询角色列表请求限流", key = "ROLE_LIST_API", qps = 200)
     public ApiResult<?> list(RolePageParam param) {
         return roleService.queryList(param);
     }

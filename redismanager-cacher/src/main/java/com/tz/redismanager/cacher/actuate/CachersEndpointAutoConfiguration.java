@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 /**
  * <p>缓存器Endpoint的自动配置</p>
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
  * @version 1.6.0
  * @time 2021-01-21 0:41
  **/
-@Component
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnAvailableEndpoint(endpoint = CachersEndpoint.class)
 public class CachersEndpointAutoConfiguration {
