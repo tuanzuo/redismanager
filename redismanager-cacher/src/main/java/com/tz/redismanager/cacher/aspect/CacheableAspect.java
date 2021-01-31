@@ -9,6 +9,8 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 
 import java.lang.reflect.Type;
@@ -23,6 +25,8 @@ import java.lang.reflect.Type;
 @Aspect
 //@Order(200) //https://blog.csdn.net/zzhongcy/article/details/109504563
 public class CacheableAspect extends AbstractAspect implements Ordered {
+
+    private static final Logger logger = LoggerFactory.getLogger(CacheableAspect.class);
 
     private ICacheService cacheService;
     private ICacheableAspectConfigCustomizer configCustomizer;
@@ -46,6 +50,7 @@ public class CacheableAspect extends AbstractAspect implements Ordered {
             try {
                 return joinPoint.proceed();
             } catch (Throwable throwable) {
+                logger.error("[缓存器] [{}] [{}] [回源查询异常] [{}]", cacheable.key(), cacheable.name(), cacheKey, throwable);
                 throw new CacherException(ResultCode.GET_ORI_RESULT_EXCEPTION, throwable);
             }
         });
