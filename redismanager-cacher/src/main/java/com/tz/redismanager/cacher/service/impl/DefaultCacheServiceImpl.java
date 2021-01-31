@@ -7,7 +7,6 @@ import com.tz.redismanager.cacher.annotation.Cacheable;
 import com.tz.redismanager.cacher.annotation.L1Cache;
 import com.tz.redismanager.cacher.annotation.L2Cache;
 import com.tz.redismanager.cacher.constant.ConstInterface;
-import com.tz.redismanager.cacher.domain.CacheData;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
@@ -20,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.TimeoutUtils;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
@@ -43,12 +43,17 @@ public class DefaultCacheServiceImpl implements ICacheService {
 
     private static final String CACHE_LOCK_KEY_PRE = "rm:cache:lck:";
     private static final String CACHE_EMPTY_VALUE = "RM_CACHE_EMPTY_VALUE";
-    private static final String CACHE_L1 = "L1";
-    private static final String CACHE_L2 = "L2";
 
     private ExecutorService refreshCacheExecutor = new ThreadPoolExecutor(10, 20,
             500L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>(), new RefreshCacheThreadFactory(), new ThreadPoolExecutor.DiscardPolicy());
+            new LinkedBlockingQueue<>(),
+            //自定义线程名称方式1：使用guava中的ThreadFactoryBuilder
+            //new ThreadFactoryBuilder().setNameFormat("RefreshCache-thread-%d").build(),
+            //自定义线程名称方式2：使用spring的CustomizableThreadFactory
+            new CustomizableThreadFactory("RefreshCache-thread-"),
+            //自定义线程名称方式3：自定义ThreadFactory
+            //new RefreshCacheThreadFactory(),
+            new ThreadPoolExecutor.DiscardPolicy());
 
     /**
      * 自定义ThreadFactory：重新设置线程的名称
@@ -66,9 +71,8 @@ public class DefaultCacheServiceImpl implements ICacheService {
             group = (s != null) ? s.getThreadGroup() :
                     Thread.currentThread().getThreadGroup();
             //重新设置线程的名称
-            namePrefix = "refresh-cache-" +
-                    poolNumber.getAndIncrement() +
-                    "-thread-";
+            namePrefix = "RefreshCache-thread-" +
+                    poolNumber.getAndIncrement();
         }
 
         @Override
@@ -76,10 +80,12 @@ public class DefaultCacheServiceImpl implements ICacheService {
             Thread t = new Thread(group, r,
                     namePrefix + threadNumber.getAndIncrement(),
                     0);
-            if (t.isDaemon())
+            if (t.isDaemon()) {
                 t.setDaemon(false);
-            if (t.getPriority() != Thread.NORM_PRIORITY)
+            }
+            if (t.getPriority() != Thread.NORM_PRIORITY) {
                 t.setPriority(Thread.NORM_PRIORITY);
+            }
             return t;
         }
     }
@@ -101,10 +107,8 @@ public class DefaultCacheServiceImpl implements ICacheService {
         Object result = null;
         String value = this.getCache(cacheable, cacheKey);
         if (StringUtils.isNotBlank(value)) {
-            CacheData cacheData = JsonUtils.parseObject(value, CacheData.class);
-            logger.info("[首次查询命中{}缓存] [{}]", cacheData.getType(), cacheKey);
-            String data = cacheData.getData();
-            result = CACHE_EMPTY_VALUE.equals(data) ? null : JsonUtils.parseObject(data, returnType);
+            logger.info("[首次查询命中缓存] [{}]", cacheKey);
+            result = CACHE_EMPTY_VALUE.equals(value) ? null : JsonUtils.parseObject(value, returnType);
         } else {
             result = this.setCache(cacheable, cacheKey, returnType, true, initCache);
         }
@@ -145,10 +149,12 @@ public class DefaultCacheServiceImpl implements ICacheService {
     }
 
     private String getL1Cache(Cacheable cacheable, String cacheKey) {
+        logger.info("[查询一级缓存] [{}]", cacheKey);
         return this.getL1Cacher(cacheable).get(cacheKey);
     }
 
     private String getL2Cache(String cacheKey) {
+        logger.info("[查询二级缓存] [{}]", cacheKey);
         return stringRedisTemplate.opsForValue().get(cacheKey);
     }
 
@@ -203,30 +209,23 @@ public class DefaultCacheServiceImpl implements ICacheService {
             if (reQueryCache) {
                 //2、加锁成功，再次查询
                 String value = this.getCache(cacheable, cacheKey);
-                if (CACHE_EMPTY_VALUE.equals(value)) {
-                    return null;
-                }
                 if (StringUtils.isNotBlank(value)) {
                     logger.info("[再次查询命中缓存] [{}]", cacheKey);
-                    return JsonUtils.parseObject(value, returnType);
+                    return CACHE_EMPTY_VALUE.equals(value) ? null : JsonUtils.parseObject(value, returnType);
                 }
             }
             //3、回源查询
             result = initCache.apply(null);
             logger.info("[{}缓存器] [{}] [{}] [回源查询数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
             String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
-            CacheData cacheData = new CacheData();
-            cacheData.setData(json);
             //4.1、数据设置到二级缓存
             if (cacheable.l2Cache().enable()) {
-                cacheData.setType(CACHE_L2);
-                this.setL2Cache(cacheable, cacheKey, JsonUtils.toJsonStr(cacheData));
+                this.setL2Cache(cacheable, cacheKey, json);
                 logger.info("[{}缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
             }
             //4.2、数据设置到一级缓存
             if (cacheable.l1Cache().enable()) {
-                cacheData.setType(CACHE_L1);
-                this.setL1Cache(cacheable, cacheKey, JsonUtils.toJsonStr(cacheData));
+                this.setL1Cache(cacheable, cacheKey, json);
                 logger.info("[{}缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
             }
         } catch (CacherException e) {
