@@ -57,41 +57,6 @@ public class DefaultCacheServiceImpl implements ICacheService {
             //new RefreshCacheThreadFactory(),
             new ThreadPoolExecutor.DiscardPolicy());
 
-    /**
-     * 自定义ThreadFactory：重新设置线程的名称
-     *
-     * @see Executors#defaultThreadFactory()
-     */
-    static class RefreshCacheThreadFactory implements ThreadFactory {
-        private static final AtomicInteger poolNumber = new AtomicInteger(1);
-        private final ThreadGroup group;
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private final String namePrefix;
-
-        RefreshCacheThreadFactory() {
-            SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup() :
-                    Thread.currentThread().getThreadGroup();
-            //重新设置线程的名称
-            namePrefix = "RefreshCache-thread-" +
-                    poolNumber.getAndIncrement();
-        }
-
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(group, r,
-                    namePrefix + threadNumber.getAndIncrement(),
-                    0);
-            if (t.isDaemon()) {
-                t.setDaemon(false);
-            }
-            if (t.getPriority() != Thread.NORM_PRIORITY) {
-                t.setPriority(Thread.NORM_PRIORITY);
-            }
-            return t;
-        }
-    }
-
     private static Map<String, LoadingCache<String, String>> l1CacherMap = new ConcurrentHashMap<>();
 
     @Autowired
@@ -331,6 +296,41 @@ public class DefaultCacheServiceImpl implements ICacheService {
         private long totalLoadTime;
         private long evictionCount;
         private long evictionWeight;
+    }
+
+    /**
+     * 自定义ThreadFactory：重新设置线程的名称
+     *
+     * @see Executors#defaultThreadFactory()
+     */
+    static class RefreshCacheThreadFactory implements ThreadFactory {
+        private static final AtomicInteger poolNumber = new AtomicInteger(1);
+        private final ThreadGroup group;
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final String namePrefix;
+
+        RefreshCacheThreadFactory() {
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup() :
+                    Thread.currentThread().getThreadGroup();
+            //重新设置线程的名称
+            namePrefix = "RefreshCache-thread-" +
+                    poolNumber.getAndIncrement();
+        }
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(group, r,
+                    namePrefix + threadNumber.getAndIncrement(),
+                    0);
+            if (t.isDaemon()) {
+                t.setDaemon(false);
+            }
+            if (t.getPriority() != Thread.NORM_PRIORITY) {
+                t.setPriority(Thread.NORM_PRIORITY);
+            }
+            return t;
+        }
     }
 
 }
