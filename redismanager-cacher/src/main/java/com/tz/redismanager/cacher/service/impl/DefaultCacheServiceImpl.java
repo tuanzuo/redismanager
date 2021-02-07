@@ -11,7 +11,10 @@ import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
 import com.tz.redismanager.cacher.util.JsonUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -23,8 +26,7 @@ import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -133,8 +135,28 @@ public class DefaultCacheServiceImpl implements ICacheService {
     }
 
     @Override
-    public Map<String, LoadingCache<String, String>> getL1Cachers() {
-        return l1CacherMap;
+    public Map<String, Object> getL1CacherInfo(String cacherName) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        if (StringUtils.isNotBlank(cacherName)) {
+            LoadingCache<String, String> l1Cache = l1CacherMap.get(cacherName);
+            if (null == l1Cache) {
+                return result;
+            }
+            result.put("name", cacherName);
+            result.put("estimatedSize", l1Cache.estimatedSize());
+            result.put("cacheStats", this.buildCacheStats(l1Cache));
+            return result;
+        }
+        result.put("l1CacherCount", l1CacherMap.size());
+        List<CacherData> details = new ArrayList<>();
+        l1CacherMap.forEach((key, value) -> {
+            CacherData data = new CacherData();
+            data.setName(key);
+            data.setEstimatedSize(l1CacherMap.get(key).estimatedSize());
+            details.add(data);
+        });
+        result.put("details", details);
+        return result;
     }
 
     private String getCache(Cacheable cacheable, String cacheKey) {
@@ -273,6 +295,42 @@ public class DefaultCacheServiceImpl implements ICacheService {
                 this.setCache(cacheable, cacheKey, returnType, false, initCache);
             });
         }
+    }
+
+    private CacheStats buildCacheStats(LoadingCache<String, String> l1Cache) {
+        com.github.benmanes.caffeine.cache.stats.@NonNull CacheStats stats = l1Cache.stats();
+        CacheStats cacheStats = new CacheStats();
+        cacheStats.setHitCount(stats.hitCount());
+        cacheStats.setMissCount(stats.missCount());
+        cacheStats.setHitRate(stats.hitRate());
+        cacheStats.setMissRate(stats.missRate());
+        cacheStats.setLoadSuccessCount(stats.loadSuccessCount());
+        cacheStats.setLoadFailureCount(stats.loadFailureCount());
+        cacheStats.setTotalLoadTime(stats.totalLoadTime());
+        cacheStats.setEvictionCount(stats.evictionCount());
+        cacheStats.setEvictionWeight(stats.evictionWeight());
+        return cacheStats;
+    }
+
+    @Getter
+    @Setter
+    public static class CacherData {
+        private String name;
+        private Long estimatedSize;
+    }
+
+    @Getter
+    @Setter
+    public static class CacheStats {
+        private long hitCount;
+        private long missCount;
+        private double missRate;
+        private double hitRate;
+        private long loadSuccessCount;
+        private long loadFailureCount;
+        private long totalLoadTime;
+        private long evictionCount;
+        private long evictionWeight;
     }
 
 }

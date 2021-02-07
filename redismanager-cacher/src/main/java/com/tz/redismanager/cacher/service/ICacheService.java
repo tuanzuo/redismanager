@@ -1,6 +1,5 @@
 package com.tz.redismanager.cacher.service;
 
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.tz.redismanager.cacher.annotation.CacheEvict;
 import com.tz.redismanager.cacher.annotation.Cacheable;
 
@@ -48,6 +47,11 @@ public interface ICacheService {
      */
     void initCacher(Cacheable cacheable);
 
-    Map<String, LoadingCache<String, String>> getL1Cachers();
+    /**
+     * 得到一级缓存器信息
+     * @param cacherName
+     * @return
+     */
+    Map<String, Object> getL1CacherInfo(String cacherName);
 
 }
