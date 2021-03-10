@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.tz.redismanager.limiter.constant.ConstInterface;
 import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.limiter.service.ILimiterService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @time 2020-12-21 22:12
  **/
 @Service
+@ConditionalOnClass(RateLimiter.class)
 public class GuavaRateLimiterServiceImpl implements ILimiterService {
 
     private static ConcurrentHashMap<String, RateLimiter> limiterMap = new ConcurrentHashMap<>();
