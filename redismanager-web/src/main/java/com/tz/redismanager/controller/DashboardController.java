@@ -8,6 +8,7 @@ import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.service.IDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +30,7 @@ public class DashboardController {
     @Auth
     @MethodLog(logPrefix = "查询分析数据", logInputParams = false, logOutputParams = false)
     @Limiter(name = "查询分析数据请求限流", key = "DASHBOARD_ANALYSIS_API", qps = 200)
-    public ApiResult<?> analysis(@RequestBody AnalysisParam param) {
+    public ApiResult<?> analysis(@RequestBody @Validated AnalysisParam param) {
         return new ApiResult<>(ResultCode.SUCCESS, dashboardService.analysis(param));
     }
 

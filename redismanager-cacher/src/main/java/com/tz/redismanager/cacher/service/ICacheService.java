@@ -1,7 +1,6 @@
 package com.tz.redismanager.cacher.service;
 
-import com.tz.redismanager.cacher.annotation.CacheEvict;
-import com.tz.redismanager.cacher.annotation.Cacheable;
+import com.tz.redismanager.cacher.config.CacherConfig;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -26,26 +25,26 @@ public interface ICacheService {
 
     /**
      * 得到缓存
-     * @param cacheable
+     * @param cacherConfig
      * @param cacheKey
      * @param returnType
      * @param initCache
      * @return
      */
-    Object getCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache);
+    Object getCache(CacherConfig cacherConfig, String cacheKey, Type returnType, Function<Object, Object> initCache);
 
     /**
      * 失效缓存
      *
      * @param cacheKey 缓存key
      */
-    void invalidateCache(CacheEvict cacheEvict, String cacheKey);
+    void invalidateCache(CacherConfig cacherConfig, String cacheKey);
 
     /**
      * 初始化缓存器
-     * @param cacheable
+     * @param cacherConfig
      */
-    void initCacher(Cacheable cacheable);
+    void initCacher(CacherConfig cacherConfig);
 
     /**
      * 得到一级缓存器信息

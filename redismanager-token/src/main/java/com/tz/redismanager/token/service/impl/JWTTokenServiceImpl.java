@@ -15,6 +15,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import java.util.Optional;
  * @time 2020-11-06 0:39
  **/
 @Service
+@ConditionalOnClass(Jwts.class)
 public class JWTTokenServiceImpl implements ITokenService {
 
     private static final Logger logger = LoggerFactory.getLogger(JWTTokenServiceImpl.class);

@@ -1,14 +1,18 @@
 package com.tz.redismanager.cacher.aspect;
 
 import com.tz.redismanager.cacher.annotation.CacheEvict;
+import com.tz.redismanager.cacher.config.CacherConfig;
 import com.tz.redismanager.cacher.domain.InvocationStrategy;
 import com.tz.redismanager.cacher.service.ICacheService;
+import com.tz.redismanager.cacher.service.ICacherConfigService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
+
+import java.util.Optional;
 
 /**
  * <p>缓存失效切面</p>
@@ -22,9 +26,11 @@ import org.springframework.core.annotation.Order;
 public class CacheEvictAspect extends AbstractAspect {
 
     private ICacheService cacheService;
+    private ICacherConfigService cacherConfigService;
 
-    public CacheEvictAspect(ICacheService cacheService) {
+    public CacheEvictAspect(ICacheService cacheService, ICacherConfigService cacherConfigService) {
         this.cacheService = cacheService;
+        this.cacherConfigService = cacherConfigService;
     }
 
     @Around("@annotation(cacheEvict)")
@@ -35,13 +41,14 @@ public class CacheEvictAspect extends AbstractAspect {
             return joinPoint.proceed();
         }
         String cacheKey = this.resolveCacheKey(joinPoint, cacheEvict.key(), cacheEvict.var());
+        CacherConfig cacherConfig = Optional.ofNullable(cacherConfigService.get(cacheEvict.key())).orElse(cacherConfigService.convertCacheEvict(cacheEvict));
         InvocationStrategy invocationStrategy = cacheEvict.invocation();
         if (InvocationStrategy.BEFORE == invocationStrategy) {
-            cacheService.invalidateCache(cacheEvict, cacheKey);
+            cacheService.invalidateCache(cacherConfig, cacheKey);
         }
         Object result = joinPoint.proceed();
         if (InvocationStrategy.AFTER == invocationStrategy) {
-            cacheService.invalidateCache(cacheEvict, cacheKey);
+            cacheService.invalidateCache(cacherConfig, cacheKey);
         }
         return result;
     }
