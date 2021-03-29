@@ -1,9 +1,11 @@
 package com.tz.redismanager.cacher.aspect;
 
 import com.tz.redismanager.cacher.annotation.Cacheable;
+import com.tz.redismanager.cacher.config.CacherConfig;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
+import com.tz.redismanager.cacher.service.ICacherConfigService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 
 import java.lang.reflect.Type;
+import java.util.Optional;
 
 /**
  * <p>缓存生效切面</p>
@@ -29,10 +32,12 @@ public class CacheableAspect extends AbstractAspect implements Ordered {
     private static final Logger logger = LoggerFactory.getLogger(CacheableAspect.class);
 
     private ICacheService cacheService;
+    private ICacherConfigService cacherConfigService;
     private ICacheableAspectConfigCustomizer configCustomizer;
 
-    public CacheableAspect(ICacheService cacheService, ICacheableAspectConfigCustomizer configCustomizer) {
+    public CacheableAspect(ICacheService cacheService, ICacherConfigService cacherConfigService, ICacheableAspectConfigCustomizer configCustomizer) {
         this.cacheService = cacheService;
+        this.cacherConfigService = cacherConfigService;
         this.configCustomizer = configCustomizer;
     }
 
@@ -46,7 +51,8 @@ public class CacheableAspect extends AbstractAspect implements Ordered {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Type genericReturnType = methodSignature.getMethod().getGenericReturnType();
         String cacheKey = this.resolveCacheKey(joinPoint, cacheable.key(), cacheable.var());
-        return cacheService.getCache(cacheable, cacheKey, genericReturnType, (temp) -> {
+        CacherConfig cacherConfig = Optional.ofNullable(cacherConfigService.get(cacheable.key())).orElse(cacherConfigService.convertCacheable(cacheable));
+        return cacheService.getCache(cacherConfig, cacheKey, genericReturnType, (temp) -> {
             try {
                 return joinPoint.proceed();
             } catch (Throwable throwable) {

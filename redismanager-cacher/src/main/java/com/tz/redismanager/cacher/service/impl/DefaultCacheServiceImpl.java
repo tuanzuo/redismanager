@@ -2,10 +2,9 @@ package com.tz.redismanager.cacher.service.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.tz.redismanager.cacher.annotation.CacheEvict;
-import com.tz.redismanager.cacher.annotation.Cacheable;
-import com.tz.redismanager.cacher.annotation.L1Cache;
-import com.tz.redismanager.cacher.annotation.L2Cache;
+import com.tz.redismanager.cacher.config.CacherConfig;
+import com.tz.redismanager.cacher.config.L1CacheConfig;
+import com.tz.redismanager.cacher.config.L2CacheConfig;
 import com.tz.redismanager.cacher.constant.ConstInterface;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
@@ -70,33 +69,33 @@ public class DefaultCacheServiceImpl implements ICacheService {
     }
 
     @Override
-    public Object getCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
+    public Object getCache(CacherConfig cacherConfig, String cacheKey, Type returnType, Function<Object, Object> initCache) {
         Object result = null;
-        String value = this.getCache(cacheable, cacheKey);
+        String value = this.getCache(cacherConfig, cacheKey);
         if (StringUtils.isNotBlank(value)) {
             logger.info("[首次查询命中缓存] [{}]", cacheKey);
             result = CACHE_EMPTY_VALUE.equals(value) ? null : JsonUtils.parseObject(value, returnType);
         } else {
-            result = this.setCache(cacheable, cacheKey, returnType, true, initCache);
+            result = this.setCache(cacherConfig, cacheKey, returnType, true, initCache);
         }
         //异步刷新缓存
-        this.asyncRefreshCache(cacheable, cacheKey, returnType, initCache);
+        this.asyncRefreshCache(cacherConfig, cacheKey, returnType, initCache);
         return result;
     }
 
     @Override
-    public void invalidateCache(CacheEvict cacheEvict, String cacheKey) {
-        if (cacheEvict.l1Cache().enable()) {
-            this.getL1Cacher(cacheEvict.key(), cacheEvict.l1Cache(), cacheEvict.l2Cache()).invalidate(cacheKey);
+    public void invalidateCache(CacherConfig cacherConfig, String cacheKey) {
+        if (cacherConfig.getL1Cache().isEnable()) {
+            this.getL1Cacher(cacherConfig.getKey(), cacherConfig.getL1Cache(), cacherConfig.getL2Cache()).invalidate(cacheKey);
         }
-        if (cacheEvict.l2Cache().enable()) {
+        if (cacherConfig.getL2Cache().isEnable()) {
             stringRedisTemplate.delete(cacheKey);
         }
     }
 
     @Override
-    public void initCacher(Cacheable cacheable) {
-        this.initL1Cacher(cacheable.key(), cacheable.l1Cache(), cacheable.l2Cache());
+    public void initCacher(CacherConfig cacherConfig) {
+        this.initL1Cacher(cacherConfig.getKey(), cacherConfig.getL1Cache(), cacherConfig.getL2Cache());
     }
 
     @Override
@@ -124,20 +123,20 @@ public class DefaultCacheServiceImpl implements ICacheService {
         return result;
     }
 
-    private String getCache(Cacheable cacheable, String cacheKey) {
+    private String getCache(CacherConfig cacherConfig, String cacheKey) {
         String value = null;
-        if (cacheable.l1Cache().enable()) {
+        if (cacherConfig.getL1Cache().isEnable()) {
             /**当一级缓存不存在时如果二级缓存开启则会查询二级缓存-->{@link DefaultCacheServiceImpl#initL1Cacher}中LoadingCache.build时*/
-            value = this.getL1Cache(cacheable, cacheKey);
-        } else if (cacheable.l2Cache().enable()) {
+            value = this.getL1Cache(cacherConfig, cacheKey);
+        } else if (cacherConfig.getL2Cache().isEnable()) {
             value = this.getL2Cache(cacheKey);
         }
         return value;
     }
 
-    private String getL1Cache(Cacheable cacheable, String cacheKey) {
+    private String getL1Cache(CacherConfig cacherConfig, String cacheKey) {
         logger.info("[查询一级缓存] [{}]", cacheKey);
-        return this.getL1Cacher(cacheable).get(cacheKey);
+        return this.getL1Cacher(cacherConfig).get(cacheKey);
     }
 
     private String getL2Cache(String cacheKey) {
@@ -149,42 +148,42 @@ public class DefaultCacheServiceImpl implements ICacheService {
         return stringRedisTemplate.getExpire(cacheKey);
     }
 
-    private LoadingCache<String, String> getL1Cacher(Cacheable cacheable) {
-        return this.getL1Cacher(cacheable.key(), cacheable.l1Cache(), cacheable.l2Cache());
+    private LoadingCache<String, String> getL1Cacher(CacherConfig cacherConfig) {
+        return this.getL1Cacher(cacherConfig.getKey(), cacherConfig.getL1Cache(), cacherConfig.getL2Cache());
     }
 
-    private LoadingCache<String, String> getL1Cacher(String cacherKey, L1Cache l1Cache, L2Cache l2Cache) {
+    private LoadingCache<String, String> getL1Cacher(String cacherKey, L1CacheConfig l1Cache, L2CacheConfig l2Cache) {
         if (l1CacherMap.containsKey(cacherKey)) {
             return l1CacherMap.get(cacherKey);
         }
         return this.initL1Cacher(cacherKey, l1Cache, l2Cache);
     }
 
-    private LoadingCache<String, String> initL1Cacher(String cacherKey, L1Cache l1Cache, L2Cache l2Cache) {
+    private LoadingCache<String, String> initL1Cacher(String cacherKey, L1CacheConfig l1Cache, L2CacheConfig l2Cache) {
         Caffeine<Object, Object> caffeine = Caffeine.newBuilder();
-        switch (l1Cache.expireStrategy()) {
+        switch (l1Cache.getExpireStrategy()) {
             case EXPIRE_AFTER_ACCESS:
-                caffeine.expireAfterAccess(l1Cache.expireDuration(), l1Cache.expireUnit());
+                caffeine.expireAfterAccess(l1Cache.getExpireDuration(), l1Cache.getExpireUnit());
                 break;
             case EXPIRE_AFTER_WRITE:
-                caffeine.expireAfterWrite(l1Cache.expireDuration(), l1Cache.expireUnit());
+                caffeine.expireAfterWrite(l1Cache.getExpireDuration(), l1Cache.getExpireUnit());
                 break;
         }
-        if (l1Cache.recordStats()) {
+        if (l1Cache.isRecordStats()) {
             //打开数据收集功能
             caffeine.recordStats();
         }
-        LoadingCache<String, String> loadingCache = caffeine.initialCapacity(l1Cache.initialCapacity())
-                .maximumSize(l1Cache.maximumSize())
+        LoadingCache<String, String> loadingCache = caffeine.initialCapacity(l1Cache.getInitialCapacity())
+                .maximumSize(l1Cache.getMaximumSize())
                 /**
                  * 1、param的值等于{@link LoadingCache#get(Object)方法的入参}<br/>
                  * 2、当一级缓存的数据不存在时如果开启了二级缓存就查询二级缓存的数据返回，否则返回null<br/>
                  */
-                .build((param) -> l2Cache.enable() ? this.getL2Cache(param) : null);
+                .build((param) -> l2Cache.isEnable() ? this.getL2Cache(param) : null);
         return Optional.ofNullable(l1CacherMap.putIfAbsent(cacherKey, loadingCache)).orElse(loadingCache);
     }
 
-    private Object setCache(Cacheable cacheable, String cacheKey, Type returnType, boolean reQueryCache, Function<Object, Object> initCache) {
+    private Object setCache(CacherConfig cacherConfig, String cacheKey, Type returnType, boolean reQueryCache, Function<Object, Object> initCache) {
         Object result = null;
         String lockKey = CACHE_LOCK_KEY_PRE + cacheKey;
         RLock rLock = redissonClient.getLock(lockKey);
@@ -195,7 +194,7 @@ public class DefaultCacheServiceImpl implements ICacheService {
             }
             if (reQueryCache) {
                 //2、加锁成功，再次查询
-                String value = this.getCache(cacheable, cacheKey);
+                String value = this.getCache(cacherConfig, cacheKey);
                 if (StringUtils.isNotBlank(value)) {
                     logger.info("[再次查询命中缓存] [{}]", cacheKey);
                     return CACHE_EMPTY_VALUE.equals(value) ? null : JsonUtils.parseObject(value, returnType);
@@ -203,17 +202,17 @@ public class DefaultCacheServiceImpl implements ICacheService {
             }
             //3、回源查询
             result = initCache.apply(null);
-            logger.info("[{}缓存器] [{}] [{}] [回源查询数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
+            logger.info("[{}缓存器] [{}] [{}] [回源查询数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacherConfig.getKey(), cacherConfig.getName(), cacheKey);
             String json = null == result ? CACHE_EMPTY_VALUE : JsonUtils.toJsonStr(result);
             //4.1、数据设置到二级缓存
-            if (cacheable.l2Cache().enable()) {
-                this.setL2Cache(cacheable, cacheKey, json);
-                logger.info("[{}缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
+            if (cacherConfig.getL2Cache().isEnable()) {
+                this.setL2Cache(cacherConfig, cacheKey, json);
+                logger.info("[{}缓存器] [{}] [{}] [初始化二级缓存数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacherConfig.getKey(), cacherConfig.getName(), cacheKey);
             }
             //4.2、数据设置到一级缓存
-            if (cacheable.l1Cache().enable()) {
-                this.setL1Cache(cacheable, cacheKey, json);
-                logger.info("[{}缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacheable.key(), cacheable.name(), cacheKey);
+            if (cacherConfig.getL1Cache().isEnable()) {
+                this.setL1Cache(cacherConfig, cacheKey, json);
+                logger.info("[{}缓存器] [{}] [{}] [初始化一级缓存数据完成] [{}]", !reQueryCache ? "异步刷新" : "", cacherConfig.getKey(), cacherConfig.getName(), cacheKey);
             }
         } catch (CacherException e) {
             throw e;
@@ -230,14 +229,14 @@ public class DefaultCacheServiceImpl implements ICacheService {
         return result;
     }
 
-    private void setL1Cache(Cacheable cacheable, String cacheKey, String cacheValue) {
-        this.getL1Cacher(cacheable).put(cacheKey, cacheValue);
+    private void setL1Cache(CacherConfig cacherConfig, String cacheKey, String cacheValue) {
+        this.getL1Cacher(cacherConfig).put(cacheKey, cacheValue);
     }
 
-    private void setL2Cache(Cacheable cacheable, String cacheKey, String cacheValue) {
-        L2Cache l2Cache = cacheable.l2Cache();
-        if (l2Cache.expireDuration() > 0) {
-            stringRedisTemplate.opsForValue().set(cacheKey, cacheValue, l2Cache.expireDuration(), l2Cache.expireUnit());
+    private void setL2Cache(CacherConfig cacheable, String cacheKey, String cacheValue) {
+        L2CacheConfig l2Cache = cacheable.getL2Cache();
+        if (l2Cache.getExpireDuration() > 0) {
+            stringRedisTemplate.opsForValue().set(cacheKey, cacheValue, l2Cache.getExpireDuration(), l2Cache.getExpireUnit());
         } else {
             stringRedisTemplate.opsForValue().set(cacheKey, cacheValue);
         }
@@ -246,18 +245,18 @@ public class DefaultCacheServiceImpl implements ICacheService {
     /**
      * 异步刷新缓存
      */
-    private void asyncRefreshCache(Cacheable cacheable, String cacheKey, Type returnType, Function<Object, Object> initCache) {
+    private void asyncRefreshCache(CacherConfig cacherConfig, String cacheKey, Type returnType, Function<Object, Object> initCache) {
         //未开启异步刷新 或者 未开启二级缓存 或者 二级缓存的过期时间小于等于0 --> 不执行异步刷新缓存
-        if (!cacheable.asyncRefresh() || !cacheable.l2Cache().enable() || cacheable.l2Cache().expireDuration() <= 0) {
+        if (!cacherConfig.isAsyncRefresh() || !cacherConfig.getL2Cache().isEnable() || cacherConfig.getL2Cache().getExpireDuration() <= 0) {
             return;
         }
         //查询剩余过期时间
         Long ttl = this.getL2CacheExpireTime(cacheKey);
         //当剩余过期时间<=配置的过期时间的一半时才执行异步刷新缓存
-        if (null != ttl && -1 != ttl && ttl <= (TimeoutUtils.toSeconds(cacheable.l2Cache().expireDuration(), cacheable.l2Cache().expireUnit()) >> 1)) {
+        if (null != ttl && -1 != ttl && ttl <= (TimeoutUtils.toSeconds(cacherConfig.getL2Cache().getExpireDuration(), cacherConfig.getL2Cache().getExpireUnit()) >> 1)) {
             refreshCacheExecutor.execute(() -> {
                 logger.info("[异步刷新缓存] [{}]", cacheKey);
-                this.setCache(cacheable, cacheKey, returnType, false, initCache);
+                this.setCache(cacherConfig, cacheKey, returnType, false, initCache);
             });
         }
     }

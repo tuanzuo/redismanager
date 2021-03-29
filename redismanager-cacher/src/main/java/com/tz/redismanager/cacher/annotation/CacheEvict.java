@@ -35,6 +35,11 @@ public @interface CacheEvict {
     String var();
 
     /**
+     * 是否开启异步刷新缓存，默认true(开启)
+     */
+    boolean asyncRefresh() default true;
+
+    /**
      * 在方法执行前或者执行后清理缓存
      */
     InvocationStrategy invocation() default InvocationStrategy.AFTER;

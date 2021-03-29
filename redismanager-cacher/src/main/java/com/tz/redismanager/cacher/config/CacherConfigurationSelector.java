@@ -9,6 +9,8 @@ import com.tz.redismanager.cacher.aspect.ICacheableAspectConfigCustomizer;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
+import com.tz.redismanager.cacher.service.ICacherConfigService;
+import com.tz.redismanager.cacher.service.impl.CacherConfigServiceImpl;
 import com.tz.redismanager.cacher.util.AnnotationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportAware;
@@ -87,26 +90,32 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
     }
 
     @Bean
+    @ConditionalOnMissingBean(ICacherConfigService.class)
+    private ICacherConfigService cacherConfigService() {
+        return new CacherConfigServiceImpl();
+    }
+
+    @Bean
     @Primary
-    public ICacheService cacheService(List<ICacheService> services) {
+    public ICacheService cacheService(List<ICacheService> services, ICacherConfigService cacherConfigService) {
         String cacherType = cacherAutoConfiguration.getString(CACHER_TYPE);
         ICacheService cacheService = services.stream()
                 .filter((service) -> service.support(cacherType))
                 .findFirst()
                 .orElseThrow(() -> new CacherException(ResultCode.ENABLE_CACHER_TYPE_NOT_SUPPORT.getCode(), "@EnableCacherAutoConfiguration is not support cacherType-->" + cacherType));
         //初始化缓存器
-        this.initCacher(cacheService);
+        this.initCacher(cacheService, cacherConfigService);
         return cacheService;
     }
 
     @Bean
-    public CacheableAspect cacheableAspect(ICacheService cacheService, @Autowired(required = false) ICacheableAspectConfigCustomizer configCustomizer) {
+    public CacheableAspect cacheableAspect(ICacheService cacheService, ICacherConfigService cacherConfigService, @Autowired(required = false) ICacheableAspectConfigCustomizer configCustomizer) {
         /**【1】通过注入ICacheableAspectConfigCustomizer服务的方式修改缓存生效切面({@link CacheableAspect})的Order*/
-        return new CacheableAspect(cacheService, configCustomizer);
+        return new CacheableAspect(cacheService, cacherConfigService, configCustomizer);
     }
 
     @Bean
-    public CacheEvictAspect cacheEvictAspect(ICacheService cacheService, @Autowired(required = false) ICacheEvictAspectConfigCustomizer configCustomizer) {
+    public CacheEvictAspect cacheEvictAspect(ICacheService cacheService, ICacherConfigService cacherConfigService, @Autowired(required = false) ICacheEvictAspectConfigCustomizer configCustomizer) {
         /**【2】通过反射直接修改@Order注解的value值的方式修改缓存失效切面({@link CacheEvictAspect})的Order*/
         if (null != configCustomizer) {
             int customizeOrder = configCustomizer.customizeOrder();
@@ -114,10 +123,10 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
             //重新设置Order注解的值
             memberValues.put("value", customizeOrder);
         }
-        return new CacheEvictAspect(cacheService);
+        return new CacheEvictAspect(cacheService, cacherConfigService);
     }
 
-    private void initCacher(ICacheService cacheService) {
+    private void initCacher(ICacheService cacheService, ICacherConfigService cacherConfigService) {
         if (!cacherAutoConfiguration.getBoolean(INIT_CACHER)) {
             logger.info("[未开启初始化缓存器] [{@link @EnableCacherAutoConfiguration#initCacher()}]");
             return;
@@ -136,9 +145,13 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
         methods.forEach(method -> {
             Cacheable cacheable = method.getAnnotation(Cacheable.class);
             if (null == keyMap.putIfAbsent(cacheable.key(), cacheable.key())) {
-                cacheService.initCacher(cacheable);
+                CacherConfig cacherConfig = cacherConfigService.convertCacheable(cacheable);
+                cacheService.initCacher(cacherConfig);
                 logger.info("[初始化缓存器] [{}] [{}] [完成]", cacheable.key(), cacheable.name());
+                cacherConfigService.add(cacherConfig);
+                logger.info("[初始化缓存器配置] [{}] [{}] [完成]", cacheable.key(), cacheable.name());
             }
         });
     }
+
 }
