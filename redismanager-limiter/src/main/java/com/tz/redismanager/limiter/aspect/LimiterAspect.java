@@ -1,8 +1,10 @@
 package com.tz.redismanager.limiter.aspect;
 
 import com.tz.redismanager.limiter.annotation.Limiter;
+import com.tz.redismanager.limiter.config.LimiterConfig;
 import com.tz.redismanager.limiter.domain.ResultCode;
 import com.tz.redismanager.limiter.exception.LimiterException;
+import com.tz.redismanager.limiter.service.ILimiterConfigService;
 import com.tz.redismanager.limiter.service.ILimiterService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -10,6 +12,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.Ordered;
+
+import java.util.Optional;
 
 /**
  * <p>限流器切面</p>
@@ -23,10 +27,12 @@ import org.springframework.core.Ordered;
 public class LimiterAspect implements Ordered {
 
     private ILimiterService limiterService;
+    private ILimiterConfigService limiterConfigService;
     private ILimiterAspectConfigCustomizer configCustomizer;
 
-    public LimiterAspect(ILimiterService limiterService, ILimiterAspectConfigCustomizer configCustomizer) {
+    public LimiterAspect(ILimiterService limiterService, ILimiterConfigService limiterConfigService, ILimiterAspectConfigCustomizer configCustomizer) {
         this.limiterService = limiterService;
+        this.limiterConfigService = limiterConfigService;
         this.configCustomizer = configCustomizer;
     }
 
@@ -37,10 +43,11 @@ public class LimiterAspect implements Ordered {
         if (!methodSignFlag) {
             return joinPoint.proceed();
         }
-        if (limiterService.tryAcquire(limiter)) {
+        LimiterConfig limiterConfig = Optional.ofNullable(limiterConfigService.get(limiter.key())).orElse(limiterConfigService.convertLimiter(limiter));
+        if (limiterService.tryAcquire(limiterConfig)) {
             return joinPoint.proceed();
         }
-        throw new LimiterException(ResultCode.LIMIT_EXCEPTION.getCode(), limiter.name() + "-" + ResultCode.LIMIT_EXCEPTION.getMsg());
+        throw new LimiterException(ResultCode.LIMIT_EXCEPTION.getCode(), limiterConfig.getName() + "-" + ResultCode.LIMIT_EXCEPTION.getMsg());
     }
 
     @Override

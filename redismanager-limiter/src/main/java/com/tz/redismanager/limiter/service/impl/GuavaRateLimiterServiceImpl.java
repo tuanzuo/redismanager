@@ -1,8 +1,8 @@
 package com.tz.redismanager.limiter.service.impl;
 
 import com.google.common.util.concurrent.RateLimiter;
+import com.tz.redismanager.limiter.config.LimiterConfig;
 import com.tz.redismanager.limiter.constant.ConstInterface;
-import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.limiter.service.ILimiterService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
@@ -29,28 +29,42 @@ public class GuavaRateLimiterServiceImpl implements ILimiterService {
     }
 
     @Override
-    public boolean tryAcquire(Limiter limiter) {
-        if (limiter.permits() <= 0) {
+    public boolean tryAcquire(LimiterConfig limiterConfig) {
+        if (limiterConfig.getPermits() <= 0) {
             return true;
         }
-        return this.getLimiter(limiter).tryAcquire(limiter.permits(), limiter.timeout(), limiter.unit());
+        return this.getLimiter(limiterConfig).tryAcquire(limiterConfig.getPermits(), limiterConfig.getTimeout(), limiterConfig.getUnit());
     }
 
     @Override
-    public void initLimiter(Limiter limiter) {
-        this.initRateLimiter(limiter);
+    public void initLimiter(LimiterConfig limiterConfig) {
+        this.initRateLimiter(limiterConfig);
     }
 
-    private RateLimiter getLimiter(Limiter limiter) {
-        String key = limiter.key();
+    @Override
+    public void resetLimiter(LimiterConfig limiterConfig) {
+        RateLimiter oldRateLimiter = limiterMap.get(limiterConfig.getKey());
+        if (null != oldRateLimiter) {
+            oldRateLimiter = null;
+        }
+        RateLimiter rateLimiter = this.createRateLimiter(limiterConfig);
+        limiterMap.put(limiterConfig.getKey(), rateLimiter);
+    }
+
+    private RateLimiter getLimiter(LimiterConfig limiterConfig) {
+        String key = limiterConfig.getKey();
         if (limiterMap.containsKey(key)) {
             return limiterMap.get(key);
         }
-        return this.initRateLimiter(limiter);
+        return this.initRateLimiter(limiterConfig);
     }
 
-    private RateLimiter initRateLimiter(Limiter limiter) {
-        RateLimiter rateLimiter = RateLimiter.create(limiter.qps());
-        return Optional.ofNullable(limiterMap.putIfAbsent(limiter.key(), rateLimiter)).orElse(rateLimiter);
+    private RateLimiter initRateLimiter(LimiterConfig limiterConfig) {
+        RateLimiter rateLimiter = this.createRateLimiter(limiterConfig);
+        return Optional.ofNullable(limiterMap.putIfAbsent(limiterConfig.getKey(), rateLimiter)).orElse(rateLimiter);
+    }
+
+    private RateLimiter createRateLimiter(LimiterConfig limiterConfig) {
+        return RateLimiter.create(limiterConfig.getQps());
     }
 }
