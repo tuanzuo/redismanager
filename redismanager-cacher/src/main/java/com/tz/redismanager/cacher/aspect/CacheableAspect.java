@@ -56,7 +56,7 @@ public class CacheableAspect extends AbstractAspect implements Ordered {
             try {
                 return joinPoint.proceed();
             } catch (Throwable throwable) {
-                logger.error("[缓存器] [{}] [{}] [回源查询异常] [{}]", cacheable.key(), cacheable.name(), cacheKey, throwable);
+                logger.error("[缓存器] [{}] [{}] [回源查询异常] [{}]", cacherConfig.getKey(), cacherConfig.getName(), cacheKey, throwable);
                 throw new CacherException(ResultCode.GET_ORI_RESULT_EXCEPTION, throwable);
             }
         });

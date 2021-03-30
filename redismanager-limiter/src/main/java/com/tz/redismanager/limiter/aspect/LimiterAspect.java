@@ -47,7 +47,7 @@ public class LimiterAspect implements Ordered {
         if (limiterService.tryAcquire(limiterConfig)) {
             return joinPoint.proceed();
         }
-        throw new LimiterException(ResultCode.LIMIT_EXCEPTION.getCode(), limiter.name() + "-" + ResultCode.LIMIT_EXCEPTION.getMsg());
+        throw new LimiterException(ResultCode.LIMIT_EXCEPTION.getCode(), limiterConfig.getName() + "-" + ResultCode.LIMIT_EXCEPTION.getMsg());
     }
 
     @Override
