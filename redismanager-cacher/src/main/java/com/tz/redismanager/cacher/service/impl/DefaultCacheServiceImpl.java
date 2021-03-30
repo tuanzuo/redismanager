@@ -99,6 +99,17 @@ public class DefaultCacheServiceImpl implements ICacheService {
     }
 
     @Override
+    public void resetCacher(CacherConfig cacherConfig) {
+        LoadingCache<String, String> oldLoadingCache = l1CacherMap.get(cacherConfig.getKey());
+        if (null != oldLoadingCache) {
+            oldLoadingCache.invalidateAll();
+            oldLoadingCache = null;
+        }
+        LoadingCache<String, String> loadingCache = this.createL1Cacher(cacherConfig.getL1Cache(), cacherConfig.getL2Cache());
+        l1CacherMap.put(cacherConfig.getKey(), loadingCache);
+    }
+
+    @Override
     public Map<String, Object> getL1CacherInfo(String cacherName) {
         Map<String, Object> result = new LinkedHashMap<>();
         if (StringUtils.isNotBlank(cacherName)) {
@@ -160,6 +171,11 @@ public class DefaultCacheServiceImpl implements ICacheService {
     }
 
     private LoadingCache<String, String> initL1Cacher(String cacherKey, L1CacheConfig l1Cache, L2CacheConfig l2Cache) {
+        LoadingCache<String, String> loadingCache = this.createL1Cacher(l1Cache, l2Cache);
+        return Optional.ofNullable(l1CacherMap.putIfAbsent(cacherKey, loadingCache)).orElse(loadingCache);
+    }
+
+    private LoadingCache<String, String> createL1Cacher(L1CacheConfig l1Cache, L2CacheConfig l2Cache) {
         Caffeine<Object, Object> caffeine = Caffeine.newBuilder();
         switch (l1Cache.getExpireStrategy()) {
             case EXPIRE_AFTER_ACCESS:
@@ -173,14 +189,13 @@ public class DefaultCacheServiceImpl implements ICacheService {
             //打开数据收集功能
             caffeine.recordStats();
         }
-        LoadingCache<String, String> loadingCache = caffeine.initialCapacity(l1Cache.getInitialCapacity())
+        return caffeine.initialCapacity(l1Cache.getInitialCapacity())
                 .maximumSize(l1Cache.getMaximumSize())
                 /**
                  * 1、param的值等于{@link LoadingCache#get(Object)方法的入参}<br/>
                  * 2、当一级缓存的数据不存在时如果开启了二级缓存就查询二级缓存的数据返回，否则返回null<br/>
                  */
                 .build((param) -> l2Cache.isEnable() ? this.getL2Cache(param) : null);
-        return Optional.ofNullable(l1CacherMap.putIfAbsent(cacherKey, loadingCache)).orElse(loadingCache);
     }
 
     private Object setCache(CacherConfig cacherConfig, String cacheKey, Type returnType, boolean reQueryCache, Function<Object, Object> initCache) {

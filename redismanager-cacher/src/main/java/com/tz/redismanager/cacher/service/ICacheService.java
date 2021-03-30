@@ -47,6 +47,12 @@ public interface ICacheService {
     void initCacher(CacherConfig cacherConfig);
 
     /**
+     * 重置缓存器
+     * @param cacherConfig
+     */
+    void resetCacher(CacherConfig cacherConfig);
+
+    /**
      * 得到一级缓存器信息
      * @param cacherName
      * @return

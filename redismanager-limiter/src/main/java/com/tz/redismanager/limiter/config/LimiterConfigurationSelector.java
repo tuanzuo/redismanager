@@ -6,7 +6,9 @@ import com.tz.redismanager.limiter.aspect.ILimiterAspectConfigCustomizer;
 import com.tz.redismanager.limiter.aspect.LimiterAspect;
 import com.tz.redismanager.limiter.domain.ResultCode;
 import com.tz.redismanager.limiter.exception.LimiterException;
+import com.tz.redismanager.limiter.service.ILimiterConfigService;
 import com.tz.redismanager.limiter.service.ILimiterService;
+import com.tz.redismanager.limiter.service.impl.LimiterConfigServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -17,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportAware;
@@ -83,20 +86,26 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
     }
 
     @Bean
+    @ConditionalOnMissingBean(ILimiterConfigService.class)
+    public ILimiterConfigService limiterConfigService() {
+        return new LimiterConfigServiceImpl();
+    }
+
+    @Bean
     @Primary
-    public ILimiterService limiterService(List<ILimiterService> services) {
+    public ILimiterService limiterService(List<ILimiterService> services, ILimiterConfigService limiterConfigService) {
         String limiterType = limiterAutoConfiguration.getString(LIMITER_TYPE);
         ILimiterService limiterService = services.stream()
                 .filter((service) -> service.support(limiterType))
                 .findFirst()
                 .orElseThrow(() -> new LimiterException(ResultCode.ENABLE_LIMITER_TYPE_NOT_SUPPORT.getCode(), "@EnableLimiterAutoConfiguration is not support limiterType-->" + limiterType));
         //初始化限流器
-        this.initLimiter(limiterService);
+        this.initLimiter(limiterService, limiterConfigService);
         return limiterService;
     }
 
     @Bean
-    public LimiterAspect limiterAspect(ILimiterService limiterService, @Autowired(required = false) ILimiterAspectConfigCustomizer configCustomizer) {
+    public LimiterAspect limiterAspect(ILimiterService limiterService, ILimiterConfigService limiterConfigService, @Autowired(required = false) ILimiterAspectConfigCustomizer configCustomizer) {
         /**【2】通过反射直接修改@Order注解的value值的方式修改缓存失效切面({@link LimiterAspect})的Order*/
         /*if (null != configCustomizer) {
             int customizeOrder = configCustomizer.customizeOrder();
@@ -105,10 +114,10 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
             memberValues.put("value", customizeOrder);
         }*/
         /**【1】通过注入ILimiterAspectConfigCustomizer服务的方式修改缓存生效切面({@link LimiterAspect})的Order*/
-        return new LimiterAspect(limiterService, configCustomizer);
+        return new LimiterAspect(limiterService, limiterConfigService, configCustomizer);
     }
 
-    private void initLimiter(ILimiterService limiterService) {
+    private void initLimiter(ILimiterService limiterService, ILimiterConfigService limiterConfigService) {
         if (!limiterAutoConfiguration.getBoolean(INIT_LIMITER)) {
             logger.info("[未开启初始化限流器] [{@link EnableLimiterAutoConfiguration#initLimiter()}]");
             return;
@@ -127,8 +136,11 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
         methods.forEach(method -> {
             Limiter limiter = method.getAnnotation(Limiter.class);
             if (null == keyMap.putIfAbsent(limiter.key(), limiter.key())) {
-                limiterService.initLimiter(limiter);
+                LimiterConfig limiterConfig = limiterConfigService.convertLimiter(limiter);
+                limiterService.initLimiter(limiterConfig);
                 logger.info("[初始化限流器] [{}] [{}] [完成]", limiter.key(), limiter.name());
+                limiterConfigService.add(limiterConfig);
+                logger.info("[初始化限流器配置] [{}] [{}] [完成]", limiter.key(), limiter.name());
             }
         });
     }

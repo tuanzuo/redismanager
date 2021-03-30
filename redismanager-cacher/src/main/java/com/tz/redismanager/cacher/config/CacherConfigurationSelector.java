@@ -91,7 +91,7 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
 
     @Bean
     @ConditionalOnMissingBean(ICacherConfigService.class)
-    private ICacherConfigService cacherConfigService() {
+    public ICacherConfigService cacherConfigService() {
         return new CacherConfigServiceImpl();
     }
 

@@ -1,6 +1,7 @@
 package com.tz.redismanager.cacher.runner;
 
 import com.tz.redismanager.cacher.config.CacherProperties;
+import com.tz.redismanager.cacher.service.ICacheService;
 import com.tz.redismanager.cacher.service.ICacherConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +28,14 @@ public class CacherConfigRefreshRunner implements ApplicationRunner {
     @Autowired
     private ICacherConfigService cacherConfigService;
 
+    @Autowired
+    private ICacheService cacheService;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         cacherProperties.getCachers().forEach((key, value) -> {
             cacherConfigService.add(value);
+            cacheService.resetCacher(value);
             logger.info("[缓存器配置更新] [{}] [{}] [完成]", value.getKey(), value.getName());
         });
     }
