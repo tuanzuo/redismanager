@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * <p>缓存器配置</p>
+ * <p>缓存生效配置</p>
  *
  * @author tuanzuo
  * @version 1.6.1
@@ -12,7 +12,7 @@ import lombok.Setter;
  **/
 @Getter
 @Setter
-public class CacherConfig {
+public class CacheableConfig {
 
     private String name;
 
@@ -24,7 +24,7 @@ public class CacherConfig {
 
     private L2CacheConfig l2Cache;
 
-    private CacherConfig() {
+    private CacheableConfig() {
 
     }
 
@@ -67,14 +67,14 @@ public class CacherConfig {
             return this;
         }
 
-        public CacherConfig build() {
-            CacherConfig cacherConfig = new CacherConfig();
-            cacherConfig.setName(name);
-            cacherConfig.setKey(key);
-            cacherConfig.setAsyncRefresh(asyncRefresh);
-            cacherConfig.setL1Cache(l1Cache);
-            cacherConfig.setL2Cache(l2Cache);
-            return cacherConfig;
+        public CacheableConfig build() {
+            CacheableConfig cacheableConfig = new CacheableConfig();
+            cacheableConfig.setName(name);
+            cacheableConfig.setKey(key);
+            cacheableConfig.setAsyncRefresh(asyncRefresh);
+            cacheableConfig.setL1Cache(l1Cache);
+            cacheableConfig.setL2Cache(l2Cache);
+            return cacheableConfig;
         }
     }
 }

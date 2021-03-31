@@ -36,7 +36,7 @@ public class LimiterConfigRefreshRunner implements ApplicationRunner {
         limiterProperties.getLimiters().forEach((key, value) -> {
             limiterConfigService.add(value);
             limiterService.resetLimiter(value);
-            logger.info("[限流器配置更新] [{}] [{}] [完成]", value.getKey(), value.getName());
+            logger.info("[限流器配置更新和重新初始化] [{}] [{}] [完成]", value.getKey(), value.getName());
         });
     }
 }

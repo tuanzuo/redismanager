@@ -1,7 +1,7 @@
 package com.tz.redismanager.cacher.aspect;
 
 import com.tz.redismanager.cacher.annotation.Cacheable;
-import com.tz.redismanager.cacher.config.CacherConfig;
+import com.tz.redismanager.cacher.config.CacheableConfig;
 import com.tz.redismanager.cacher.domain.ResultCode;
 import com.tz.redismanager.cacher.exception.CacherException;
 import com.tz.redismanager.cacher.service.ICacheService;
@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 
 import java.lang.reflect.Type;
-import java.util.Optional;
 
 /**
  * <p>缓存生效切面</p>
@@ -51,7 +50,7 @@ public class CacheableAspect extends AbstractAspect implements Ordered {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Type genericReturnType = methodSignature.getMethod().getGenericReturnType();
         String cacheKey = this.resolveCacheKey(joinPoint, cacheable.key(), cacheable.var());
-        CacherConfig cacherConfig = Optional.ofNullable(cacherConfigService.get(cacheable.key())).orElse(cacherConfigService.convertCacheable(cacheable));
+        CacheableConfig cacherConfig = cacherConfigService.convertCacheable(cacheable);
         return cacheService.getCache(cacherConfig, cacheKey, genericReturnType, (temp) -> {
             try {
                 return joinPoint.proceed();

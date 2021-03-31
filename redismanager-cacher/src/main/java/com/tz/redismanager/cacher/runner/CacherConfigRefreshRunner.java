@@ -33,10 +33,14 @@ public class CacherConfigRefreshRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        cacherProperties.getCachers().forEach((key, value) -> {
-            cacherConfigService.add(value);
+        cacherProperties.getCacheables().forEach((key, value) -> {
+            cacherConfigService.addCacheableConfig(value);
             cacheService.resetCacher(value);
-            logger.info("[缓存器配置更新] [{}] [{}] [完成]", value.getKey(), value.getName());
+            logger.info("[缓存器配置更新和重新初始化] [{}] [{}] [完成]", value.getKey(), value.getName());
+        });
+        cacherProperties.getCacheEvicts().forEach((key, value) -> {
+            cacherConfigService.addCacheEvictConfig(value);
+            logger.info("[缓存器失效配置更新] [{}] [{}] [完成]", value.getKey(), value.getName());
         });
     }
 }

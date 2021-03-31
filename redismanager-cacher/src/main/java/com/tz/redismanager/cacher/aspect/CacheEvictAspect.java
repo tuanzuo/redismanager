@@ -1,7 +1,7 @@
 package com.tz.redismanager.cacher.aspect;
 
 import com.tz.redismanager.cacher.annotation.CacheEvict;
-import com.tz.redismanager.cacher.config.CacherConfig;
+import com.tz.redismanager.cacher.config.CacheEvictConfig;
 import com.tz.redismanager.cacher.domain.InvocationStrategy;
 import com.tz.redismanager.cacher.service.ICacheService;
 import com.tz.redismanager.cacher.service.ICacherConfigService;
@@ -11,8 +11,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
-
-import java.util.Optional;
 
 /**
  * <p>缓存失效切面</p>
@@ -41,14 +39,14 @@ public class CacheEvictAspect extends AbstractAspect {
             return joinPoint.proceed();
         }
         String cacheKey = this.resolveCacheKey(joinPoint, cacheEvict.key(), cacheEvict.var());
-        CacherConfig cacherConfig = Optional.ofNullable(cacherConfigService.get(cacheEvict.key())).orElse(cacherConfigService.convertCacheEvict(cacheEvict));
+        CacheEvictConfig cacheEvictConfig = cacherConfigService.convertCacheEvict(cacheEvict);
         InvocationStrategy invocationStrategy = cacheEvict.invocation();
         if (InvocationStrategy.BEFORE == invocationStrategy) {
-            cacheService.invalidateCache(cacherConfig, cacheKey);
+            cacheService.invalidateCache(cacheEvictConfig, cacheKey);
         }
         Object result = joinPoint.proceed();
         if (InvocationStrategy.AFTER == invocationStrategy) {
-            cacheService.invalidateCache(cacherConfig, cacheKey);
+            cacheService.invalidateCache(cacheEvictConfig, cacheKey);
         }
         return result;
     }
