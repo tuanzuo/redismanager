@@ -22,6 +22,7 @@
         <module>redismanager-limiter</module>
         <module>redismanager-token</module>
         <module>redismanager-cacher</module>
+        <module>redismanager-config</module>
     </modules>
 
     <properties>
