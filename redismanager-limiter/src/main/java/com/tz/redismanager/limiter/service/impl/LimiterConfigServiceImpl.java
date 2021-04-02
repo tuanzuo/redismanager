@@ -20,13 +20,8 @@ public class LimiterConfigServiceImpl implements ILimiterConfigService {
     private Map<String, LimiterConfig> limiters = new ConcurrentHashMap<>();
 
     @Override
-    public void add(LimiterConfig limiterConfig) {
+    public void addLimiterConfig(LimiterConfig limiterConfig) {
         limiters.put(limiterConfig.getKey(), limiterConfig);
-    }
-
-    @Override
-    public LimiterConfig get(String limiterKey) {
-        return limiters.get(limiterKey);
     }
 
     @Override

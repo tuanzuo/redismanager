@@ -12,9 +12,7 @@ import com.tz.redismanager.limiter.config.LimiterConfig;
  **/
 public interface ILimiterConfigService {
 
-    void add(LimiterConfig limiterConfig);
-
-    LimiterConfig get(String limiterKey);
+    void addLimiterConfig(LimiterConfig limiterConfig);
 
     LimiterConfig convertLimiter(Limiter limiter);
 

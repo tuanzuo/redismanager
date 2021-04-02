@@ -34,7 +34,7 @@ public class LimiterConfigRefreshRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         limiterProperties.getLimiters().forEach((key, value) -> {
-            limiterConfigService.add(value);
+            limiterConfigService.addLimiterConfig(value);
             limiterService.resetLimiter(value);
             logger.info("[限流器配置更新和重新初始化] [{}] [{}] [完成]", value.getKey(), value.getName());
         });

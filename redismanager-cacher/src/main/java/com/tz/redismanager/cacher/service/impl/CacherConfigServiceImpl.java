@@ -37,16 +37,6 @@ public class CacherConfigServiceImpl implements ICacherConfigService {
     }
 
     @Override
-    public CacheableConfig getCacheableConfig(String cacherKey) {
-        return cacheableConfigMap.get(cacherKey);
-    }
-
-    @Override
-    public CacheEvictConfig getCacheEvictConfig(String cacherKey) {
-        return cacheEvictConfigMap.get(cacherKey);
-    }
-
-    @Override
     public CacheableConfig convertCacheable(Cacheable cacheable) {
         return this.getCacheableConfig(cacheable);
     }

@@ -18,10 +18,6 @@ public interface ICacherConfigService {
 
     void addCacheEvictConfig(CacheEvictConfig cacheEvictConfig);
 
-    CacheableConfig getCacheableConfig(String cacherKey);
-
-    CacheEvictConfig getCacheEvictConfig(String cacherKey);
-
     CacheableConfig convertCacheable(Cacheable cacheable);
 
     CacheEvictConfig convertCacheEvict(CacheEvict cacheEvict);
