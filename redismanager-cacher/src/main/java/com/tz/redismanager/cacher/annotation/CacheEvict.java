@@ -1,5 +1,6 @@
 package com.tz.redismanager.cacher.annotation;
 
+import com.tz.redismanager.cacher.domain.InvalidateType;
 import com.tz.redismanager.cacher.domain.InvocationStrategy;
 
 import java.lang.annotation.*;
@@ -35,23 +36,13 @@ public @interface CacheEvict {
     String var();
 
     /**
-     * 是否开启异步刷新缓存，默认true(开启)
+     * 缓存失效类型，默认失效所有
      */
-    boolean asyncRefresh() default true;
+    InvalidateType invalidate() default InvalidateType.ALL;
 
     /**
-     * 在方法执行前或者执行后清理缓存
+     * 在方法执行前或者执行后清理缓存，默认方法执行后清理缓存
      */
     InvocationStrategy invocation() default InvocationStrategy.AFTER;
-
-    /**
-     * 一级缓存
-     */
-    L1Cache l1Cache() default @L1Cache;
-
-    /**
-     * 二级缓存
-     */
-    L2Cache l2Cache() default @L2Cache;
 
 }

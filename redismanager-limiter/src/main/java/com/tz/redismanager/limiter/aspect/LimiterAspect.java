@@ -13,8 +13,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.Ordered;
 
-import java.util.Optional;
-
 /**
  * <p>限流器切面</p>
  *
@@ -43,7 +41,7 @@ public class LimiterAspect implements Ordered {
         if (!methodSignFlag) {
             return joinPoint.proceed();
         }
-        LimiterConfig limiterConfig = Optional.ofNullable(limiterConfigService.get(limiter.key())).orElse(limiterConfigService.convertLimiter(limiter));
+        LimiterConfig limiterConfig = limiterConfigService.convertLimiter(limiter);
         if (limiterService.tryAcquire(limiterConfig)) {
             return joinPoint.proceed();
         }

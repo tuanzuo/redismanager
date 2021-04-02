@@ -2,7 +2,8 @@ package com.tz.redismanager.cacher.service;
 
 import com.tz.redismanager.cacher.annotation.CacheEvict;
 import com.tz.redismanager.cacher.annotation.Cacheable;
-import com.tz.redismanager.cacher.config.CacherConfig;
+import com.tz.redismanager.cacher.config.CacheEvictConfig;
+import com.tz.redismanager.cacher.config.CacheableConfig;
 
 /**
  * <p>缓存器配置服务接口</p>
@@ -13,11 +14,11 @@ import com.tz.redismanager.cacher.config.CacherConfig;
  **/
 public interface ICacherConfigService {
 
-    void add(CacherConfig cacherConfig);
+    void addCacheableConfig(CacheableConfig cacheableConfig);
 
-    CacherConfig get(String cacherKey);
+    void addCacheEvictConfig(CacheEvictConfig cacheEvictConfig);
 
-    CacherConfig convertCacheable(Cacheable cacheable);
+    CacheableConfig convertCacheable(Cacheable cacheable);
 
-    CacherConfig convertCacheEvict(CacheEvict cacheEvict);
+    CacheEvictConfig convertCacheEvict(CacheEvict cacheEvict);
 }

@@ -19,6 +19,8 @@ import java.util.Map;
 @Setter
 public class CacherProperties {
 
-    private Map<String, CacherConfig> cachers = new HashMap<>();
+    private Map<String, CacheableConfig> cacheables = new HashMap<>();
+
+    private Map<String, CacheEvictConfig> cacheEvicts = new HashMap<>();
 
 }
