@@ -1,6 +1,5 @@
 package com.tz.redismanager.dao.mapper;
 
-
 import com.tz.redismanager.dao.domain.po.ConfigPO;
 
 /**
@@ -12,17 +11,15 @@ import com.tz.redismanager.dao.domain.po.ConfigPO;
  **/
 public interface ConfigPOMapper {
 
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(ConfigPO record);
 
     int insertSelective(ConfigPO record);
 
-    ConfigPO selectByPrimaryKey(Long id);
+    ConfigPO selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(ConfigPO record);
-
-    int updateByPrimaryKeyWithBLOBs(ConfigPO record);
 
     int updateByPrimaryKey(ConfigPO record);
 }
