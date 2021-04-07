@@ -1,6 +1,5 @@
 package com.tz.redismanager.dao.domain.po;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +9,7 @@ import java.util.Date;
  * @version 1.7.0
  * @time 2021-04-02 21:47
  **/
-public class ConfigPO implements Serializable {
+public class ConfigPO {
     /**
      * 主键
      */
