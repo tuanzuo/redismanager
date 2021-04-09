@@ -75,8 +75,10 @@ insert  into `t_user_role_relation`(`id`,`user_id`,`role_id`,`creater`,`create_t
 CREATE TABLE `t_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `type` tinyint(3) NOT NULL COMMENT '类型[1=缓存配置,2=限流配置,3=token配置]',
-  `service_name` varchar(100) COLLATE utf8_bin DEFAULT NULL COMMENT '服务名',
-  `config` text COLLATE utf8_bin NOT NULL COMMENT '配置JSON',
+  `service_name` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '服务名',
+  `key` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '配置key',
+  `content` text COLLATE utf8_bin NOT NULL COMMENT '配置内容JSON',
+  `version` int(11) NOT NULL DEFAULT '1' COMMENT '版本号',
   `note` varchar(300) COLLATE utf8_bin DEFAULT NULL COMMENT '备注',
   `creater` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
@@ -84,6 +86,7 @@ CREATE TABLE `t_config` (
   `update_time` datetime DEFAULT NULL COMMENT '修改时间',
   `if_del` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否删除[1=是,0=否]',
   PRIMARY KEY (`id`),
-  KEY `index_service_name` (`service_name`)
+  KEY `index_service_name` (`service_name`),
+  KEY `index_key` (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='配置表';
 
