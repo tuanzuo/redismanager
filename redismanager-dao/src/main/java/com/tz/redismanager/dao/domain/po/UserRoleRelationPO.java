@@ -1,13 +1,21 @@
 package com.tz.redismanager.dao.domain.po;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.Date;
 
 /**
  * 用户角色关系PO
  *
+ * @author tuanzuo
  * @version 1.3.0
  * @time 2020-08-29 13:43
  **/
+@Getter
+@Setter
+@ToString
 public class UserRoleRelationPO {
 
     /**
@@ -50,67 +58,4 @@ public class UserRoleRelationPO {
      */
     private Integer ifDel;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getCreater() {
-        return creater;
-    }
-
-    public void setCreater(String creater) {
-        this.creater = creater == null ? null : creater.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdater() {
-        return updater;
-    }
-
-    public void setUpdater(String updater) {
-        this.updater = updater == null ? null : updater.trim();
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getIfDel() {
-        return ifDel;
-    }
-
-    public void setIfDel(Integer ifDel) {
-        this.ifDel = ifDel;
-    }
 }

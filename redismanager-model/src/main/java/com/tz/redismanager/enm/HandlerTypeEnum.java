@@ -26,7 +26,7 @@ public enum HandlerTypeEnum {
             return null;
         }
         for (HandlerTypeEnum enm : HandlerTypeEnum.values()) {
-            if (null != enm && enm.type.equals(type.trim())) {
+            if (enm.getType().equals(type.trim())) {
                 return enm;
             }
         }

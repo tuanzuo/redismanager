@@ -16,7 +16,9 @@ management:
       exposure:
         include: health,info,loggers,caches,cachers
 
-spring: 
+spring:
+  application:
+    name: redismanagerweb
   profiles: 
     active: local
   jackson:
@@ -83,6 +85,9 @@ logging:
     org.apache.ibatis: debug
     com.mysql: debug
     com.tz.redismanager.dao.mapper: debug
+    #显示JdbcTemplate的sql执行日志
+    org.springframework.jdbc.core: debug
+    org.springframework.jdbc.core.StatementCreatorUtils: trace
   path: /home/tz/Logs/redismanager
 
 rm:

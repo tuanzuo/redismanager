@@ -1,6 +1,6 @@
-package com.tz.redismanager.dao.domain.po;
+package com.tz.redismanager.config.domain.po;
 
-import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.config.constant.ConstInterface;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,16 +8,16 @@ import lombok.ToString;
 import java.util.Date;
 
 /**
- * 角色PO
+ * <p>配置PO</p>
  *
  * @author tuanzuo
- * @version 1.3.0
- * @time 2020-08-29 13:43
+ * @version 1.7.0
+ * @time 2021-04-02 21:47
  **/
 @Getter
 @Setter
 @ToString
-public class RolePO {
+public class ConfigPO {
 
     /**
      * 主键
@@ -25,20 +25,30 @@ public class RolePO {
     private Integer id;
 
     /**
-     * 角色名称
+     * 类型[1=缓存配置,2=限流配置,3=token配置]
+     * {@link com.tz.redismanager.config.enm.ConfigTypeEnum}
      */
-    private String name;
+    private Integer type;
 
     /**
-     * 角色编码
+     * 服务名
      */
-    private String code;
+    private String serviceName;
 
     /**
-     * 状态[1=启用,0=禁用]
-     * {@link ConstInterface.ROLE_STATUS}
+     * 配置key
      */
-    private Integer status;
+    private String key;
+
+    /**
+     * 配置内容JSON
+     */
+    private String content;
+
+    /**
+     * 版本号
+     */
+    private Integer version;
 
     /**
      * 备注
@@ -67,7 +77,6 @@ public class RolePO {
 
     /**
      * 是否删除[1=是,0=否]
-     *
      * @see ConstInterface.IF_DEL
      */
     private Integer ifDel;

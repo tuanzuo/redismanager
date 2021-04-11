@@ -1,15 +1,22 @@
 package com.tz.redismanager.dao.domain.po;
 
 import com.tz.redismanager.constant.ConstInterface;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 
 /**
  * redis连接配置PO
  *
+ * @author tuanzuo
  * @Since:2019-08-23 22:32:11
  * @Version:1.1.0
  */
+@Getter
+@Setter
+@ToString
 public class RedisConfigPO {
 
     /**
@@ -24,6 +31,7 @@ public class RedisConfigPO {
 
     /**
      * 是否公开[1=是,0=否] v1.5.0
+     *
      * @see ConstInterface.IS_PUBLIC
      */
     private Integer isPublic;
@@ -82,125 +90,4 @@ public class RedisConfigPO {
      */
     private Integer ifDel;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public Integer getIsPublic() {
-        return isPublic;
-    }
-
-    public void setIsPublic(Integer isPublic) {
-        this.isPublic = isPublic;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note == null ? null : note.trim();
-    }
-
-    public String getCreater() {
-        return creater;
-    }
-
-    public void setCreater(String creater) {
-        this.creater = creater == null ? null : creater.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdater() {
-        return updater;
-    }
-
-    public void setUpdater(String updater) {
-        this.updater = updater == null ? null : updater.trim();
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getIfDel() {
-        return ifDel;
-    }
-
-    public void setIfDel(Integer ifDel) {
-        this.ifDel = ifDel;
-    }
-
-    public String getSerCode() {
-        return serCode;
-    }
-
-    public void setSerCode(String serCode) {
-        this.serCode = serCode == null ? null : serCode.trim();
-    }
-
-    @Override
-    public String toString() {
-        return "RedisConfigPO{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", address='" + address + '\'' +
-                ", password='" + password + '\'' +
-                ", note='" + note + '\'' +
-                ", creater='" + creater + '\'' +
-                ", createTime=" + createTime +
-                ", updater='" + updater + '\'' +
-                ", updateTime=" + updateTime +
-                ", ifDel=" + ifDel +
-                ", serCode='" + serCode + '\'' +
-                '}';
-    }
 }
