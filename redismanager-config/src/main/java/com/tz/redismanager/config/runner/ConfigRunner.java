@@ -77,6 +77,9 @@ public class ConfigRunner implements CommandLineRunner {
             if (null == stat) {
                 keyPath = curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(keyPath, String.valueOf(temp.getId()).getBytes());
                 logger.info("[config配置] [创建path] {}", keyPath);
+            } else {
+                curatorFramework.setData().forPath(keyPath, String.valueOf(temp.getId()).getBytes());
+                logger.info("[config配置] [给path节点设置data] {}", keyPath);
             }
         }
     }
