@@ -50,6 +50,9 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
             "if_del = :ifDel" +
             "where id = :id";
 
+    /**
+     * {@link org.springframework.boot.autoconfigure.jdbc.NamedParameterJdbcTemplateConfiguration#namedParameterJdbcTemplate}
+     */
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
