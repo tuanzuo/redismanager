@@ -50,6 +50,7 @@ public class CustomCuratorListener implements CuratorListener {
             Watcher.Event.EventType eventType = watchedEvent.getType();
             if (eventType == Watcher.Event.EventType.NodeCreated || eventType == Watcher.Event.EventType.NodeDeleted || eventType == Watcher.Event.EventType.NodeDataChanged) {
                 String path = watchedEvent.getPath();
+                logger.info("[config配置] [CuratorListener] " + watchedEvent.getType() + " -- " + path);
                 String[] pathArray = StringUtils.split(path, "/");
                 if (null != configChangeService && null != pathArray && pathArray.length == 6) {
                     ConfigQueryParam param = new ConfigQueryParam();
@@ -59,10 +60,9 @@ public class CustomCuratorListener implements CuratorListener {
                     if (CollectionUtils.isNotEmpty(list)) {
                         ConfigPO temp = list.get(0);
                         configChangeService.change(temp);
-                        logger.info("[config配置] [更新配置完成] [serviceName：{} key：{} type：{}]", temp.getServiceName(), temp.getKey(), temp.getType());
+                        logger.info("[config配置] [更新配置完成] [serviceName：{} key：{} type：{}] [path：{}]", temp.getServiceName(), temp.getKey(), temp.getType(), path);
                     }
                 }
-                logger.info("[config配置] [CuratorListener] " + watchedEvent.getType() + " -- " + path + " -- ");
                 // 重新设置该节点监听
                 if (null != path) {
                     client.checkExists().watched().forPath(path);
