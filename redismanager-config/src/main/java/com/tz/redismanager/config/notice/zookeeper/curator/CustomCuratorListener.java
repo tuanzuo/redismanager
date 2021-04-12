@@ -60,7 +60,7 @@ public class CustomCuratorListener implements CuratorListener {
                     if (CollectionUtils.isNotEmpty(list)) {
                         ConfigPO temp = list.get(0);
                         configChangeService.change(temp);
-                        logger.info("[config配置] [CuratorListener] [更新配置完成] [serviceName：{}] [key：{}] [type：{}] [path：{}]", temp.getServiceName(), temp.getKey(), temp.getType(), path);
+                        logger.info("[config配置] [CuratorListener] [{}] [更新配置完成] [serviceName：{}] [key：{}] [type：{}] [path：{}]", watchedEvent.getType(), temp.getServiceName(), temp.getKey(), temp.getType(), path);
                     }
                 }
                 // 重新设置该节点监听
