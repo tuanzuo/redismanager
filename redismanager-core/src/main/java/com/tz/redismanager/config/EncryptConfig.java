@@ -1,5 +1,8 @@
 package com.tz.redismanager.config;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,6 +14,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConfigurationProperties(prefix = "rm.encrypt")
+@Setter
+@Getter
+@ToString
 public class EncryptConfig {
 
     /**
@@ -28,27 +34,4 @@ public class EncryptConfig {
      */
     private String md5Salt;
 
-    public String getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public String getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public String getMd5Salt() {
-        return md5Salt;
-    }
-
-    public void setMd5Salt(String md5Salt) {
-        this.md5Salt = md5Salt;
-    }
 }
