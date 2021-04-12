@@ -25,7 +25,7 @@ public class ConfigPO {
     private Integer id;
 
     /**
-     * 类型[1=缓存配置,2=限流配置,3=token配置]
+     * 类型
      * {@link com.tz.redismanager.config.enm.ConfigTypeEnum}
      */
     private Integer type;

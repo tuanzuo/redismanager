@@ -72,7 +72,7 @@ public class ConfigRunner implements CommandLineRunner {
         param.setServiceName(applicationName);
         List<ConfigPO> configs = Optional.ofNullable(configDao.selectListByParam(param)).orElse(new ArrayList<>());
         for (ConfigPO temp : configs) {
-            String keyPath = appNamePath + "/" + ConfigTypeEnum.getByTypeCode(temp.getType()).getName() + "/" + temp.getKey() + "/" + temp.getId();
+            String keyPath = appNamePath + "/" + ConfigTypeEnum.getByCode(temp.getType()).getName() + "/" + temp.getKey() + "/" + temp.getId();
             stat = curatorFramework.checkExists().forPath(keyPath);
             if (null == stat) {
                 keyPath = curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(keyPath, String.valueOf(temp.getId()).getBytes());

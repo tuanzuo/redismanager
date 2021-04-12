@@ -43,10 +43,11 @@ public class GuavaRateLimiterServiceImpl implements ILimiterService {
 
     @Override
     public void resetLimiter(LimiterConfig limiterConfig) {
-        RateLimiter oldRateLimiter = limiterMap.get(limiterConfig.getKey());
+        /**不能直接将老的限流器设置为空，因为老的限流器可能正在被其他请求使用*/
+        /*RateLimiter oldRateLimiter = limiterMap.get(limiterConfig.getKey());
         if (null != oldRateLimiter) {
             oldRateLimiter = null;
-        }
+        }*/
         RateLimiter rateLimiter = this.createRateLimiter(limiterConfig);
         limiterMap.put(limiterConfig.getKey(), rateLimiter);
     }

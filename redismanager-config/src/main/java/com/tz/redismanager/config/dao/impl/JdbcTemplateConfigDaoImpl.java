@@ -75,6 +75,9 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
     @Override
     public List<ConfigPO> selectListByParam(ConfigQueryParam param) {
         StringBuilder suf_sql = this.getSufSql(param);
+        if (null != param.getId()) {
+            suf_sql.append(" and id = :id ");
+        }
         if (StringUtils.isNotBlank(param.getServiceName())) {
             suf_sql.append(" and service_name = :serviceName ");
         }
