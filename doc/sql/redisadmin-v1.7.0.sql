@@ -1,4 +1,6 @@
-CREATE DATABASE `redisadmin`CHARACTER SET utf8 COLLATE utf8_bin;
+CREATE DATABASE `redisadmin` CHARACTER SET utf8 COLLATE utf8_bin;
+
+USE redisadmin;
 
 CREATE TABLE `t_redis_config` (
   `id` varchar(32) collate utf8_bin NOT NULL COMMENT '主键',
@@ -74,7 +76,7 @@ insert  into `t_user_role_relation`(`id`,`user_id`,`role_id`,`creater`,`create_t
 
 CREATE TABLE `t_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `type` tinyint(3) NOT NULL COMMENT '类型[1=缓存配置,2=限流配置,3=token配置]',
+  `type` tinyint(3) NOT NULL COMMENT '类型[10=生效缓存配置,20=失效缓存配置,30=限流配置,40=token配置]',
   `service_name` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '服务名',
   `key` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '配置key',
   `content` text COLLATE utf8_bin NOT NULL COMMENT '配置内容JSON',
@@ -89,4 +91,3 @@ CREATE TABLE `t_config` (
   KEY `index_service_name` (`service_name`),
   KEY `index_key` (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='配置表';
-
