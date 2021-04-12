@@ -1,7 +1,7 @@
 package com.tz.redismanager.service.impl;
 
 import com.tz.redismanager.constant.ConstInterface;
-import com.tz.redismanager.dao.domain.po.RolePO;
+import com.tz.redismanager.dao.domain.dto.RoleDTO;
 import com.tz.redismanager.dao.domain.po.UserPO;
 import com.tz.redismanager.dao.mapper.UserPOMapper;
 import com.tz.redismanager.dao.mapper.UserRoleRelationPOMapper;
@@ -69,7 +69,7 @@ public class AuthServiceImpl implements IAuthService {
         if (ConstInterface.USER_STATUS.DISABLE.equals(userPO.getStatus())) {
             return new ApiResult<>(ResultCode.USER_DISABLE);
         }
-        List<RolePO> roles = userRoleRelationPOMapper.selectByUserRole(userPO.getId(), ConstInterface.ROLE_STATUS.ENABLE);
+        List<RoleDTO> roles = userRoleRelationPOMapper.selectByUserRole(userPO.getId(), null, ConstInterface.ROLE_STATUS.ENABLE);
         AuthResp resp = this.buildLoginResp(roles);
         AuthContext context = this.buildAuthContext(userPO, resp);
         String tokenContext = JsonUtils.toJsonStr(context);
@@ -91,7 +91,7 @@ public class AuthServiceImpl implements IAuthService {
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
-    private AuthResp buildLoginResp(List<RolePO> roles) {
+    private AuthResp buildLoginResp(List<RoleDTO> roles) {
         AuthResp resp = new AuthResp();
         roles = Optional.ofNullable(roles).orElse(new ArrayList<>());
         resp.setRoles(roles.stream().filter(role -> StringUtils.isNotBlank(role.getCode())).map(role -> role.getCode()).collect(Collectors.toSet()));

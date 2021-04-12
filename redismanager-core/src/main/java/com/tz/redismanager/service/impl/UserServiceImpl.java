@@ -6,6 +6,7 @@ import com.tz.redismanager.cacher.annotation.Cacheable;
 import com.tz.redismanager.cacher.annotation.L1Cache;
 import com.tz.redismanager.cacher.annotation.L2Cache;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.dao.domain.dto.RoleDTO;
 import com.tz.redismanager.dao.domain.dto.UserAnalysisDTO;
 import com.tz.redismanager.dao.domain.po.RolePO;
 import com.tz.redismanager.dao.domain.po.UserPO;
@@ -303,18 +304,20 @@ public class UserServiceImpl implements IUserService {
 
     private void addUserResp(List<UserResp> userResps, List<UserPO> list) {
         list = Optional.ofNullable(list).orElse(new ArrayList<>());
+        Set<Integer> userIds = list.stream().map(temp -> temp.getId()).collect(Collectors.toSet());
+        List<RoleDTO> userRoles = userRoleRelationPOMapper.selectByUserRole(null, userIds, null);
+        Map<Integer, List<RoleDTO>> userRoleMap = userRoles.stream().collect(Collectors.groupingBy(RoleDTO::getUserId));
         list.forEach(user -> {
             user.setPwd(null);
             UserResp userResp = new UserResp();
             BeanUtils.copyProperties(user, userResp);
-            this.setUserRoles(userResp);
+            this.setUserRoles(userResp, Optional.ofNullable(userRoleMap.get(user.getId())).orElse(new ArrayList<>()));
             userResps.add(userResp);
         });
     }
 
-    private void setUserRoles(UserResp userResp) {
-        List<RolePO> userRoles = userRoleRelationPOMapper.selectByUserRole(userResp.getId(), null);
-        List<Integer> roleIds = userRoles.stream().map(RolePO::getId).collect(Collectors.toList());
+    private void setUserRoles(UserResp userResp, List<RoleDTO> userRoles) {
+        List<Integer> roleIds = userRoles.stream().map(RoleDTO::getId).collect(Collectors.toList());
         userResp.setRoleIds(roleIds);
     }
 

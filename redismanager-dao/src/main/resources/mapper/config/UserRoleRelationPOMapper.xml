@@ -20,16 +20,25 @@
     from t_user_role_relation
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectByUserRole" resultType="com.tz.redismanager.dao.domain.po.RolePO">
+  <select id="selectByUserRole" resultType="com.tz.redismanager.dao.domain.dto.RoleDTO">
     SELECT
-      rl.*
+      rl.*,ur.user_id AS userId
     FROM t_user_role_relation ur INNER JOIN t_role rl ON ur.role_id = rl.id
-    WHERE ur.user_id = #{userId,jdbcType=INTEGER}
+    WHERE 1=1
+      <if test="userIds != null">
+        AND ur.user_id IN
+        <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+          #{item,jdbcType=INTEGER}
+        </foreach>
+      </if>
+      <if test="userId != null">
+        AND ur.user_id = #{userId,jdbcType=INTEGER}
+      </if>
+      <if test="roleStatus != null">
+        AND rl.status = #{roleStatus,jdbcType=INTEGER}
+      </if>
       AND ur.if_del = 0
       AND rl.if_del = 0
-      <if test="roleStatus != null">
-      AND rl.status = #{roleStatus,jdbcType=INTEGER}
-      </if>
   </select>
   <select id="selectByUserRoleRelation" resultMap="BaseResultMap">
     SELECT
