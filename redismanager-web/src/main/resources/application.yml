@@ -48,11 +48,11 @@ spring:
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     useGlobalDataSourceStat: true
 
-
 #mybatis
 mybatis:
   mapperLocations: classpath*:mapper/**/*Mapper.xml
 
+#分页
 pagehelper:
   helperDialect: mysql
   reasonable: true
