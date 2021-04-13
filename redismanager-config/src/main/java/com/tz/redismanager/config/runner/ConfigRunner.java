@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import com.tz.redismanager.config.notice.zookeeper.curator.CustomCuratorListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +65,8 @@ public class ConfigRunner implements CommandLineRunner {
                 configTypePath = curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(configTypePath);
                 logger.info("[config配置] [创建path] {}", configTypePath);
             }
-            curatorFramework.watchers().add().forPath(configTypePath);
-            logger.info("[config配置] [添加path的监听] {}", configTypePath);
+            /*curatorFramework.watchers().add().forPath(configTypePath);
+            logger.info("[config配置] [添加path的监听] {}", configTypePath);*/
         }
 
         ConfigQueryParam param = new ConfigQueryParam();
@@ -77,10 +78,13 @@ public class ConfigRunner implements CommandLineRunner {
             if (null == stat) {
                 keyPath = curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(keyPath, String.valueOf(temp.getId()).getBytes());
                 logger.info("[config配置] [创建path] {}", keyPath);
-            } else {
-                curatorFramework.setData().forPath(keyPath, String.valueOf(temp.getId()).getBytes());
-                logger.info("[config配置] [给path节点设置data] {}", keyPath);
             }
+            curatorFramework.getData().watched().forPath(keyPath);
+            logger.info("[config配置] [添加path的监听] {}", keyPath);
+
+            /**设置节点数据的目的是为了触发“NodeDataChanged”事件的监听{@link CustomCuratorListener}-->这样应用启动的时候就可以更新最新的配置*/
+            curatorFramework.setData().forPath(keyPath, String.valueOf(temp.getId()).getBytes());
+            logger.info("[config配置] [给path节点设置data] {}", keyPath);
         }
     }
 }

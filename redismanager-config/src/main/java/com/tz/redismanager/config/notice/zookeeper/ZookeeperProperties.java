@@ -18,6 +18,19 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class ZookeeperProperties {
 
+    /**
+     * 连接地址
+     */
     private String connectString = "127.0.0.1:2181";
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
 
 }
