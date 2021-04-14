@@ -5,6 +5,7 @@ import com.tz.redismanager.config.dao.IConfigDao;
 import com.tz.redismanager.config.domain.param.ConfigQueryParam;
 import com.tz.redismanager.config.domain.po.ConfigPO;
 import com.tz.redismanager.config.enm.ConfigTypeEnum;
+import com.tz.redismanager.config.service.IConfigChangeService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import com.tz.redismanager.config.notice.zookeeper.curator.CustomCuratorListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +39,13 @@ public class ConfigRunner implements CommandLineRunner {
     private String applicationName;
 
     @Autowired
-    private CuratorFramework curatorFramework;
+    private IConfigDao configDao;
+
+    @Autowired(required = false)
+    private IConfigChangeService configChangeService;
 
     @Autowired
-    private IConfigDao configDao;
+    private CuratorFramework curatorFramework;
 
     @Override
     public void run(String... args) throws Exception {
@@ -73,6 +76,11 @@ public class ConfigRunner implements CommandLineRunner {
         param.setServiceName(applicationName);
         List<ConfigPO> configs = Optional.ofNullable(configDao.selectListByParam(param)).orElse(new ArrayList<>());
         for (ConfigPO temp : configs) {
+            if (null != configChangeService) {
+                configChangeService.change(temp);
+                logger.info("[config配置] [ConfigRunner] [应用启动] [更新配置完成] [serviceName：{}] [key：{}] [type：{}]", temp.getServiceName(), temp.getKey(), temp.getType());
+            }
+
             String keyPath = appNamePath + "/" + ConfigTypeEnum.getByCode(temp.getType()).getName() + "/" + temp.getKey() + "/" + temp.getId();
             stat = curatorFramework.checkExists().forPath(keyPath);
             if (null == stat) {
@@ -81,10 +89,6 @@ public class ConfigRunner implements CommandLineRunner {
             }
             curatorFramework.getData().watched().forPath(keyPath);
             logger.info("[config配置] [添加path的监听] {}", keyPath);
-
-            /**设置节点数据的目的是为了触发“NodeDataChanged”事件的监听{@link CustomCuratorListener}-->这样应用启动的时候就可以更新最新的配置*/
-            curatorFramework.setData().forPath(keyPath, String.valueOf(temp.getId()).getBytes());
-            logger.info("[config配置] [给path节点设置data] {}", keyPath);
         }
     }
 }
