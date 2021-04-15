@@ -1,5 +1,6 @@
-package com.tz.redismanager.config.notice.zookeeper;
+package com.tz.redismanager.config.notify.zookeeper;
 
+import com.tz.redismanager.config.constant.ConstInterface;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class ZookeeperProperties {
+
+    private String parentPath = ConstInterface.Zookeeper.BASE_PATH;
 
     /**
      * 连接地址

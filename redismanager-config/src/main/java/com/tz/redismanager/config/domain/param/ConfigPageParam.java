@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * <p></p>
+ * <p>配置分页查询参数</p>
  *
  * @author tuanzuo
  * @version 1.7.0

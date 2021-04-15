@@ -25,13 +25,10 @@ public class ConfigChangeServiceImpl extends ConfigChangeServiceAdapter {
 
     @Autowired
     private ICacherConfigService cacherConfigService;
-
     @Autowired
     private ICacheService cacheService;
-
     @Autowired
     private ILimiterConfigService limiterConfigService;
-
     @Autowired
     private ILimiterService limiterService;
 

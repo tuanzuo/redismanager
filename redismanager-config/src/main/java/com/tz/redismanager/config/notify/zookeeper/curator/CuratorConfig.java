@@ -1,10 +1,11 @@
-package com.tz.redismanager.config.notice.zookeeper.curator;
+package com.tz.redismanager.config.notify.zookeeper.curator;
 
-import com.tz.redismanager.config.notice.zookeeper.ZookeeperProperties;
+import com.tz.redismanager.config.notify.zookeeper.ZookeeperProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.CuratorListener;
+import org.apache.curator.framework.recipes.cache.*;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,10 +55,20 @@ public class CuratorConfig {
         } else {
             curatorFramework = CuratorFrameworkFactory.newClient(zookeeperProperties.getConnectString(), retry);
         }
-        // 添加watched 监听器
-        curatorFramework.getCuratorListenable().addListener(curatorListener);
+        //添加watched 监听器
+        //curatorFramework.getCuratorListenable().addListener(curatorListener);
         curatorFramework.start();
         return curatorFramework;
+    }
+
+    public static void addWatcherWithTreeCache(CuratorFramework curatorFramework, String path, TreeCacheListener treeCacheListener) throws Exception {
+
+        CuratorCache curatorCache = CuratorCache.builder(curatorFramework, path).build();
+        CuratorCacheListener listener = CuratorCacheListener.builder()
+                .forTreeCache(curatorFramework, treeCacheListener)
+                .build();
+        curatorCache.listenable().addListener(listener);
+        curatorCache.start();
     }
 
 }

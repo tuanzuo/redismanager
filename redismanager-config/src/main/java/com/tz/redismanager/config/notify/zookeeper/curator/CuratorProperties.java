@@ -1,4 +1,4 @@
-package com.tz.redismanager.config.notice.zookeeper.curator;
+package com.tz.redismanager.config.notify.zookeeper.curator;
 
 import lombok.Getter;
 import lombok.Setter;
