@@ -7,6 +7,7 @@ import com.tz.redismanager.config.notify.zookeeper.ZookeeperProperties;
 import com.tz.redismanager.config.service.IConfigChangeService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +72,11 @@ public class CuratorRunner implements CommandLineRunner {
                 logger.info("[config配置] [创建path] {}", keyPath);
             }*/
         }
+
+        if (null != curatorFramework.checkExists().forPath(appNamePath)) {
+            curatorFramework.delete().deletingChildrenIfNeeded().forPath(appNamePath);
+        }
+        curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(appNamePath);
 
         /*curatorFramework.getData().watched().forPath(appNamePath);
             logger.info("[config配置] [添加path的监听] {}", appNamePath);*/
