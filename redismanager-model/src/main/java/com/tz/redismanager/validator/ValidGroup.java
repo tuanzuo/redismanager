@@ -103,5 +103,18 @@ public interface ValidGroup {
     interface Login {
     }
 
+    /**
+     * 添加配置信息
+     */
+    interface AddConfig {
+    }
+
+    /**
+     * 修改配置信息
+     */
+    interface UpdateConfig {
+    }
+
+
 
 }

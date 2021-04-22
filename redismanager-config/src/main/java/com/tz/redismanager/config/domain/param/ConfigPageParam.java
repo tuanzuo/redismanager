@@ -16,16 +16,17 @@ import lombok.ToString;
 @ToString
 public class ConfigPageParam extends ConfigQueryParam {
 
-    private static final Integer DEFAULT_PAGE_SIZE = 10;
+    public static final Integer DEFAULT_PAGE_SIZE = 10;
 
     /**
-     * 查询的页数
+     * 当前页数
      */
-    private Integer pageNum = 1;
+    private Integer currentPage = 1;
+
     /**
      * 每页大小
      */
-    private Integer pagesize = DEFAULT_PAGE_SIZE;
+    private Integer pageSize = DEFAULT_PAGE_SIZE;
 
     private Integer offset;
 

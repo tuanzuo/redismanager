@@ -35,6 +35,8 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
             "where id = :id";
     private String selectByParam_pre_sql =
             "select id, `type`, service_name, `key`, content, version, note, creater, create_time, updater, update_time, if_del from t_config ";
+    private String count_sql =
+            "select count(*) from t_config ";
     private String updateByPrimaryKey_sql =
             "update t_config " +
             "set `type` = :type, " +
@@ -85,25 +87,31 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
             suf_sql.append(" and service_name = :serviceName ");
         }
         if (StringUtils.isNotBlank(param.getKey())) {
-            suf_sql.append(" and key = :key ");
+            suf_sql.append(" and `key` = :key ");
         }
         return namedParameterJdbcTemplate.query(selectByParam_pre_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), new ConfigPORowMapper());
     }
 
     @Override
     public List<ConfigPO> selectPageByParam(ConfigPageParam param) {
-        param.setOffset((param.getPageNum() - 1) * param.getPagesize());
-        param.setRows(param.getPagesize());
-        StringBuilder suf_sql = this.getSufSql(param);
-        if (StringUtils.isNotBlank(param.getServiceName())) {
-            suf_sql.append(" and service_name like CONCAT(:serviceName,\"%\") ");
+        if (param.getCurrentPage() < 1) {
+            param.setCurrentPage(1);
         }
-        if (StringUtils.isNotBlank(param.getKey())) {
-            suf_sql.append(" and key like CONCAT(:key,\"%\") ");
+        if (param.getPageSize() < 0) {
+            param.setPageSize(ConfigPageParam.DEFAULT_PAGE_SIZE);
         }
+        param.setOffset((param.getCurrentPage() - 1) * param.getPageSize());
+        param.setRows(param.getPageSize());
+        StringBuilder suf_sql = this.getLikeSql(param);
         suf_sql.append("ORDER BY create_time DESC ");
         suf_sql.append("LIMIT :offset,:rows ");
         return namedParameterJdbcTemplate.query(selectByParam_pre_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), new ConfigPORowMapper());
+    }
+
+    @Override
+    public int count(ConfigPageParam param) {
+        StringBuilder suf_sql = this.getLikeSql(param);
+        return namedParameterJdbcTemplate.queryForObject(count_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), Integer.class);
     }
 
     @Override
@@ -117,9 +125,20 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
         }
         StringBuilder suf_sql = new StringBuilder("where 1=1 ");
         if (null != param.getType()) {
-            suf_sql.append(" and type = :type");
+            suf_sql.append(" and `type` = :type ");
         }
         suf_sql.append(" and if_del = :ifDel ");
+        return suf_sql;
+    }
+
+    private StringBuilder getLikeSql(ConfigPageParam param) {
+        StringBuilder suf_sql = this.getSufSql(param);
+        if (StringUtils.isNotBlank(param.getServiceName())) {
+            suf_sql.append(" and LOCATE(:serviceName,service_name) > 0 ");
+        }
+        if (StringUtils.isNotBlank(param.getKey())) {
+            suf_sql.append(" and LOCATE(:key,`key`) > 0 ");
+        }
         return suf_sql;
     }
 

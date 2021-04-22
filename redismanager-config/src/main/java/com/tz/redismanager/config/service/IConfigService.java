@@ -16,6 +16,8 @@ public interface IConfigService {
 
     List<ConfigPO> queryList(ConfigPageParam param);
 
+    int count(ConfigPageParam param);
+
     void addConfig(ConfigPO configPO);
 
     void updateConfig(ConfigPO configPO);

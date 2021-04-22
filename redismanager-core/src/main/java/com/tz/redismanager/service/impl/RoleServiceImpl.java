@@ -9,10 +9,7 @@ import com.tz.redismanager.dao.domain.po.RolePO;
 import com.tz.redismanager.dao.mapper.RolePOMapper;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
-import com.tz.redismanager.domain.vo.Pagination;
-import com.tz.redismanager.domain.vo.RoleListResp;
-import com.tz.redismanager.domain.vo.RoleResp;
-import com.tz.redismanager.domain.vo.RoleVO;
+import com.tz.redismanager.domain.vo.*;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IRoleService;
@@ -72,7 +69,7 @@ public class RoleServiceImpl implements IRoleService {
     public ApiResult<?> queryList(RolePageParam param) {
         RolePO queryRole = this.buildQueryRole(param);
         Integer total = rolePOMapper.countRole(queryRole);
-        RoleListResp resp = this.buildRoleListResp(param, total);
+        PageResp<RoleResp> resp = this.buildPageResp(param, total);
         if (total <= 0) {
             return new ApiResult<>(ResultCode.SUCCESS, resp);
         }
@@ -132,8 +129,8 @@ public class RoleServiceImpl implements IRoleService {
         return queryRole;
     }
 
-    private RoleListResp buildRoleListResp(RolePageParam param, Integer total) {
-        RoleListResp resp = new RoleListResp();
+    private PageResp<RoleResp> buildPageResp(RolePageParam param, Integer total) {
+        PageResp<RoleResp> resp = new PageResp();
         Pagination pagination = new Pagination();
         pagination.setTotal(total);
         pagination.setCurrent(param.getCurrentPage());

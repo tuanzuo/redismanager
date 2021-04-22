@@ -25,5 +25,7 @@ public interface IConfigDao {
 
     List<ConfigPO> selectPageByParam(ConfigPageParam param);
 
+    int count(ConfigPageParam param);
+
     int updateByPrimaryKey(ConfigPO record);
 }

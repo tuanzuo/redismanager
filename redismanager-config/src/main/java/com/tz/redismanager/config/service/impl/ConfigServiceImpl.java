@@ -33,6 +33,11 @@ public class ConfigServiceImpl implements IConfigService {
     }
 
     @Override
+    public int count(ConfigPageParam param) {
+        return configDao.count(param);
+    }
+
+    @Override
     public void addConfig(ConfigPO configPO) {
         configDao.insert(configPO);
         applicationContext.publishEvent(new ConfigAddEvent(configPO));

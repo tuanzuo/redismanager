@@ -6,18 +6,18 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * <p>角色列表返回对象</p>
+ * <p>分页列表返回对象</p>
  *
  * @author tuanzuo
- * @version 1.4.0
- * @time 2020-09-26 16:41
+ * @version 1.7.0
+ * @time 2021-04-22 21:07
  **/
 @Getter
 @Setter
-public class RoleListResp {
+public class PageResp<T> {
 
     private Pagination pagination;
 
-    private List<RoleResp> list;
+    private List<T> list;
 
 }
