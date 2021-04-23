@@ -5,6 +5,7 @@ import java.lang.annotation.*;
 /**
  * 标识redis连接的id注解
  *
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-06-19 23:11
  **/

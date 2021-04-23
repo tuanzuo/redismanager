@@ -79,6 +79,7 @@ CREATE TABLE `t_config` (
   `type` tinyint(3) NOT NULL COMMENT '类型[10=生效缓存配置,20=失效缓存配置,30=限流配置,40=token配置]',
   `service_name` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '服务名',
   `key` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '配置key',
+  `key_name` varchar(100) COLLATE utf8_bin DEFAULT NULL COMMENT '配置key名称',
   `content` text COLLATE utf8_bin NOT NULL COMMENT '配置内容JSON',
   `version` int(11) NOT NULL DEFAULT '1' COMMENT '版本号',
   `note` varchar(300) COLLATE utf8_bin DEFAULT NULL COMMENT '备注',

@@ -28,13 +28,13 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
 
     private String deleteByPrimaryKey_sql = "delete from t_config where id = :id";
     private String insert_sql =
-            "insert into t_config (`type`, service_name, `key`, content, version, note, creater, create_time, updater, update_time, if_del) " +
-            "values (:type, :serviceName, :key, :content, :version, :note, :creater, :createTime, :updater, :updateTime, :ifDel)";
+            "insert into t_config (`type`, service_name, `key`, key_name, content, version, note, creater, create_time, updater, update_time, if_del) " +
+            "values (:type, :serviceName, :key, :keyName, :content, :version, :note, :creater, :createTime, :updater, :updateTime, :ifDel)";
     private String selectByPrimaryKey_sql =
-            "select id, `type`, service_name, `key`, content, version, note, creater, create_time, updater, update_time, if_del from t_config " +
+            "select id, `type`, service_name, `key`, key_name, content, version, note, creater, create_time, updater, update_time, if_del from t_config " +
             "where id = :id";
     private String selectByParam_pre_sql =
-            "select id, `type`, service_name, `key`, content, version, note, creater, create_time, updater, update_time, if_del from t_config ";
+            "select id, `type`, service_name, `key`, key_name, content, version, note, creater, create_time, updater, update_time, if_del from t_config ";
     private String count_sql =
             "select count(*) from t_config ";
     private String updateByPrimaryKey_sql =
@@ -42,11 +42,10 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
             "set `type` = :type, " +
             "service_name = :serviceName, " +
             "`key` = :key, " +
+            "key_name = :keyName, " +
             "content = :content, " +
             "version = :version, " +
             "note = :note, " +
-            "creater = :creater, " +
-            "create_time = :createTime, " +
             "updater = :updater, " +
             "update_time = :updateTime, " +
             "if_del = :ifDel" +
@@ -88,6 +87,9 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
         }
         if (StringUtils.isNotBlank(param.getKey())) {
             suf_sql.append(" and `key` = :key ");
+        }
+        if (StringUtils.isNotBlank(param.getKeyName())) {
+            suf_sql.append(" and key_name = :keyName ");
         }
         return namedParameterJdbcTemplate.query(selectByParam_pre_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), new ConfigPORowMapper());
     }
@@ -139,6 +141,9 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
         if (StringUtils.isNotBlank(param.getKey())) {
             suf_sql.append(" and LOCATE(:key,`key`) > 0 ");
         }
+        if (StringUtils.isNotBlank(param.getKeyName())) {
+            suf_sql.append(" and LOCATE(:keyName,key_name) > 0 ");
+        }
         return suf_sql;
     }
 
@@ -151,6 +156,7 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
             po.setType(rs.getInt("type"));
             po.setServiceName(rs.getString("service_name"));
             po.setKey(rs.getString("key"));
+            po.setKeyName(rs.getString("key_name"));
             po.setContent(rs.getString("content"));
             po.setVersion(rs.getInt("version"));
             po.setNote(rs.getString("note"));

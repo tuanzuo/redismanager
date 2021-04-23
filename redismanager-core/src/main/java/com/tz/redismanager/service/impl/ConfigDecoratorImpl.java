@@ -11,7 +11,6 @@ import com.tz.redismanager.domain.vo.Pagination;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IConfigDecorator;
-import com.tz.redismanager.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,30 +67,31 @@ public class ConfigDecoratorImpl implements IConfigDecorator {
     }
 
     private ConfigPO buildAddPO(ConfigVO vo, AuthContext authContext) {
-        ConfigPO po = new ConfigPO();
-        po.setType(vo.getType());
-        po.setServiceName(vo.getServiceName());
-        po.setKey(vo.getKey());
-        po.setContent(JsonUtils.toJsonStr(vo.getContent()));
-        po.setNote(vo.getNote());
+        ConfigPO po = this.buildBasePO(vo, authContext);
+        po.setVersion(1);
         po.setCreater(authContext.getUserName());
         po.setCreateTime(new Date());
-        po.setUpdater(authContext.getUserName());
-        po.setUpdateTime(new Date());
-        po.setIfDel(ConstInterface.IF_DEL.NO);
         return po;
     }
 
     private ConfigPO buildUpdatePO(ConfigVO vo, AuthContext authContext) {
-        ConfigPO po = new ConfigPO();
+        ConfigPO po = this.buildBasePO(vo, authContext);
         po.setId(vo.getId());
+        po.setVersion(po.getVersion() + 1);
+        return po;
+    }
+
+    private ConfigPO buildBasePO(ConfigVO vo, AuthContext authContext) {
+        ConfigPO po = new ConfigPO();
         po.setType(vo.getType());
         po.setServiceName(vo.getServiceName());
         po.setKey(vo.getKey());
-        po.setContent(JsonUtils.toJsonStr(vo.getContent()));
+        po.setKeyName(vo.getKeyName());
+        po.setContent(vo.getContent());
         po.setNote(vo.getNote());
         po.setUpdater(authContext.getUserName());
         po.setUpdateTime(new Date());
+        po.setIfDel(ConstInterface.IF_DEL.NO);
         return po;
     }
 

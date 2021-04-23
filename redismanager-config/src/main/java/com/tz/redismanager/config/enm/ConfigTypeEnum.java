@@ -8,8 +8,8 @@ package com.tz.redismanager.config.enm;
  * @time 2021-04-09 20:33
  **/
 public enum ConfigTypeEnum {
-    CACHER_ENABLE(10, "cacherEnable", "生效缓存配置"),
-    CACHER_EVICT(20, "cacherEvict", "失效缓存配置"),
+    CACHER_ENABLE(10, "cacherEnable", "缓存生效配置"),
+    CACHER_EVICT(20, "cacherEvict", "缓存失效配置"),
     LIMITER(30, "limiter", "限流配置"),
     TOKEN(40, "token", "token配置"),
     ;

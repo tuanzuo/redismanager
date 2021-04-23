@@ -41,6 +41,11 @@ public class ConfigPO {
     private String key;
 
     /**
+     * 配置key名称
+     */
+    private String keyName;
+
+    /**
      * 配置内容JSON
      */
     private String content;
