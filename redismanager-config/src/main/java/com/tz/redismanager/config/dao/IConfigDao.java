@@ -1,5 +1,6 @@
 package com.tz.redismanager.config.dao;
 
+import com.tz.redismanager.config.domain.dto.ConfigDTO;
 import com.tz.redismanager.config.domain.param.ConfigPageParam;
 import com.tz.redismanager.config.domain.param.ConfigQueryParam;
 import com.tz.redismanager.config.domain.po.ConfigPO;
@@ -16,6 +17,10 @@ import java.util.List;
 public interface IConfigDao {
 
     int deleteByPrimaryKey(Integer id);
+
+    int deleteLogicByPrimaryKey(ConfigDTO dto);
+
+    int deleteLogicByIds(ConfigDTO dto);
 
     int insert(ConfigPO record);
 

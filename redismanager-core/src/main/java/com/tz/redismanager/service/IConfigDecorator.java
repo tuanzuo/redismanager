@@ -19,4 +19,6 @@ public interface IConfigDecorator {
     ApiResult<?> add(ConfigVO vo, AuthContext authContext);
 
     ApiResult<?> update(ConfigVO vo, AuthContext authContext);
+
+    ApiResult<?> del(ConfigVO vo, AuthContext authContext);
 }

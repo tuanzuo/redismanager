@@ -2,6 +2,7 @@ package com.tz.redismanager.config.dao.impl;
 
 import com.tz.redismanager.config.constant.ConstInterface;
 import com.tz.redismanager.config.dao.IConfigDao;
+import com.tz.redismanager.config.domain.dto.ConfigDTO;
 import com.tz.redismanager.config.domain.param.ConfigPageParam;
 import com.tz.redismanager.config.domain.param.ConfigQueryParam;
 import com.tz.redismanager.config.domain.po.ConfigPO;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
@@ -27,6 +30,8 @@ import java.util.List;
 public class JdbcTemplateConfigDaoImpl implements IConfigDao {
 
     private String deleteByPrimaryKey_sql = "delete from t_config where id = :id";
+    private String deleteLogicByPrimaryKey_sql = "update t_config set updater = :updater,update_time = :updateTime,if_del = :ifDel where id = :id";
+    private String deleteLogicByIds_sql = "update t_config set updater = :updater,update_time = :updateTime,if_del = :ifDel where id in (:ids)";
     private String insert_sql =
             "insert into t_config (`type`, service_name, `key`, key_name, content, version, note, creater, create_time, updater, update_time, if_del) " +
             "values (:type, :serviceName, :key, :keyName, :content, :version, :note, :creater, :createTime, :updater, :updateTime, :ifDel)";
@@ -44,11 +49,11 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
             "`key` = :key, " +
             "key_name = :keyName, " +
             "content = :content, " +
-            "version = :version, " +
+            "version = version + 1, " +
             "note = :note, " +
             "updater = :updater, " +
             "update_time = :updateTime, " +
-            "if_del = :ifDel" +
+            "if_del = :ifDel " +
             "where id = :id";
 
     /**
@@ -65,8 +70,21 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
     }
 
     @Override
+    public int deleteLogicByPrimaryKey(ConfigDTO dto) {
+        return namedParameterJdbcTemplate.update(deleteLogicByPrimaryKey_sql, new BeanPropertySqlParameterSource(dto));
+    }
+
+    @Override
+    public int deleteLogicByIds(ConfigDTO dto) {
+        return namedParameterJdbcTemplate.update(deleteLogicByIds_sql, new BeanPropertySqlParameterSource(dto));
+    }
+
+    @Override
     public int insert(ConfigPO record) {
-        return namedParameterJdbcTemplate.update(insert_sql, new BeanPropertySqlParameterSource(record));
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int retVal = namedParameterJdbcTemplate.update(insert_sql, new BeanPropertySqlParameterSource(record), keyHolder);
+        record.setId(keyHolder.getKey().intValue());
+        return retVal;
     }
 
     @Override

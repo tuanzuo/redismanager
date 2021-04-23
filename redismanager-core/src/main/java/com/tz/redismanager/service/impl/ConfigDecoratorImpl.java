@@ -1,5 +1,6 @@
 package com.tz.redismanager.service.impl;
 
+import com.tz.redismanager.config.domain.dto.ConfigDTO;
 import com.tz.redismanager.config.domain.param.ConfigPageParam;
 import com.tz.redismanager.config.domain.po.ConfigPO;
 import com.tz.redismanager.config.service.IConfigService;
@@ -54,6 +55,21 @@ public class ConfigDecoratorImpl implements IConfigDecorator {
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
+    @Override
+    public ApiResult<?> del(ConfigVO vo, AuthContext authContext) {
+        configService.delConfig(this.buildDelDTO(vo, authContext));
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    private ConfigDTO buildDelDTO(ConfigVO vo, AuthContext authContext) {
+        ConfigDTO dto = new ConfigDTO();
+        dto.setIds(vo.getIds());
+        dto.setUpdater(authContext.getUserName());
+        dto.setUpdateTime(new Date());
+        dto.setIfDel(ConstInterface.IF_DEL.YES);
+        return dto;
+    }
+
     private PageResp<ConfigPO> buildPageResp(ConfigPageParam param, Integer total) {
         PageResp<ConfigPO> resp = new PageResp<>();
         Pagination pagination = new Pagination();
@@ -77,7 +93,6 @@ public class ConfigDecoratorImpl implements IConfigDecorator {
     private ConfigPO buildUpdatePO(ConfigVO vo, AuthContext authContext) {
         ConfigPO po = this.buildBasePO(vo, authContext);
         po.setId(vo.getId());
-        po.setVersion(po.getVersion() + 1);
         return po;
     }
 

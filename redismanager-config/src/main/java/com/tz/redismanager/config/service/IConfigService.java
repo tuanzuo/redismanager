@@ -1,5 +1,6 @@
 package com.tz.redismanager.config.service;
 
+import com.tz.redismanager.config.domain.dto.ConfigDTO;
 import com.tz.redismanager.config.domain.param.ConfigPageParam;
 import com.tz.redismanager.config.domain.po.ConfigPO;
 
@@ -21,4 +22,6 @@ public interface IConfigService {
     void addConfig(ConfigPO configPO);
 
     void updateConfig(ConfigPO configPO);
+
+    void delConfig(ConfigDTO dto);
 }

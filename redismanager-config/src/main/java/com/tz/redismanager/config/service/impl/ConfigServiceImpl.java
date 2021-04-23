@@ -1,6 +1,7 @@
 package com.tz.redismanager.config.service.impl;
 
 import com.tz.redismanager.config.dao.IConfigDao;
+import com.tz.redismanager.config.domain.dto.ConfigDTO;
 import com.tz.redismanager.config.domain.param.ConfigPageParam;
 import com.tz.redismanager.config.domain.po.ConfigPO;
 import com.tz.redismanager.config.event.ConfigAddEvent;
@@ -47,5 +48,10 @@ public class ConfigServiceImpl implements IConfigService {
     public void updateConfig(ConfigPO configPO) {
         configDao.updateByPrimaryKey(configPO);
         applicationContext.publishEvent(new ConfigUpdateEvent(configPO));
+    }
+
+    @Override
+    public void delConfig(ConfigDTO dto) {
+        configDao.deleteLogicByIds(dto);
     }
 }

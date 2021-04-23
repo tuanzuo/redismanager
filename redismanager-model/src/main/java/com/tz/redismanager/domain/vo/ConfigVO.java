@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 /**
  * <p></p>
@@ -23,6 +24,12 @@ public class ConfigVO {
      */
     @NotNull(message = "配置id不能为空", groups = {ValidGroup.UpdateConfig.class})
     private Integer id;
+
+    /**
+     * 配置id集合
+     */
+    @NotEmpty(message = "配置id集合不能为空", groups = {ValidGroup.DelConfig.class})
+    private Set<Integer> ids;
 
     /**
      * 类型

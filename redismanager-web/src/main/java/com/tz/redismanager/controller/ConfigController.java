@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p></p>
+ * <p>配置controller</p>
  *
  * @author tuanzuo
  * @version 1.7.0
@@ -50,10 +50,10 @@ public class ConfigController {
         return configDecorator.update(vo, authContext);
     }
 
-    /*@RequestMapping("del/{id}")
+    @RequestMapping("del")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> del(@NotEmpty(message = "id不能为空") @PathVariable("id") Integer id, AuthContext authContext) {
-        return configDecorator.delete(id, authContext);
-    }*/
+    public ApiResult<?> del(@Validated({ValidGroup.DelConfig.class}) @RequestBody ConfigVO vo, AuthContext authContext) {
+        return configDecorator.del(vo, authContext);
+    }
 
 }

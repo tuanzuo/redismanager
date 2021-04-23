@@ -115,6 +115,12 @@ public interface ValidGroup {
     interface UpdateConfig {
     }
 
+    /**
+     * 删除配置信息
+     */
+    interface DelConfig {
+    }
+
 
 
 }
