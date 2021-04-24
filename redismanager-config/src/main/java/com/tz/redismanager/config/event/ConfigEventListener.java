@@ -7,7 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 /**
- * <p></p>
+ * <p>配置事件监听器</p>
  *
  * @author tuanzuo
  * @version 1.7.0

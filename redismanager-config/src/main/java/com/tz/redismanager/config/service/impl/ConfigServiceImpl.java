@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * <p></p>
+ * <p>配置服务实现</p>
  *
  * @author tuanzuo
  * @version 1.7.0

@@ -8,7 +8,7 @@ import com.tz.redismanager.config.domain.po.ConfigPO;
 import java.util.List;
 
 /**
- * <p></p>
+ * <p>配置服务接口</p>
  *
  * @author tuanzuo
  * @version 1.7.0

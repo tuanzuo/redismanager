@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * <p></p>
+ * <p>curator实现zookeeper的通知服务</p>
  *
  * @author tuanzuo
  * @version 1.7.0
@@ -45,10 +45,10 @@ public class CuratorNotifyServiceImpl implements INotiyService {
             String keyPath = appNamePath + "/" + ConfigTypeEnum.getByCode(po.getConfigType()).getName() + "/" + po.getConfigKey() + "/" + po.getId();
             Stat stat = curatorFramework.checkExists().forPath(keyPath);
             if (null == stat) {
-                keyPath = curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(keyPath, String.valueOf(po.getId()).getBytes());
+                keyPath = curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(keyPath, String.valueOf(po.getKeyName()).getBytes());
                 logger.info("[config配置] [创建path] {}", keyPath);
             } else {
-                curatorFramework.setData().forPath(keyPath, String.valueOf(po.getId()).getBytes());
+                curatorFramework.setData().forPath(keyPath, String.valueOf(po.getKeyName()).getBytes());
                 logger.info("[config配置] [更新path] {}", keyPath);
             }
         } catch (Exception e) {

@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <p></p>
+ * <p>异步事件配置</p>
  *
  * @author tuanzuo
  * @version 1.7.0

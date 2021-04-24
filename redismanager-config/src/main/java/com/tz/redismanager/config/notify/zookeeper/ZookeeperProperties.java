@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * <p></p>
+ * <p>zookeeper配置properties</p>
  *
  * @author tuanzuo
  * @version 1.7.0

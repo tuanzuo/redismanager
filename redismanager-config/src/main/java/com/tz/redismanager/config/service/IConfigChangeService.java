@@ -3,7 +3,7 @@ package com.tz.redismanager.config.service;
 import com.tz.redismanager.config.domain.po.ConfigPO;
 
 /**
- * <p></p>
+ * <p>配置更新服务接口</p>
  *
  * @author tuanzuo
  * @version 1.7.0

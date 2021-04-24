@@ -4,7 +4,7 @@ import com.tz.redismanager.config.domain.po.ConfigPO;
 import com.tz.redismanager.config.enm.ConfigTypeEnum;
 
 /**
- * <p></p>
+ * <p>抽象的配置更新服务</p>
  *
  * @author tuanzuo
  * @version 1.7.0
@@ -43,6 +43,5 @@ public abstract class AbstractConfigChangeService implements IConfigChangeServic
     public abstract void doTokenChange(ConfigPO po);
 
     public abstract void doOtherChange(ConfigPO po);
-
 
 }

@@ -3,7 +3,7 @@ package com.tz.redismanager.config.notify;
 import com.tz.redismanager.config.domain.po.ConfigPO;
 
 /**
- * <p></p>
+ * <p>通知服务接口</p>
  *
  * @author tuanzuo
  * @version 1.7.0
@@ -11,7 +11,15 @@ import com.tz.redismanager.config.domain.po.ConfigPO;
  **/
 public interface INotiyService {
 
+     /**
+      * 添加配置时触发通知
+      * @param po
+      */
      void add(ConfigPO po);
 
+     /**
+      * 更新配置时触发通知
+      * @param po
+      */
      void update(ConfigPO po);
 }

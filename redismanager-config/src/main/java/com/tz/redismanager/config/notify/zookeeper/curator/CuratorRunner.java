@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * <p></p>
+ * <p>curator的Runner</p>
  *
  * @author tuanzuo
  * @version 1.7.0
