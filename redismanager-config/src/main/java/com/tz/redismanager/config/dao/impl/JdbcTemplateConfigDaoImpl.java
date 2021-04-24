@@ -29,24 +29,25 @@ import java.util.List;
 @Service
 public class JdbcTemplateConfigDaoImpl implements IConfigDao {
 
-    private String deleteByPrimaryKey_sql = "delete from t_config where id = :id";
-    private String deleteLogicByPrimaryKey_sql = "update t_config set updater = :updater,update_time = :updateTime,if_del = :ifDel where id = :id";
-    private String deleteLogicByIds_sql = "update t_config set updater = :updater,update_time = :updateTime,if_del = :ifDel where id in (:ids)";
+    private String deleteByPrimaryKey_sql =
+            "delete from t_config where id = :id";
+    private String deleteLogicByPrimaryKey_sql =
+            "update t_config set updater = :updater,update_time = :updateTime,if_del = :ifDel where id = :id";
+    private String deleteLogicByIds_sql =
+            "update t_config set updater = :updater,update_time = :updateTime,if_del = :ifDel where id in (:ids)";
     private String insert_sql =
-            "insert into t_config (`type`, service_name, `key`, key_name, content, version, note, creater, create_time, updater, update_time, if_del) " +
-            "values (:type, :serviceName, :key, :keyName, :content, :version, :note, :creater, :createTime, :updater, :updateTime, :ifDel)";
-    private String selectByPrimaryKey_sql =
-            "select id, `type`, service_name, `key`, key_name, content, version, note, creater, create_time, updater, update_time, if_del from t_config " +
-            "where id = :id";
+            "insert into t_config (service_name, config_type, config_key, key_name, content, version, note, creater, create_time, updater, update_time, if_del) " +
+            "values (:serviceName, :configType, :configKey, :keyName, :content, :version, :note, :creater, :createTime, :updater, :updateTime, :ifDel)";
     private String selectByParam_pre_sql =
-            "select id, `type`, service_name, `key`, key_name, content, version, note, creater, create_time, updater, update_time, if_del from t_config ";
+            "select id, service_name, config_type, config_key, key_name, content, version, note, creater, create_time, updater, update_time, if_del from t_config ";
+    private String selectByPrimaryKey_sql = selectByParam_pre_sql + " where id = :id";
     private String count_sql =
-            "select count(*) from t_config ";
+            "select count(id) from t_config ";
     private String updateByPrimaryKey_sql =
             "update t_config " +
-            "set `type` = :type, " +
-            "service_name = :serviceName, " +
-            "`key` = :key, " +
+            "set service_name = :serviceName, " +
+            "config_type = :configType, " +
+            "config_key = :configKey, " +
             "key_name = :keyName, " +
             "content = :content, " +
             "version = version + 1, " +
@@ -96,19 +97,7 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
 
     @Override
     public List<ConfigPO> selectListByParam(ConfigQueryParam param) {
-        StringBuilder suf_sql = this.getSufSql(param);
-        if (null != param.getId()) {
-            suf_sql.append(" and id = :id ");
-        }
-        if (StringUtils.isNotBlank(param.getServiceName())) {
-            suf_sql.append(" and service_name = :serviceName ");
-        }
-        if (StringUtils.isNotBlank(param.getKey())) {
-            suf_sql.append(" and `key` = :key ");
-        }
-        if (StringUtils.isNotBlank(param.getKeyName())) {
-            suf_sql.append(" and key_name = :keyName ");
-        }
+        StringBuilder suf_sql = this.getQuerySql(param);
         return namedParameterJdbcTemplate.query(selectByParam_pre_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), new ConfigPORowMapper());
     }
 
@@ -129,7 +118,13 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
     }
 
     @Override
-    public int count(ConfigPageParam param) {
+    public int count(ConfigQueryParam param) {
+        StringBuilder suf_sql = this.getQuerySql(param);
+        return namedParameterJdbcTemplate.queryForObject(count_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), Integer.class);
+    }
+
+    @Override
+    public int countPage(ConfigPageParam param) {
         StringBuilder suf_sql = this.getLikeSql(param);
         return namedParameterJdbcTemplate.queryForObject(count_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), Integer.class);
     }
@@ -139,28 +134,45 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
         return namedParameterJdbcTemplate.update(updateByPrimaryKey_sql, new BeanPropertySqlParameterSource(record));
     }
 
-    private StringBuilder getSufSql(ConfigQueryParam param) {
+    private StringBuilder getBaseWhereSql(ConfigQueryParam param) {
         if (null == param.getIfDel()) {
             param.setIfDel(ConstInterface.IF_DEL.NO);
         }
         StringBuilder suf_sql = new StringBuilder("where 1=1 ");
-        if (null != param.getType()) {
-            suf_sql.append(" and `type` = :type ");
+        if (null != param.getConfigType()) {
+            suf_sql.append(" and config_type = :configType ");
         }
         suf_sql.append(" and if_del = :ifDel ");
         return suf_sql;
     }
 
     private StringBuilder getLikeSql(ConfigPageParam param) {
-        StringBuilder suf_sql = this.getSufSql(param);
+        StringBuilder suf_sql = this.getBaseWhereSql(param);
         if (StringUtils.isNotBlank(param.getServiceName())) {
             suf_sql.append(" and LOCATE(:serviceName,service_name) > 0 ");
         }
-        if (StringUtils.isNotBlank(param.getKey())) {
-            suf_sql.append(" and LOCATE(:key,`key`) > 0 ");
+        if (StringUtils.isNotBlank(param.getConfigKey())) {
+            suf_sql.append(" and LOCATE(:configKey,config_key) > 0 ");
         }
         if (StringUtils.isNotBlank(param.getKeyName())) {
             suf_sql.append(" and LOCATE(:keyName,key_name) > 0 ");
+        }
+        return suf_sql;
+    }
+
+    private StringBuilder getQuerySql(ConfigQueryParam param) {
+        StringBuilder suf_sql = this.getBaseWhereSql(param);
+        if (null != param.getId()) {
+            suf_sql.append(" and id = :id ");
+        }
+        if (StringUtils.isNotBlank(param.getServiceName())) {
+            suf_sql.append(" and service_name = :serviceName ");
+        }
+        if (StringUtils.isNotBlank(param.getConfigKey())) {
+            suf_sql.append(" and config_key = :configKey ");
+        }
+        if (StringUtils.isNotBlank(param.getKeyName())) {
+            suf_sql.append(" and key_name = :keyName ");
         }
         return suf_sql;
     }
@@ -171,9 +183,9 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
         public ConfigPO mapRow(ResultSet rs, int rowNum) throws SQLException {
             ConfigPO po = new ConfigPO();
             po.setId(rs.getInt("id"));
-            po.setType(rs.getInt("type"));
             po.setServiceName(rs.getString("service_name"));
-            po.setKey(rs.getString("key"));
+            po.setConfigType(rs.getInt("config_type"));
+            po.setConfigKey(rs.getString("config_key"));
             po.setKeyName(rs.getString("key_name"));
             po.setContent(rs.getString("content"));
             po.setVersion(rs.getInt("version"));

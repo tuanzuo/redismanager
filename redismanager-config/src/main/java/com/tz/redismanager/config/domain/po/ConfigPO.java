@@ -25,20 +25,20 @@ public class ConfigPO {
     private Integer id;
 
     /**
-     * 类型
-     * {@link com.tz.redismanager.config.enm.ConfigTypeEnum}
-     */
-    private Integer type;
-
-    /**
      * 服务名
      */
     private String serviceName;
 
     /**
+     * 配置类型
+     * {@link com.tz.redismanager.config.enm.ConfigTypeEnum}
+     */
+    private Integer configType;
+
+    /**
      * 配置key
      */
-    private String key;
+    private String configKey;
 
     /**
      * 配置key名称

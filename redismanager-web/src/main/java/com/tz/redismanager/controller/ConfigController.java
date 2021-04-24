@@ -35,7 +35,7 @@ public class ConfigController {
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     @Limiter(name = "查询配置列表请求限流", key = "CONFIG_LIST_API", qps = 200)
     public ApiResult<?> list(ConfigPageParam param) {
-        return configDecorator.queryList(param);
+        return configDecorator.queryPageList(param);
     }
 
     @RequestMapping("add")

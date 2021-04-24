@@ -2,6 +2,7 @@ package com.tz.redismanager.config.service;
 
 import com.tz.redismanager.config.domain.dto.ConfigDTO;
 import com.tz.redismanager.config.domain.param.ConfigPageParam;
+import com.tz.redismanager.config.domain.param.ConfigQueryParam;
 import com.tz.redismanager.config.domain.po.ConfigPO;
 
 import java.util.List;
@@ -15,13 +16,15 @@ import java.util.List;
  **/
 public interface IConfigService {
 
-    List<ConfigPO> queryList(ConfigPageParam param);
+    List<ConfigPO> queryPageList(ConfigPageParam param);
 
-    int count(ConfigPageParam param);
+    int count(ConfigQueryParam param);
 
-    void addConfig(ConfigPO configPO);
+    int countPage(ConfigPageParam param);
 
-    void updateConfig(ConfigPO configPO);
+    int addConfig(ConfigPO configPO);
 
-    void delConfig(ConfigDTO dto);
+    int updateConfig(ConfigPO configPO);
+
+    int delConfig(ConfigDTO dto);
 }

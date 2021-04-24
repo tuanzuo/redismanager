@@ -62,7 +62,7 @@ public class CuratorRunner implements CommandLineRunner {
         for (ConfigPO temp : configs) {
             if (null != configChangeService) {
                 configChangeService.change(temp);
-                logger.info("[config配置] [ConfigRunner] [应用启动] [更新配置完成] [serviceName：{}] [key：{}] [type：{}]", temp.getServiceName(), temp.getKey(), temp.getType());
+                logger.info("[config配置] [ConfigRunner] [应用启动] [更新配置完成] [serviceName：{}] [key：{}] [type：{}]", temp.getServiceName(), temp.getConfigKey(), temp.getConfigType());
             }
 
             /*String keyPath = appNamePath + "/" + ConfigTypeEnum.getByCode(temp.getType()).getName() + "/" + temp.getKey() + "/" + temp.getId();

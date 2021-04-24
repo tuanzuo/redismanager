@@ -32,23 +32,23 @@ public class ConfigVO {
     private Set<Integer> ids;
 
     /**
-     * 类型
-     * {@link com.tz.redismanager.config.enm.ConfigTypeEnum}
-     */
-    @NotNull(message = "类型不能为空", groups = {ValidGroup.AddConfig.class, ValidGroup.UpdateConfig.class})
-    private Integer type;
-
-    /**
      * 服务名
      */
     @NotEmpty(message = "服务名不能为空", groups = {ValidGroup.AddConfig.class, ValidGroup.UpdateConfig.class})
     private String serviceName;
 
     /**
+     * 配置类型
+     * {@link com.tz.redismanager.config.enm.ConfigTypeEnum}
+     */
+    @NotNull(message = "类型不能为空", groups = {ValidGroup.AddConfig.class, ValidGroup.UpdateConfig.class})
+    private Integer configType;
+
+    /**
      * 配置key
      */
     @NotEmpty(message = "配置key不能为空", groups = {ValidGroup.AddConfig.class, ValidGroup.UpdateConfig.class})
-    private String key;
+    private String configKey;
 
     /**
      * 配置key名称

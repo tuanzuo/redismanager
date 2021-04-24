@@ -42,7 +42,7 @@ public class CuratorNotifyServiceImpl implements INotiyService {
     private void notify(ConfigPO po) {
         try {
             String appNamePath = zookeeperProperties.getParentPath() + po.getServiceName();
-            String keyPath = appNamePath + "/" + ConfigTypeEnum.getByCode(po.getType()).getName() + "/" + po.getKey() + "/" + po.getId();
+            String keyPath = appNamePath + "/" + ConfigTypeEnum.getByCode(po.getConfigType()).getName() + "/" + po.getConfigKey() + "/" + po.getId();
             Stat stat = curatorFramework.checkExists().forPath(keyPath);
             if (null == stat) {
                 keyPath = curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(keyPath, String.valueOf(po.getId()).getBytes());

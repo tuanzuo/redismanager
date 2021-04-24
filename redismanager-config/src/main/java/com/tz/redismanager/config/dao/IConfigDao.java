@@ -30,7 +30,9 @@ public interface IConfigDao {
 
     List<ConfigPO> selectPageByParam(ConfigPageParam param);
 
-    int count(ConfigPageParam param);
+    int count(ConfigQueryParam param);
+
+    int countPage(ConfigPageParam param);
 
     int updateByPrimaryKey(ConfigPO record);
 }

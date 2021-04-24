@@ -6,7 +6,7 @@ import com.tz.redismanager.domain.vo.ConfigVO;
 import com.tz.redismanager.security.domain.AuthContext;
 
 /**
- * <p></p>
+ * <p>配置装饰器接口</p>
  *
  * @author tuanzuo
  * @version 1.7.0
@@ -14,7 +14,7 @@ import com.tz.redismanager.security.domain.AuthContext;
  **/
 public interface IConfigDecorator {
 
-    ApiResult<?> queryList(ConfigPageParam param);
+    ApiResult<?> queryPageList(ConfigPageParam param);
 
     ApiResult<?> add(ConfigVO vo, AuthContext authContext);
 

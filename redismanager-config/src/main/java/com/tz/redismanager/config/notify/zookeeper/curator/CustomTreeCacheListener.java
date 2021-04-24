@@ -52,7 +52,7 @@ public class CustomTreeCacheListener implements TreeCacheListener {
                 if (CollectionUtils.isNotEmpty(list)) {
                     ConfigPO temp = list.get(0);
                     configChangeService.change(temp);
-                    logger.info("[config配置] [TreeCacheListener] [{}] [更新配置完成] [serviceName：{}] [key：{}] [type：{}] [path：{}]", type, temp.getServiceName(), temp.getKey(), temp.getType(), path);
+                    logger.info("[config配置] [TreeCacheListener] [{}] [更新配置完成] [serviceName：{}] [key：{}] [type：{}] [path：{}]", type, temp.getServiceName(), temp.getConfigKey(), temp.getConfigType(), path);
                 }
             }
         }

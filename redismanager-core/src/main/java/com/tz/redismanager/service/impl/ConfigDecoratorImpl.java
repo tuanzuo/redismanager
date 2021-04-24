@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * <p></p>
+ * <p>配置装饰器</p>
  *
  * @author tuanzuo
  * @version 1.7.0
@@ -33,13 +33,13 @@ public class ConfigDecoratorImpl implements IConfigDecorator {
     private IConfigService configService;
 
     @Override
-    public ApiResult<?> queryList(ConfigPageParam param) {
-        Integer total = configService.count(param);
+    public ApiResult<?> queryPageList(ConfigPageParam param) {
+        Integer total = configService.countPage(param);
         PageResp<ConfigPO> resp = this.buildPageResp(param, total);
         if (total <= 0) {
             return new ApiResult<>(ResultCode.SUCCESS, resp);
         }
-        resp.setList(configService.queryList(param));
+        resp.setList(configService.queryPageList(param));
         return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
 
@@ -98,9 +98,9 @@ public class ConfigDecoratorImpl implements IConfigDecorator {
 
     private ConfigPO buildBasePO(ConfigVO vo, AuthContext authContext) {
         ConfigPO po = new ConfigPO();
-        po.setType(vo.getType());
         po.setServiceName(vo.getServiceName());
-        po.setKey(vo.getKey());
+        po.setConfigType(vo.getConfigType());
+        po.setConfigKey(vo.getConfigKey());
         po.setKeyName(vo.getKeyName());
         po.setContent(vo.getContent());
         po.setNote(vo.getNote());

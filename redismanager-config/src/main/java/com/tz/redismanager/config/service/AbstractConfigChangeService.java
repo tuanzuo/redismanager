@@ -14,7 +14,7 @@ public abstract class AbstractConfigChangeService implements IConfigChangeServic
 
     @Override
     public void change(ConfigPO po) {
-        ConfigTypeEnum configTypeEnum = ConfigTypeEnum.getByCode(po.getType());
+        ConfigTypeEnum configTypeEnum = ConfigTypeEnum.getByCode(po.getConfigType());
         switch (configTypeEnum) {
             case CACHER_ENABLE:
                 doCacherEnableChange(po);
