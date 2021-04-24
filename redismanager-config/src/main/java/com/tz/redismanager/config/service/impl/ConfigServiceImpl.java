@@ -5,6 +5,7 @@ import com.tz.redismanager.config.domain.dto.ConfigDTO;
 import com.tz.redismanager.config.domain.param.ConfigPageParam;
 import com.tz.redismanager.config.domain.param.ConfigQueryParam;
 import com.tz.redismanager.config.domain.po.ConfigPO;
+import com.tz.redismanager.config.enm.ConfigTypeEnum;
 import com.tz.redismanager.config.event.ConfigAddEvent;
 import com.tz.redismanager.config.event.ConfigUpdateEvent;
 import com.tz.redismanager.config.exception.ConfigException;
@@ -56,7 +57,7 @@ public class ConfigServiceImpl implements IConfigService {
         int count = configDao.count(this.buildConfigQueryParam(configPO));
         if (count > 0) {
             logger.error("[config配置] [添加配置] [已存在相同配置不能重复添加] serviceName:{},configType:{},configKey:{}", configPO.getServiceName(), configPO.getConfigType(), configPO.getConfigKey());
-            throw new ConfigException("配置重复[" + configPO.getServiceName() + "," + configPO.getConfigType() + "," + configPO.getConfigKey() + "]");
+            throw new ConfigException("配置重复[服务名=" + configPO.getServiceName() + ",配置类型=" + ConfigTypeEnum.getByCode(configPO.getConfigType()).getMsg() + ",配置Key=" + configPO.getConfigKey() + "]");
         }
         int retVal = configDao.insert(configPO);
         if (retVal > 0) {
@@ -75,7 +76,7 @@ public class ConfigServiceImpl implements IConfigService {
             long existCount = list.stream().filter(temp -> !temp.getId().equals(configPO.getId())).count();
             if (existCount > 0) {
                 logger.error("[config配置] [修改配置] [已存在相同配置不能修改] serviceName:{},configType:{},configKey:{}", configPO.getServiceName(), configPO.getConfigType(), configPO.getConfigKey());
-                throw new ConfigException("配置重复[" + configPO.getServiceName() + "," + configPO.getConfigType() + "," + configPO.getConfigKey() + "]");
+                throw new ConfigException("配置重复[服务名=" + configPO.getServiceName() + ",配置类型=" + ConfigTypeEnum.getByCode(configPO.getConfigType()).getMsg() + ",配置Key=" + configPO.getConfigKey() + "]");
             }
         }
         int retVal = configDao.updateByPrimaryKey(configPO);
