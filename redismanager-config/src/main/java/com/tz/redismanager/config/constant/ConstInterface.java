@@ -18,4 +18,11 @@ public interface ConstInterface {
         String BASE_PATH = "/dynamic/config/";
     }
 
+    /**
+     * 配置同步类型
+     */
+    interface ConfigSyncType {
+        String ZOOKEEPER = "zookeeper";
+        String RABBITMQ = "rabbitmq";
+    }
 }

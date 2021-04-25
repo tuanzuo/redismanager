@@ -1,5 +1,6 @@
 package com.tz.redismanager.config.dao.impl;
 
+import com.tz.redismanager.config.config.ConfigProperties;
 import com.tz.redismanager.config.constant.ConstInterface;
 import com.tz.redismanager.config.dao.IConfigDao;
 import com.tz.redismanager.config.domain.dto.ConfigDTO;
@@ -7,13 +8,11 @@ import com.tz.redismanager.config.domain.param.ConfigPageParam;
 import com.tz.redismanager.config.domain.param.ConfigQueryParam;
 import com.tz.redismanager.config.domain.po.ConfigPO;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,25 +25,26 @@ import java.util.List;
  * @version 1.7.0
  * @time 2021-04-09 23:17
  **/
-@Service
 public class JdbcTemplateConfigDaoImpl implements IConfigDao {
 
+    private static final String TABLE_NAME = "${tableName}";
+
     private String deleteByPrimaryKey_sql =
-            "delete from t_config where id = :id";
+            "delete from ${tableName} where id = :id";
     private String deleteLogicByPrimaryKey_sql =
-            "update t_config set updater = :updater,update_time = :updateTime,if_del = :ifDel where id = :id";
+            "update ${tableName} set updater = :updater,update_time = :updateTime,if_del = :ifDel where id = :id";
     private String deleteLogicByIds_sql =
-            "update t_config set updater = :updater,update_time = :updateTime,if_del = :ifDel where id in (:ids)";
+            "update ${tableName} set updater = :updater,update_time = :updateTime,if_del = :ifDel where id in (:ids)";
     private String insert_sql =
-            "insert into t_config (service_name, config_type, config_key, key_name, content, version, note, creater, create_time, updater, update_time, if_del) " +
+            "insert into ${tableName} (service_name, config_type, config_key, key_name, content, version, note, creater, create_time, updater, update_time, if_del) " +
             "values (:serviceName, :configType, :configKey, :keyName, :content, :version, :note, :creater, :createTime, :updater, :updateTime, :ifDel)";
     private String selectByParam_pre_sql =
-            "select id, service_name, config_type, config_key, key_name, content, version, note, creater, create_time, updater, update_time, if_del from t_config ";
+            "select id, service_name, config_type, config_key, key_name, content, version, note, creater, create_time, updater, update_time, if_del from ${tableName} ";
     private String selectByPrimaryKey_sql = selectByParam_pre_sql + " where id = :id";
     private String count_sql =
-            "select count(id) from t_config ";
+            "select count(id) from ${tableName} ";
     private String updateByPrimaryKey_sql =
-            "update t_config " +
+            "update ${tableName} " +
             "set service_name = :serviceName, " +
             "config_type = :configType, " +
             "config_key = :configKey, " +
@@ -60,8 +60,18 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
     /**
      * {@link org.springframework.boot.autoconfigure.jdbc.NamedParameterJdbcTemplateConfiguration#namedParameterJdbcTemplate}
      */
-    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    public JdbcTemplateConfigDaoImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate, ConfigProperties configProperties) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        deleteByPrimaryKey_sql = deleteByPrimaryKey_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
+        deleteLogicByPrimaryKey_sql = deleteLogicByPrimaryKey_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
+        deleteLogicByIds_sql = deleteLogicByIds_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
+        insert_sql = insert_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
+        selectByParam_pre_sql = selectByParam_pre_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
+        count_sql = count_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
+        updateByPrimaryKey_sql = updateByPrimaryKey_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
+    }
 
     @Override
     public int deleteByPrimaryKey(Integer id) {
