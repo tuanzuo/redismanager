@@ -3,20 +3,26 @@ package com.tz.redismanager.config.config;
 import com.tz.redismanager.config.annotation.EnableConfigAutoConfiguration;
 import com.tz.redismanager.config.dao.IConfigDao;
 import com.tz.redismanager.config.dao.impl.JdbcTemplateConfigDaoImpl;
+import com.tz.redismanager.config.notify.INotiyService;
+import com.tz.redismanager.config.service.IConfigService;
+import com.tz.redismanager.config.service.impl.ConfigServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportAware;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.Nullable;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,6 +71,18 @@ public class ConfigConfigurationSelector implements ImportAware, EnvironmentAwar
     @ConditionalOnMissingBean(IConfigDao.class)
     public IConfigDao configDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate, ConfigProperties configProperties) {
         return new JdbcTemplateConfigDaoImpl(namedParameterJdbcTemplate, configProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(IConfigService.class)
+    public IConfigService configService(IConfigDao configDao, ApplicationContext applicationContext) {
+        return new ConfigServiceImpl(configDao, applicationContext);
+    }
+
+    @Bean
+    @Primary
+    public INotiyService notiyService(List<INotiyService> services) {
+        return services.stream().filter(temp -> temp.support(configAutoConfiguration.getString(CONFIG_SYNC_TYPE))).findFirst().get();
     }
 
 }

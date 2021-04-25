@@ -11,6 +11,8 @@ import com.tz.redismanager.config.domain.po.ConfigPO;
  **/
 public interface INotiyService {
 
+     boolean support(String type);
+
      /**
       * 添加配置时触发通知
       * @param po

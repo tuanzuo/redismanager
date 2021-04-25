@@ -14,9 +14,7 @@ import com.tz.redismanager.config.util.JsonUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -27,15 +25,17 @@ import java.util.List;
  * @version 1.7.0
  * @time 2021-04-15 22:40
  **/
-@Service
 public class ConfigServiceImpl implements IConfigService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
     private IConfigDao configDao;
-    @Autowired
     private ApplicationContext applicationContext;
+
+    public ConfigServiceImpl(IConfigDao configDao, ApplicationContext applicationContext) {
+        this.configDao = configDao;
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     public List<ConfigPO> queryPageList(ConfigPageParam param) {

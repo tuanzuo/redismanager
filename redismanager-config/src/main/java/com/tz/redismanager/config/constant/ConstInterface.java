@@ -22,7 +22,7 @@ public interface ConstInterface {
      * 配置同步类型
      */
     interface ConfigSyncType {
-        String ZOOKEEPER = "zookeeper";
+        String ZOOKEEPER_CURATOR = "zookeeper_curator";
         String RABBITMQ = "rabbitmq";
     }
 }

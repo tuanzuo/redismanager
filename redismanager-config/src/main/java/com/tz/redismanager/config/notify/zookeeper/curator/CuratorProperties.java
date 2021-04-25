@@ -3,7 +3,6 @@ package com.tz.redismanager.config.notify.zookeeper.curator;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>curator配置properties</p>
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
  * @version 1.7.0
  * @time 2021-04-09 20:42
  **/
-@Configuration
 @ConfigurationProperties(prefix = "rm.config.curator")
 @Getter
 @Setter

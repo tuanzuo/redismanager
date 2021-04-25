@@ -1,5 +1,6 @@
 package com.tz.redismanager.config.notify.zookeeper.curator;
 
+import com.tz.redismanager.config.constant.ConstInterface;
 import com.tz.redismanager.config.domain.po.ConfigPO;
 import com.tz.redismanager.config.enm.ConfigTypeEnum;
 import com.tz.redismanager.config.notify.INotiyService;
@@ -10,6 +11,7 @@ import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
  * @time 2021-04-15 23:31
  **/
 @Service
+@ConditionalOnClass({CuratorFramework.class})
 public class CuratorNotifyServiceImpl implements INotiyService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -28,6 +31,11 @@ public class CuratorNotifyServiceImpl implements INotiyService {
     private ZookeeperProperties zookeeperProperties;
     @Autowired
     private CuratorFramework curatorFramework;
+
+    @Override
+    public boolean support(String type) {
+        return ConstInterface.ConfigSyncType.ZOOKEEPER_CURATOR.equals(type);
+    }
 
     @Override
     public void add(ConfigPO po) {
