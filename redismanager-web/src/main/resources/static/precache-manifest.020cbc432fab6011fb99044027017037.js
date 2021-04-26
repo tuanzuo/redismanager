@@ -8,11 +8,11 @@ self.__precacheManifest = [
     "url": "/vendors.async.js"
   },
   {
-    "revision": "a4a71ad3425af965d15f",
+    "revision": "c23b5c451c92beb3f325",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "a4a71ad3425af965d15f",
+    "revision": "c23b5c451c92beb3f325",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -64,19 +64,19 @@ self.__precacheManifest = [
     "url": "/p__UserManager__models__usermanager.js.async.js"
   },
   {
-    "revision": "95f02caf7cc05ad61a5f",
+    "revision": "3306bee7ab10b3020e00",
     "url": "/p__User__Login.chunk.css"
   },
   {
-    "revision": "95f02caf7cc05ad61a5f",
+    "revision": "3306bee7ab10b3020e00",
     "url": "/p__User__Login.async.js"
   },
   {
-    "revision": "e577cc8b3d205aff951b",
+    "revision": "20cf12a60c8f6354c03c",
     "url": "/p__User__Register.chunk.css"
   },
   {
-    "revision": "e577cc8b3d205aff951b",
+    "revision": "20cf12a60c8f6354c03c",
     "url": "/p__User__Register.async.js"
   },
   {
@@ -96,11 +96,11 @@ self.__precacheManifest = [
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "8f3a1071a9e2d27258ea",
+    "revision": "b4ae9b30694f7ef005d1",
     "url": "/umi.css"
   },
   {
-    "revision": "8f3a1071a9e2d27258ea",
+    "revision": "b4ae9b30694f7ef005d1",
     "url": "/umi.js"
   },
   {
@@ -200,10 +200,6 @@ self.__precacheManifest = [
     "url": "/index.html"
   },
   {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
-  },
-  {
     "revision": "347329d0982682b42d40c8162817a940",
     "url": "/icons\\icon-128x128.png"
   },
@@ -212,8 +208,8 @@ self.__precacheManifest = [
     "url": "/favicon.png.back"
   },
   {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons\\icon-192x192.png"
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
   },
   {
     "revision": "5423f638851bd441057fb363969ac6c9",
@@ -222,6 +218,22 @@ self.__precacheManifest = [
   {
     "revision": "5661ce8e2472d2727e8fd0390b22ba37",
     "url": "/icons\\icon-512x512.png"
+  },
+  {
+    "revision": "9a723c40a87f1e96e339b0af5e3e42bc",
+    "url": "/img\\sAuJeJzSKbUmHfBQRzmZ.svg"
+  },
+  {
+    "revision": "70af7a35733166735063f90072ee1150",
+    "url": "/img\\HsIsxMZiWKrNUavQUXqx.svg"
+  },
+  {
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons\\icon-192x192.png"
+  },
+  {
+    "revision": "356efdc3a7c62a58403fb14854c46c71",
+    "url": "/img\\wAhyIChODzsoKIOBHcBk.svg"
   },
   {
     "revision": "e147bdebf32ef9cb7ce137ed0ed5d3a6",
