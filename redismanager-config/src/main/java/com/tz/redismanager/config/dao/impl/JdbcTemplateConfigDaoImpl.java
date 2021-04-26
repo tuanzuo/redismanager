@@ -29,33 +29,14 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
 
     private static final String TABLE_NAME = "${tableName}";
 
-    private String deleteByPrimaryKey_sql =
-            "delete from ${tableName} where id = :id";
-    private String deleteLogicByPrimaryKey_sql =
-            "update ${tableName} set updater = :updater,update_time = :updateTime,if_del = :ifDel where id = :id";
-    private String deleteLogicByIds_sql =
-            "update ${tableName} set updater = :updater,update_time = :updateTime,if_del = :ifDel where id in (:ids)";
-    private String insert_sql =
-            "insert into ${tableName} (service_name, config_type, config_key, key_name, content, version, note, creater, create_time, updater, update_time, if_del) " +
-            "values (:serviceName, :configType, :configKey, :keyName, :content, :version, :note, :creater, :createTime, :updater, :updateTime, :ifDel)";
-    private String selectByParam_pre_sql =
-            "select id, service_name, config_type, config_key, key_name, content, version, note, creater, create_time, updater, update_time, if_del from ${tableName} ";
-    private String selectByPrimaryKey_sql = selectByParam_pre_sql + " where id = :id";
-    private String count_sql =
-            "select count(id) from ${tableName} ";
-    private String updateByPrimaryKey_sql =
-            "update ${tableName} " +
-            "set service_name = :serviceName, " +
-            "config_type = :configType, " +
-            "config_key = :configKey, " +
-            "key_name = :keyName, " +
-            "content = :content, " +
-            "version = version + 1, " +
-            "note = :note, " +
-            "updater = :updater, " +
-            "update_time = :updateTime, " +
-            "if_del = :ifDel " +
-            "where id = :id";
+    private String deleteByPrimaryKey_sql =      "delete from ${tableName} where id = :id";
+    private String deleteLogicByPrimaryKey_sql = "update ${tableName} set updater = :updater,update_time = :updateTime,if_del = :ifDel where id = :id";
+    private String deleteLogicByIds_sql =        "update ${tableName} set updater = :updater,update_time = :updateTime,if_del = :ifDel where id in (:ids)";
+    private String insert_sql =                  "insert into ${tableName} (service_name, config_type, config_key, key_name, content, version, note, creater, create_time, updater, update_time, if_del) values (:serviceName, :configType, :configKey, :keyName, :content, :version, :note, :creater, :createTime, :updater, :updateTime, :ifDel)";
+    private String selectByParam_pre_sql =       "select id, service_name, config_type, config_key, key_name, content, version, note, creater, create_time, updater, update_time, if_del from ${tableName} ";
+    private String selectByPrimaryKey_sql =      selectByParam_pre_sql + " where id = :id";
+    private String count_sql =                   "select count(id) from ${tableName} ";
+    private String updateByPrimaryKey_sql =      "update ${tableName} set service_name = :serviceName, config_type = :configType, config_key = :configKey, key_name = :keyName, content = :content, version = version + 1, note = :note, updater = :updater, update_time = :updateTime, if_del = :ifDel where id = :id";
 
     /**
      * {@link org.springframework.boot.autoconfigure.jdbc.NamedParameterJdbcTemplateConfiguration#namedParameterJdbcTemplate}
@@ -64,13 +45,18 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
 
     public JdbcTemplateConfigDaoImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate, ConfigProperties configProperties) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        deleteByPrimaryKey_sql = deleteByPrimaryKey_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
-        deleteLogicByPrimaryKey_sql = deleteLogicByPrimaryKey_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
-        deleteLogicByIds_sql = deleteLogicByIds_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
-        insert_sql = insert_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
-        selectByParam_pre_sql = selectByParam_pre_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
-        count_sql = count_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
-        updateByPrimaryKey_sql = updateByPrimaryKey_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
+
+        deleteByPrimaryKey_sql = this.resolveSql(deleteByPrimaryKey_sql, configProperties);
+        deleteLogicByPrimaryKey_sql = this.resolveSql(deleteLogicByPrimaryKey_sql, configProperties);
+        deleteLogicByIds_sql = this.resolveSql(deleteLogicByIds_sql, configProperties);
+        insert_sql = this.resolveSql(insert_sql, configProperties);
+        selectByParam_pre_sql = this.resolveSql(selectByParam_pre_sql, configProperties);
+        count_sql = this.resolveSql(count_sql, configProperties);
+        updateByPrimaryKey_sql = this.resolveSql(updateByPrimaryKey_sql, configProperties);
+    }
+
+    private String resolveSql(String deleteByPrimaryKey_sql, ConfigProperties configProperties) {
+        return deleteByPrimaryKey_sql.replace(TABLE_NAME, configProperties.getConfigTableName());
     }
 
     @Override
@@ -187,6 +173,12 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
         return suf_sql;
     }
 
+    /**
+     * 这里为什么不直接使用{@link org.springframework.jdbc.core.BeanPropertyRowMapper}呢？因为看BeanPropertyRowMapper的注释中写了“
+     *  * <p>Please note that this class is designed to provide convenience rather than high performance.
+     *  * For best performance, consider using a custom {@link RowMapper} implementation.”
+     *  -->意思是BeanPropertyRowMapper只是为了使用方便，而非一个高性能的实现，如果要实现高性能，需要自己来实现RowMapper
+     */
     public static class ConfigPORowMapper implements RowMapper<ConfigPO> {
 
         @Override
