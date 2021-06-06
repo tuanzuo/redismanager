@@ -8,7 +8,7 @@ package com.tz.redismanager.enm;
  **/
 public enum StrategyTypeEnum {
     //查询
-    SEARCH_VALUE,
+    QUERY_VALUE,
     //添加
     ADD_VALUE,
     //修改

@@ -20,7 +20,7 @@ CREATE TABLE `t_redis_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='redis连接配置表';
 
 CREATE TABLE `t_redis_config_ext` (
-  `id` BIGINT NOT NULL COMMENT '主键',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `rconfig_id` VARCHAR (32) NOT NULL COMMENT '关联的配置id',
   `ext_key` VARCHAR (32) NOT NULL COMMENT '扩展key',
   `ext_name` VARCHAR (50) COMMENT '扩展名称',

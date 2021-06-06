@@ -22,6 +22,12 @@ spring:
     name: redismanagerweb
   profiles: 
     active: local
+  servlet:
+    multipart:
+      #上传单个文件的最大值
+      max-file-size: ${upload.one.max.size}
+      #上传文件总的最大值
+      max-request-size: ${upload.all.max.size}
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8

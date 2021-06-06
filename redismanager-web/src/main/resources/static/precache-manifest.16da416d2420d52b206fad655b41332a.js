@@ -1,18 +1,18 @@
 self.__precacheManifest = [
   {
-    "revision": "10267923c1ee5b4ba178",
+    "revision": "55e4354126c5aa4f5e26",
     "url": "/vendors.chunk.css"
   },
   {
-    "revision": "10267923c1ee5b4ba178",
+    "revision": "55e4354126c5aa4f5e26",
     "url": "/vendors.async.js"
   },
   {
-    "revision": "7e5b6dce67c1cc72c92b",
+    "revision": "776ec067366ea4361051",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "7e5b6dce67c1cc72c92b",
+    "revision": "776ec067366ea4361051",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -20,11 +20,11 @@ self.__precacheManifest = [
     "url": "/layouts__BlankLayout.async.js"
   },
   {
-    "revision": "77514eb824c148e8ec36",
+    "revision": "a1ec5333cb40ef581fc5",
     "url": "/layouts__UserLayout.chunk.css"
   },
   {
-    "revision": "77514eb824c148e8ec36",
+    "revision": "a1ec5333cb40ef581fc5",
     "url": "/layouts__UserLayout.async.js"
   },
   {
@@ -32,115 +32,115 @@ self.__precacheManifest = [
     "url": "/p__Account__Settings__models__geographic.js.async.js"
   },
   {
-    "revision": "08f22b853c5180adcf3b",
+    "revision": "00d9dc49fd9637a269ef",
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "ff93529d26b51524f778",
+    "revision": "b22a2b4b3bdceb3e58d7",
     "url": "/p__ConfigManager__models__configmanager.js.async.js"
   },
   {
-    "revision": "d772afd90e12fbdcdd68",
+    "revision": "23ca8a7776f5f70fb819",
     "url": "/p__Dashboard__models__activities.js.async.js"
   },
   {
-    "revision": "c3394ea4258e75276894",
+    "revision": "2b2fd85609ab2bb7043b",
     "url": "/p__Dashboard__models__chart.js.async.js"
   },
   {
-    "revision": "a1569a3e8c782fdbe10f",
+    "revision": "02feffb1070b61171ba1",
     "url": "/p__Dashboard__models__monitor.js.async.js"
   },
   {
-    "revision": "e0d7408cd94ade487d03",
+    "revision": "f1432a0522cff59f362b",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
-    "revision": "0b30e1ef420c7bb854f7",
+    "revision": "444039eb57103cef635b",
     "url": "/p__RoleManager__models__rolemanager.js.async.js"
   },
   {
-    "revision": "a89319c59a6e0da9b154",
+    "revision": "ef20b14bb537bca9c7a9",
     "url": "/p__UserManager__models__usermanager.js.async.js"
   },
   {
-    "revision": "3306bee7ab10b3020e00",
+    "revision": "6d7c9e0d9b7d98e23b65",
     "url": "/p__User__Login.chunk.css"
   },
   {
-    "revision": "3306bee7ab10b3020e00",
+    "revision": "6d7c9e0d9b7d98e23b65",
     "url": "/p__User__Login.async.js"
   },
   {
-    "revision": "20cf12a60c8f6354c03c",
+    "revision": "811228ff6686edc04691",
     "url": "/p__User__Register.chunk.css"
   },
   {
-    "revision": "20cf12a60c8f6354c03c",
+    "revision": "811228ff6686edc04691",
     "url": "/p__User__Register.async.js"
   },
   {
-    "revision": "ef1b1dce8bca420a0cfa",
+    "revision": "b5a12c4e22b20169144b",
     "url": "/p__User__RegisterResult.chunk.css"
   },
   {
-    "revision": "ef1b1dce8bca420a0cfa",
+    "revision": "b5a12c4e22b20169144b",
     "url": "/p__User__RegisterResult.async.js"
   },
   {
-    "revision": "1ed712311bf41d0f4047",
+    "revision": "81da812a1b2697e18f79",
     "url": "/p__User__models__captcha.js.async.js"
   },
   {
-    "revision": "818247e58ad028663ec4",
+    "revision": "97402ce5225cc5bd8567",
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "b4ae9b30694f7ef005d1",
+    "revision": "e7f0c9a486805a7a7bad",
     "url": "/umi.css"
   },
   {
-    "revision": "b4ae9b30694f7ef005d1",
+    "revision": "e7f0c9a486805a7a7bad",
     "url": "/umi.js"
   },
   {
-    "revision": "226af2e9573b12c879f6",
+    "revision": "595aa3a5fbfd0a90cf0a",
     "url": "/19.chunk.css"
   },
   {
-    "revision": "226af2e9573b12c879f6",
+    "revision": "595aa3a5fbfd0a90cf0a",
     "url": "/19.async.js"
   },
   {
-    "revision": "594e6532351a94fad6b1",
+    "revision": "70f934099a128b9d3c47",
     "url": "/20.chunk.css"
   },
   {
-    "revision": "594e6532351a94fad6b1",
+    "revision": "70f934099a128b9d3c47",
     "url": "/20.async.js"
   },
   {
-    "revision": "e466b3fdc6f6790ecf76",
+    "revision": "992bb88e044b3d4c9958",
     "url": "/21.chunk.css"
   },
   {
-    "revision": "e466b3fdc6f6790ecf76",
+    "revision": "992bb88e044b3d4c9958",
     "url": "/21.async.js"
   },
   {
-    "revision": "cffc55a91973e43e0667",
+    "revision": "2c4398dc95e902ca421b",
     "url": "/22.chunk.css"
   },
   {
-    "revision": "cffc55a91973e43e0667",
+    "revision": "2c4398dc95e902ca421b",
     "url": "/22.async.js"
   },
   {
-    "revision": "ac6747c5b35136a7920f",
+    "revision": "2bab31440580cca0a9d8",
     "url": "/23.chunk.css"
   },
   {
-    "revision": "ac6747c5b35136a7920f",
+    "revision": "2bab31440580cca0a9d8",
     "url": "/23.async.js"
   },
   {
@@ -176,23 +176,23 @@ self.__precacheManifest = [
     "url": "/29.async.js"
   },
   {
-    "revision": "42d19f98f0102a901824",
+    "revision": "545a9e6b3b4aa745c152",
     "url": "/30.async.js"
   },
   {
-    "revision": "808d15f02131fcd4be82",
+    "revision": "fdf339095a6d7614956f",
     "url": "/31.async.js"
   },
   {
-    "revision": "3e2e427d24a5f6061a60",
+    "revision": "a6ad35417d584486912b",
     "url": "/32.async.js"
   },
   {
-    "revision": "ba7f0c19bc80e13b5de0",
+    "revision": "2a0a6af16e5e1f17399c",
     "url": "/33.async.js"
   },
   {
-    "revision": "fa57328d84a7ca2a4c18",
+    "revision": "23ac36a8363c6c6f0c45",
     "url": "/34.async.js"
   },
   {
@@ -204,40 +204,40 @@ self.__precacheManifest = [
     "url": "/icons\\icon-128x128.png"
   },
   {
-    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
-    "url": "/favicon.png.back"
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons\\icon-192x192.png"
   },
   {
     "revision": "5661ce8e2472d2727e8fd0390b22ba37",
     "url": "/icons\\icon-512x512.png"
   },
   {
-    "revision": "70af7a35733166735063f90072ee1150",
-    "url": "/img\\HsIsxMZiWKrNUavQUXqx.svg"
-  },
-  {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons\\icon-192x192.png"
-  },
-  {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
-  },
-  {
-    "revision": "9a723c40a87f1e96e339b0af5e3e42bc",
-    "url": "/img\\sAuJeJzSKbUmHfBQRzmZ.svg"
+    "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
+    "url": "/favicon.png.back"
   },
   {
     "revision": "5423f638851bd441057fb363969ac6c9",
     "url": "/favicon.png.redis"
   },
   {
+    "revision": "356efdc3a7c62a58403fb14854c46c71",
+    "url": "/img\\wAhyIChODzsoKIOBHcBk.svg"
+  },
+  {
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
+  },
+  {
     "revision": "e147bdebf32ef9cb7ce137ed0ed5d3a6",
     "url": "/img\\BiazfanxmamNRoxxVxka.png"
   },
   {
-    "revision": "356efdc3a7c62a58403fb14854c46c71",
-    "url": "/img\\wAhyIChODzsoKIOBHcBk.svg"
+    "revision": "70af7a35733166735063f90072ee1150",
+    "url": "/img\\HsIsxMZiWKrNUavQUXqx.svg"
+  },
+  {
+    "revision": "9a723c40a87f1e96e339b0af5e3e42bc",
+    "url": "/img\\sAuJeJzSKbUmHfBQRzmZ.svg"
   },
   {
     "revision": "1b92f9a438bb106d7f5d9394df1c88ab",

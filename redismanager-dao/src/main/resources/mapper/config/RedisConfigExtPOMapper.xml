@@ -5,6 +5,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="rconfig_id" jdbcType="VARCHAR" property="rconfigId" />
     <result column="ext_key" jdbcType="VARCHAR" property="extKey" />
+    <result column="ext_name" jdbcType="VARCHAR" property="extName" />
     <result column="ext_value" jdbcType="VARCHAR" property="extValue" />
     <result column="note" jdbcType="VARCHAR" property="note" />
     <result column="creater" jdbcType="VARCHAR" property="creater" />
@@ -14,8 +15,8 @@
     <result column="if_del" jdbcType="TINYINT" property="ifDel" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, rconfig_id, ext_key, ext_value, note, creater, create_time, updater, update_time, 
-    if_del
+    id, rconfig_id, ext_key, ext_name, ext_value, note, creater, create_time, updater, 
+    update_time, if_del
   </sql>
   <sql id="where">
     <where>
@@ -25,8 +26,17 @@
       <if test="rconfigId != null">
         AND rconfig_id = #{rconfigId,jdbcType=VARCHAR}
       </if>
+      <if test="rconfigIds != null">
+        AND rconfig_id IN
+        <foreach collection="rconfigIds" item="item" index="index" open="(" separator="," close=")">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+      </if>
       <if test="extKey != null">
         AND ext_key = #{extKey,jdbcType=VARCHAR}
+      </if>
+      <if test="extName != null">
+        AND ext_name = #{extName,jdbcType=VARCHAR}
       </if>
       <if test="extValue != null">
         AND ext_value = #{extValue,jdbcType=VARCHAR}
@@ -57,7 +67,7 @@
     from t_redis_config_ext
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectList" parameterType="com.tz.redismanager.dao.domain.po.RedisConfigExtPO" resultMap="BaseResultMap">
+  <select id="selectList" parameterType="com.tz.redismanager.dao.domain.dto.RedisConfigExtDTO" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_redis_config_ext
@@ -68,14 +78,29 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.tz.redismanager.dao.domain.po.RedisConfigExtPO" useGeneratedKeys="true">
-    insert into t_redis_config_ext (rconfig_id, ext_key, ext_value, 
-      note, creater, create_time, 
-      updater, update_time, if_del
-      )
-    values (#{rconfigId,jdbcType=VARCHAR}, #{extKey,jdbcType=VARCHAR}, #{extValue,jdbcType=VARCHAR}, 
-      #{note,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{ifDel,jdbcType=TINYINT}
-      )
+    insert into t_redis_config_ext (rconfig_id, ext_key, ext_name, 
+      ext_value, note, creater, 
+      create_time, updater, update_time, 
+      if_del)
+    values (#{rconfigId,jdbcType=VARCHAR}, #{extKey,jdbcType=VARCHAR}, #{extName,jdbcType=VARCHAR}, 
+      #{extValue,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{ifDel,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertBatch" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    insert into t_redis_config_ext (rconfig_id, ext_key, ext_name,
+      ext_value, note, creater,
+      create_time, updater, update_time,
+      if_del)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+     (
+      #{item.rconfigId,jdbcType=VARCHAR}, #{item.extKey,jdbcType=VARCHAR}, #{item.extName,jdbcType=VARCHAR},
+      #{item.extValue,jdbcType=VARCHAR}, #{item.note,jdbcType=VARCHAR}, #{item.creater,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.updater,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.ifDel,jdbcType=TINYINT}
+     )
+    </foreach>
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.tz.redismanager.dao.domain.po.RedisConfigExtPO" useGeneratedKeys="true">
     insert into t_redis_config_ext
@@ -85,6 +110,9 @@
       </if>
       <if test="extKey != null">
         ext_key,
+      </if>
+      <if test="extName != null">
+        ext_name,
       </if>
       <if test="extValue != null">
         ext_value,
@@ -114,6 +142,9 @@
       </if>
       <if test="extKey != null">
         #{extKey,jdbcType=VARCHAR},
+      </if>
+      <if test="extName != null">
+        #{extName,jdbcType=VARCHAR},
       </if>
       <if test="extValue != null">
         #{extValue,jdbcType=VARCHAR},
@@ -147,6 +178,9 @@
       <if test="extKey != null">
         ext_key = #{extKey,jdbcType=VARCHAR},
       </if>
+      <if test="extName != null">
+        ext_name = #{extName,jdbcType=VARCHAR},
+      </if>
       <if test="extValue != null">
         ext_value = #{extValue,jdbcType=VARCHAR},
       </if>
@@ -171,10 +205,57 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateByRconfigIds" parameterType="com.tz.redismanager.dao.domain.dto.RedisConfigExtDTO">
+    update t_redis_config_ext
+    <set>
+      <if test="rconfigId != null">
+        rconfig_id = #{rconfigId,jdbcType=VARCHAR},
+      </if>
+      <if test="extKey != null">
+        ext_key = #{extKey,jdbcType=VARCHAR},
+      </if>
+      <if test="extName != null">
+        ext_name = #{extName,jdbcType=VARCHAR},
+      </if>
+      <if test="extValue != null">
+        ext_value = #{extValue,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="creater != null">
+        creater = #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ifDel != null">
+        if_del = #{ifDel,jdbcType=TINYINT},
+      </if>
+    </set>
+    <where>
+      <if test="rconfigId != null">
+        AND rconfig_id = #{rconfigId,jdbcType=VARCHAR}
+      </if>
+      <if test="rconfigIds != null">
+        AND rconfig_id IN
+        <foreach collection="rconfigIds" item="item" index="index" open="(" separator="," close=")">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+      </if>
+    </where>
+  </update>
   <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.dao.domain.po.RedisConfigExtPO">
     update t_redis_config_ext
     set rconfig_id = #{rconfigId,jdbcType=VARCHAR},
       ext_key = #{extKey,jdbcType=VARCHAR},
+      ext_name = #{extName,jdbcType=VARCHAR},
       ext_value = #{extValue,jdbcType=VARCHAR},
       note = #{note,jdbcType=VARCHAR},
       creater = #{creater,jdbcType=VARCHAR},

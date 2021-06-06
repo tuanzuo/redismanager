@@ -20,7 +20,7 @@ public enum ResultCode {
     ROLE_AUTH_FAIL("600009", "无操作权限"),
     CAPTCHA_EXPIRE("600010", "验证码已过期，请重新输入"),
     CAPTCHA_ERROR("600011", "验证码不正确，请重新输入"),
-
+    FILE_UPLOAD_ERROR("600012", "上传文件失败"),
     ;
 
     private String code;

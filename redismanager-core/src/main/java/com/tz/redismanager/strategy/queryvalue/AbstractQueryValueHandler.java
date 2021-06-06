@@ -1,4 +1,4 @@
-package com.tz.redismanager.strategy.searchvalue;
+package com.tz.redismanager.strategy.queryvalue;
 
 import com.tz.redismanager.annotation.StrategyType;
 import com.tz.redismanager.domain.vo.RedisValueQueryVO;
@@ -13,8 +13,8 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @version 1.0
  * @time 2019-06-23 21:40
  **/
-@StrategyType({StrategyTypeEnum.SEARCH_VALUE})
-public abstract class AbstractSearchValueHandler extends AbstractHandler<RedisValueQueryVO, Object> implements ISearchValueHandler {
+@StrategyType({StrategyTypeEnum.QUERY_VALUE})
+public abstract class AbstractQueryValueHandler extends AbstractHandler<RedisValueQueryVO, Object> implements IQueryValueHandler {
 
     /**
      * 重新设置keySerializer

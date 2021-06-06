@@ -1,4 +1,4 @@
-package com.tz.redismanager.strategy.searchvalue;
+package com.tz.redismanager.strategy.queryvalue;
 
 import com.tz.redismanager.domain.vo.RedisValueQueryVO;
 import com.tz.redismanager.strategy.IHandler;
@@ -9,5 +9,5 @@ import com.tz.redismanager.strategy.IHandler;
  * @version 1.0
  * @time 2019-06-23 21:22
  **/
-public interface ISearchValueHandler extends IHandler<RedisValueQueryVO, Object> {
+public interface IQueryValueHandler extends IHandler<RedisValueQueryVO, Object> {
 }

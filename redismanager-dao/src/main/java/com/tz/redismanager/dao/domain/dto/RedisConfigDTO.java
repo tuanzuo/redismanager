@@ -1,5 +1,6 @@
 package com.tz.redismanager.dao.domain.dto;
 
+import com.tz.redismanager.dao.domain.po.RedisConfigExtPO;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,5 +23,5 @@ public class RedisConfigDTO extends RedisConfigPO {
     /**
      * 扩展List
      */
-    private List<RedisConfigExtDTO> extList;
+    private List<RedisConfigExtPO> extList;
 }

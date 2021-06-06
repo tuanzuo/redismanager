@@ -8,11 +8,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * <p>redis连接配置扩展PO</p>
+ * <p>redis连接扩展配置PO</p>
  *
  * @author tuanzuo
  * @version 1.7.0
- * @time 2021-06-06 13:19
+ * @time 2021-06-06 13:52
  **/
 @Getter
 @Setter
@@ -20,6 +20,11 @@ import java.util.Date;
 public class RedisConfigExtPO implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 扩展key--jarPath(jar包的路径)
+     */
+    public static final String EXT_KEY_JAR_PATH = "jarPath";
 
     /**
      * 主键
@@ -35,6 +40,11 @@ public class RedisConfigExtPO implements Serializable {
      * 扩展key
      */
     private String extKey;
+
+    /**
+     * 扩展名称
+     */
+    private String extName;
 
     /**
      * 扩展value
