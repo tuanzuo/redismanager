@@ -17,7 +17,24 @@ CREATE TABLE `t_redis_config` (
   `update_time` datetime default NULL COMMENT '修改时间',
   `if_del` tinyint(2) NOT NULL default '0' COMMENT '是否删除[1=是,0=否]',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='redis连接配置表';
+
+CREATE TABLE `t_redis_config_ext` (
+  `id` BIGINT NOT NULL COMMENT '主键',
+  `rconfig_id` VARCHAR (32) NOT NULL COMMENT '关联的配置id',
+  `ext_key` VARCHAR (32) NOT NULL COMMENT '扩展key',
+  `ext_name` VARCHAR (50) COMMENT '扩展名称',
+  `ext_value` VARCHAR (200) COMMENT '扩展value',
+  `note` varchar(200) COMMENT '备注',
+  `creater` VARCHAR (32) COMMENT '创建人',
+  `create_time` DATETIME COMMENT '创建时间',
+  `updater` VARCHAR (32) COMMENT '修改人',
+  `update_time` DATETIME COMMENT '修改时间',
+  `if_del` TINYINT (2) NOT NULL DEFAULT 0 COMMENT '是否删除[1=是,0=否]',
+  PRIMARY KEY (`id`),
+  INDEX `idx_rconfig_id` (`rconfig_id`),
+  INDEX `idx_ext_key` (`ext_key`)
+) COMMENT = 'redis连接配置扩展表' ;
 
 CREATE TABLE `t_role` (
   `id` int(11) NOT NULL auto_increment COMMENT '主键',
