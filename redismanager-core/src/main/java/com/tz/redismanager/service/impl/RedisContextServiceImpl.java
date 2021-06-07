@@ -33,8 +33,8 @@ public class RedisContextServiceImpl implements IRedisContextService {
      */
     private static Map<String, RedisTemplate<String, Object>> redisTemplateMap = new ConcurrentHashMap<>();
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    @Value("${upload.file.path.prefix}")
+    private String uploadPrefix;
 
     @Autowired
     private IRedisConfigService redisConfigService;
@@ -60,7 +60,7 @@ public class RedisContextServiceImpl implements IRedisContextService {
 
         //加载jar
         if(CollectionUtils.isNotEmpty(redisConfigDto.getExtList())){
-            redisConfigDto.getExtList().forEach(temp -> ClassLoaderUtils.loadJar(uploadPath + temp.getExtValue()));
+            redisConfigDto.getExtList().forEach(temp -> ClassLoaderUtils.loadJar(uploadPrefix + temp.getExtValue()));
         }
 
         RedisTemplate<String, Object> redisTemplate = null;

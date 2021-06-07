@@ -21,6 +21,7 @@ public enum ResultCode {
     CAPTCHA_EXPIRE("600010", "验证码已过期，请重新输入"),
     CAPTCHA_ERROR("600011", "验证码不正确，请重新输入"),
     FILE_UPLOAD_ERROR("600012", "上传文件失败"),
+    FILE_DOWNLOAD_ERROR("600013", "下载文件失败"),
     ;
 
     private String code;

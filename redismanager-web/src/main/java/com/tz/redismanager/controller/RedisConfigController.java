@@ -13,6 +13,7 @@ import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.validator.ValidGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,5 +73,12 @@ public class RedisConfigController {
     public ApiResult<?> upload(@RequestParam("file") MultipartFile file, AuthContext authContext) {
         return redisConfigService.upload(file, authContext);
     }
+
+    @RequestMapping("/download")
+    @Auth
+    public ResponseEntity<byte[]> download(@RequestParam("fileName") String fileName, AuthContext authContext) {
+        return redisConfigService.download(fileName, authContext);
+    }
+
 
 }

@@ -31,12 +31,17 @@ import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -46,8 +51,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
 
     private static final Logger logger = TraceLoggerFactory.getLogger(RedisConfigServiceImpl.class);
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    @Value("${upload.file.path.prefix}")
+    private String uploadPrefix;
 
     @Autowired
     private EncryptConfig encryptConfig;
@@ -162,26 +167,53 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     @Override
     public ApiResult<?> upload(MultipartFile file, AuthContext authContext) {
         if (file.isEmpty()) {
-            return new ApiResult<>(ResultCode.FILE_UPLOAD_ERROR.getCode(),"上传失败，文件不能为空");
+            return new ApiResult<>(ResultCode.FILE_UPLOAD_ERROR.getCode(), "上传失败，文件不能为空");
         }
         String sufFile = "jar";
         String fileName = file.getOriginalFilename();
-        if(!fileName.endsWith(sufFile)){
+        if (!fileName.endsWith(sufFile)) {
             return new ApiResult<>(ResultCode.FILE_UPLOAD_ERROR.getCode(), "上传失败，请上传" + sufFile + "文件");
         }
         String relativePath = "/" + UUIDUtils.generateId() + "/" + fileName;
-        String filePath = uploadPath.endsWith("/") ? uploadPath.substring(0, uploadPath.length()) : uploadPath + relativePath;
+        String filePath = uploadPrefix.endsWith("/") ? uploadPrefix.substring(0, uploadPrefix.length()) : uploadPrefix + relativePath;
         File targetFile = new File(filePath);
         try {
             if (!targetFile.exists()) {
                 targetFile.mkdirs();
             }
             file.transferTo(targetFile);
+            logger.info("上传成功，userName:{},filePath:{}", authContext.getUserName(), filePath);
             return new ApiResult<>(ResultCode.SUCCESS.getCode(), "上传成功", relativePath);
         } catch (IOException e) {
-            logger.error(e.toString(), e);
+            logger.error("上传文件异常，filePath:{}", filePath, e);
         }
         return new ApiResult<>(ResultCode.FILE_UPLOAD_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> download(String fileName, AuthContext authContext) {
+        String filePath = null;
+        ResponseEntity<byte[]> entity = null;
+        try {
+            filePath = uploadPrefix.endsWith("/") ? uploadPrefix.substring(0, uploadPrefix.length()) : uploadPrefix + fileName;
+            File downFile = new File(filePath);
+            if (downFile.exists() == false) {
+                logger.error("download file not found.filePath:{}", filePath);
+                return entity;
+            }
+            byte[] body = null;
+            InputStream is = new FileInputStream(downFile);
+            body = new byte[is.available()];
+            is.read(body);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("content-type", "application/octet-stream");
+            headers.add("Content-Disposition", "attchement;filename=" + fileName);
+            entity = new ResponseEntity<>(body, headers, HttpStatus.OK);
+            logger.info("下载成功，userName:{},filePath:{}", authContext.getUserName(), filePath);
+        } catch (Exception e) {
+            logger.error("下载文件异常，filePath:{}", filePath, e);
+        }
+        return entity;
     }
 
     private List<RedisConfigExtPO> queryRedisConfigExts(List<RedisConfigPO> list) {
@@ -214,7 +246,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     private List<RedisConfigExtPO> buildAddRedisConfigExtPOs(RedisConfigVO vo, RedisConfigPO po, AuthContext authContext) {
         String userName = authContext.getUserName();
         List<RedisConfigExtPO> extList = new ArrayList<>();
-        vo.getExts().forEach(temp->{
+        vo.getExts().forEach(temp -> {
             RedisConfigExtPO extPO = new RedisConfigExtDTO();
             extPO.setRconfigId(po.getId());
             extPO.setExtKey(RedisConfigExtPO.EXT_KEY_JAR_PATH);

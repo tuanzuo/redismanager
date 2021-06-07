@@ -8,11 +8,11 @@ self.__precacheManifest = [
     "url": "/vendors.async.js"
   },
   {
-    "revision": "776ec067366ea4361051",
+    "revision": "d8748980cdea5bd231ba",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "776ec067366ea4361051",
+    "revision": "d8748980cdea5bd231ba",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -32,35 +32,35 @@ self.__precacheManifest = [
     "url": "/p__Account__Settings__models__geographic.js.async.js"
   },
   {
-    "revision": "00d9dc49fd9637a269ef",
+    "revision": "bd7c1df666390359c944",
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "b22a2b4b3bdceb3e58d7",
+    "revision": "c2db6575915c03c1f83b",
     "url": "/p__ConfigManager__models__configmanager.js.async.js"
   },
   {
-    "revision": "23ca8a7776f5f70fb819",
+    "revision": "e7c0ee2d81136a89ab60",
     "url": "/p__Dashboard__models__activities.js.async.js"
   },
   {
-    "revision": "2b2fd85609ab2bb7043b",
+    "revision": "e173e94e4924aafc2d05",
     "url": "/p__Dashboard__models__chart.js.async.js"
   },
   {
-    "revision": "02feffb1070b61171ba1",
+    "revision": "a4e1539abdea5edff249",
     "url": "/p__Dashboard__models__monitor.js.async.js"
   },
   {
-    "revision": "f1432a0522cff59f362b",
+    "revision": "035a87bb53489a4f8c21",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
-    "revision": "444039eb57103cef635b",
+    "revision": "a9383176faf6b8fed333",
     "url": "/p__RoleManager__models__rolemanager.js.async.js"
   },
   {
-    "revision": "ef20b14bb537bca9c7a9",
+    "revision": "48ca9627b8eebb4c0924",
     "url": "/p__UserManager__models__usermanager.js.async.js"
   },
   {
@@ -88,19 +88,19 @@ self.__precacheManifest = [
     "url": "/p__User__RegisterResult.async.js"
   },
   {
-    "revision": "81da812a1b2697e18f79",
+    "revision": "19c7119c7bca82aaacfa",
     "url": "/p__User__models__captcha.js.async.js"
   },
   {
-    "revision": "97402ce5225cc5bd8567",
+    "revision": "5a4e8dce157addd17f44",
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "e7f0c9a486805a7a7bad",
+    "revision": "a2dd0848bb0e4e524c6e",
     "url": "/umi.css"
   },
   {
-    "revision": "e7f0c9a486805a7a7bad",
+    "revision": "a2dd0848bb0e4e524c6e",
     "url": "/umi.js"
   },
   {
@@ -200,44 +200,44 @@ self.__precacheManifest = [
     "url": "/index.html"
   },
   {
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
+  },
+  {
     "revision": "347329d0982682b42d40c8162817a940",
     "url": "/icons\\icon-128x128.png"
-  },
-  {
-    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
-    "url": "/icons\\icon-192x192.png"
-  },
-  {
-    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
-    "url": "/icons\\icon-512x512.png"
   },
   {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
     "url": "/favicon.png.back"
   },
   {
+    "revision": "70af7a35733166735063f90072ee1150",
+    "url": "/img\\HsIsxMZiWKrNUavQUXqx.svg"
+  },
+  {
     "revision": "5423f638851bd441057fb363969ac6c9",
     "url": "/favicon.png.redis"
   },
   {
-    "revision": "356efdc3a7c62a58403fb14854c46c71",
-    "url": "/img\\wAhyIChODzsoKIOBHcBk.svg"
+    "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
+    "url": "/icons\\icon-192x192.png"
   },
   {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
+    "revision": "9a723c40a87f1e96e339b0af5e3e42bc",
+    "url": "/img\\sAuJeJzSKbUmHfBQRzmZ.svg"
+  },
+  {
+    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
+    "url": "/icons\\icon-512x512.png"
   },
   {
     "revision": "e147bdebf32ef9cb7ce137ed0ed5d3a6",
     "url": "/img\\BiazfanxmamNRoxxVxka.png"
   },
   {
-    "revision": "70af7a35733166735063f90072ee1150",
-    "url": "/img\\HsIsxMZiWKrNUavQUXqx.svg"
-  },
-  {
-    "revision": "9a723c40a87f1e96e339b0af5e3e42bc",
-    "url": "/img\\sAuJeJzSKbUmHfBQRzmZ.svg"
+    "revision": "356efdc3a7c62a58403fb14854c46c71",
+    "url": "/img\\wAhyIChODzsoKIOBHcBk.svg"
   },
   {
     "revision": "1b92f9a438bb106d7f5d9394df1c88ab",

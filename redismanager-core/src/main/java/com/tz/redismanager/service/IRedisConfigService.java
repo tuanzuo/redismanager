@@ -7,6 +7,7 @@ import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.security.domain.AuthContext;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public interface IRedisConfigService {
 
     /**
      * 查询redis连接配置分析页数据
+     *
      * @return
      */
     List<RedisConfigAnalysisDTO> queryRedisConfigAnalysis();
@@ -59,9 +61,19 @@ public interface IRedisConfigService {
 
     /**
      * 上传文件
+     *
      * @param file
      * @param authContext
      * @return
      */
     ApiResult<?> upload(MultipartFile file, AuthContext authContext);
+
+    /**
+     * 下载文件
+     *
+     * @param fileName    文件名称
+     * @param authContext
+     * @return
+     */
+    ResponseEntity<byte[]> download(String fileName, AuthContext authContext);
 }
