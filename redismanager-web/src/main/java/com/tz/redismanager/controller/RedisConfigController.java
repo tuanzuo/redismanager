@@ -2,23 +2,21 @@ package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.dao.domain.dto.RedisConfigDTO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
-import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IRedisConfigService;
-import com.tz.redismanager.util.UUIDUtils;
 import com.tz.redismanager.validator.ValidGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.HashMap;
@@ -44,7 +42,7 @@ public class RedisConfigController {
     @Auth
     @Limiter(name = "查询Redis连接信息请求限流", key = "REDIS_CONFIG_LIST_API", qps = 200)
     public ApiResult<?> list(RedisConfigPageParam param, AuthContext authContext) {
-        Map<String, List<RedisConfigPO>> map = new HashMap<>();
+        Map<String, List<RedisConfigDTO>> map = new HashMap<>();
         param.setUserName(authContext.getUserName());
         param.setIsSuperAdmin(authContext.getRoles().contains(ConstInterface.ROLE_CODE.SUPER_ADMIN) ? ConstInterface.IS_SUPER_ADMIN.YES : ConstInterface.IS_SUPER_ADMIN.NO);
         map.put("configList", redisConfigService.searchList(param));
@@ -54,7 +52,6 @@ public class RedisConfigController {
     @RequestMapping("add")
     @Auth
     public ApiResult<?> add(@Validated({ValidGroup.AddConnection.class}) @RequestBody RedisConfigVO vo, AuthContext authContext) {
-        vo.setId(UUIDUtils.generateId());
         redisConfigService.add(vo, authContext);
         return new ApiResult<>(ResultCode.SUCCESS);
     }
@@ -70,5 +67,18 @@ public class RedisConfigController {
     public ApiResult<?> update(@Validated({ValidGroup.UpdateConnection.class}) @RequestBody RedisConfigVO vo, AuthContext authContext) {
         return redisConfigService.update(vo, authContext);
     }
+
+    @RequestMapping("/upload")
+    @Auth
+    public ApiResult<?> upload(@RequestParam("file") MultipartFile file, AuthContext authContext) {
+        return redisConfigService.upload(file, authContext);
+    }
+
+    @RequestMapping("/download")
+    @Auth
+    public ResponseEntity<byte[]> download(@RequestParam("fileName") String fileName, AuthContext authContext) {
+        return redisConfigService.download(fileName, authContext);
+    }
+
 
 }

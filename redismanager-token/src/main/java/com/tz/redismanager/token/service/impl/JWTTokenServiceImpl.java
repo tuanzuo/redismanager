@@ -25,6 +25,7 @@ import java.util.Optional;
 /**
  * <p>JWT实现Token</p>
  *
+ * @author tuanzuo
  * @version 1.5.0
  * @time 2020-11-06 0:39
  **/

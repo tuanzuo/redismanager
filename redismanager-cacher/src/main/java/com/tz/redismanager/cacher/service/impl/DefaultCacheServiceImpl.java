@@ -107,12 +107,15 @@ public class DefaultCacheServiceImpl implements ICacheService {
     @Override
     public void resetCacher(CacheableConfig cacheableConfig) {
         LoadingCache<String, String> oldLoadingCache = l1CacherMap.get(cacheableConfig.getKey());
-        if (null != oldLoadingCache) {
-            oldLoadingCache.invalidateAll();
-            oldLoadingCache = null;
-        }
+
         LoadingCache<String, String> loadingCache = this.createL1Cacher(cacheableConfig.getL1Cache(), cacheableConfig.getL2Cache());
         l1CacherMap.put(cacheableConfig.getKey(), loadingCache);
+
+        if (null != oldLoadingCache) {
+            oldLoadingCache.invalidateAll();
+            /**不能直接将老的缓存器设置为空，因为老的缓存器可能正在被其他请求使用*/
+            /*oldLoadingCache = null;*/
+        }
     }
 
     @Override

@@ -1,12 +1,13 @@
 package com.tz.redismanager.dao.mapper;
 
-import com.tz.redismanager.dao.domain.po.RolePO;
+import com.tz.redismanager.dao.domain.dto.RoleDTO;
 import com.tz.redismanager.dao.domain.po.UserRoleRelationPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 用户角色关系Mapper
@@ -29,7 +30,7 @@ public interface UserRoleRelationPOMapper {
 
     UserRoleRelationPO selectByPrimaryKey(Integer id);
 
-    List<RolePO> selectByUserRole(@Param("userId") Integer userId, @Param("roleStatus") Integer roleStatus);
+    List<RoleDTO> selectByUserRole(@Param("userId") Integer userId, @Param("userIds") Set<Integer> userIds, @Param("roleStatus") Integer roleStatus);
 
     List<UserRoleRelationPO> selectByUserRoleRelation(@Param("userId") Integer userId);
 

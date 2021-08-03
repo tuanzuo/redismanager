@@ -1,11 +1,14 @@
 package com.tz.redismanager.service;
 
 import com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO;
+import com.tz.redismanager.dao.domain.dto.RedisConfigDTO;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.security.domain.AuthContext;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,15 +19,16 @@ public interface IRedisConfigService {
      *
      * @return
      */
-    List<RedisConfigPO> searchList(RedisConfigPageParam param);
+    List<RedisConfigDTO> searchList(RedisConfigPageParam param);
 
     /**
      * 查询redis连接配置
      */
-    RedisConfigPO query(String id);
+    RedisConfigDTO query(String id);
 
     /**
      * 查询redis连接配置分析页数据
+     *
      * @return
      */
     List<RedisConfigAnalysisDTO> queryRedisConfigAnalysis();
@@ -54,4 +58,22 @@ public interface IRedisConfigService {
      * @param vo
      */
     ApiResult<?> update(RedisConfigVO vo, AuthContext authContext);
+
+    /**
+     * 上传文件
+     *
+     * @param file
+     * @param authContext
+     * @return
+     */
+    ApiResult<?> upload(MultipartFile file, AuthContext authContext);
+
+    /**
+     * 下载文件
+     *
+     * @param fileName    文件名称
+     * @param authContext
+     * @return
+     */
+    ResponseEntity<byte[]> download(String fileName, AuthContext authContext);
 }

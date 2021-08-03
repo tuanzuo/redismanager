@@ -106,7 +106,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
             logger.info("[RedisAdmin] [searchKeyValue] {通过vo:{}查询不到key的类型}", JsonUtils.toJsonStr(vo));
             return new RedisValueResp();
         }
-        IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.SEARCH_VALUE, HandlerTypeEnum.getEnumByType(keyType));
+        IHandler handler = HandlerFactory.getHandler(StrategyTypeEnum.QUERY_VALUE, HandlerTypeEnum.getEnumByType(keyType));
         Object value = handler.handle(vo);
         return this.buildValueResp(vo, redisTemplate, keyType, value);
     }

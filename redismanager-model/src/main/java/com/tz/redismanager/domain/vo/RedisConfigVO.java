@@ -10,6 +10,8 @@ import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * redis连接配置VO
@@ -75,23 +77,17 @@ public class RedisConfigVO {
     private String note;
 
     /**
-     * 创建人
-     */
-    private String creater;
-
-
-    /**
-     * 修改人
-     */
-    private String updater;
-
-    /**
      * 来源：1添加，2修改
      *
      * @see ConstInterface.SOURCE
      */
     @Range(min = 1, max = 2, message = "source只能为1或者2", groups = {ValidGroup.TestConnection.class})
     private Integer source;
+
+    /**
+     * 扩展数据List
+     */
+    private List<RedisConfigExtVO> exts = new ArrayList<>();
 
     public boolean testConnectionValidate(String password, Integer source) {
         if (StringUtils.isNotBlank(password)) {

@@ -3,7 +3,7 @@ package com.tz.redismanager.service.impl;
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.config.EncryptConfig;
 import com.tz.redismanager.constant.ConstInterface;
-import com.tz.redismanager.dao.domain.po.RedisConfigPO;
+import com.tz.redismanager.dao.domain.dto.RedisConfigDTO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
@@ -11,9 +11,11 @@ import com.tz.redismanager.service.IRedisConfigService;
 import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,9 @@ public class RedisContextServiceImpl implements IRedisContextService {
      */
     private static Map<String, RedisTemplate<String, Object>> redisTemplateMap = new ConcurrentHashMap<>();
 
+    @Value("${upload.file.path.prefix}")
+    private String uploadPrefix;
+
     @Autowired
     private IRedisConfigService redisConfigService;
     @Autowired
@@ -43,32 +48,40 @@ public class RedisContextServiceImpl implements IRedisContextService {
             logger.info("[redisContext] [initContext] [已存在对应的redisTemplate] {id:{}}", id);
             return null;
         }
-        RedisConfigPO redisConfigPO = redisConfigService.query(id);
-        if (null == redisConfigPO) {
+        RedisConfigDTO redisConfigDto = redisConfigService.query(id);
+        if (null == redisConfigDto) {
             logger.error("[redisContext] [initContext] [查询不到redisConfig数据] {id:{}}", id);
             return null;
         }
-        if (StringUtils.isBlank(redisConfigPO.getAddress())) {
-            logger.error("[redisContext] [initContext] [redisConfig配置的地址为空] {redisConfigPO:{}}", redisConfigPO);
+        if (StringUtils.isBlank(redisConfigDto.getAddress())) {
+            logger.error("[redisContext] [initContext] [redisConfig配置的地址为空] {redisConfigPO:{}}", redisConfigDto);
             return null;
         }
+
+        //加载jar
+        if(CollectionUtils.isNotEmpty(redisConfigDto.getExtList())){
+            redisConfigDto.getExtList().forEach(temp -> ClassLoaderUtils.loadJar(uploadPrefix + temp.getExtValue()));
+        }
+
         RedisTemplate<String, Object> redisTemplate = null;
         try {
             String passwrod = null;
-            if (StringUtils.isNotBlank(redisConfigPO.getPassword())) {
-                passwrod = RSAUtils.rsaPrivateDecrypt(redisConfigPO.getPassword(), encryptConfig.getPrivateKey(), RSAUtils.CHARSET_UTF8);
+            if (StringUtils.isNotBlank(redisConfigDto.getPassword())) {
+                passwrod = RSAUtils.rsaPrivateDecrypt(redisConfigDto.getPassword(), encryptConfig.getPrivateKey(), RSAUtils.CHARSET_UTF8);
             }
-            redisTemplate = RedisContextUtils.initRedisTemplate(redisConfigPO.getType(), redisConfigPO.getAddress(), passwrod);
+            //初始化RedisTemplate
+            redisTemplate = RedisContextUtils.initRedisTemplate(redisConfigDto.getType(), redisConfigDto.getAddress(), passwrod);
             passwrod = null;
         } catch (RsaException e) {
-            logger.error("[redisContext] [initContext] [解密失败] {redisConfigPO:{}}", redisConfigPO, e);
+            logger.error("[redisContext] [initContext] [解密失败] {redisConfigPO:{}}", redisConfigDto, e);
             return redisTemplate;
         } catch (Exception e) {
-            logger.error("[redisContext] [initContext] [初始化initRedisTemplate出错] {redisConfigPO:{}}", redisConfigPO, e);
+            logger.error("[redisContext] [initContext] [初始化initRedisTemplate出错] {redisConfigPO:{}}", redisConfigDto, e);
             return redisTemplate;
         }
-        if (null != redisTemplate && StringUtils.isNotBlank(redisConfigPO.getSerCode())) {
-            RedisContextUtils.initRedisSerializer(redisConfigPO.getSerCode(), redisTemplate);
+        //设置自定义的序列化方式
+        if (null != redisTemplate && StringUtils.isNotBlank(redisConfigDto.getSerCode())) {
+            RedisContextUtils.initRedisSerializer(redisConfigDto.getSerCode(), redisTemplate);
         }
         if (null != redisTemplate) {
             redisTemplateMap.put(id, redisTemplate);

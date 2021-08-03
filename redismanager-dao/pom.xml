@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.tz</groupId>
-            <artifactId>redismanager-common</artifactId>
+            <artifactId>redismanager-model</artifactId>
             <version>${project.version}</version>
         </dependency>
 
