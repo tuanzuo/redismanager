@@ -18,7 +18,9 @@ import java.util.Set;
 public class AuthContext {
 
     private Integer userId;
+
     private String userName;
+
     /**
      * 用户的角色编码List
      */
@@ -28,6 +30,7 @@ public class AuthContext {
      * redis的Token使用
      */
     private String token;
+
     private String toToken;
 
 }

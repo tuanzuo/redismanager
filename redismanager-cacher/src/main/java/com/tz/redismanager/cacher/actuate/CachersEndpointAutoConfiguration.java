@@ -25,5 +25,4 @@ public class CachersEndpointAutoConfiguration {
         return new CachersEndpoint(cacheService);
     }
 
-
 }
