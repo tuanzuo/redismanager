@@ -14,9 +14,9 @@
 
 运行redismanager-web模块中的RedisManagerWebApplication
 
-#### 1.3 访问
+#### 1.3 访问应用
 
-访问地址：http://127.0.0.1/
+应用地址：http://127.0.0.1/
 
 可以使用superadmin，admin，develop，test等几个用户登录系统，登录密码888888；
 其中superadmin用户拥有所有权限
