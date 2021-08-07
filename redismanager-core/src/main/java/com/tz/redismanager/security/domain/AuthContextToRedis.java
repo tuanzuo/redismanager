@@ -16,5 +16,6 @@ import lombok.Setter;
 public class AuthContextToRedis {
 
     private UserPO userPO;
+
     private AuthContext authContext;
 }

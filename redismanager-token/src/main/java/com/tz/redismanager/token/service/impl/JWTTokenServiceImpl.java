@@ -89,7 +89,6 @@ public class JWTTokenServiceImpl implements ITokenService {
 
     }
 
-
     /**
      * 加密AuthContext
      *

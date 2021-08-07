@@ -41,7 +41,6 @@ public class CacherException extends RuntimeException {
         this.code = code;
     }
 
-
     public String getCode() {
         return code;
     }
