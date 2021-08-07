@@ -16,7 +16,7 @@
 
 运行redismanager-web模块中的RedisManagerWebApplication
 
-#### 1.3 访问应用
+#### 1.4 访问应用
 
 应用地址：http://127.0.0.1/
 
