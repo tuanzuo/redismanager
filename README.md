@@ -1,12 +1,23 @@
-## Redis单机和集群下数据的查询，添加，修改，删除；支持自定义key，value的序列化方式。
+### Redis单机和集群下数据的查询，添加，修改，删除；支持自定义key，value的序列化方式。
 
 ### 1、安装和启动
+
 #### 1.1 执行sql脚本
+
 在mysql数据库中执行doc/sql/redisadmin-v1.7.0.sql这个sql脚本
+
 #### 1.2 启动应用
-启动redismanager-web模块中的RedisManagerWebApplication
+
+可以在application.yml中修改应用启动的端口，默认为80
+
+修改config/config-local.properties中数据库，redis，zookeeper的连接和配置
+
+运行redismanager-web模块中的RedisManagerWebApplication
+
 #### 1.3 访问
+
 访问地址：http://127.0.0.1/
+
 登录用户名：superadmin 密码：888888
 
 ### 2、更新日志
