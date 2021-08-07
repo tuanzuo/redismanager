@@ -8,6 +8,10 @@
 
 ##### 1.2 启动应用
 
+可以在application.yml中修改应用启动的端口，默认为80
+
+修改config/config-local.properties中数据库，redis，zookeeper的连接和配置
+
 运行redismanager-web模块中的RedisManagerWebApplication
 
 ##### 1.3 访问
