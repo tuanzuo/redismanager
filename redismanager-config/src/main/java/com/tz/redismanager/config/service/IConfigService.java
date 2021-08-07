@@ -18,6 +18,8 @@ public interface IConfigService {
 
     List<ConfigPO> queryPageList(ConfigPageParam param);
 
+    List<ConfigPO> queryList(ConfigQueryParam param);
+
     int count(ConfigQueryParam param);
 
     int countPage(ConfigPageParam param);

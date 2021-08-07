@@ -18,7 +18,8 @@
 
 访问地址：http://127.0.0.1/
 
-登录用户名：superadmin 密码：888888
+可以使用superadmin，admin，develop，test等几个用户登录系统，登录密码888888；
+其中superadmin用户拥有所有权限
 
 ### 2、更新日志
 
@@ -71,9 +72,6 @@
 3、增加角色管理-角色列表菜单
 
 4、优化页面
-
-备注：可以使用superadmin，admin，develop，test等几个用户登录系统，登录密码888888；
-其中superadmin用户拥有所有权限
 
 #### v1.3.0
 
