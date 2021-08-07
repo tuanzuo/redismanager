@@ -4,16 +4,25 @@ import com.tz.redismanager.config.annotation.EnableConfigAutoConfiguration;
 import com.tz.redismanager.config.dao.IConfigDao;
 import com.tz.redismanager.config.dao.impl.JdbcTemplateConfigDaoImpl;
 import com.tz.redismanager.config.notify.INotiyService;
+import com.tz.redismanager.config.notify.zookeeper.ZookeeperProperties;
+import com.tz.redismanager.config.notify.zookeeper.curator.CuratorConfig;
+import com.tz.redismanager.config.notify.zookeeper.curator.CuratorNotifyServiceImpl;
+import com.tz.redismanager.config.notify.zookeeper.curator.CuratorProperties;
 import com.tz.redismanager.config.service.IConfigService;
 import com.tz.redismanager.config.service.impl.ConfigServiceImpl;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationAttributes;
@@ -26,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p></p>
+ * <p>配置 ConfigurationSelector</p>
  *
  * @author tuanzuo
  * @version 1.7.0
@@ -36,11 +45,6 @@ import java.util.Map;
 public class ConfigConfigurationSelector implements ImportAware, EnvironmentAware, BeanFactoryAware {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigConfigurationSelector.class);
-
-    /**
-     * @see EnableConfigAutoConfiguration#configSyncType()
-     */
-    private static final String CONFIG_SYNC_TYPE = "configSyncType";
 
     @Nullable
     private AnnotationAttributes configAutoConfiguration;
@@ -81,8 +85,45 @@ public class ConfigConfigurationSelector implements ImportAware, EnvironmentAwar
 
     @Bean
     @Primary
-    public INotiyService notiyService(List<INotiyService> services) {
-        return services.stream().filter(temp -> temp.support(configAutoConfiguration.getString(CONFIG_SYNC_TYPE))).findFirst().get();
+    public INotiyService notiyService(List<INotiyService> services, ConfigProperties configProperties) {
+        return services.stream().filter(temp -> temp.support(configProperties.getConfigSyncSubType())).findFirst().get();
     }
+
+
+    @Configuration
+    @ConditionalOnClass({ZooKeeper.class})
+    public static class ZookeeperConfig {
+
+        @Bean
+        @ConditionalOnExpression("#{(configProperties.ZOOKEEPER).equals(configProperties.configSyncType)}")
+        public ZookeeperProperties zookeeperProperties() {
+            return new ZookeeperProperties();
+        }
+
+        @Configuration
+        @ConditionalOnClass({CuratorFramework.class})
+        public static class CuratorConfiguration {
+
+            @Bean
+            @ConditionalOnExpression("#{(configProperties.ZOOKEEPER_CURATOR).equals(configProperties.configSyncSubType)}")
+            public CuratorProperties curatorProperties() {
+                return new CuratorProperties();
+            }
+
+            @Bean
+            @ConditionalOnExpression("#{(configProperties.ZOOKEEPER_CURATOR).equals(configProperties.configSyncSubType)}")
+            public CuratorFramework curatorConfig(ZookeeperProperties zookeeperProperties, CuratorProperties curatorProperties) {
+                return new CuratorConfig(zookeeperProperties, curatorProperties).curatorFramework();
+            }
+
+            @Bean
+            @ConditionalOnExpression("#{(configProperties.ZOOKEEPER_CURATOR).equals(configProperties.configSyncSubType)}")
+            public INotiyService curatorNotifyServiceImpl(ZookeeperProperties zookeeperProperties, CuratorFramework curatorFramework) {
+                return new CuratorNotifyServiceImpl(zookeeperProperties, curatorFramework);
+            }
+
+        }
+    }
+
 
 }

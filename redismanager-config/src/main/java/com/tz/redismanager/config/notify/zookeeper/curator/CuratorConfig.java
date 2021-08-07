@@ -4,14 +4,9 @@ import com.tz.redismanager.config.notify.zookeeper.ZookeeperProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.api.CuratorListener;
-import org.apache.curator.framework.recipes.cache.*;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>curator配置</p>
@@ -20,18 +15,19 @@ import org.springframework.context.annotation.Configuration;
  * @version 1.7.0
  * @time 2021-04-08 22:41
  **/
-@Configuration
 public class CuratorConfig {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String SCHEME_DIGEST = "digest";
 
-    @Autowired
     private ZookeeperProperties zookeeperProperties;
-
-    @Autowired
     private CuratorProperties curatorProperties;
+
+    public CuratorConfig(ZookeeperProperties zookeeperProperties, CuratorProperties curatorProperties) {
+        this.zookeeperProperties = zookeeperProperties;
+        this.curatorProperties = curatorProperties;
+    }
 
     /**
      * Curator Apache
@@ -39,8 +35,7 @@ public class CuratorConfig {
      *
      * @return
      */
-    @Bean
-    public CuratorFramework curatorFramework(CuratorListener curatorListener) {
+    public CuratorFramework curatorFramework() {
         // ExponentialBackoffRetry是种重连策略，每次重连的间隔会越来越长,1000毫秒是初始化的间隔时间,10代表尝试重连次数。
         ExponentialBackoffRetry retry = new ExponentialBackoffRetry(curatorProperties.getBaseSleepTimeMs(), curatorProperties.getMaxRetries());
         // 创建client
@@ -55,20 +50,7 @@ public class CuratorConfig {
         } else {
             curatorFramework = CuratorFrameworkFactory.newClient(zookeeperProperties.getConnectString(), retry);
         }
-        //添加watched 监听器
-        //curatorFramework.getCuratorListenable().addListener(curatorListener);
         curatorFramework.start();
         return curatorFramework;
     }
-
-    public static void addWatcherWithTreeCache(CuratorFramework curatorFramework, String path, TreeCacheListener treeCacheListener) throws Exception {
-
-        CuratorCache curatorCache = CuratorCache.builder(curatorFramework, path).build();
-        CuratorCacheListener listener = CuratorCacheListener.builder()
-                .forTreeCache(curatorFramework, treeCacheListener)
-                .build();
-        curatorCache.listenable().addListener(listener);
-        curatorCache.start();
-    }
-
 }

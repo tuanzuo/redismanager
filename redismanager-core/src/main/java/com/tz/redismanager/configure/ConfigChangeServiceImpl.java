@@ -4,8 +4,8 @@ import com.tz.redismanager.cacher.config.CacheEvictConfig;
 import com.tz.redismanager.cacher.config.CacheableConfig;
 import com.tz.redismanager.cacher.service.ICacheService;
 import com.tz.redismanager.cacher.service.ICacherConfigService;
-import com.tz.redismanager.config.domain.po.ConfigPO;
-import com.tz.redismanager.config.service.ConfigChangeServiceAdapter;
+import com.tz.redismanager.config.sdk.domain.dto.ConfigContext;
+import com.tz.redismanager.config.sdk.service.ConfigChangeServiceAdapter;
 import com.tz.redismanager.config.util.JsonUtils;
 import com.tz.redismanager.limiter.config.LimiterConfig;
 import com.tz.redismanager.limiter.service.ILimiterConfigService;
@@ -33,21 +33,21 @@ public class ConfigChangeServiceImpl extends ConfigChangeServiceAdapter {
     private ILimiterService limiterService;
 
     @Override
-    public void doCacherEnableChange(ConfigPO po) {
-        CacheableConfig config = JsonUtils.parseObject(po.getContent(), CacheableConfig.class);
+    public void doCacherEnableChange(ConfigContext context) {
+        CacheableConfig config = JsonUtils.parseObject(context.getContent(), CacheableConfig.class);
         cacherConfigService.addCacheableConfig(config);
         cacheService.resetCacher(config);
     }
 
     @Override
-    public void doCacherEvictChange(ConfigPO po) {
-        CacheEvictConfig config = JsonUtils.parseObject(po.getContent(), CacheEvictConfig.class);
+    public void doCacherEvictChange(ConfigContext context) {
+        CacheEvictConfig config = JsonUtils.parseObject(context.getContent(), CacheEvictConfig.class);
         cacherConfigService.addCacheEvictConfig(config);
     }
 
     @Override
-    public void doLimiterChange(ConfigPO po) {
-        LimiterConfig config = JsonUtils.parseObject(po.getContent(), LimiterConfig.class);
+    public void doLimiterChange(ConfigContext context) {
+        LimiterConfig config = JsonUtils.parseObject(context.getContent(), LimiterConfig.class);
         limiterConfigService.addLimiterConfig(config);
         limiterService.resetLimiter(config);
     }

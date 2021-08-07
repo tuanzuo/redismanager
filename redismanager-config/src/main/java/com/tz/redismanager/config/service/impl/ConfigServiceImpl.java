@@ -43,6 +43,11 @@ public class ConfigServiceImpl implements IConfigService {
     }
 
     @Override
+    public List<ConfigPO> queryList(ConfigQueryParam param) {
+        return configDao.selectListByParam(param);
+    }
+
+    @Override
     public int count(ConfigQueryParam param) {
         return configDao.count(param);
     }
