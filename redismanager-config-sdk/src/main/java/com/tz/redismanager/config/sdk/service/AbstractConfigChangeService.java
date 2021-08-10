@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  **/
 public abstract class AbstractConfigChangeService implements IConfigChangeService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(AbstractConfigChangeService.class);
 
     @Override
     public void change(ConfigContext context) {
