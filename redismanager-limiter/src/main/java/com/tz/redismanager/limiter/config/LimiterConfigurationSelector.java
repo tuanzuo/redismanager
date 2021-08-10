@@ -137,7 +137,6 @@ public class LimiterConfigurationSelector implements ImportAware, EnvironmentAwa
             Limiter limiter = method.getAnnotation(Limiter.class);
             if (null == keyMap.putIfAbsent(limiter.key(), limiter.key())) {
                 LimiterConfig limiterConfig = limiterConfigService.convertLimiter(limiter);
-                logger.info("[初始化限流器配置] [{}] [{}] [完成]", limiter.key(), limiter.name());
                 limiterService.initLimiter(limiterConfig);
                 logger.info("[初始化限流器] [{}] [{}] [完成]", limiter.key(), limiter.name());
             }

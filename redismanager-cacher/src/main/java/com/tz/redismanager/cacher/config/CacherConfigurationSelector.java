@@ -146,7 +146,6 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
             Cacheable cacheable = method.getAnnotation(Cacheable.class);
             if (null == keyMap.putIfAbsent(cacheable.key(), cacheable.key())) {
                 CacheableConfig cacherConfig = cacherConfigService.convertCacheable(cacheable);
-                logger.info("[初始化缓存器配置] [{}] [{}] [完成]", cacheable.key(), cacheable.name());
                 cacheService.initCacher(cacherConfig);
                 logger.info("[初始化缓存器] [{}] [{}] [完成]", cacheable.key(), cacheable.name());
             }
