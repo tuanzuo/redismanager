@@ -24,12 +24,12 @@ public class CuratorRunner implements CommandLineRunner {
     private String applicationName;
 
     private ZookeeperSdkProperties zookeeperSdkProperties;
-    private CuratorFrameworkCompose curatorFrameworkCompose;
+    private CuratorFramework curatorFramework;
     private CustomTreeCacheListener treeCacheListener;
 
-    public CuratorRunner(ZookeeperSdkProperties zookeeperSdkProperties, CuratorFrameworkCompose curatorFrameworkCompose, CustomTreeCacheListener treeCacheListener) {
+    public CuratorRunner(ZookeeperSdkProperties zookeeperSdkProperties, CuratorFramework curatorFramework, CustomTreeCacheListener treeCacheListener) {
         this.zookeeperSdkProperties = zookeeperSdkProperties;
-        this.curatorFrameworkCompose = curatorFrameworkCompose;
+        this.curatorFramework = curatorFramework;
         this.treeCacheListener = treeCacheListener;
     }
 
@@ -39,14 +39,13 @@ public class CuratorRunner implements CommandLineRunner {
             logger.error("[ConfigSdk配置] applicationName不能为空");
             throw new RuntimeException("applicationName不能为空");
         }
-        CuratorFramework curatorFramework = curatorFrameworkCompose.getCuratorFramework();
-        String appNamePath = zookeeperSdkProperties.getParentPath() + applicationName;
+        String appNamePath = StringUtils.join(zookeeperSdkProperties.getPrePath(), applicationName);
         if (null != curatorFramework.checkExists().forPath(appNamePath)) {
             curatorFramework.delete().deletingChildrenIfNeeded().forPath(appNamePath);
         }
         curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(appNamePath);
-        CuratorSdkConfig.addWatcherWithTreeCache(curatorFramework, appNamePath, treeCacheListener);
-        logger.info("[ConfigSdk配置] [添加path的监听] {}", appNamePath);
+        CuratorSdkConfig.addWatcherWithTreeCache(curatorFramework, treeCacheListener, appNamePath);
+        logger.info("[ConfigSdk配置] [添加path的监听完成] path={}", appNamePath);
 
     }
 }

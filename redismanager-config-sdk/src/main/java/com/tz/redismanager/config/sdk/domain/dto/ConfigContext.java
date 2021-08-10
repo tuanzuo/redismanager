@@ -1,5 +1,6 @@
 package com.tz.redismanager.config.sdk.domain.dto;
 
+import com.tz.redismanager.config.sdk.enm.ConfigTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -28,7 +29,7 @@ public class ConfigContext {
 
     /**
      * 配置类型
-     * {@link com.tz.redismanager.config.enm.ConfigTypeEnum}
+     * {@link ConfigTypeEnum}
      */
     private Integer configType;
 

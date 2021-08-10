@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * <p></p>
+ * <p>配置查询DTO</p>
  *
  * @author tuanzuo
  * @version 1.7.0

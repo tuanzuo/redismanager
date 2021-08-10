@@ -111,9 +111,10 @@ public class ConfigConfigurationSelector implements ImportAware, EnvironmentAwar
             }
 
             @Bean
+            @ConditionalOnMissingBean(CuratorFramework.class)
             @ConditionalOnExpression("#{(configProperties.ZOOKEEPER_CURATOR).equals(configProperties.configSyncSubType)}")
-            public CuratorFramework curatorConfig(ZookeeperProperties zookeeperProperties, CuratorProperties curatorProperties) {
-                return new CuratorConfig(zookeeperProperties, curatorProperties).curatorFramework();
+            public CuratorFramework curatorFramework(ZookeeperProperties zookeeperProperties, CuratorProperties curatorProperties) {
+                return new CuratorConfig(zookeeperProperties, curatorProperties).createCuratorFramework();
             }
 
             @Bean

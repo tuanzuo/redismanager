@@ -11,5 +11,10 @@ import com.tz.redismanager.config.sdk.domain.dto.ConfigContext;
  **/
 public interface IConfigChangeService {
 
+    /**
+     * 配置更新
+     *
+     * @param context
+     */
     void change(ConfigContext context);
 }

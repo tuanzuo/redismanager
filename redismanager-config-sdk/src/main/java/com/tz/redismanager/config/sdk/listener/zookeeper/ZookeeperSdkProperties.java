@@ -1,6 +1,6 @@
 package com.tz.redismanager.config.sdk.listener.zookeeper;
 
-import com.tz.redismanager.config.constant.ConstInterface;
+import com.tz.redismanager.config.sdk.constant.ConstInterface;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,7 +17,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 public class ZookeeperSdkProperties {
 
-    private String parentPath = ConstInterface.Zookeeper.BASE_PATH;
+    /**
+     * 路径前缀
+     */
+    private String prePath = ConstInterface.Zookeeper.PRE_PATH;
 
     /**
      * 连接地址

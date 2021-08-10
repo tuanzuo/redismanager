@@ -11,17 +11,25 @@ import com.tz.redismanager.config.domain.po.ConfigPO;
  **/
 public interface INotiyService {
 
-     boolean support(String type);
+    /**
+     * 支持条件
+     *
+     * @param type
+     * @return
+     */
+    boolean support(String type);
 
-     /**
-      * 添加配置时触发通知
-      * @param po
-      */
-     void add(ConfigPO po);
+    /**
+     * 添加配置时触发通知
+     *
+     * @param po
+     */
+    void add(ConfigPO po);
 
-     /**
-      * 更新配置时触发通知
-      * @param po
-      */
-     void update(ConfigPO po);
+    /**
+     * 更新配置时触发通知
+     *
+     * @param po
+     */
+    void update(ConfigPO po);
 }

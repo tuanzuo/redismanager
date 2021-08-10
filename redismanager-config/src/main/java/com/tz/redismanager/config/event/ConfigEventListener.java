@@ -19,12 +19,22 @@ public class ConfigEventListener {
     @Autowired
     private INotiyService notiyService;
 
+    /**
+     * 配置添加事件监听
+     *
+     * @param event
+     */
     @EventListener({ConfigAddEvent.class})
     public void addEentHandle(ConfigAddEvent event) {
         ConfigPO po = ConfigPO.class.cast(event.getSource());
         notiyService.add(po);
     }
 
+    /**
+     * 配置修改事件监听
+     *
+     * @param event
+     */
     @EventListener({ConfigUpdateEvent.class})
     public void updateEventHandle(ConfigUpdateEvent event) {
         ConfigPO po = ConfigPO.class.cast(event.getSource());
