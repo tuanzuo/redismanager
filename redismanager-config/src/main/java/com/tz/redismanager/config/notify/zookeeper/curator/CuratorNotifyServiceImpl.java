@@ -1,10 +1,12 @@
 package com.tz.redismanager.config.notify.zookeeper.curator;
 
 import com.tz.redismanager.config.config.ConfigProperties;
+import com.tz.redismanager.config.constant.ConstInterface;
 import com.tz.redismanager.config.domain.po.ConfigPO;
 import com.tz.redismanager.config.enm.ConfigTypeEnum;
 import com.tz.redismanager.config.notify.INotiyService;
 import com.tz.redismanager.config.notify.zookeeper.ZookeeperProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
@@ -47,15 +49,15 @@ public class CuratorNotifyServiceImpl implements INotiyService {
 
     private void notify(ConfigPO po) {
         try {
-            String appNamePath = zookeeperProperties.getParentPath() + po.getServiceName();
-            String keyPath = appNamePath + "/" + ConfigTypeEnum.getByCode(po.getConfigType()).getName() + "/" + po.getConfigKey() + "/" + po.getId();
+            String appNamePath = StringUtils.join(zookeeperProperties.getPrePath(), po.getServiceName());
+            String keyPath = StringUtils.join(appNamePath, ConstInterface.Symbol.SLASH, ConfigTypeEnum.getByCode(po.getConfigType()).getName(), ConstInterface.Symbol.SLASH, po.getConfigKey(), ConstInterface.Symbol.SLASH, po.getId());
             Stat stat = curatorFramework.checkExists().forPath(keyPath);
             if (null == stat) {
                 keyPath = curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(keyPath, String.valueOf(po.getKeyName()).getBytes());
-                logger.info("[config配置] [创建path] {}", keyPath);
+                logger.info("[config配置] [创建path] path={}", keyPath);
             } else {
                 curatorFramework.setData().forPath(keyPath, String.valueOf(po.getKeyName()).getBytes());
-                logger.info("[config配置] [更新path] {}", keyPath);
+                logger.info("[config配置] [更新path] path={}", keyPath);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -1,5 +1,6 @@
 package com.tz.redismanager.config.notify.zookeeper.curator;
 
+import com.tz.redismanager.config.constant.ConstInterface;
 import com.tz.redismanager.config.notify.zookeeper.ZookeeperProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
@@ -35,13 +36,13 @@ public class CuratorConfig {
      *
      * @return
      */
-    public CuratorFramework curatorFramework() {
+    public CuratorFramework createCuratorFramework() {
         // ExponentialBackoffRetry是种重连策略，每次重连的间隔会越来越长,1000毫秒是初始化的间隔时间,10代表尝试重连次数。
         ExponentialBackoffRetry retry = new ExponentialBackoffRetry(curatorProperties.getBaseSleepTimeMs(), curatorProperties.getMaxRetries());
         // 创建client
         CuratorFramework curatorFramework = null;
         if (StringUtils.isNoneBlank(zookeeperProperties.getUsername(), zookeeperProperties.getPassword())) {
-            String auth = zookeeperProperties.getUsername() + ":" + zookeeperProperties.getPassword();
+            String auth = StringUtils.join(zookeeperProperties.getUsername(), ConstInterface.Symbol.COLON, zookeeperProperties.getPassword());
             curatorFramework = CuratorFrameworkFactory.builder()
                     .authorization(SCHEME_DIGEST, auth.getBytes())
                     .connectString(zookeeperProperties.getConnectString())

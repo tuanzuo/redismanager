@@ -14,6 +14,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -90,15 +91,16 @@ public class ConfigSdkConfigurationSelector implements ImportAware, EnvironmentA
             }
 
             @Bean
+            @ConditionalOnMissingBean(CuratorFramework.class)
             @ConditionalOnExpression("#{(configSdkProperties.ZOOKEEPER_CURATOR).equals(configSdkProperties.configSyncSubType)}")
-            public CuratorFrameworkCompose curatorSdkConfig(ZookeeperSdkProperties zookeeperProperties, CuratorSdkProperties curatorSdkProperties, @Autowired(required = false) CuratorFramework curatorFramework) {
-                return new CuratorSdkConfig(zookeeperProperties, curatorSdkProperties).curatorFrameworkCompose(curatorFramework);
+            public CuratorFramework curatorFramework(ZookeeperSdkProperties zookeeperProperties, CuratorSdkProperties curatorSdkProperties) {
+                return new CuratorSdkConfig(zookeeperProperties, curatorSdkProperties).createCuratorFramework();
             }
 
             @Bean
             @ConditionalOnExpression("#{(configSdkProperties.ZOOKEEPER_CURATOR).equals(configSdkProperties.configSyncSubType)}")
-            public CuratorRunner curatorRunner(ZookeeperSdkProperties zookeeperSdkProperties, CuratorFrameworkCompose curatorFrameworkCompose, CustomTreeCacheListener treeCacheListener) {
-                return new CuratorRunner(zookeeperSdkProperties, curatorFrameworkCompose, treeCacheListener);
+            public CuratorRunner curatorRunner(ZookeeperSdkProperties zookeeperSdkProperties, CuratorFramework curatorFramework, CustomTreeCacheListener treeCacheListener) {
+                return new CuratorRunner(zookeeperSdkProperties, curatorFramework, treeCacheListener);
             }
 
         }

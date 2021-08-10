@@ -1,5 +1,6 @@
 package com.tz.redismanager.config.sdk.listener.zookeeper.curator;
 
+import com.tz.redismanager.config.sdk.constant.ConstInterface;
 import com.tz.redismanager.config.sdk.listener.zookeeper.ZookeeperSdkProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
@@ -10,7 +11,6 @@ import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * <p>curator配置</p>
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  **/
 public class CuratorSdkConfig {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(CuratorSdkConfig.class);
 
     private static final String SCHEME_DIGEST = "digest";
 
@@ -39,16 +39,13 @@ public class CuratorSdkConfig {
      *
      * @return
      */
-    public CuratorFrameworkCompose curatorFrameworkCompose(@Autowired(required = false) CuratorFramework curatorFramework) {
-        if (null != curatorFramework) {
-            return new CuratorFrameworkCompose(curatorFramework);
-        }
-
+    public CuratorFramework createCuratorFramework() {
         // ExponentialBackoffRetry是种重连策略，每次重连的间隔会越来越长,1000毫秒是初始化的间隔时间,10代表尝试重连次数。
         ExponentialBackoffRetry retry = new ExponentialBackoffRetry(curatorSdkProperties.getBaseSleepTimeMs(), curatorSdkProperties.getMaxRetries());
         // 创建client
+        CuratorFramework curatorFramework = null;
         if (StringUtils.isNoneBlank(zookeeperSdkProperties.getUsername(), zookeeperSdkProperties.getPassword())) {
-            String auth = zookeeperSdkProperties.getUsername() + ":" + zookeeperSdkProperties.getPassword();
+            String auth = StringUtils.join(zookeeperSdkProperties.getUsername(), ConstInterface.Symbol.COLON, zookeeperSdkProperties.getPassword());
             curatorFramework = CuratorFrameworkFactory.builder()
                     .authorization(SCHEME_DIGEST, auth.getBytes())
                     .connectString(zookeeperSdkProperties.getConnectString())
@@ -58,17 +55,17 @@ public class CuratorSdkConfig {
             curatorFramework = CuratorFrameworkFactory.newClient(zookeeperSdkProperties.getConnectString(), retry);
         }
         curatorFramework.start();
-        return new CuratorFrameworkCompose(curatorFramework);
+        return curatorFramework;
     }
 
-    public static void addWatcherWithTreeCache(CuratorFramework curatorFramework, String path, TreeCacheListener treeCacheListener) throws Exception {
-
+    public static void addWatcherWithTreeCache(CuratorFramework curatorFramework, TreeCacheListener treeCacheListener, String path) throws Exception {
         CuratorCache curatorCache = CuratorCache.builder(curatorFramework, path).build();
         CuratorCacheListener listener = CuratorCacheListener.builder()
                 .forTreeCache(curatorFramework, treeCacheListener)
                 .build();
         curatorCache.listenable().addListener(listener);
         curatorCache.start();
+        logger.info("[ConfigSdk配置] [监听器启动完成] path={}", path);
     }
 
 }

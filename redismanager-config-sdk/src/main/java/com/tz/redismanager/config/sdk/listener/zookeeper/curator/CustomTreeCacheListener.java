@@ -1,5 +1,6 @@
 package com.tz.redismanager.config.sdk.listener.zookeeper.curator;
 
+import com.tz.redismanager.config.sdk.constant.ConstInterface;
 import com.tz.redismanager.config.sdk.domain.dto.ConfigContext;
 import com.tz.redismanager.config.sdk.domain.dto.ConfigQueryDTO;
 import com.tz.redismanager.config.sdk.service.IConfigChangeService;
@@ -43,20 +44,20 @@ public class CustomTreeCacheListener implements TreeCacheListener {
         TreeCacheEvent.Type type = event.getType();
         if (TreeCacheEvent.Type.NODE_ADDED == type || TreeCacheEvent.Type.NODE_UPDATED == type) {
             String path = event.getData().getPath();
-            logger.info("[ConfigSdk配置] [TreeCacheListener] {} -- {}", type, path);
-            String[] pathArray = StringUtils.split(path, "/");
+            logger.info("[ConfigSdk配置] [zookeeper监听器] type={} -- path={}", type, path);
+            String[] pathArray = StringUtils.split(path, ConstInterface.Symbol.SLASH);
             if (null != configChangeService && null != pathArray && pathArray.length == 6) {
-                List<ConfigContext> list = Optional.ofNullable(fetchConfigService.fetchConfig(this.buildConfigQuery(pathArray[5]))).orElse(new ArrayList<>());
+                List<ConfigContext> list = Optional.ofNullable(fetchConfigService.fetchConfig(this.buildConfigQueryDTO(pathArray[5]))).orElse(new ArrayList<>());
                 ConfigContext temp = list.get(0);
                 configChangeService.change(temp);
-                logger.info("[ConfigSdk配置] [TreeCacheListener] [{}] [更新配置完成] [serviceName：{}] [key：{}] [type：{}] [path：{}]", type, temp.getServiceName(), temp.getConfigKey(), temp.getConfigType(), path);
+                logger.info("[ConfigSdk配置] [zookeeper监听器] [{}] [更新配置完成] [serviceName：{}] [key：{}] [type：{}] [path：{}]", type, temp.getServiceName(), temp.getConfigKey(), temp.getConfigType(), path);
             }
         }
     }
 
-    private ConfigQueryDTO buildConfigQuery(String s) {
+    private ConfigQueryDTO buildConfigQueryDTO(String id) {
         ConfigQueryDTO param = new ConfigQueryDTO();
-        param.setId(Integer.valueOf(s));
+        param.setId(Integer.valueOf(id));
         param.setServiceName(applicationName);
         return param;
     }

@@ -1,5 +1,6 @@
 package com.tz.redismanager.config.event;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ApplicationEventMulticaster;
@@ -20,15 +21,25 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class AsyncEventConfig {
 
-    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(5, 10,
-            500L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>(),
-            new CustomizableThreadFactory("AsyncEvent-thread-"),
-            new ThreadPoolExecutor.CallerRunsPolicy());
+    @Value("${config.async.event.threadNamePrefix:ConfigAsyncEvent-thread-}")
+    private String threadNamePrefix;
+    @Value("${config.async.event.allowCoreThreadTimeOut:true}")
+    private boolean allowCoreThreadTimeOut;
+    @Value("${config.async.event.corePoolSize:5}")
+    private int corePoolSize;
+    @Value("${config.async.event.maxPoolSize:10}")
+    private int maxPoolSize;
+    @Value("${config.async.event.keepAliveTime:500}")
+    private long keepAliveTime;
 
     @Bean(name = "applicationEventMulticaster")
     public ApplicationEventMulticaster simpleApplicationEventMulticaster() {
-        threadPoolExecutor.allowCoreThreadTimeOut(true);
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize,
+                keepAliveTime, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(),
+                new CustomizableThreadFactory(threadNamePrefix),
+                new ThreadPoolExecutor.CallerRunsPolicy());
+        threadPoolExecutor.allowCoreThreadTimeOut(allowCoreThreadTimeOut);
         SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
         eventMulticaster.setTaskExecutor(threadPoolExecutor);
         return eventMulticaster;

@@ -1,7 +1,7 @@
 package com.tz.redismanager.config.sdk.enm;
 
 /**
- * <p></p>
+ * <p>配置类型枚举</p>
  *
  * @author tuanzuo
  * @version 1.7.0

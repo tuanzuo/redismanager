@@ -1,5 +1,6 @@
 package com.tz.redismanager.config.service.impl;
 
+import com.tz.redismanager.config.constant.ConstInterface;
 import com.tz.redismanager.config.dao.IConfigDao;
 import com.tz.redismanager.config.domain.dto.ConfigDTO;
 import com.tz.redismanager.config.domain.param.ConfigPageParam;
@@ -12,6 +13,7 @@ import com.tz.redismanager.config.exception.ConfigException;
 import com.tz.redismanager.config.service.IConfigService;
 import com.tz.redismanager.config.util.JsonUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -62,7 +64,7 @@ public class ConfigServiceImpl implements IConfigService {
         int count = configDao.count(this.buildConfigQueryParam(configPO));
         if (count > 0) {
             logger.error("[config配置] [添加配置] [已存在相同配置不能重复添加] serviceName:{},configType:{},configKey:{}", configPO.getServiceName(), configPO.getConfigType(), configPO.getConfigKey());
-            throw new ConfigException("配置重复[服务名=" + configPO.getServiceName() + ",配置类型=" + ConfigTypeEnum.getByCode(configPO.getConfigType()).getMsg() + ",配置Key=" + configPO.getConfigKey() + "]");
+            throw new ConfigException(StringUtils.join("配置重复[服务名=", configPO.getServiceName(), ",配置类型=", ConfigTypeEnum.getByCode(configPO.getConfigType()).getMsg(), ",配置Key=", configPO.getConfigKey(), ConstInterface.Symbol.MIDDLE_BRACKET_RIGHT));
         }
         int retVal = configDao.insert(configPO);
         if (retVal > 0) {
@@ -77,11 +79,11 @@ public class ConfigServiceImpl implements IConfigService {
     @Override
     public int updateConfig(ConfigPO configPO) {
         List<ConfigPO> list = configDao.selectListByParam(this.buildConfigQueryParam(configPO));
-        if(CollectionUtils.isNotEmpty(list)){
+        if (CollectionUtils.isNotEmpty(list)) {
             long existCount = list.stream().filter(temp -> !temp.getId().equals(configPO.getId())).count();
             if (existCount > 0) {
                 logger.error("[config配置] [修改配置] [已存在相同配置不能修改] serviceName:{},configType:{},configKey:{}", configPO.getServiceName(), configPO.getConfigType(), configPO.getConfigKey());
-                throw new ConfigException("配置重复[服务名=" + configPO.getServiceName() + ",配置类型=" + ConfigTypeEnum.getByCode(configPO.getConfigType()).getMsg() + ",配置Key=" + configPO.getConfigKey() + "]");
+                throw new ConfigException(StringUtils.join("配置重复[服务名=", configPO.getServiceName(), ",配置类型=", ConfigTypeEnum.getByCode(configPO.getConfigType()).getMsg(), ",配置Key=", configPO.getConfigKey(), ConstInterface.Symbol.MIDDLE_BRACKET_RIGHT));
             }
         }
         int retVal = configDao.updateByPrimaryKey(configPO);

@@ -17,7 +17,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 public class ZookeeperProperties {
 
-    private String parentPath = ConstInterface.Zookeeper.BASE_PATH;
+    /**
+     * 路径前缀
+     */
+    private String prePath = ConstInterface.Zookeeper.PRE_PATH;
 
     /**
      * 连接地址

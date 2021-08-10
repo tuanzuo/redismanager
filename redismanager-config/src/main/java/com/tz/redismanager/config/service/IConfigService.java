@@ -16,17 +16,59 @@ import java.util.List;
  **/
 public interface IConfigService {
 
+    /**
+     * 分页查询
+     *
+     * @param param
+     * @return
+     */
     List<ConfigPO> queryPageList(ConfigPageParam param);
 
+    /**
+     * 查询列表
+     *
+     * @param param
+     * @return
+     */
     List<ConfigPO> queryList(ConfigQueryParam param);
 
+    /**
+     * 查询条数
+     *
+     * @param param
+     * @return
+     */
     int count(ConfigQueryParam param);
 
+    /**
+     * 查询分页条数
+     *
+     * @param param
+     * @return
+     */
     int countPage(ConfigPageParam param);
 
+    /**
+     * 添加配置
+     *
+     * @param configPO
+     * @return
+     */
     int addConfig(ConfigPO configPO);
 
+    /**
+     * 修改配置
+     *
+     * @param configPO
+     * @return
+     */
     int updateConfig(ConfigPO configPO);
 
+    /**
+     * 删除配置
+     *
+     * @param dto
+     * @return
+     */
     int delConfig(ConfigDTO dto);
 }

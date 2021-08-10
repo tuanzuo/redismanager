@@ -1,4 +1,4 @@
-package com.tz.redismanager.config.constant;
+package com.tz.redismanager.config.sdk.constant;
 
 /**
  * <p>常量接口</p>
@@ -15,7 +15,27 @@ public interface ConstInterface {
     }
 
     interface Zookeeper {
-        String BASE_PATH = "/dynamic/config/";
+        //路径前缀
+        String PRE_PATH = "/dynamic/config/";
+    }
+
+    /**
+     * 符号
+     */
+    interface Symbol {
+        String COLON = ":";
+        String SPACE = " ";
+        String BLANK = "";
+        String COMMA = ",";
+        String STAR = "*";
+        String SPOT = ".";
+        String UNDER_LINE = "_";
+        String MIDDLE_LINE = "-";
+        String MIDDLE_BRACKET_LEFT = "[";
+        String MIDDLE_BRACKET_RIGHT = "]";
+        String BRACKET_LEFT = "(";
+        String BRACKET_RIGHT = ")";
+        String SLASH = "/";
     }
 
 }
