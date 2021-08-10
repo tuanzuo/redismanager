@@ -22,23 +22,18 @@ public abstract class AbstractConfigChangeService implements IConfigChangeServic
         switch (configTypeEnum) {
             case CACHER_ENABLE:
                 this.doCacherEnableChange(context);
-                logger.info("[ConfigSdk配置] [缓存生效配置更新完成] key={} -- keyName={}", context.getConfigKey(), context.getKeyName());
                 break;
             case CACHER_EVICT:
                 this.doCacherEvictChange(context);
-                logger.info("[ConfigSdk配置] [缓存失效配置更新完成] key={} -- keyName={}", context.getConfigKey(), context.getKeyName());
                 break;
             case LIMITER:
                 this.doLimiterChange(context);
-                logger.info("[ConfigSdk配置] [限流配置更新完成] key={} -- keyName={}", context.getConfigKey(), context.getKeyName());
                 break;
             case TOKEN:
                 this.doTokenChange(context);
-                logger.info("[ConfigSdk配置] [Token配置更新完成] key={} -- keyName={}", context.getConfigKey(), context.getKeyName());
                 break;
             default:
                 this.doOtherChange(context);
-                logger.warn("[ConfigSdk配置] [其他配置更新完成] key={} -- keyName={}", context.getConfigKey(), context.getKeyName());
                 break;
         }
     }
