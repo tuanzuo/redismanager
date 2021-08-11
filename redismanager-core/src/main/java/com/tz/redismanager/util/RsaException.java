@@ -1,5 +1,8 @@
 package com.tz.redismanager.util;
 
+import com.tz.redismanager.constant.ConstInterface;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 加解密异常
  *
@@ -28,7 +31,7 @@ public class RsaException extends RuntimeException {
     }
 
     public RsaException(String errCode, String errMsg) {
-        super(errCode + ":" + errMsg);
+        super(StringUtils.join(errCode, ConstInterface.Symbol.COLON, errMsg));
         this.errCode = errCode;
         this.errMsg = errMsg;
     }

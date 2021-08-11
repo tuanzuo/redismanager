@@ -6,7 +6,7 @@ import com.tz.redismanager.config.sdk.domain.dto.ConfigQueryDTO;
 import java.util.List;
 
 /**
- * <p>拉取配置接口</p>
+ * <p>拉取配置服务接口</p>
  *
  * @author tuanzuo
  * @version 1.7.0

@@ -12,6 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * redis连接配置接口
+ */
 public interface IRedisConfigService {
 
     /**

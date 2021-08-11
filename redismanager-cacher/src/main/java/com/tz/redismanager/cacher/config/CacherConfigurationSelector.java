@@ -102,7 +102,7 @@ public class CacherConfigurationSelector implements ImportAware, EnvironmentAwar
         ICacheService cacheService = services.stream()
                 .filter((service) -> service.support(cacherType))
                 .findFirst()
-                .orElseThrow(() -> new CacherException(ResultCode.ENABLE_CACHER_TYPE_NOT_SUPPORT.getCode(), "@EnableCacherAutoConfiguration is not support cacherType-->" + cacherType));
+                .orElseThrow(() -> new CacherException(ResultCode.ENABLE_CACHER_TYPE_NOT_SUPPORT.getCode(), StringUtils.join("@EnableCacherAutoConfiguration is not support cacherType-->", cacherType)));
         //初始化缓存器
         this.initCacher(cacheService, cacherConfigService);
         return cacheService;

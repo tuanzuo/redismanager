@@ -30,24 +30,30 @@ public class RedisKeyUpdateVO {
     @NotEmpty(message = "id不能为空", groups = {ValidGroup.RenameKey.class, ValidGroup.SetTTL.class, ValidGroup.UpdateKeyValue.class})
     @ConnectionId
     private String id;
+
     @NotEmpty(message = "key不能为空", groups = {ValidGroup.RenameKey.class, ValidGroup.SetTTL.class, ValidGroup.UpdateKeyValue.class})
     private String key;
+
     @NotEmpty(message = "oldKey不能为空", groups = {ValidGroup.RenameKey.class})
     private String oldKey;
+
     /**
      * key类型：string,List,set,hash,zset
      * @see HandlerTypeEnum
      */
     @NotEmpty(message = "key类型不能为空", groups = {ValidGroup.UpdateKeyValue.class})
     private String keyType;
+
     /**
      * 过期时间
      */
     private Long expireTime;
+
     /**
      * key对应的value(新值-修改后的值)
      */
     private String stringValue;
+
     /**
      * key对应的value(老值-修改前的值)
      */
@@ -58,6 +64,7 @@ public class RedisKeyUpdateVO {
      */
     @NotNull(message = "开始位置不能为空", groups = {ValidGroup.UpdateKeyValue.class})
     private Long start;
+
     /**
      * 结束位置-list类型修改使用
      */

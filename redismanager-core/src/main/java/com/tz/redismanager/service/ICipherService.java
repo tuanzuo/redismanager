@@ -9,7 +9,22 @@ package com.tz.redismanager.service;
  **/
 public interface ICipherService {
 
+    /**
+     * 通过MD5加密用户数据
+     *
+     * @param userName
+     * @param userPwd
+     * @return
+     */
     String encodeUserInfoByMd5(String userName, String userPwd);
 
+    /**
+     * 通过MD5加密用户数据
+     *
+     * @param userName
+     * @param userPwd
+     * @param md5Salt  加盐
+     * @return
+     */
     String encodeUserInfoByMd5(String userName, String userPwd, String md5Salt);
 }

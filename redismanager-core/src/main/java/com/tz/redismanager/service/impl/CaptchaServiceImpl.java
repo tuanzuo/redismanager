@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * <p>验证码服务实现</p>
  * {@link https://github.com/whvcse/EasyCaptcha }
+ *
  * @author tuanzuo
  * @version 1.6.0
  * @time 2020-12-19 19:11
@@ -40,13 +41,13 @@ public class CaptchaServiceImpl implements ICaptchaService {
         String verCode = captcha.text().toLowerCase();
         String key = UUIDUtils.generateId();
         // 验证码放入缓存
-        stringRedisTemplate.opsForValue().set(ConstInterface.CacheKey.CAPTCHA_KEY + key, verCode, 30, TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set(StringUtils.join(ConstInterface.CacheKey.CAPTCHA_KEY, key), verCode, 30, TimeUnit.SECONDS);
         return this.buildCaptchaResp(captcha, key);
     }
 
     @Override
     public ApiResult<?> validCaptcha(CaptchaVO vo) {
-        String captchaCacheKey = ConstInterface.CacheKey.CAPTCHA_KEY + vo.getCaptchaKey();
+        String captchaCacheKey = StringUtils.join(ConstInterface.CacheKey.CAPTCHA_KEY, vo.getCaptchaKey());
         String captchaCode = stringRedisTemplate.opsForValue().get(captchaCacheKey);
         if (StringUtils.isBlank(captchaCode)) {
             return new ApiResult<>(ResultCode.CAPTCHA_EXPIRE);

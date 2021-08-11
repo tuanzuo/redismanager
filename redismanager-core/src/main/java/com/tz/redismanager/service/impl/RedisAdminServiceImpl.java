@@ -33,6 +33,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * redis数据管理服务
+ */
 @Service
 public class RedisAdminServiceImpl implements IRedisAdminService {
 
@@ -363,7 +366,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
      */
     private void setParentTreeNodeInfo(Map<String, RedisTreeNode> map, RedisTreeNode parent) {
         parent.setAllChildrenCount(parent.getAllChildrenCount() + 1);
-        parent.setTitle(parent.getTempTitle() + "(" + parent.getAllChildrenCount() + ")");
+        parent.setTitle(StringUtils.join(parent.getTempTitle(), ConstInterface.Symbol.BRACKET_LEFT, parent.getAllChildrenCount(), ConstInterface.Symbol.BRACKET_RIGHT));
         if (StringUtils.isNotBlank(parent.getPkey())) {
             this.setParentTreeNodeInfo(map, map.get(parent.getPkey()));
         }

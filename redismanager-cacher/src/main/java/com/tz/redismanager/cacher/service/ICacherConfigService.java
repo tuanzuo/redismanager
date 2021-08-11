@@ -14,11 +14,33 @@ import com.tz.redismanager.cacher.config.CacheableConfig;
  **/
 public interface ICacherConfigService {
 
+    /**
+     * 添加缓存生效配置
+     *
+     * @param cacheableConfig
+     */
     void addCacheableConfig(CacheableConfig cacheableConfig);
 
+    /**
+     * 添加缓存失效配置
+     *
+     * @param cacheEvictConfig
+     */
     void addCacheEvictConfig(CacheEvictConfig cacheEvictConfig);
 
+    /**
+     * 转换成缓存生效配置
+     *
+     * @param cacheable
+     * @return
+     */
     CacheableConfig convertCacheable(Cacheable cacheable);
 
+    /**
+     * 转换成缓存失效配置
+     *
+     * @param cacheEvict
+     * @return
+     */
     CacheEvictConfig convertCacheEvict(CacheEvict cacheEvict);
 }

@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * <p></p>
+ * <p>配置更新服务实现</p>
  *
  * @author tuanzuo
  * @version 1.7.0

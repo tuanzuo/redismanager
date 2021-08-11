@@ -11,6 +11,12 @@ import com.tz.redismanager.domain.vo.AnalysisRespVO;
  **/
 public interface IDashboardService {
 
+    /**
+     * 分析数据
+     *
+     * @param param
+     * @return
+     */
     AnalysisRespVO analysis(AnalysisParam param);
 
 }

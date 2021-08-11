@@ -14,14 +14,29 @@ import lombok.Setter;
 @Setter
 public class CacheableConfig {
 
+    /**
+     * 缓存名称
+     */
     private String name;
 
+    /**
+     * 缓存器key
+     */
     private String key;
 
+    /**
+     * 是否开启异步刷新缓存，默认true(开启)
+     */
     private boolean asyncRefresh = true;
 
+    /**
+     * 一级缓存
+     */
     private L1CacheConfig l1Cache;
 
+    /**
+     * 二级缓存
+     */
     private L2CacheConfig l2Cache;
 
     private CacheableConfig() {

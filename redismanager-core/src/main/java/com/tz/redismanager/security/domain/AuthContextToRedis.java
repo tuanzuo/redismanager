@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * <p></p>
+ * <p>Redis中的AuthContext</p>
  *
  * @author tuanzou
  * @version 1.6.0
@@ -15,7 +15,13 @@ import lombok.Setter;
 @Getter
 public class AuthContextToRedis {
 
+    /**
+     * 用户PO
+     */
     private UserPO userPO;
 
+    /**
+     * 安全认证上下文
+     */
     private AuthContext authContext;
 }

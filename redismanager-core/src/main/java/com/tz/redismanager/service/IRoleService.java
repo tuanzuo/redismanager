@@ -16,12 +16,40 @@ import java.util.List;
  **/
 public interface IRoleService {
 
+    /**
+     * 添加角色
+     *
+     * @param vo
+     * @param authContext
+     * @return
+     */
     ApiResult<?> add(RoleVO vo, AuthContext authContext);
 
+    /**
+     * 修改角色
+     *
+     * @param vo
+     * @param authContext
+     * @return
+     */
     ApiResult<?> update(RoleVO vo, AuthContext authContext);
 
+    /**
+     * 更新角色状态
+     *
+     * @param ids
+     * @param status
+     * @param authContext
+     * @return
+     */
     ApiResult<?> updateStatus(List<Integer> ids, Integer status, AuthContext authContext);
 
+    /**
+     * 分页查询角色列表
+     *
+     * @param param
+     * @return
+     */
     ApiResult<?> queryList(RolePageParam param);
 
     /**

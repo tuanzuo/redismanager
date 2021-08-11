@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * <p></p>
+ * <p>JdbcTemplate实现的配置Dao</p>
  *
  * @author tuanzuo
  * @version 1.7.0

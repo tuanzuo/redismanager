@@ -17,7 +17,13 @@ import java.util.Date;
 @ToString
 public class UserAnalysisDTO {
 
+    /**
+     * 创建时间
+     */
     private Date createTime;
 
+    /**
+     * 用户数
+     */
     private Integer userCount;
 }

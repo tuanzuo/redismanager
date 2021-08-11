@@ -28,7 +28,13 @@ public class ConfigPageParam extends ConfigQueryParam {
      */
     private Integer pageSize = DEFAULT_PAGE_SIZE;
 
+    /**
+     * 分页起点
+     */
     private Integer offset;
 
+    /**
+     * 分页大小
+     */
     private Integer rows;
 }

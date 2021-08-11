@@ -44,7 +44,7 @@ public class WebConfig {
                         .allowedOrigins("*")
                         .allowedMethods("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE")
                         .allowedHeaders("*")
-                        //是否允许发送Cookie.默认情况下，不发生Cookie，即：false。对服务器有特殊要求的请求，比如请求方法是PUT或DELETE，或者Content-Type字段的类型是application/json，这个值只能设为true。如果服务器不要浏览器发送Cookie，删除该字段即可。
+                        //是否允许发送Cookie.默认情况下，不发送Cookie，即：false。对服务器有特殊要求的请求，比如请求方法是PUT或DELETE，或者Content-Type字段的类型是application/json，这个值只能设为true。如果服务器不要浏览器发送Cookie，删除该字段即可。
                         .allowCredentials(true)
                         //用来指定本次预检请求的有效期，单位为秒。在有效期间，不用发出另一条预检请求。如果在开发中，发现每次发起请求都是两条，一次OPTIONS，一次正常请求，注意是每次，那么就需要配置Access-Control-Max-Age，避免每次都发出预检请求。
                         .maxAge(3600);

@@ -17,6 +17,7 @@ public class CacheData {
      * 缓存类型，一级缓存：L1，二级缓存：L2
      */
     private String type;
+
     /**
      * 缓存数据
      */

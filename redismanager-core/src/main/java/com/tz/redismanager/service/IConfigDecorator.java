@@ -14,11 +14,38 @@ import com.tz.redismanager.security.domain.AuthContext;
  **/
 public interface IConfigDecorator {
 
+    /**
+     * 分页查询配置
+     *
+     * @param param
+     * @return
+     */
     ApiResult<?> queryPageList(ConfigPageParam param);
 
+    /**
+     * 添加配置
+     *
+     * @param vo
+     * @param authContext
+     * @return
+     */
     ApiResult<?> add(ConfigVO vo, AuthContext authContext);
 
+    /**
+     * 更新配置
+     *
+     * @param vo
+     * @param authContext
+     * @return
+     */
     ApiResult<?> update(ConfigVO vo, AuthContext authContext);
 
+    /**
+     * 删除配置
+     *
+     * @param vo
+     * @param authContext
+     * @return
+     */
     ApiResult<?> del(ConfigVO vo, AuthContext authContext);
 }

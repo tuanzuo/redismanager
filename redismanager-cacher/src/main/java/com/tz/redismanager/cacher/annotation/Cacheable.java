@@ -17,8 +17,6 @@ public @interface Cacheable {
 
     /**
      * 缓存名称
-     *
-     * @return
      */
     String name();
 

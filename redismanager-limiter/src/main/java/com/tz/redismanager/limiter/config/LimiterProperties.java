@@ -19,6 +19,9 @@ import java.util.Map;
 @Setter
 public class LimiterProperties {
 
+    /**
+     * 限流器配置Map
+     */
     private Map<String, LimiterConfig> limiters = new HashMap<>();
 
 }

@@ -16,6 +16,9 @@ import java.util.List;
 @Setter
 public class RedisConfigVisitDataDTO {
 
+    /**
+     * 详情
+     */
     private List<Detail> details = new ArrayList<>();
 
     public void addDetails(Detail deail) {
@@ -25,7 +28,15 @@ public class RedisConfigVisitDataDTO {
     @Getter
     @Setter
     public static class Detail {
+
+        /**
+         * 名称
+         */
         private String name;
+
+        /**
+         * 次数
+         */
         private Double count;
     }
 }

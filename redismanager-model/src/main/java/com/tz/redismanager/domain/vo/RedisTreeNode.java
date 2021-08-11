@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * key的Tree节点
+ * Redis key的Tree节点
  *
  * @Since:2019-08-23 22:35:02
  * @Version:1.1.0
@@ -20,30 +20,37 @@ public class RedisTreeNode {
      * tree节点显示的名称
      */
     private String title;
+
     /**
      * ztree会使用(和title的值一样)
      */
     private String name;
+
     /**
      * tree节点的key不能重复
      */
     private String key;
+
     /**
      * 是否是叶子节点：true是,fals否
      */
     private Boolean isLeaf = false;
+
     /**
      * 禁掉checkbox
      */
     private Boolean disableCheckbox = false;
+
     /**
      * 禁掉响应
      */
     private Boolean disabled = false;
+
     /**
      * 设置节点是否可被选中
      */
     private Boolean selectable = true;
+
     /**
      * 子节点
      */

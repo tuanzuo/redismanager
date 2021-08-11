@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * <p>授权service</p>
+ * <p>授权service实现</p>
  *
  * @version 1.3.0
  * @time 2020-08-29 13:50

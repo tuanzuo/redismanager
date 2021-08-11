@@ -8,16 +8,25 @@ package com.tz.redismanager.constant;
  */
 public interface ConstInterface {
 
+    /**
+     * 用户状态
+     */
     interface USER_STATUS {
         Integer ENABLE = 1;
         Integer DISABLE = 0;
     }
 
+    /**
+     * 角色状态
+     */
     interface ROLE_STATUS {
         Integer ENABLE = 1;
         Integer DISABLE = 0;
     }
 
+    /**
+     * 角色编码
+     */
     interface ROLE_CODE {
         String SUPER_ADMIN = "superadmin";
         String ADMIN = "admin";
@@ -25,18 +34,29 @@ public interface ConstInterface {
         String DEVELOP = "develop";
     }
 
+    /**
+     * 是否是超级管理员
+     */
     interface IS_SUPER_ADMIN {
         Integer YES = 1;
         Integer NO = 0;
     }
 
+    /**
+     * 是否公开
+     */
     interface IS_PUBLIC {
         Integer YES = 1;
         Integer NO = 0;
     }
 
+    /**
+     * 删除标识
+     */
     interface IF_DEL {
+        //已删除
         Integer YES = 1;
+        //未删除
         Integer NO = 0;
     }
 
@@ -72,6 +92,7 @@ public interface ConstInterface {
         String MIDDLE_BRACKET_RIGHT = "]";
         String BRACKET_LEFT = "(";
         String BRACKET_RIGHT = ")";
+        String SLASH = "/";
     }
 
     /**

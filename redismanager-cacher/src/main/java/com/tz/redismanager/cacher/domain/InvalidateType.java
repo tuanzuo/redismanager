@@ -13,5 +13,6 @@ public enum InvalidateType {
     //失效二级缓存
     L2,
     //失效所有缓存
-    ALL;
+    ALL,
+    ;
 }
