@@ -20,8 +20,6 @@ public @interface CacheEvict {
 
     /**
      * 缓存名称
-     *
-     * @return
      */
     String name();
 

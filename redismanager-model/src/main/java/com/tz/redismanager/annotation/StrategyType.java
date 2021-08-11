@@ -18,6 +18,9 @@ import java.lang.annotation.*;
 @Documented
 public @interface StrategyType {
 
+    /**
+     * 策略类型
+     */
     StrategyTypeEnum[] value();
 
 }

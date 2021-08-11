@@ -8,5 +8,11 @@ package com.tz.redismanager.service;
  **/
 public interface ICacheInitCallbackService {
 
+    /**
+     * 缓存初始化
+     *
+     * @param param
+     * @return
+     */
     Object init(Object param);
 }

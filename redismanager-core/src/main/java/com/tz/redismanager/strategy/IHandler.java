@@ -8,5 +8,10 @@ package com.tz.redismanager.strategy;
  **/
 public interface IHandler<T, R> {
 
+    /**
+     * 处理
+     * @param t
+     * @return
+     */
     public R handle(T t);
 }

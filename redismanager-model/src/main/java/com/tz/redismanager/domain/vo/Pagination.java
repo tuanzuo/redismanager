@@ -14,8 +14,19 @@ import lombok.Setter;
 @Setter
 public class Pagination {
 
+    /**
+     * 总数
+     */
     private Integer total;
+
+    /**
+     * 当前页数
+     */
     private Integer current;
+
+    /**
+     * 每页大小
+     */
     private Integer pageSize;
 
 }

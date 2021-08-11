@@ -17,7 +17,13 @@ import java.util.Date;
 @ToString
 public class RedisConfigAnalysisDTO {
 
+    /**
+     * 创建时间
+     */
     private Date createTime;
 
+    /**
+     * 配置数量
+     */
     private Integer configCount;
 }

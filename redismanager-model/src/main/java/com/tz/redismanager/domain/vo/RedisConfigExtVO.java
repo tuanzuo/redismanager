@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * <p></p>
+ * <p>redis连接配置扩展VO</p>
  *
  * @author tuanzuo
  * @version 1.7.0

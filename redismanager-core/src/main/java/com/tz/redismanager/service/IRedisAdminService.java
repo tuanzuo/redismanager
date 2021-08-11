@@ -5,6 +5,9 @@ import com.tz.redismanager.domain.vo.*;
 
 import java.util.List;
 
+/**
+ * redis数据管理
+ */
 public interface IRedisAdminService {
 
     /**

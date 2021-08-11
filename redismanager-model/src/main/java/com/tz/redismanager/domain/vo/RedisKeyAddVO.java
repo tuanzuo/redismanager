@@ -24,17 +24,21 @@ public class RedisKeyAddVO {
     @NotEmpty(message = "id不能为空")
     @ConnectionId
     private String id;
+
     @NotEmpty(message = "key不能为空")
     private String key;
+
     /**
      * key类型：string,List,set,hash,zset
      */
     @NotEmpty(message = "key类型不能为空")
     private String keyType;
+
     /**
      * 过期时间
      */
     private Long expireTime;
+
     /**
      * key对应的value
      */

@@ -18,6 +18,9 @@ import java.lang.annotation.*;
 @Documented
 public @interface HandlerType {
 
+    /**
+     * 处理类型
+     */
     HandlerTypeEnum[] value();
 
 }

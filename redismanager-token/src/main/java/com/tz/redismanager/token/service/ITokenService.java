@@ -11,6 +11,7 @@ public interface ITokenService {
 
     /**
      * 支持条件
+     *
      * @param tokenType
      * @return
      */
@@ -18,6 +19,7 @@ public interface ITokenService {
 
     /**
      * 生成token
+     *
      * @param tokenContext
      * @return
      */
@@ -25,6 +27,7 @@ public interface ITokenService {
 
     /**
      * 解析token
+     *
      * @param token
      * @return
      */
@@ -32,6 +35,7 @@ public interface ITokenService {
 
     /**
      * 清理token
+     *
      * @param token
      */
     void clearToken(String token);

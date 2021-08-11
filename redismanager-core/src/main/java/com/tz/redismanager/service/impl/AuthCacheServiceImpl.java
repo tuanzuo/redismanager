@@ -33,8 +33,8 @@ public class AuthCacheServiceImpl implements IAuthCacheService {
     @Override
     public void setAuthInfo(String userName, String encodePwd, Integer expireTime, AuthContext authContext) {
         String userEncodeKey = cipherService.encodeUserInfoByMd5(userName, encodePwd);
-        String authKey = ConstInterface.CacheKey.USER_AUTH + authContext.getToken();
-        String toAuthKey = ConstInterface.CacheKey.USER_TO_AUTH + userEncodeKey;
+        String authKey = StringUtils.join(ConstInterface.CacheKey.USER_AUTH, authContext.getToken());
+        String toAuthKey = StringUtils.join(ConstInterface.CacheKey.USER_TO_AUTH, userEncodeKey);
         authContext.setToToken(userEncodeKey);
         stringRedisTemplate.opsForValue().set(authKey, JsonUtils.toJsonStr(authContext), expireTime, TimeUnit.MINUTES);
         stringRedisTemplate.opsForValue().set(toAuthKey, authContext.getToken(), expireTime, TimeUnit.MINUTES);
@@ -44,11 +44,11 @@ public class AuthCacheServiceImpl implements IAuthCacheService {
     public void delAuthInfo(String userName, String encodePwd) {
         Set<String> delKeys = new HashSet<>();
         String userEncodeKey = cipherService.encodeUserInfoByMd5(userName, encodePwd);
-        String toAuthKey = ConstInterface.CacheKey.USER_TO_AUTH + userEncodeKey;
+        String toAuthKey = StringUtils.join(ConstInterface.CacheKey.USER_TO_AUTH, userEncodeKey);
         delKeys.add(toAuthKey);
         String token = stringRedisTemplate.opsForValue().get(toAuthKey);
         if (StringUtils.isNotBlank(token)) {
-            String authKey = ConstInterface.CacheKey.USER_AUTH + token;
+            String authKey = StringUtils.join(ConstInterface.CacheKey.USER_AUTH, token);
             delKeys.add(authKey);
         }
         stringRedisTemplate.delete(delKeys);
@@ -56,8 +56,8 @@ public class AuthCacheServiceImpl implements IAuthCacheService {
 
     @Override
     public void delAuthInfoToLogout(AuthContext authContext) {
-        String authKey = ConstInterface.CacheKey.USER_AUTH + authContext.getToken();
-        String toAuthKey = ConstInterface.CacheKey.USER_TO_AUTH + authContext.getToToken();
+        String authKey = StringUtils.join(ConstInterface.CacheKey.USER_AUTH, authContext.getToken());
+        String toAuthKey = StringUtils.join(ConstInterface.CacheKey.USER_TO_AUTH, authContext.getToToken());
         stringRedisTemplate.delete(Sets.newHashSet(authKey, toAuthKey));
     }
 

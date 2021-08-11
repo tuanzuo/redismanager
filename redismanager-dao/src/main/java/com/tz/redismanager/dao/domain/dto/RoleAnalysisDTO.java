@@ -17,7 +17,13 @@ import java.util.Date;
 @ToString
 public class RoleAnalysisDTO {
 
+    /**
+     * 创建时间
+     */
     private Date createTime;
 
+    /**
+     * 角色数
+     */
     private Integer roleCount;
 }

@@ -15,12 +15,14 @@ public interface ICaptchaService {
 
     /**
      * 生成验证码
+     *
      * @return
      */
     CaptchaResp captcha();
 
     /**
      * 校验验证码
+     *
      * @param vo
      * @return
      */

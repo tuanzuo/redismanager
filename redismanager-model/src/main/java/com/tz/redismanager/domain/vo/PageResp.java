@@ -16,8 +16,14 @@ import java.util.List;
 @Setter
 public class PageResp<T> {
 
+    /**
+     * 分页对象
+     */
     private Pagination pagination;
 
+    /**
+     * 数据集合
+     */
     private List<T> list;
 
 }

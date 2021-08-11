@@ -16,30 +16,37 @@ public class RedisValueResp {
      * key类型：string,List,set,hash,zset
      */
     private String keyType;
+
     /**
      * 过期时间
      */
     private Long expireTime;
+
     /**
      * key对应的value
      */
     private Object value;
+
     /**
      * 当前value对应的页数
      */
     private Integer pageNum;
+
     /**
      * 每页大小
      */
     private Integer pageSize;
+
     /**
      * 总大小
      */
     private Long totalSize;
+
     /**
      * 开始位置-list类型修改使用
      */
     private long start;
+
     /**
      * 结束位置-list类型修改使用
      */

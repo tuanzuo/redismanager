@@ -9,11 +9,19 @@ package com.tz.redismanager.config.sdk.constant;
  **/
 public interface ConstInterface {
 
+    /**
+     * 删除标识
+     */
     interface IF_DEL {
+        //已删除
         Integer YES = 1;
+        //未删除
         Integer NO = 0;
     }
 
+    /**
+     * Zookeeper
+     */
     interface Zookeeper {
         //路径前缀
         String PRE_PATH = "/dynamic/config/";

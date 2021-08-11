@@ -1,5 +1,6 @@
 package com.tz.redismanager.cacher.aspect;
 
+import com.tz.redismanager.cacher.constant.ConstInterface;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -41,6 +42,6 @@ public abstract class AbstractAspect {
             context.setVariable(names[i], args[i]);
         }
         ExpressionParser parser = new SpelExpressionParser();
-        return key + ":" + parser.parseExpression(var).getValue(context, String.class);
+        return StringUtils.join(key, ConstInterface.Symbol.COLON, parser.parseExpression(var).getValue(context, String.class));
     }
 }

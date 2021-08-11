@@ -6,6 +6,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Map;
 
+/**
+ * redis上下文服务接口
+ */
 public interface IRedisContextService {
 
     /**

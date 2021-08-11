@@ -19,20 +19,25 @@ public class RedisValueQueryVO {
     @NotEmpty(message = "id不能为空")
     @ConnectionId
     private String id;
+
     @NotEmpty(message = "searchKey不能为空")
     private String searchKey;
+
     /**
      * 查询的页数
      */
     private Integer pageNum = DEFAULT_PAGE_NUM;
+
     /**
      * 每页大小
      */
     private Integer pageSize = DEFAULT_PAGE_SIZE;
+
     /**
      * 开始位置
      */
     private long start;
+
     /**
      * 结束位置
      */

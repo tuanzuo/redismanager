@@ -58,6 +58,13 @@ public class CuratorSdkConfig {
         return curatorFramework;
     }
 
+    /**
+     * 添加监听器
+     * @param curatorFramework
+     * @param treeCacheListener 监听器
+     * @param path 监听路径
+     * @throws Exception
+     */
     public static void addWatcherWithTreeCache(CuratorFramework curatorFramework, TreeCacheListener treeCacheListener, String path) throws Exception {
         CuratorCache curatorCache = CuratorCache.builder(curatorFramework, path).build();
         CuratorCacheListener listener = CuratorCacheListener.builder()

@@ -4,6 +4,7 @@ import com.tz.redismanager.token.annotation.EnableTokenAutoConfiguration;
 import com.tz.redismanager.token.domain.ResultCode;
 import com.tz.redismanager.token.exception.TokenException;
 import com.tz.redismanager.token.service.ITokenService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.context.EnvironmentAware;
@@ -46,7 +47,7 @@ public class TokenConfigurationSelector implements ImportAware, EnvironmentAware
         Map<String, Object> map = importMetadata.getAnnotationAttributes(EnableTokenAutoConfiguration.class.getName());
         this.tokenAutoConfiguration = AnnotationAttributes.fromMap(map);
         if (this.tokenAutoConfiguration == null) {
-            throw new TokenException(ResultCode.ENABLE_TOKEN_NOT_PRESENT.getCode(), "@EnableTokenAutoConfiguration is not present on importing class " + importMetadata.getClassName());
+            throw new TokenException(ResultCode.ENABLE_TOKEN_NOT_PRESENT.getCode(), StringUtils.join("@EnableTokenAutoConfiguration is not present on importing class ", importMetadata.getClassName()));
         }
     }
 
@@ -67,7 +68,7 @@ public class TokenConfigurationSelector implements ImportAware, EnvironmentAware
         return tokenServices.stream()
                 .filter((tokenService) -> tokenService.support(tokenType))
                 .findFirst()
-                .orElseThrow(() -> new TokenException(ResultCode.ENABLE_TOKEN_TYPE_NOT_SUPPORT.getCode(), "@EnableTokenAutoConfiguration is not support tokenType-->" + tokenType));
+                .orElseThrow(() -> new TokenException(ResultCode.ENABLE_TOKEN_TYPE_NOT_SUPPORT.getCode(), StringUtils.join("@EnableTokenAutoConfiguration is not support tokenType-->", tokenType)));
     }
 
 }

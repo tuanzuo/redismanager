@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * redis上下文服务实现
+ */
 @Service
 public class RedisContextServiceImpl implements IRedisContextService {
 
@@ -60,7 +63,7 @@ public class RedisContextServiceImpl implements IRedisContextService {
 
         //加载jar
         if(CollectionUtils.isNotEmpty(redisConfigDto.getExtList())){
-            redisConfigDto.getExtList().forEach(temp -> ClassLoaderUtils.loadJar(uploadPrefix + temp.getExtValue()));
+            redisConfigDto.getExtList().forEach(temp -> ClassLoaderUtils.loadJar(StringUtils.join(uploadPrefix, temp.getExtValue())));
         }
 
         RedisTemplate<String, Object> redisTemplate = null;
@@ -119,7 +122,7 @@ public class RedisContextServiceImpl implements IRedisContextService {
             if (null != redisTemplate && StringUtils.isNotBlank(vo.getSerCode())) {
                 RedisContextUtils.initRedisSerializer(vo.getSerCode(), redisTemplate);
             }
-            String key = "rds:mag:" + UUIDUtils.generateId();
+            String key = StringUtils.join("rds:mag:", UUIDUtils.generateId());
             redisTemplate.opsForValue().set(key, key, 5, TimeUnit.SECONDS);
             result = new ApiResult<>(ResultCode.SUCCESS);
         } catch (Throwable e) {

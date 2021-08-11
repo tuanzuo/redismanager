@@ -57,7 +57,7 @@ public class RedisTokenServiceImpl implements ITokenService {
 
     @Override
     public String resolveToken(String token) {
-        String userInfoKey = ConstInterface.CacheKey.USER_AUTH + token;
+        String userInfoKey = StringUtils.join(ConstInterface.CacheKey.USER_AUTH, token);
         String authContextCache = stringRedisTemplate.opsForValue().get(userInfoKey);
         if (StringUtils.isBlank(authContextCache)) {
             throw new TokenException(ResultCode.TOKEN_AUTH_EXPIRE);

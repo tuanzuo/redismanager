@@ -46,6 +46,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * redis连接配置服务
+ */
 @Service
 public class RedisConfigServiceImpl implements IRedisConfigService {
 
@@ -81,6 +84,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
             BeanUtils.copyProperties(temp, target);
             resultList.add(target);
         });
+
+        //扩展配置
         List<RedisConfigExtPO> extList = this.queryRedisConfigExts(list);
         if (CollectionUtils.isEmpty(extList)) {
             return resultList;
@@ -174,8 +179,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         if (!fileName.endsWith(sufFile)) {
             return new ApiResult<>(ResultCode.FILE_UPLOAD_ERROR.getCode(), "上传失败，请上传" + sufFile + "文件");
         }
-        String relativePath = "/" + UUIDUtils.generateId() + "/" + fileName;
-        String filePath = uploadPrefix.endsWith("/") ? uploadPrefix.substring(0, uploadPrefix.length()) : uploadPrefix + relativePath;
+        String relativePath = StringUtils.join(ConstInterface.Symbol.SLASH, UUIDUtils.generateId(), ConstInterface.Symbol.SLASH, fileName);
+        String filePath = StringUtils.join(uploadPrefix.endsWith(ConstInterface.Symbol.SLASH) ? uploadPrefix.substring(0, uploadPrefix.length()) : uploadPrefix, relativePath);
         File targetFile = new File(filePath);
         try {
             if (!targetFile.exists()) {
@@ -195,7 +200,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         String filePath = null;
         ResponseEntity<byte[]> entity = null;
         try {
-            filePath = uploadPrefix.endsWith("/") ? uploadPrefix.substring(0, uploadPrefix.length()) : uploadPrefix + fileName;
+            filePath = StringUtils.join(uploadPrefix.endsWith(ConstInterface.Symbol.SLASH) ? uploadPrefix.substring(0, uploadPrefix.length()) : uploadPrefix, fileName);
             File downFile = new File(filePath);
             if (downFile.exists() == false) {
                 logger.error("download file not found.filePath:{}", filePath);

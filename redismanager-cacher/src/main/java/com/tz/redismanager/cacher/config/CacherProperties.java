@@ -19,8 +19,14 @@ import java.util.Map;
 @Setter
 public class CacherProperties {
 
+    /**
+     * 缓存生效配置
+     */
     private Map<String, CacheableConfig> cacheables = new HashMap<>();
 
+    /**
+     * 缓存失效配置
+     */
     private Map<String, CacheEvictConfig> cacheEvicts = new HashMap<>();
 
 }

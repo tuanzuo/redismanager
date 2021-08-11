@@ -23,7 +23,13 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public class CacherConfigServiceImpl implements ICacherConfigService {
 
+    /**
+     * 缓存生效配置Map，key：com.tz.redismanager.cacher.config.CacheableConfig#key
+     */
     private Map<String, CacheableConfig> cacheableConfigMap = new ConcurrentHashMap<>();
+    /**
+     * 缓存失效配置Map，key：com.tz.redismanager.cacher.config.CacheEvictConfig#key
+     */
     private Map<String, CacheEvictConfig> cacheEvictConfigMap = new ConcurrentHashMap<>();
 
     @Override
@@ -48,42 +54,49 @@ public class CacherConfigServiceImpl implements ICacherConfigService {
 
     private CacheableConfig getCacheableConfig(Cacheable cacheable) {
         return Optional.ofNullable(cacheableConfigMap.get(cacheable.key())).orElseGet(() -> {
-            CacheableConfig.Builder builder = CacheableConfig.newBuilder();
-            builder.setName(cacheable.name());
-            builder.setKey(cacheable.key());
-            builder.setAsyncRefresh(cacheable.asyncRefresh());
-            L1CacheConfig l1CacheConfig = new L1CacheConfig();
-            L1Cache l1Cache = cacheable.l1Cache();
-            l1CacheConfig.setEnable(l1Cache.enable());
-            l1CacheConfig.setInitialCapacity(l1Cache.initialCapacity());
-            l1CacheConfig.setMaximumSize(l1Cache.maximumSize());
-            l1CacheConfig.setExpireStrategy(l1Cache.expireStrategy());
-            l1CacheConfig.setExpireDuration(l1Cache.expireDuration());
-            l1CacheConfig.setExpireUnit(l1Cache.expireUnit());
-            l1CacheConfig.setRecordStats(l1Cache.recordStats());
-            builder.setL1Cache(l1CacheConfig);
-            L2CacheConfig l2CacheConfig = new L2CacheConfig();
-            L2Cache l2Cache = cacheable.l2Cache();
-            l2CacheConfig.setEnable(l2Cache.enable());
-            l2CacheConfig.setExpireDuration(l2Cache.expireDuration());
-            l2CacheConfig.setExpireUnit(l2Cache.expireUnit());
-            builder.setL2Cache(l2CacheConfig);
-            CacheableConfig config = builder.build();
+            CacheableConfig config = this.buildCacheableConfig(cacheable);
             return Optional.ofNullable(cacheableConfigMap.putIfAbsent(config.getKey(), config)).orElse(config);
         });
-
     }
 
     private CacheEvictConfig getCacheEvictConfig(CacheEvict cacheEvict) {
         return Optional.ofNullable(cacheEvictConfigMap.get(cacheEvict.key())).orElseGet(() -> {
-            CacheEvictConfig.Builder builder = CacheEvictConfig.newBuilder();
-            builder.setName(cacheEvict.name());
-            builder.setKey(cacheEvict.key());
-            builder.setInvalidate(cacheEvict.invalidate());
-            builder.setInvocation(cacheEvict.invocation());
-            CacheEvictConfig config = builder.build();
+            CacheEvictConfig config = this.buildCacheEvictConfig(cacheEvict);
             return Optional.ofNullable(cacheEvictConfigMap.putIfAbsent(config.getKey(), config)).orElse(config);
         });
+    }
+
+    private CacheableConfig buildCacheableConfig(Cacheable cacheable) {
+        CacheableConfig.Builder builder = CacheableConfig.newBuilder();
+        builder.setName(cacheable.name());
+        builder.setKey(cacheable.key());
+        builder.setAsyncRefresh(cacheable.asyncRefresh());
+        L1CacheConfig l1CacheConfig = new L1CacheConfig();
+        L1Cache l1Cache = cacheable.l1Cache();
+        l1CacheConfig.setEnable(l1Cache.enable());
+        l1CacheConfig.setInitialCapacity(l1Cache.initialCapacity());
+        l1CacheConfig.setMaximumSize(l1Cache.maximumSize());
+        l1CacheConfig.setExpireStrategy(l1Cache.expireStrategy());
+        l1CacheConfig.setExpireDuration(l1Cache.expireDuration());
+        l1CacheConfig.setExpireUnit(l1Cache.expireUnit());
+        l1CacheConfig.setRecordStats(l1Cache.recordStats());
+        builder.setL1Cache(l1CacheConfig);
+        L2CacheConfig l2CacheConfig = new L2CacheConfig();
+        L2Cache l2Cache = cacheable.l2Cache();
+        l2CacheConfig.setEnable(l2Cache.enable());
+        l2CacheConfig.setExpireDuration(l2Cache.expireDuration());
+        l2CacheConfig.setExpireUnit(l2Cache.expireUnit());
+        builder.setL2Cache(l2CacheConfig);
+        return builder.build();
+    }
+
+    private CacheEvictConfig buildCacheEvictConfig(CacheEvict cacheEvict) {
+        CacheEvictConfig.Builder builder = CacheEvictConfig.newBuilder();
+        builder.setName(cacheEvict.name());
+        builder.setKey(cacheEvict.key());
+        builder.setInvalidate(cacheEvict.invalidate());
+        builder.setInvocation(cacheEvict.invocation());
+        return builder.build();
     }
 
 }

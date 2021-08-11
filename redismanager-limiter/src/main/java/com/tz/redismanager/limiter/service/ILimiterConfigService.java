@@ -12,8 +12,19 @@ import com.tz.redismanager.limiter.config.LimiterConfig;
  **/
 public interface ILimiterConfigService {
 
+    /**
+     * 添加限流器配置
+     *
+     * @param limiterConfig
+     */
     void addLimiterConfig(LimiterConfig limiterConfig);
 
+    /**
+     * 转换成限流器配置
+     *
+     * @param limiter
+     * @return
+     */
     LimiterConfig convertLimiter(Limiter limiter);
 
 }

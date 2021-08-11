@@ -16,10 +16,19 @@ import java.util.List;
 @Setter
 public class UserListResp {
 
+    /**
+     * 分页对象
+     */
     private Pagination pagination;
 
+    /**
+     * 用户列表
+     */
     private List<UserResp> list;
 
+    /**
+     * 角色列表
+     */
     private List<RoleVO> roles;
 
 }

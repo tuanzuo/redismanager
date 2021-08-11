@@ -16,9 +16,19 @@ import java.util.concurrent.TimeUnit;
 @Setter
 public class L2CacheConfig {
 
+    /**
+     * 是否开启二级缓存，true:开启，false:关闭
+     */
     private boolean enable = true;
 
+    /**
+     * 过期时间
+     */
     private long expireDuration = 10;
 
+    /**
+     * 过期时间单位
+     */
     private TimeUnit expireUnit = TimeUnit.MINUTES;
+
 }

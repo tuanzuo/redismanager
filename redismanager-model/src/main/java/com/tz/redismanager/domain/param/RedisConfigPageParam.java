@@ -14,6 +14,9 @@ public class RedisConfigPageParam {
 
     private static final Integer DEFAULT_PAGE_SIZE = 9;
 
+    /**
+     * 查询关键字
+     */
     private String searchKey;
 
     /**
@@ -37,6 +40,7 @@ public class RedisConfigPageParam {
      * 查询的页数
      */
     private Integer pageNum = 1;
+
     /**
      * 每页大小
      */

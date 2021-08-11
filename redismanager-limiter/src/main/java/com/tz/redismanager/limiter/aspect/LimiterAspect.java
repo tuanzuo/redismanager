@@ -2,10 +2,12 @@ package com.tz.redismanager.limiter.aspect;
 
 import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.limiter.config.LimiterConfig;
+import com.tz.redismanager.limiter.constant.ConstInterface;
 import com.tz.redismanager.limiter.domain.ResultCode;
 import com.tz.redismanager.limiter.exception.LimiterException;
 import com.tz.redismanager.limiter.service.ILimiterConfigService;
 import com.tz.redismanager.limiter.service.ILimiterService;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -45,7 +47,7 @@ public class LimiterAspect implements Ordered {
         if (limiterService.tryAcquire(limiterConfig)) {
             return joinPoint.proceed();
         }
-        throw new LimiterException(ResultCode.LIMIT_EXCEPTION.getCode(), limiterConfig.getName() + "-" + ResultCode.LIMIT_EXCEPTION.getMsg());
+        throw new LimiterException(ResultCode.LIMIT_EXCEPTION.getCode(), StringUtils.join(limiterConfig.getName(), ConstInterface.Symbol.MIDDLE_LINE, ResultCode.LIMIT_EXCEPTION.getMsg()));
     }
 
     @Override

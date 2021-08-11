@@ -55,6 +55,7 @@ public class UserRoleRelationPO {
 
     /**
      * 是否删除[1=是,0=否]
+     * @see com.tz.redismanager.constant.ConstInterface.IF_DEL
      */
     private Integer ifDel;
 

@@ -33,6 +33,7 @@ public class RolePageParam {
      * 当前页数
      */
     private Integer currentPage = 1;
+
     /**
      * 每页条数
      */

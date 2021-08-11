@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
- * <p></p>
+ * <p>配置VO</p>
  *
  * @author tuanzuo
  * @version 1.7.0

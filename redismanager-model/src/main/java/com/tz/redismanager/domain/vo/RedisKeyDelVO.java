@@ -18,6 +18,7 @@ public class RedisKeyDelVO {
     @NotEmpty(message = "id不能为空")
     @ConnectionId
     private String id;
+
     @NotEmpty(message = "keys不能为空")
     private String[] keys;
 

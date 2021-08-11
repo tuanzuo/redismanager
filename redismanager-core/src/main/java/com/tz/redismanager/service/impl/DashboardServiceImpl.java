@@ -49,21 +49,27 @@ public class DashboardServiceImpl implements IDashboardService {
     private AnalysisRespVO queryAnalysisData(AnalysisParam param) {
         AnalysisRespVO resp = new AnalysisRespVO();
         VisitDataDTO visitDataDTO = statisticService.countVisit(param);
+        //请求量
         this.buildVisitData(resp, visitDataDTO);
 
         UserVisitDataDTO userVisitDataDTO = statisticService.countUserVisit(param);
+        //用户访问量
         this.buildUserVisitData(resp, userVisitDataDTO);
 
         RedisConfigVisitDataDTO redisConfigVisitDataDTO = statisticService.countRedisConfigVisit(param);
+        //redis连接排行榜
         this.buildRedisConfigVisitData(resp, redisConfigVisitDataDTO);
 
         List<UserAnalysisDTO> userList = userService.queryUserAnalysis();
+        //注册人数
         this.buildUserData(resp, userList);
 
         List<RoleAnalysisDTO> roleList = roleService.queryRoleAnalysis();
+        //角色数
         this.buildRoleData(resp, roleList);
 
         List<RedisConfigAnalysisDTO> configList = redisConfigService.queryRedisConfigAnalysis();
+        //redis连接配置数
         this.buildRedisConfigData(resp, configList);
         return resp;
     }

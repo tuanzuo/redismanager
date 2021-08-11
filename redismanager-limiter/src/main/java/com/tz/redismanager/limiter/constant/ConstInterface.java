@@ -15,4 +15,23 @@ public interface ConstInterface {
     interface LimiterType {
         String GUAVA_RATE_LIMITER = "GuavaRateLimiter";
     }
+
+    /**
+     * 符号
+     */
+    interface Symbol {
+        String COLON = ":";
+        String SPACE = " ";
+        String BLANK = "";
+        String COMMA = ",";
+        String STAR = "*";
+        String SPOT = ".";
+        String UNDER_LINE = "_";
+        String MIDDLE_LINE = "-";
+        String MIDDLE_BRACKET_LEFT = "[";
+        String MIDDLE_BRACKET_RIGHT = "]";
+        String BRACKET_LEFT = "(";
+        String BRACKET_RIGHT = ")";
+        String SLASH = "/";
+    }
 }
