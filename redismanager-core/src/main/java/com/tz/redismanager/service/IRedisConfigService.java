@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * redis连接配置接口
@@ -28,6 +29,11 @@ public interface IRedisConfigService {
      * 查询redis连接配置
      */
     RedisConfigDTO query(String id);
+
+    /**
+     * 批量查询redis连接配置
+     */
+    List<RedisConfigPO> queryList(Set<String> ids);
 
     /**
      * 查询redis连接配置分析页数据

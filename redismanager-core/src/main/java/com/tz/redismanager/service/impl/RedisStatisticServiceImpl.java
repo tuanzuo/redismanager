@@ -1,5 +1,7 @@
 package com.tz.redismanager.service.impl;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.dto.RedisConfigVisitDataDTO;
@@ -21,10 +23,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -45,6 +44,8 @@ public class RedisStatisticServiceImpl implements IStatisticService {
     private static final Integer DAYS_1 = 1;
     private static final Integer YEAR_1 = DAYS_365;
     private static final Integer YEAR_10 = DAYS_365 * 10;
+    private static final long START = 0;
+    private static final long END = 50;
 
     private String userOnlineKey = StringUtils.join(ConstInterface.CacheKey.USER_ONLINE, DateUtils.nowDateToStr(DateUtils.YYYYMMDD));
 
@@ -92,36 +93,36 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         DateUtils.CurrentDate currentDate = DateUtils.getCurrentDate();
         String uuid = UUIDUtils.generateId();
         String totalKey = ConstInterface.CacheKey.VISIT_TOTAL_ALL;
-        incrementVisit(totalKey, uuid, YEAR_10, TimeUnit.DAYS);
+        this.incrementVisit(totalKey, uuid, YEAR_10, TimeUnit.DAYS);
 
         String currentYearKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYY());
-        incrementVisit(currentYearKey, uuid, DAYS_365, TimeUnit.DAYS);
+        this.incrementVisit(currentYearKey, uuid, DAYS_365, TimeUnit.DAYS);
 
         String totalDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, "all");
-        incrementDetailVisit(totalDetailKey, currentDate.getYYYY(), currentYearKey, YEAR_10);
+        this.incrementDetailVisit(totalDetailKey, currentDate.getYYYY(), currentYearKey, YEAR_10);
 
         String currentMonthKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMM());
-        incrementVisit(currentMonthKey, uuid, DAYS_31, TimeUnit.DAYS);
+        this.incrementVisit(currentMonthKey, uuid, DAYS_31, TimeUnit.DAYS);
 
         String yearDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY());
-        incrementDetailVisit(yearDetailKey, currentDate.getMM(), currentMonthKey, YEAR_1);
+        this.incrementDetailVisit(yearDetailKey, currentDate.getMM(), currentMonthKey, YEAR_1);
 
         String currentDayKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMMDD());
-        incrementVisit(currentDayKey, uuid, DAYS_1, TimeUnit.DAYS);
+        this.incrementVisit(currentDayKey, uuid, DAYS_1, TimeUnit.DAYS);
 
         String mmDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYYMM());
-        incrementDetailVisit(mmDetailKey, currentDate.getDD(), currentDayKey, DAYS_31);
+        this.incrementDetailVisit(mmDetailKey, currentDate.getDD(), currentDayKey, DAYS_31);
 
         int weekOfYear = new DateTime().weekOfWeekyear().get();
         int dayOfWeek = new DateTime().dayOfWeek().get();
         String weekDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
-        incrementDetailVisit(weekDetailKey, String.valueOf(dayOfWeek), currentDayKey, DAYS_7);
+        this.incrementDetailVisit(weekDetailKey, String.valueOf(dayOfWeek), currentDayKey, DAYS_7);
 
         String currentHourKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMMDDHH());
-        incrementVisit(currentHourKey, uuid, HOURS_1, TimeUnit.HOURS);
+        this.incrementVisit(currentHourKey, uuid, HOURS_1, TimeUnit.HOURS);
 
         String ddDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYYMMDD());
-        incrementDetailVisit(ddDetailKey, currentDate.getHH(), currentHourKey, DAYS_1);
+        this.incrementDetailVisit(ddDetailKey, currentDate.getHH(), currentHourKey, DAYS_1);
     }
 
     @Override
@@ -298,17 +299,17 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         DateUtils.CurrentDate currentDate = DateUtils.getCurrentDate();
 
         String currentYearDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY());
-        incrementRankVisit(currentYearDetailKey, redisConfigId, DAYS_365);
+        this.incrementRankVisit(currentYearDetailKey, redisConfigId, DAYS_365);
 
         String currentMonthDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYYMM());
-        incrementRankVisit(currentMonthDetailKey, redisConfigId, DAYS_31);
+        this.incrementRankVisit(currentMonthDetailKey, redisConfigId, DAYS_31);
 
         int weekOfYear = new DateTime().weekOfWeekyear().get();
         String currentWeekDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
-        incrementRankVisit(currentWeekDetailKey, redisConfigId, DAYS_7);
+        this.incrementRankVisit(currentWeekDetailKey, redisConfigId, DAYS_7);
 
         String currentDayDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYYMMDD());
-        incrementRankVisit(currentDayDetailKey, redisConfigId, DAYS_1);
+        this.incrementRankVisit(currentDayDetailKey, redisConfigId, DAYS_1);
     }
 
     @Override
@@ -346,43 +347,43 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         DateUtils.CurrentDate currentDate = DateUtils.getCurrentDate();
 
         String currentYearKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYY());
-        incrementVisit(currentYearKey, userId, DAYS_365, TimeUnit.DAYS);
+        this.incrementVisit(currentYearKey, userId, DAYS_365, TimeUnit.DAYS);
 
         String currentMonthKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMM());
-        incrementVisit(currentMonthKey, userId, DAYS_31, TimeUnit.DAYS);
+        this.incrementVisit(currentMonthKey, userId, DAYS_31, TimeUnit.DAYS);
 
         String yearDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY());
-        incrementDetailVisit(yearDetailKey, currentDate.getMM(), currentMonthKey, YEAR_1);
+        this.incrementDetailVisit(yearDetailKey, currentDate.getMM(), currentMonthKey, YEAR_1);
 
         String currentDayKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMMDD());
-        incrementVisit(currentDayKey, userId, DAYS_1, TimeUnit.DAYS);
+        this.incrementVisit(currentDayKey, userId, DAYS_1, TimeUnit.DAYS);
 
         String mmDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYYMM());
-        incrementDetailVisit(mmDetailKey, currentDate.getDD(), currentDayKey, DAYS_31);
+        this.incrementDetailVisit(mmDetailKey, currentDate.getDD(), currentDayKey, DAYS_31);
 
         int weekOfYear = new DateTime().weekOfWeekyear().get();
         int dayOfWeek = new DateTime().dayOfWeek().get();
         String weekDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
-        incrementDetailVisit(weekDetailKey, String.valueOf(dayOfWeek), currentDayKey, DAYS_7);
+        this.incrementDetailVisit(weekDetailKey, String.valueOf(dayOfWeek), currentDayKey, DAYS_7);
 
         String currentHourKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMMDDHH());
-        incrementVisit(currentHourKey, userId, HOURS_1, TimeUnit.HOURS);
+        this.incrementVisit(currentHourKey, userId, HOURS_1, TimeUnit.HOURS);
 
         String ddDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYYMMDD());
-        incrementDetailVisit(ddDetailKey, currentDate.getHH(), currentHourKey, DAYS_1);
+        this.incrementDetailVisit(ddDetailKey, currentDate.getHH(), currentHourKey, DAYS_1);
 
         //user visit排行榜
         String currentYearDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYY());
-        incrementRankVisit(currentYearDetailKey, userName, DAYS_365);
+        this.incrementRankVisit(currentYearDetailKey, userName, DAYS_365);
 
         String currentMonthDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYYMM());
-        incrementRankVisit(currentMonthDetailKey, userName, DAYS_31);
+        this.incrementRankVisit(currentMonthDetailKey, userName, DAYS_31);
 
         String currentWeekDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
-        incrementRankVisit(currentWeekDetailKey, userName, DAYS_7);
+        this.incrementRankVisit(currentWeekDetailKey, userName, DAYS_7);
 
         String currentDayDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYYMMDD());
-        incrementRankVisit(currentDayDetailKey, userName, DAYS_1);
+        this.incrementRankVisit(currentDayDetailKey, userName, DAYS_1);
     }
 
     /**
@@ -424,7 +425,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
     }
 
     private void buildUserRankVisitDetail(UserVisitDataDTO dto, String detailKey) {
-        Set<ZSetOperations.TypedTuple<Object>> details = redisTemplate.opsForZSet().reverseRangeWithScores(detailKey, 0, 50);
+        Set<ZSetOperations.TypedTuple<Object>> details = Optional.ofNullable(redisTemplate.opsForZSet().reverseRangeWithScores(detailKey, START, END)).orElse(new HashSet<>());
         details.forEach(temp -> {
             UserVisitDataDTO.Detail deail = new UserVisitDataDTO.Detail();
             deail.setDate(String.valueOf(temp.getValue()));
@@ -434,10 +435,17 @@ public class RedisStatisticServiceImpl implements IStatisticService {
     }
 
     private void buildRedisConfigVisitDetail(RedisConfigVisitDataDTO dto, String detailKey) {
-        Set<ZSetOperations.TypedTuple<Object>> details = redisTemplate.opsForZSet().reverseRangeWithScores(detailKey, 0, 50);
+        Set<ZSetOperations.TypedTuple<Object>> details = Optional.ofNullable(redisTemplate.opsForZSet().reverseRangeWithScores(detailKey, START, END)).orElse(new HashSet<>());
+        Set<String> redisConfigIds = new HashSet<>();
         details.forEach(temp -> {
-            String id = String.valueOf(temp.getValue());
-            RedisConfigPO configPO = redisConfigService.query(id);
+            redisConfigIds.add(String.valueOf(temp.getValue()));
+        });
+        List<RedisConfigPO> configList = redisConfigService.queryList(redisConfigIds);
+        //List转成Map，key: RedisConfigPO.id
+        ImmutableMap<String, RedisConfigPO> map = Maps.uniqueIndex(configList, (redisConfigPO) -> redisConfigPO.getId());
+        details.forEach(temp -> {
+            String redisConfigId = String.valueOf(temp.getValue());
+            RedisConfigPO configPO = map.get(redisConfigId);
             if (null == configPO) {
                 return;
             }

@@ -26,6 +26,15 @@
     from t_redis_config
     where id = #{id,jdbcType=VARCHAR}
   </select>
+  <select id="selectByIds" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_redis_config
+    where id in
+    <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+      #{id,jdbcType=VARCHAR}
+    </foreach>
+  </select>
   <select id="selectPage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
