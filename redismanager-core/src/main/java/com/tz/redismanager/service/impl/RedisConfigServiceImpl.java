@@ -108,6 +108,14 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         return result;
     }
 
+    @Override
+    public List<RedisConfigPO> queryList(Set<String> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return new ArrayList<>();
+        }
+        return redisConfigPOMapper.selectByIds(ids);
+    }
+
     @Cacheable(name = "redis连接配置分析页缓存", key = ConstInterface.CacheKey.ANALYSIS_REDIS_CONFIG, l1Cache = @L1Cache(expireDuration = 60, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 120, expireUnit = TimeUnit.SECONDS))
     @Override
     public List<RedisConfigAnalysisDTO> queryRedisConfigAnalysis() {

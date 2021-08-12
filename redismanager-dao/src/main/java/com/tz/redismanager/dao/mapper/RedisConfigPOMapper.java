@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * redis连接配置Mapper
@@ -23,6 +24,8 @@ public interface RedisConfigPOMapper {
     int insertSelective(RedisConfigPO record);
 
     RedisConfigPO selectByPrimaryKey(String id);
+
+    List<RedisConfigPO> selectByIds(@Param("ids")Set<String> ids);
 
     List<RedisConfigPO> selectPage(@Param("searchKey") String searchKey, @Param("isPublic") Integer isPublic,
                                     @Param("userName") String userName, @Param("isSuperAdmin") Integer isSuperAdmin,
