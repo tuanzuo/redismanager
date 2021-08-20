@@ -24,11 +24,12 @@ public interface RolePOMapper {
 
     RolePO selectByPrimaryKey(Integer id);
 
-    List<RolePO> getAll(@Param("status") Integer status);
+    List<RolePO> getAll(@Param("status") Integer status, @Param("ifDel") Integer ifDel);
 
-    List<RolePO> selectPage(@Param("name") String name, @Param("code") String code, @Param("status") Integer status, @Param("offset") Integer offset, @Param("rows") Integer rows);
+    List<RolePO> selectPage(@Param("name") String name, @Param("code") String code, @Param("status") Integer status,
+                            @Param("offset") Integer offset, @Param("rows") Integer rows, @Param("ifDel") Integer ifDel);
 
-    List<RoleAnalysisDTO> selectToAnalysis();
+    List<RoleAnalysisDTO> selectToAnalysis(@Param("ifDel") Integer ifDel);
 
     int countRole(RolePO record);
 

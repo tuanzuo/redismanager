@@ -62,14 +62,15 @@ public class AuthServiceImpl implements IAuthService {
         }
 
         String encodePwd = cipherService.encodeUserInfoByMd5(vo.getName(), vo.getPwd());
-        UserPO userPO = userPOMapper.selectByNamePwd(vo.getName(), encodePwd);
+        UserPO userPO = userPOMapper.selectByNamePwd(vo.getName(), encodePwd, ConstInterface.IF_DEL.NO);
         if (null == userPO) {
             return new ApiResult<>(ResultCode.LOGIN_FAIL);
         }
         if (ConstInterface.USER_STATUS.DISABLE.equals(userPO.getStatus())) {
             return new ApiResult<>(ResultCode.USER_DISABLE);
         }
-        List<RoleDTO> roles = userRoleRelationPOMapper.selectByUserRole(userPO.getId(), null, ConstInterface.ROLE_STATUS.ENABLE);
+        List<RoleDTO> roles = userRoleRelationPOMapper.selectByUserRole(userPO.getId(), null,
+                ConstInterface.ROLE_STATUS.ENABLE, ConstInterface.IF_DEL.NO);
         AuthResp resp = this.buildLoginResp(roles);
         AuthContext context = this.buildAuthContext(userPO, resp);
         String tokenContext = JsonUtils.toJsonStr(context);

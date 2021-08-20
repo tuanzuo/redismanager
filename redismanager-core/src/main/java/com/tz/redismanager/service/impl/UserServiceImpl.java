@@ -80,7 +80,7 @@ public class UserServiceImpl implements IUserService {
         //构建注册对象
         UserPO userPO = this.buildRegisterUser(vo);
         //给用户设置角色
-        List<RolePO> roles = rolePOMapper.getAll(ConstInterface.ROLE_STATUS.ENABLE);
+        List<RolePO> roles = rolePOMapper.getAll(ConstInterface.ROLE_STATUS.ENABLE, ConstInterface.IF_DEL.NO);
         List<UserRoleRelationPO> userRoles = this.buildUserRoleRelations(vo, userPO, roles);
         transactionTemplate.execute((transactionStatus) -> {
             userPOMapper.insertSelective(userPO);
@@ -164,7 +164,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ApiResult<?> grantRole(UserVO vo, AuthContext authContext) {
-        List<UserRoleRelationPO> userRoles = userRoleRelationPOMapper.selectByUserRoleRelation(vo.getId());
+        List<UserRoleRelationPO> userRoles = userRoleRelationPOMapper.selectByUserRoleRelation(vo.getId(), ConstInterface.IF_DEL.NO);
         //key:roleId,value:id
         Map<Integer, Integer> userRoleMap = userRoles.stream().collect(Collectors.toMap(UserRoleRelationPO::getRoleId, UserRoleRelationPO::getId));
         List<Integer> userRoleIdsToOld = userRoles.stream().map(UserRoleRelationPO::getRoleId).collect(Collectors.toList());
@@ -193,14 +193,14 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ApiResult<?> queryList(UserPageParam param) {
-        Integer total = userPOMapper.countUser(param.getName(), param.getStatus());
+        Integer total = userPOMapper.countUser(param.getName(), param.getStatus(), ConstInterface.IF_DEL.NO);
         UserListResp resp = this.buildUserListResp(param, total);
         if (total <= 0) {
             return new ApiResult<>(ResultCode.SUCCESS, resp);
         }
-        List<UserPO> list = userPOMapper.selectPage(param.getName(), param.getStatus(), param.getOffset(), param.getRows());
+        List<UserPO> list = userPOMapper.selectPage(param.getName(), param.getStatus(), param.getOffset(), param.getRows(), ConstInterface.IF_DEL.NO);
         this.addUserResp(resp.getList(), list);
-        List<RolePO> roles = rolePOMapper.getAll(null);
+        List<RolePO> roles = rolePOMapper.getAll(null, ConstInterface.IF_DEL.NO);
         this.setRoles(resp, roles);
         return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
@@ -208,7 +208,7 @@ public class UserServiceImpl implements IUserService {
     @Cacheable(name = "用户分析页缓存", key = ConstInterface.CacheKey.ANALYSIS_USER, l1Cache = @L1Cache(expireDuration = 60, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 120, expireUnit = TimeUnit.SECONDS))
     @Override
     public List<UserAnalysisDTO> queryUserAnalysis() {
-        return userPOMapper.selectToAnalysis();
+        return userPOMapper.selectToAnalysis(ConstInterface.IF_DEL.NO);
     }
 
     private void setRoles(UserListResp resp, List<RolePO> roles) {
@@ -305,7 +305,7 @@ public class UserServiceImpl implements IUserService {
     private void addUserResp(List<UserResp> userResps, List<UserPO> list) {
         list = Optional.ofNullable(list).orElse(new ArrayList<>());
         Set<Integer> userIds = list.stream().map(temp -> temp.getId()).collect(Collectors.toSet());
-        List<RoleDTO> userRoles = userRoleRelationPOMapper.selectByUserRole(null, userIds, null);
+        List<RoleDTO> userRoles = userRoleRelationPOMapper.selectByUserRole(null, userIds, null, ConstInterface.IF_DEL.NO);
         Map<Integer, List<RoleDTO>> userRoleMap = userRoles.stream().collect(Collectors.groupingBy(RoleDTO::getUserId));
         list.forEach(user -> {
             user.setPwd(null);
