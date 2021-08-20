@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -27,11 +28,9 @@ public interface RedisConfigPOMapper {
 
     List<RedisConfigPO> selectByIds(@Param("ids")Set<String> ids);
 
-    List<RedisConfigPO> selectPage(@Param("searchKey") String searchKey, @Param("isPublic") Integer isPublic,
-                                    @Param("userName") String userName, @Param("isSuperAdmin") Integer isSuperAdmin,
-                                    @Param("offset") Integer offset, @Param("rows") Integer rows);
+    List<RedisConfigPO> selectPage(Map<String, Object> params);
 
-    List<RedisConfigAnalysisDTO> selectToAnalysis();
+    List<RedisConfigAnalysisDTO> selectToAnalysis(@Param("ifDel") Integer ifDel);
 
     int updateByPrimaryKeySelective(RedisConfigPO record);
 

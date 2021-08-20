@@ -32,14 +32,14 @@
     select
     <include refid="Base_Column_List" />
     from t_user
-    where name = #{name,jdbcType=VARCHAR} and pwd = #{pwd,jdbcType=VARCHAR} and if_del = 0
+    where name = #{name,jdbcType=VARCHAR} and pwd = #{pwd,jdbcType=VARCHAR} and if_del = #{ifDel,jdbcType=INTEGER}
     limit 1
   </select>
   <select id="selectPage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_user
-    where if_del = 0
+    where if_del = #{ifDel,jdbcType=INTEGER}
     <if test="name != null">
       AND LOCATE(#{name,jdbcType=VARCHAR},name) > 0
     </if>
@@ -51,14 +51,14 @@
   </select>
   <select id="selectToAnalysis" resultType="com.tz.redismanager.dao.domain.dto.UserAnalysisDTO">
     SELECT COUNT(id) AS userCount,create_time AS createTime FROM t_user
-    WHERE if_del = 0
+    WHERE if_del = #{ifDel,jdbcType=INTEGER}
     GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
   </select>
   <select id="countUser" resultType="java.lang.Integer">
     select
-    count(*)
+    count(id)
     from t_user
-    where if_del = 0
+    where if_del = #{ifDel,jdbcType=INTEGER}
     <if test="name != null">
       AND LOCATE(#{name,jdbcType=VARCHAR},name) > 0
     </if>

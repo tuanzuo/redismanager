@@ -30,9 +30,10 @@ public interface UserRoleRelationPOMapper {
 
     UserRoleRelationPO selectByPrimaryKey(Integer id);
 
-    List<RoleDTO> selectByUserRole(@Param("userId") Integer userId, @Param("userIds") Set<Integer> userIds, @Param("roleStatus") Integer roleStatus);
+    List<RoleDTO> selectByUserRole(@Param("userId") Integer userId, @Param("userIds") Set<Integer> userIds,
+                                   @Param("roleStatus") Integer roleStatus, @Param("ifDel") Integer ifDel);
 
-    List<UserRoleRelationPO> selectByUserRoleRelation(@Param("userId") Integer userId);
+    List<UserRoleRelationPO> selectByUserRoleRelation(@Param("userId") Integer userId, @Param("ifDel") Integer ifDel);
 
     int updateByPrimaryKeySelective(UserRoleRelationPO record);
 

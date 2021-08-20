@@ -16,7 +16,9 @@ CREATE TABLE `t_redis_config` (
   `updater` varchar(32) collate utf8_bin default NULL COMMENT '修改人',
   `update_time` datetime default NULL COMMENT '修改时间',
   `if_del` tinyint(2) NOT NULL default '0' COMMENT '是否删除[1=是,0=否]',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `idx_name` (`name`(50)),
+  KEY `idx_address` (`address`(50))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='redis连接配置表';
 
 CREATE TABLE `t_redis_config_ext` (
@@ -48,7 +50,7 @@ CREATE TABLE `t_role` (
   `update_time` datetime default NULL COMMENT '修改时间',
   `if_del` tinyint(2) NOT NULL default '0' COMMENT '是否删除[1=是,0=否]',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `unique_code` (`code`)
+  UNIQUE KEY `uidx_code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='角色表';
 
 insert  into `t_role`(`id`,`name`,`code`,`status`,`note`,`creater`,`create_time`,`updater`,`update_time`,`if_del`)
@@ -71,7 +73,7 @@ CREATE TABLE `t_user` (
   `update_time` datetime default NULL COMMENT '修改时间',
   `if_del` tinyint(2) NOT NULL default '0' COMMENT '是否删除[1=是,0=否]',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `unique_name` (`name`)
+  UNIQUE KEY `uidx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户表';
 
 insert  into `t_user`(`id`,`name`,`pwd`,`status`,`note`,`creater`,`create_time`,`updater`,`update_time`,`if_del`) values (1,'superadmin','7e7e3165a2ab371ad00102bbf440d9c3',1,'有人梦我与前尘','superadmin','2020-10-07 12:17:07','superadmin','2020-10-07 12:17:07',0),(2,'admin','1c7b1e2c168f93cf17b4fe288f2b5fb7',1,'有人与我立黄昏','admin','2020-10-07 12:19:08','admin','2020-10-07 12:19:08',0),(3,'develop','53da58e3c24e14e4abb1a59ef8e9efaf',1,'有人与我把酒分','develop','2020-10-07 12:19:51','develop','2020-10-07 12:19:51',0),(4,'test','4204ae17473c367b30419ecc63410ea4',1,'有人与我立黄昏','test','2020-10-07 12:20:06','test','2020-10-07 12:20:06',0);
@@ -86,7 +88,7 @@ CREATE TABLE `t_user_role_relation` (
   `update_time` datetime default NULL COMMENT '修改时间',
   `if_del` tinyint(2) NOT NULL default '0' COMMENT '是否删除[1=是,0=否]',
   PRIMARY KEY  (`id`),
-  KEY `index_user_id` (`user_id`)
+  KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户角色关系表';
 
 insert  into `t_user_role_relation`(`id`,`user_id`,`role_id`,`creater`,`create_time`,`updater`,`update_time`,`if_del`) values (1,1,1,'superadmin','2020-10-07 12:17:08','superadmin','2020-10-07 12:17:08',0),(2,1,2,'superadmin','2020-10-07 12:17:08','superadmin','2020-10-07 12:17:08',0),(3,1,3,'superadmin','2020-10-07 12:17:08','superadmin','2020-10-07 12:17:08',0),(4,1,4,'superadmin','2020-10-07 12:17:08','superadmin','2020-10-07 12:17:08',0),(5,2,2,'admin','2020-10-07 12:19:08','admin','2020-10-07 12:19:08',0),(6,2,3,'admin','2020-10-07 12:19:08','admin','2020-10-07 12:19:08',0),(7,2,4,'admin','2020-10-07 12:19:08','admin','2020-10-07 12:19:08',0),(8,3,2,'develop','2020-10-07 12:19:51','develop','2020-10-07 12:19:51',0),(9,3,3,'develop','2020-10-07 12:19:51','develop','2020-10-07 12:19:51',0),(10,3,4,'develop','2020-10-07 12:19:51','develop','2020-10-07 12:19:51',0),(11,4,2,'test','2020-10-07 12:20:06','test','2020-10-07 12:20:06',0),(12,4,3,'test','2020-10-07 12:20:06','test','2020-10-07 12:20:06',0),(13,4,4,'test','2020-10-07 12:20:06','test','2020-10-07 12:20:06',0);
@@ -106,8 +108,8 @@ CREATE TABLE `t_config` (
   `update_time` datetime DEFAULT NULL COMMENT '修改时间',
   `if_del` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否删除[1=是,0=否]',
   PRIMARY KEY (`id`),
-  KEY `index_service_name` (`service_name`),
-  KEY `index_key` (`config_key`)
+  KEY `idx_service_name` (`service_name`),
+  KEY `idx_key` (`config_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='配置表';
 
 INSERT INTO `t_config` (`service_name`, `config_type`, `config_key`, `key_name`, `content`, `version`, `note`, `creater`, `create_time`, `updater`, `update_time`, `if_del`) VALUES ('redismanagerweb', 10, 'rm:analysis:rds:conf', 'redis连接配置分析页缓存', '{\"asyncRefresh\":false,\"key\":\"rm:analysis:rds:conf\",\"l1Cache\":{\"enable\":false,\"expireDuration\":2,\"expireStrategy\":\"EXPIRE_AFTER_ACCESS\",\"expireUnit\":\"HOURS\",\"initialCapacity\":100,\"maximumSize\":1000,\"recordStats\":true},\"l2Cache\":{\"enable\":false,\"expireDuration\":10,\"expireUnit\":\"MINUTES\"},\"name\":\"redis连接配置分析页缓存\"}', 10, NULL, 'sys', '2021-04-22 23:01:37', 'superadmin', '2021-08-07 23:05:43', 0);

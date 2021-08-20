@@ -73,7 +73,8 @@ public class RoleServiceImpl implements IRoleService {
         if (total <= 0) {
             return new ApiResult<>(ResultCode.SUCCESS, resp);
         }
-        List<RolePO> list = rolePOMapper.selectPage(param.getName(), param.getCode(), param.getStatus(), param.getOffset(), param.getRows());
+        List<RolePO> list = rolePOMapper.selectPage(param.getName(), param.getCode(), param.getStatus(),
+                param.getOffset(), param.getRows(), ConstInterface.IF_DEL.NO);
         this.addRoleResp(resp.getList(), list);
         return new ApiResult<>(ResultCode.SUCCESS, resp);
     }
@@ -81,7 +82,7 @@ public class RoleServiceImpl implements IRoleService {
     @Cacheable(name = "角色分析页缓存", key = ConstInterface.CacheKey.ANALYSIS_ROLE, l1Cache = @L1Cache(expireDuration = 60, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 120, expireUnit = TimeUnit.SECONDS))
     @Override
     public List<RoleAnalysisDTO> queryRoleAnalysis() {
-        return rolePOMapper.selectToAnalysis();
+        return rolePOMapper.selectToAnalysis(ConstInterface.IF_DEL.NO);
     }
 
     private RolePO buildAddRole(RoleVO vo, AuthContext authContext) {
