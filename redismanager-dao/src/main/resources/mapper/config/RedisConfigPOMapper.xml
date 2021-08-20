@@ -35,28 +35,28 @@
       #{id,jdbcType=VARCHAR}
     </foreach>
   </select>
-  <select id="selectPage" resultMap="BaseResultMap">
+  <select id="selectPage" parameterType="java.util.Map" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_redis_config
-    where if_del = 0
+    where if_del = #{ifDel,jdbcType=INTEGER}
     <if test="searchKey != null">
       <!--AND (name LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%') OR address LIKE CONCAT(#{searchKey,jdbcType=VARCHAR},'%'))-->
       AND (LOCATE(#{searchKey,jdbcType=VARCHAR},name) > 0 OR LOCATE(#{searchKey,jdbcType=VARCHAR},address) > 0)
     </if>
-    <if test="isSuperAdmin == 1">
+    <if test="isSuperAdmin == yesSuperAdmin">
       <if test="isPublic != null">
         AND is_public = #{isPublic,jdbcType=INTEGER}
       </if>
     </if>
-    <if test="isSuperAdmin == 0">
+    <if test="isSuperAdmin == noSuperAdmin">
       <if test="isPublic == null">
-        AND (is_public = 1 OR (is_public = 0 AND creater = #{userName,jdbcType=VARCHAR}))
+        AND (is_public = yesPublic OR creater = #{userName,jdbcType=VARCHAR})
       </if>
-      <if test="isPublic == 1">
+      <if test="isPublic == yesPublic">
         AND is_public = #{isPublic,jdbcType=INTEGER}
       </if>
-      <if test="isPublic == 0">
+      <if test="isPublic == noPublic">
         AND (is_public = #{isPublic,jdbcType=INTEGER} AND creater = #{userName,jdbcType=VARCHAR})
       </if>
     </if>
@@ -65,7 +65,7 @@
   </select>
   <select id="selectToAnalysis" resultType="com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO">
     SELECT COUNT(id) AS configCount,create_time AS createTime FROM t_redis_config
-    WHERE if_del = 0
+    WHERE if_del = #{ifDel,jdbcType=INTEGER}
     GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">

@@ -73,9 +73,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     @Override
     public List<RedisConfigDTO> searchList(RedisConfigPageParam param) {
         List<RedisConfigDTO> resultList = new ArrayList<>();
-        List<RedisConfigPO> list = redisConfigPOMapper.selectPage(param.getSearchKey(),
-                param.getIsPublic(), param.getUserName(), param.getIsSuperAdmin(),
-                param.getOffset(), param.getRows());
+        List<RedisConfigPO> list = redisConfigPOMapper.selectPage(this.buidPageParams(param));
         if (CollectionUtils.isEmpty(list)) {
             return resultList;
         }
@@ -119,7 +117,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     @Cacheable(name = "redis连接配置分析页缓存", key = ConstInterface.CacheKey.ANALYSIS_REDIS_CONFIG, l1Cache = @L1Cache(expireDuration = 60, expireUnit = TimeUnit.SECONDS), l2Cache = @L2Cache(expireDuration = 120, expireUnit = TimeUnit.SECONDS))
     @Override
     public List<RedisConfigAnalysisDTO> queryRedisConfigAnalysis() {
-        return redisConfigPOMapper.selectToAnalysis();
+        return redisConfigPOMapper.selectToAnalysis(ConstInterface.IF_DEL.NO);
     }
 
     @CacheEvict(name = "redis连接配置信息失效", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
@@ -227,6 +225,22 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
             logger.error("下载文件异常，filePath:{}", filePath, e);
         }
         return entity;
+    }
+
+    private Map<String, Object> buidPageParams(RedisConfigPageParam param) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("searchKey", param.getSearchKey());
+        params.put("isPublic", param.getIsPublic());
+        params.put("yesPublic", ConstInterface.IS_PUBLIC.YES);
+        params.put("noPublic", ConstInterface.IS_PUBLIC.NO);
+        params.put("userName", param.getUserName());
+        params.put("isSuperAdmin", param.getIsSuperAdmin());
+        params.put("yesSuperAdmin", ConstInterface.IS_SUPER_ADMIN.YES);
+        params.put("noSuperAdmin", ConstInterface.IS_SUPER_ADMIN.NO);
+        params.put("offset", param.getOffset());
+        params.put("rows", param.getRows());
+        params.put("ifDel", ConstInterface.IF_DEL.NO);
+        return params;
     }
 
     private List<RedisConfigExtPO> queryRedisConfigExts(List<RedisConfigPO> list) {
