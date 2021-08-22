@@ -24,6 +24,7 @@
         <module>redismanager-cacher</module>
         <module>redismanager-config</module>
         <module>redismanager-config-sdk</module>
+        <module>redismanager-uid-generator</module>
     </modules>
 
     <properties>

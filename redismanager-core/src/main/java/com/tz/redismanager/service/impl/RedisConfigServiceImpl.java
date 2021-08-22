@@ -1,5 +1,6 @@
 package com.tz.redismanager.service.impl;
 
+import com.baidu.fsg.uid.UidGenerator;
 import com.tz.redismanager.cacher.annotation.CacheEvict;
 import com.tz.redismanager.cacher.annotation.Cacheable;
 import com.tz.redismanager.cacher.annotation.L1Cache;
@@ -57,6 +58,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     @Value("${upload.file.path.prefix}")
     private String uploadPrefix;
 
+    @Autowired
+    private UidGenerator uidGenerator;
     @Autowired
     private EncryptConfig encryptConfig;
     @Autowired
@@ -261,7 +264,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
         this.encryptPassWord(po);
-        po.setId(UUIDUtils.generateId());
+        //po.setId(UUIDUtils.generateId());
+        po.setId(String.valueOf(uidGenerator.getUID()));
         po.setCreater(userName);
         po.setCreateTime(new Date());
         po.setUpdater(userName);
