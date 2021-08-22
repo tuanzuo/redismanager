@@ -31,7 +31,7 @@
 
 2、redis连接配置中自定义序列化代码时支持上传和下载jar包以及运行时加载jar包
 
-3、集成百度的uid-generator
+3、集成百度的[uid-generator](https://github.com/baidu/uid-generator/)
 
 #### v1.6.1
 
