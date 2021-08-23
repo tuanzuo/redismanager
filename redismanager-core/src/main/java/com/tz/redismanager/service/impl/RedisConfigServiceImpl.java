@@ -131,7 +131,6 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
 
     }
 
-    @Cacheable(name = "redis连接配置信息缓存", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#vo.id")
     @Override
     public RedisConfigPO add(RedisConfigVO vo, AuthContext authContext) {
         RedisConfigPO po = this.buildAddRedisConfigPO(vo, authContext);
