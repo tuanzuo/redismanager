@@ -5,6 +5,7 @@ import java.util.UUID;
 /**
  * UUID工具类
  *
+ * @author tuanzuo
  * @Since:2019-08-23 22:54:55
  * @Version:1.1.0
  */

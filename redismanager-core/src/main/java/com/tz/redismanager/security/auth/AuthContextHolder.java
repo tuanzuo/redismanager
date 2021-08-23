@@ -6,6 +6,7 @@ import com.tz.redismanager.security.domain.AuthContext;
 /**
  * <p>安全认证上下文Hodler</p>
  *
+ * @author tuanzuo
  * @version 1.3.0
  * @time 2020-08-30 19:17
  **/

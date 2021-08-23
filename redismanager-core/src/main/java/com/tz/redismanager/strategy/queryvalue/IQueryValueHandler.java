@@ -6,6 +6,7 @@ import com.tz.redismanager.strategy.IHandler;
 /**
  * 查询redis key对应value的接口
  *
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-06-23 21:22
  **/

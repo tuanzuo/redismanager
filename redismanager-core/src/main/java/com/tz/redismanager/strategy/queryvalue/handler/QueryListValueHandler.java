@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 /**
  * 查询list的value处理器
  *
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-06-23 21:33
  **/

@@ -10,6 +10,7 @@ import javax.validation.constraints.NotEmpty;
 /**
  * redis key添加VO
  *
+ * @author tuanzuo
  * @Since:2020-08-17 21:25:45
  * @Version:1.2.0
  */

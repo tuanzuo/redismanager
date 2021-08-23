@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * @time 2020-10-12 22:53
  **/
 @Service
-public class RedisTemplateExtService implements IRedisTemplateExtService {
+public class RedisTemplateExtServiceImpl implements IRedisTemplateExtService {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;

@@ -49,6 +49,8 @@ import java.util.stream.Collectors;
 
 /**
  * redis连接配置服务
+ *
+ * @author tuanzuo
  */
 @Service
 public class RedisConfigServiceImpl implements IRedisConfigService {

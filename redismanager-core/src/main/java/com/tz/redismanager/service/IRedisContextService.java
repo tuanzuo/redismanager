@@ -8,6 +8,8 @@ import java.util.Map;
 
 /**
  * redis上下文服务接口
+ *
+ * @author tuanzuo
  */
 public interface IRedisContextService {
 

@@ -8,6 +8,7 @@ import lombok.Setter;
 /**
  * <p>分析数据参数</p>
  *
+ * @author tuanzuo
  * @version 1.5.0
  * @time 2020-10-17 23:06
  **/

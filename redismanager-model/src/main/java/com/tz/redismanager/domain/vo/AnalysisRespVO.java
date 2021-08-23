@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * <p>分析数据返回vo</p>
  *
+ * @author tuanzuo
  * @version 1.5.0
  * @time 2020-10-17 15:42
  **/

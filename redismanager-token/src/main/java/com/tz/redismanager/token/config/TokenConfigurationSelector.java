@@ -22,6 +22,7 @@ import java.util.Map;
 /**
  * <p>Token ConfigurationSelector</p>
  *
+ * @author tuanzuo
  * @version 1.5.0
  * @time 2020-11-05 23:55
  * @see org.springframework.context.annotation.MBeanExportConfiguration

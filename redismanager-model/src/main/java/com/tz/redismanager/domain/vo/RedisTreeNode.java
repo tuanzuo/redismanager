@@ -12,6 +12,7 @@ import java.util.Objects;
 /**
  * Redis key的Tree节点
  *
+ * @author tuanzuo
  * @Since:2019-08-23 22:35:02
  * @Version:1.1.0
  */
@@ -185,8 +186,12 @@ public class RedisTreeNode {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         RedisTreeNode node = (RedisTreeNode) o;
         return Objects.equals(key, node.key);
     }

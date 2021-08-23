@@ -45,7 +45,7 @@ public class DisposableWorkerIdAssigner implements WorkerIdAssigner {
      * 
      * @return assigned worker id
      */
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     @Override
     public long assignWorkerId() {
         // build worker node entity

@@ -9,6 +9,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 /**
  * 公共工具类
  *
+ * @author tuanzuo
  * @Since:2019-08-23 22:52:15
  * @Version:1.1.0
  */

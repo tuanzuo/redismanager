@@ -5,6 +5,7 @@ import com.tz.redismanager.enm.ResultCode;
 /**
  * RedisManager异常
  *
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-07-02 20:16
  **/

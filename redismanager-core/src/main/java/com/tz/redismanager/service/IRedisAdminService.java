@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * redis数据管理
+ *
+ * @author tuanzuo
  */
 public interface IRedisAdminService {
 
