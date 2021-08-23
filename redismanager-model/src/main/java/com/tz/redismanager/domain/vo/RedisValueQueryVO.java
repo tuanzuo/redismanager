@@ -7,6 +7,8 @@ import javax.validation.constraints.NotEmpty;
 
 /**
  * redis key查询value的VO
+ *
+ * @author tuanzuo
  * @Since:2019-08-23 22:35:31
  * @Version:1.1.0
  */
@@ -32,16 +34,6 @@ public class RedisValueQueryVO {
      * 每页大小
      */
     private Integer pageSize = DEFAULT_PAGE_SIZE;
-
-    /**
-     * 开始位置
-     */
-    private long start;
-
-    /**
-     * 结束位置
-     */
-    private long end;
 
     public String getId() {
         return id;

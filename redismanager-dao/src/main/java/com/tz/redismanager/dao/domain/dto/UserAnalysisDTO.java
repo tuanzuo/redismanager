@@ -9,6 +9,7 @@ import java.util.Date;
 /**
  * <p>用户统计数据DTO</p>
  *
+ * @author tuanzuo
  * @version 1.5.0
  * @time 2020-10-17 16:07
  **/

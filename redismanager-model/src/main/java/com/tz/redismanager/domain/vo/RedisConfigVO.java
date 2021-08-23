@@ -16,6 +16,7 @@ import java.util.List;
 /**
  * redis连接配置VO
  *
+ * @author tuanzuo
  * @Since:2019-08-23 22:32:31
  * @Version:1.1.0
  */

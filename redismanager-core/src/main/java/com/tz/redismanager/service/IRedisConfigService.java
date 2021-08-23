@@ -15,6 +15,8 @@ import java.util.Set;
 
 /**
  * redis连接配置接口
+ *
+ * @author tuanzuo
  */
 public interface IRedisConfigService {
 

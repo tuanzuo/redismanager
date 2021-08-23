@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 加密配置
  *
+ * @author tuanzuo
  * @Since:2019-08-23 22:24:16
  * @Version:1.1.0
  */

@@ -3,6 +3,7 @@ package com.tz.redismanager.domain;
 /**
  * person对象
  *
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-01-30 23:27
  **/

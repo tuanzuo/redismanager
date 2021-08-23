@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 /**
  * 抽象的查询redis key的value处理器
  *
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-06-23 21:40
  **/

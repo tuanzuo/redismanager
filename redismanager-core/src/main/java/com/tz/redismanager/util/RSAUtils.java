@@ -16,6 +16,8 @@ import java.security.spec.X509EncodedKeySpec;
  * RSA加解密工具类
  * RSA非对称加密和解密，当使用keySize=2048生成的秘钥进行解密的时候会报错，
  * 但是使用keySize=1024生成的秘钥进行解密的时候则不会报错
+ *
+ * @author tuanzuo
  */
 public class RSAUtils {
 

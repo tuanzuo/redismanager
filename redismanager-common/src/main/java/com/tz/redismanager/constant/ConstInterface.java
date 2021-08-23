@@ -3,6 +3,7 @@ package com.tz.redismanager.constant;
 /**
  * 常量接口
  *
+ * @author tuanzuo
  * @Since:2019-08-23 22:27:52
  * @Version:1.1.0
  */
@@ -101,7 +102,11 @@ public interface ConstInterface {
     interface Common {
         String ROOT_NODE_TITLE = "ROOT";
         String ROOT_NODE_KEY = "ROOT";
+        /**
+         * 永不过期
+         */
         int NO_EXPIRE = -1;
+        int ZERO = 0;
     }
 
     /**

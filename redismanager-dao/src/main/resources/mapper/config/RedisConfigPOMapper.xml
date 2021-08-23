@@ -51,7 +51,7 @@
     </if>
     <if test="isSuperAdmin == noSuperAdmin">
       <if test="isPublic == null">
-        AND (is_public = yesPublic OR creater = #{userName,jdbcType=VARCHAR})
+        AND (is_public = #{yesPublic,jdbcType=INTEGER} OR creater = #{userName,jdbcType=VARCHAR})
       </if>
       <if test="isPublic == yesPublic">
         AND is_public = #{isPublic,jdbcType=INTEGER}
@@ -60,7 +60,7 @@
         AND (is_public = #{isPublic,jdbcType=INTEGER} AND creater = #{userName,jdbcType=VARCHAR})
       </if>
     </if>
-    ORDER BY create_time DESC
+    ORDER BY id DESC
     LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
   </select>
   <select id="selectToAnalysis" resultType="com.tz.redismanager.dao.domain.dto.RedisConfigAnalysisDTO">

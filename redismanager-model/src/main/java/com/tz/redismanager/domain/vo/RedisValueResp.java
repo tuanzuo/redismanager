@@ -6,6 +6,7 @@ import lombok.Setter;
 /**
  * redis key对应value的返回数据
  *
+ * @author tuanzuo
  * @Since:2019-08-23 22:38:20
  * @Version:1.1.0
  */

@@ -13,6 +13,8 @@ import java.io.IOException;
 /**
  * 解决HttpServletRequest inputStream只能读取一次的问题: ContentCachingRequestWrapper
  * https://juejin.im/post/5cb06eba5188251af07a512a
+ *
+ * @author tuanzuo
  */
 @Component
 public class RequestWrapperFilter extends OncePerRequestFilter {

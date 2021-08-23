@@ -3,6 +3,7 @@ package com.tz.redismanager.enm;
 /**
  * 处理策略类型枚举
  *
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-06-30 17:31
  **/

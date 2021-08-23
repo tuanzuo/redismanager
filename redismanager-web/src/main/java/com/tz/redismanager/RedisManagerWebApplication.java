@@ -10,6 +10,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
+/**
+ * <p>web启动类</p>
+ *
+ * @author tuanzuo
+ * @version 1.0.0
+ * @time 2019-05-31 0:14
+ **/
 @SpringBootApplication(scanBasePackages = {"com.tz", "com.baidu.fsg.uid"})
 @MapperScan({"com.tz.redismanager.dao.mapper", "com.baidu.fsg.uid.worker.dao"})
 @PropertySource("${rm.config}")

@@ -23,6 +23,7 @@ import java.util.Arrays;
 /**
  * RedisContext工具类
  *
+ * @author tuanzuo
  * @Since:2019-08-23 22:52:57
  * @Version:1.1.0
  */
@@ -64,7 +65,9 @@ public class RedisContextUtils {
                 logger.error("[RedisContextUtils] [initRedisTemplate] {不能初始化redisTemplate,address格式错误,type:{},address:{}}", type, address);
                 return null;
             }
-        } else if (ConstInterface.TYPE.CLUSTER.equals(type)) {//集群
+        }
+        //集群
+        else if (ConstInterface.TYPE.CLUSTER.equals(type)) {
             logger.info("[RedisContextUtils] [initRedisTemplate] {初始化集群redisTemplate}");
             RedisProperties.Cluster cluster = new RedisProperties.Cluster();
             String nodes = address;

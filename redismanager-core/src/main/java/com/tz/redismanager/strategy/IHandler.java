@@ -3,6 +3,7 @@ package com.tz.redismanager.strategy;
 /**
  * 处理器接口
  *
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-06-23 21:17
  **/

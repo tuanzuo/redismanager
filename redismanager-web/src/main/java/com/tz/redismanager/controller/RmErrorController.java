@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * Error页面配置
  *
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-07-02 20:50
  **/

@@ -7,6 +7,7 @@ import lombok.Setter;
 /**
  * 接口返回对象
  *
+ * @author tuanzuo
  * @version 1.0
  * @time 2019-07-29 19:51
  **/

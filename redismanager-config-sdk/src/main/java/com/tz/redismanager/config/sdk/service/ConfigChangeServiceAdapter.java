@@ -9,7 +9,7 @@ import com.tz.redismanager.config.sdk.domain.dto.ConfigContext;
  * @version 1.7.0
  * @time 2021-08-07 19:16
  **/
-public abstract class ConfigChangeServiceAdapter extends AbstractConfigChangeService {
+public class ConfigChangeServiceAdapter extends AbstractConfigChangeService {
 
     @Override
     public void doCacherEnableChange(ConfigContext context) {

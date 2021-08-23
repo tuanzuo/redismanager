@@ -9,6 +9,7 @@ import org.springframework.data.redis.serializer.SerializationException;
 /**
  * redis序列化
  *
+ * @author tuanzuo
  * @Since:2019-08-23 22:25:47
  * @Version:1.1.0
  */

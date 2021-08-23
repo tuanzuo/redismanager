@@ -21,24 +21,24 @@ import java.lang.reflect.Method;
 @Service
 public class RedissonAutoConfigurationCustomizerImpl implements RedissonAutoConfigurationCustomizer {
 
-    private static final String getSentinelServersConfig = "getSentinelServersConfig";
-    private static final String getClusterServersConfig = "getClusterServersConfig";
-    private static final String getSingleServerConfig = "getSingleServerConfig";
+    private static final String GET_SENTINEL_SERVERS_CONFIG = "getSentinelServersConfig";
+    private static final String GET_CLUSTER_SERVERS_CONFIG = "getClusterServersConfig";
+    private static final String GET_SINGLE_SERVER_CONFIG = "getSingleServerConfig";
 
     @Override
     public void customize(Config configuration) {
         //当密码为空字符串时设置为null，否则启动会报错
-        SentinelServersConfig sentinelServersConfig = (SentinelServersConfig) this.getServersConfig(getSentinelServersConfig, configuration);
+        SentinelServersConfig sentinelServersConfig = (SentinelServersConfig) this.getServersConfig(GET_SENTINEL_SERVERS_CONFIG, configuration);
         if (null != sentinelServersConfig) {
             String pwd = sentinelServersConfig.getPassword();
             sentinelServersConfig.setPassword(StringUtils.isBlank(pwd) ? null : pwd);
         }
-        ClusterServersConfig clusterServersConfig = (ClusterServersConfig) this.getServersConfig(getClusterServersConfig, configuration);
+        ClusterServersConfig clusterServersConfig = (ClusterServersConfig) this.getServersConfig(GET_CLUSTER_SERVERS_CONFIG, configuration);
         if (null != clusterServersConfig) {
             String pwd = clusterServersConfig.getPassword();
             clusterServersConfig.setPassword(StringUtils.isBlank(pwd) ? null : pwd);
         }
-        SingleServerConfig singleServerConfig = (SingleServerConfig) this.getServersConfig(getSingleServerConfig, configuration);
+        SingleServerConfig singleServerConfig = (SingleServerConfig) this.getServersConfig(GET_SINGLE_SERVER_CONFIG, configuration);
         if (null != singleServerConfig) {
             String pwd = singleServerConfig.getPassword();
             singleServerConfig.setPassword(StringUtils.isBlank(pwd) ? null : pwd);
