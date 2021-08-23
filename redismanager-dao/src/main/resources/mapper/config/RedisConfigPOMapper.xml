@@ -51,7 +51,7 @@
     </if>
     <if test="isSuperAdmin == noSuperAdmin">
       <if test="isPublic == null">
-        AND (is_public = yesPublic OR creater = #{userName,jdbcType=VARCHAR})
+        AND (is_public = #{yesPublic,jdbcType=INTEGER} OR creater = #{userName,jdbcType=VARCHAR})
       </if>
       <if test="isPublic == yesPublic">
         AND is_public = #{isPublic,jdbcType=INTEGER}
