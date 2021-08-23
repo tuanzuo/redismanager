@@ -25,7 +25,6 @@ import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.RSAUtils;
 import com.tz.redismanager.util.RsaException;
-import com.tz.redismanager.util.UUIDUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -131,7 +130,6 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
 
     }
 
-    @Cacheable(name = "redis连接配置信息缓存", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#vo.id")
     @Override
     public RedisConfigPO add(RedisConfigVO vo, AuthContext authContext) {
         RedisConfigPO po = this.buildAddRedisConfigPO(vo, authContext);
@@ -190,7 +188,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         if (!fileName.endsWith(sufFile)) {
             return new ApiResult<>(ResultCode.FILE_UPLOAD_ERROR.getCode(), "上传失败，请上传" + sufFile + "文件");
         }
-        String relativePath = StringUtils.join(ConstInterface.Symbol.SLASH, UUIDUtils.generateId(), ConstInterface.Symbol.SLASH, fileName);
+        String relativePath = StringUtils.join(ConstInterface.Symbol.SLASH, uidGenerator.getUID(), ConstInterface.Symbol.SLASH, fileName);
         String filePath = StringUtils.join(uploadPrefix.endsWith(ConstInterface.Symbol.SLASH) ? uploadPrefix.substring(0, uploadPrefix.length()) : uploadPrefix, relativePath);
         File targetFile = new File(filePath);
         try {
