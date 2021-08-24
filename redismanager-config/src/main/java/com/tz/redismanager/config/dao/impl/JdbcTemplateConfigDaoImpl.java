@@ -27,6 +27,20 @@ import java.util.List;
  **/
 public class JdbcTemplateConfigDaoImpl implements IConfigDao {
 
+    private static final String FIELD_ID            = "id";
+    private static final String FIELD_SERVICE_NAME  = "service_name";
+    private static final String FIELD_CONFIG_TYPE   = "config_type";
+    private static final String FIELD_CONFIG_KEY    = "config_key";
+    private static final String FIELD_KEY_NAME      = "key_name";
+    private static final String FIELD_CONTENT       = "content";
+    private static final String FIELD_VERSION       = "version";
+    private static final String FIELD_NOTE          = "note";
+    private static final String FIELD_CREATER       = "creater";
+    private static final String FIELD_CREATE_TIME   = "create_time";
+    private static final String FIELD_UPDATER       = "updater";
+    private static final String FIELD_UPDATE_TIME   = "update_time";
+    private static final String FIELD_IF_DEL        = "if_del";
+
     private static final String TABLE_NAME = "${tableName}";
 
     private String deleteByPrimaryKey_sql =      "delete from ${tableName} where id = :id";
@@ -94,7 +108,7 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
     @Override
     public List<ConfigPO> selectListByParam(ConfigQueryParam param) {
         StringBuilder suf_sql = this.getQuerySql(param);
-        return namedParameterJdbcTemplate.query(selectByParam_pre_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), new ConfigPORowMapper());
+        return namedParameterJdbcTemplate.query(StringUtils.join(selectByParam_pre_sql, suf_sql.toString()), new BeanPropertySqlParameterSource(param), new ConfigPORowMapper());
     }
 
     @Override
@@ -108,21 +122,21 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
         param.setOffset((param.getCurrentPage() - 1) * param.getPageSize());
         param.setRows(param.getPageSize());
         StringBuilder suf_sql = this.getLikeSql(param);
-        suf_sql.append("ORDER BY create_time DESC ");
+        suf_sql.append("ORDER BY id DESC ");
         suf_sql.append("LIMIT :offset,:rows ");
-        return namedParameterJdbcTemplate.query(selectByParam_pre_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), new ConfigPORowMapper());
+        return namedParameterJdbcTemplate.query(StringUtils.join(selectByParam_pre_sql, suf_sql.toString()), new BeanPropertySqlParameterSource(param), new ConfigPORowMapper());
     }
 
     @Override
     public int count(ConfigQueryParam param) {
         StringBuilder suf_sql = this.getQuerySql(param);
-        return namedParameterJdbcTemplate.queryForObject(count_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), Integer.class);
+        return namedParameterJdbcTemplate.queryForObject(StringUtils.join(count_sql, suf_sql.toString()), new BeanPropertySqlParameterSource(param), Integer.class);
     }
 
     @Override
     public int countPage(ConfigPageParam param) {
         StringBuilder suf_sql = this.getLikeSql(param);
-        return namedParameterJdbcTemplate.queryForObject(count_sql + suf_sql.toString(), new BeanPropertySqlParameterSource(param), Integer.class);
+        return namedParameterJdbcTemplate.queryForObject(StringUtils.join(count_sql, suf_sql.toString()), new BeanPropertySqlParameterSource(param), Integer.class);
     }
 
     @Override
@@ -184,19 +198,19 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
         @Override
         public ConfigPO mapRow(ResultSet rs, int rowNum) throws SQLException {
             ConfigPO po = new ConfigPO();
-            po.setId(rs.getInt("id"));
-            po.setServiceName(rs.getString("service_name"));
-            po.setConfigType(rs.getInt("config_type"));
-            po.setConfigKey(rs.getString("config_key"));
-            po.setKeyName(rs.getString("key_name"));
-            po.setContent(rs.getString("content"));
-            po.setVersion(rs.getInt("version"));
-            po.setNote(rs.getString("note"));
-            po.setCreater(rs.getString("creater"));
-            po.setCreateTime(rs.getDate("create_time"));
-            po.setUpdater(rs.getString("updater"));
-            po.setUpdateTime(rs.getDate("update_time"));
-            po.setIfDel(rs.getInt("if_del"));
+            po.setId(rs.getInt(FIELD_ID));
+            po.setServiceName(rs.getString(FIELD_SERVICE_NAME));
+            po.setConfigType(rs.getInt(FIELD_CONFIG_TYPE));
+            po.setConfigKey(rs.getString(FIELD_CONFIG_KEY));
+            po.setKeyName(rs.getString(FIELD_KEY_NAME));
+            po.setContent(rs.getString(FIELD_CONTENT));
+            po.setVersion(rs.getInt(FIELD_VERSION));
+            po.setNote(rs.getString(FIELD_NOTE));
+            po.setCreater(rs.getString(FIELD_CREATER));
+            po.setCreateTime(rs.getDate(FIELD_CREATE_TIME));
+            po.setUpdater(rs.getString(FIELD_UPDATER));
+            po.setUpdateTime(rs.getDate(FIELD_UPDATE_TIME));
+            po.setIfDel(rs.getInt(FIELD_IF_DEL));
             return po;
         }
     }
