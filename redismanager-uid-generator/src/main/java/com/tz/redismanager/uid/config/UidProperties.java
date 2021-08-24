@@ -3,7 +3,6 @@ package com.tz.redismanager.uid.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>uid配置属性</p>
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
  * @time 2021-08-22 22:58
  **/
 @ConfigurationProperties(prefix = "rm.uid")
-@Configuration
 @Getter
 @Setter
 public class UidProperties {

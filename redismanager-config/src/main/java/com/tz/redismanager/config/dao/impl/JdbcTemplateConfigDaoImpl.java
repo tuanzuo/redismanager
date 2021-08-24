@@ -207,9 +207,9 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
             po.setVersion(rs.getInt(FIELD_VERSION));
             po.setNote(rs.getString(FIELD_NOTE));
             po.setCreater(rs.getString(FIELD_CREATER));
-            po.setCreateTime(rs.getDate(FIELD_CREATE_TIME));
+            po.setCreateTime(rs.getTimestamp(FIELD_CREATE_TIME));
             po.setUpdater(rs.getString(FIELD_UPDATER));
-            po.setUpdateTime(rs.getDate(FIELD_UPDATE_TIME));
+            po.setUpdateTime(rs.getTimestamp(FIELD_UPDATE_TIME));
             po.setIfDel(rs.getInt(FIELD_IF_DEL));
             return po;
         }
