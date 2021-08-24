@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Lazy;
  * @time 2021-08-22 22:57
  **/
 @Configuration
+@EnableConfigurationProperties({UidProperties.class})
 public class UidConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(UidConfig.class);
@@ -39,12 +41,7 @@ public class UidConfig {
     @ConditionalOnProperty(name = "rm.uid.generator.strategy", havingValue = "default", matchIfMissing = true)
     public UidGenerator defaultUidGenerator(DisposableWorkerIdAssigner assigner) {
         DefaultUidGenerator uidGenerator =  new DefaultUidGenerator();
-        uidGenerator.setWorkerIdAssigner(assigner);
-        /** Specified bits & epoch as your demand. No specified the default value will be used */
-        uidGenerator.setTimeBits(uidProperties.getTimeBits());
-        uidGenerator.setWorkerBits(uidProperties.getWorkerBits());
-        uidGenerator.setSeqBits(uidProperties.getSeqBits());
-        uidGenerator.setEpochStr(uidProperties.getEpochStr());
+        this.setUidGeneratorInfo(assigner, uidGenerator);
         logger.info("[UidGenerator] build DefaultUidGenerator Finish");
         return uidGenerator;
     }
@@ -53,13 +50,17 @@ public class UidConfig {
     @ConditionalOnProperty(name = "rm.uid.generator.strategy", havingValue = "cached", matchIfMissing = false)
     public UidGenerator cachedUidGenerator(DisposableWorkerIdAssigner assigner) {
         CachedUidGenerator uidGenerator =  new CachedUidGenerator();
+        this.setUidGeneratorInfo(assigner, uidGenerator);
+        logger.info("[UidGenerator] build CachedUidGenerator Finish");
+        return uidGenerator;
+    }
+
+    private void setUidGeneratorInfo(DisposableWorkerIdAssigner assigner, DefaultUidGenerator uidGenerator) {
         uidGenerator.setWorkerIdAssigner(assigner);
         /** Specified bits & epoch as your demand. No specified the default value will be used */
         uidGenerator.setTimeBits(uidProperties.getTimeBits());
         uidGenerator.setWorkerBits(uidProperties.getWorkerBits());
         uidGenerator.setSeqBits(uidProperties.getSeqBits());
         uidGenerator.setEpochStr(uidProperties.getEpochStr());
-        logger.info("[UidGenerator] build CachedUidGenerator Finish");
-        return uidGenerator;
     }
 }
