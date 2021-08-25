@@ -230,6 +230,10 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         return entity;
     }
 
+    private List<RedisConfigExtPO> queryRedisConfigExts(List<RedisConfigPO> list) {
+        return redisConfigExtPOMapper.selectList(this.buildRedisConfigExtDTO(list));
+    }
+
     private Map<String, Object> buidPageParams(RedisConfigPageParam param) {
         Map<String, Object> params = new HashMap<>();
         params.put("searchKey", param.getSearchKey());
@@ -244,10 +248,6 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         params.put("rows", param.getRows());
         params.put("ifDel", ConstInterface.IF_DEL.NO);
         return params;
-    }
-
-    private List<RedisConfigExtPO> queryRedisConfigExts(List<RedisConfigPO> list) {
-        return redisConfigExtPOMapper.selectList(this.buildRedisConfigExtDTO(list));
     }
 
     private RedisConfigExtDTO buildRedisConfigExtDTO(List<RedisConfigPO> list) {
