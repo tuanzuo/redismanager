@@ -45,7 +45,9 @@
     SELECT
     <include refid="Base_Column_List" />
     FROM t_user_role_relation
-    WHERE user_id = #{userId,jdbcType=INTEGER} AND if_del = #{ifDel,jdbcType=INTEGER}
+    <where>
+      user_id = #{userId,jdbcType=INTEGER} AND if_del = #{ifDel,jdbcType=INTEGER}
+    </where>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_user_role_relation
@@ -56,10 +58,12 @@
     set updater = #{updater,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       if_del = #{ifDel,jdbcType=INTEGER}
-    where id IN
-    <foreach collection ="ids" item="temp" open="(" separator ="," close=")">
-      #{temp,jdbcType=INTEGER}
-    </foreach>
+    <where>
+      id IN
+      <foreach collection ="ids" item="temp" open="(" separator ="," close=")">
+        #{temp,jdbcType=INTEGER}
+      </foreach>
+    </where>
   </update>
   <insert id="insert" parameterType="com.tz.redismanager.dao.domain.po.UserRoleRelationPO">
     insert into t_user_role_relation (id, user_id, role_id,
