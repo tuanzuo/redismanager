@@ -26,45 +26,55 @@
     select
     <include refid="Base_Column_List" />
     from t_user
-    where name = #{name,jdbcType=VARCHAR}
+    <where>
+      name = #{name,jdbcType=VARCHAR}
+    </where>
   </select>
   <select id="selectByNamePwd" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_user
-    where name = #{name,jdbcType=VARCHAR} and pwd = #{pwd,jdbcType=VARCHAR} and if_del = #{ifDel,jdbcType=INTEGER}
+    <where>
+      name = #{name,jdbcType=VARCHAR} and pwd = #{pwd,jdbcType=VARCHAR} and if_del = #{ifDel,jdbcType=INTEGER}
+    </where>
     limit 1
   </select>
   <select id="selectPage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_user
-    where if_del = #{ifDel,jdbcType=INTEGER}
-    <if test="name != null">
-      AND LOCATE(#{name,jdbcType=VARCHAR},name) > 0
-    </if>
-    <if test="status != null">
-      AND status = #{status,jdbcType=INTEGER}
-    </if>
+    <where>
+      if_del = #{ifDel,jdbcType=INTEGER}
+      <if test="name != null">
+        AND LOCATE(#{name,jdbcType=VARCHAR},name) &gt; 0
+      </if>
+      <if test="status != null">
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+    </where>
     ORDER BY id DESC
     LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
   </select>
   <select id="selectToAnalysis" resultType="com.tz.redismanager.dao.domain.dto.UserAnalysisDTO">
     SELECT COUNT(id) AS userCount,create_time AS createTime FROM t_user
-    WHERE if_del = #{ifDel,jdbcType=INTEGER}
+    <where>
+      if_del = #{ifDel,jdbcType=INTEGER}
+    </where>
     GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
   </select>
   <select id="countUser" resultType="java.lang.Integer">
     select
     count(id)
     from t_user
-    where if_del = #{ifDel,jdbcType=INTEGER}
-    <if test="name != null">
-      AND LOCATE(#{name,jdbcType=VARCHAR},name) > 0
-    </if>
-    <if test="status != null">
-      AND status = #{status,jdbcType=INTEGER}
-    </if>
+    <where>
+      if_del = #{ifDel,jdbcType=INTEGER}
+      <if test="name != null">
+        AND LOCATE(#{name,jdbcType=VARCHAR},name) > 0
+      </if>
+      <if test="status != null">
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+    </where>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_user
@@ -203,9 +213,11 @@
     set status = #{status,jdbcType=INTEGER},
       updater = #{updater,jdbcType=VARCHAR},
       update_time = now()
-    where id in
-    <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
-      #{id,jdbcType=INTEGER}
-    </foreach>
+    <where>
+      id in
+      <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+        #{id,jdbcType=INTEGER}
+      </foreach>
+    </where>
   </update>
 </mapper>

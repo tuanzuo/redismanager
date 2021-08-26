@@ -26,31 +26,37 @@
     select
     <include refid="Base_Column_List" />
     from t_role
-    where if_del = #{ifDel,jdbcType=INTEGER}
-    <if test="status != null">
-      AND status = #{status,jdbcType=INTEGER}
-    </if>
+    <where>
+      if_del = #{ifDel,jdbcType=INTEGER}
+      <if test="status != null">
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+    </where>
   </select>
   <select id="selectPage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_role
-    where if_del = #{ifDel,jdbcType=INTEGER}
-    <if test="name != null">
-      AND LOCATE(#{name,jdbcType=VARCHAR},name) > 0
-    </if>
-    <if test="code != null">
-      AND LOCATE(#{code,jdbcType=VARCHAR},code) > 0
-    </if>
-    <if test="status != null">
-      AND status = #{status,jdbcType=INTEGER}
-    </if>
+    <where>
+      if_del = #{ifDel,jdbcType=INTEGER}
+      <if test="name != null">
+        AND LOCATE(#{name,jdbcType=VARCHAR},name) > 0
+      </if>
+      <if test="code != null">
+        AND LOCATE(#{code,jdbcType=VARCHAR},code) > 0
+      </if>
+      <if test="status != null">
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+    </where>
     ORDER BY id DESC
     LIMIT #{offset,jdbcType=INTEGER},#{rows,jdbcType=INTEGER}
   </select>
   <select id="selectToAnalysis" resultType="com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO">
     SELECT COUNT(id) AS roleCount,create_time AS createTime FROM t_role
-    WHERE if_del = #{ifDel,jdbcType=INTEGER}
+    <where>
+      if_del = #{ifDel,jdbcType=INTEGER}
+    </where>
     GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
   </select>
   <select id="countRole" resultType="java.lang.Integer" parameterType="com.tz.redismanager.dao.domain.po.RolePO">
@@ -204,9 +210,11 @@
     set status = #{status,jdbcType=INTEGER},
     updater = #{updater,jdbcType=VARCHAR},
     update_time = now()
-    where id in
-    <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
-      #{id,jdbcType=INTEGER}
-    </foreach>
+    <where>
+      id in
+      <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+        #{id,jdbcType=INTEGER}
+      </foreach>
+    </where>
   </update>
 </mapper>
