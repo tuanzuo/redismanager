@@ -1,110 +1,87 @@
-### Redis单机和集群下数据的查询，添加，修改，删除；支持自定义key，value的序列化方式。
+# redismanager
 
-### 1、配置和启动
+[![](https://img.shields.io/badge/Base%20up%20by-SpringBoot%202.3.4%20RELEASE-06?logo=SpringBoot&labelColor=02303A)](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter/2.3.4.RELEASE)
+[![](https://img.shields.io/badge/Use%20up%20by-JDK%201.8+-important?logo=java&labelColor=02303A)](https://www.oracle.com/cn/java/technologies/javase/javase-jdk8-downloads.html)
+[![](https://img.shields.io/badge/Use%20up%20by-MySQL%205.x.x%20<%208.x.x-9cf?logo=MySQL&labelColor=02303A)](https://dev.mysql.com/doc/relnotes/mysql/5.7/en/)
+[![](https://img.shields.io/badge/Build%20up%20by-Redis%203.0.5+%20-06A0CE?logo=Redis&labelColor=02303A)](https://redis.io)
+[![](https://img.shields.io/badge/Build%20up%20by-Zookeeper%203.6.0+%20-06A0CE?logo=zhu&labelColor=02303A)](https://zookeeper.apache.org/doc/r3.6.0/index.html)
 
-#### 1.1 执行sql脚本
+redismanager 是 Redis **单机** 和 **集群** 下数据的查询，添加，修改，删除；支持自定义 key，value 的序列化方式。
 
-在mysql数据库中执行doc/sql/redisadmin-v1.7.0.sql这个sql脚本
+## 模块说明
 
-#### 1.2 修改配置
+```text
+redismanager/
+    ├── redismanager-cacher/
+    ├── redismanager-common/
+    ├── redismanager-config/
+    ├── redismanager-config-sdk/
+    ├── redismanager-core/
+    ├── redismanager-dao/
+    ├── redismanager-limiter/
+    ├── redismanager-model/
+    ├── redismanager-token/
+    ├── redismanager-uid-generator/
+    ├── redismanager-web/
+    ├── ……
+    └── ……
+```
 
-可以在application.yml中修改应用启动的端口，默认为80
+### redismanager 模块依赖关系
 
-修改config/config-local.properties中数据库，redis，zookeeper的连接和配置
+![](doc/img/redismanager.png)
 
-#### 1.3 启动应用
+### redismanager-core 模块依赖
 
-运行redismanager-web模块中的RedisManagerWebApplication
+![](doc/img/redismanager-web.png)
 
-#### 1.4 访问应用
+## 构建使用
 
-应用地址：http://127.0.0.1/
+由于项目使用了 **zookeeper**（<font color="red">版本：3.6.0+
+</font>），**redis**（<font color="red">版本：3.0.5+</font>），**mysql**（<font color="red">版本：5.x.x，不支持 8.x.x</font>），因此你需要提前准备好这些环境，这里不再赘述
 
-可以使用superadmin，admin，develop，test等几个用户登录系统，登录密码888888；
-其中superadmin用户拥有所有权限
+1. 执行 redismanager/doc/sql/ 路径 `redisadmin-{last-version}.sql` 脚本，初始化数据库
+2. 修改 redismanager-web 模板 `config/config-local.properties` 文件中数据库，redis，zookeeper 的连接和配置
+3. 启动 redismanager-web 模块中的 RedisManagerWebApplication 类
+4. 正常启动后，访问 http://127.0.0.1
 
-### 2、更新日志
+> 用户（权限从大到小）: superadmin, admin, develop, test  
+> 密码: 888888
 
-#### v1.7.0
+## 功能预览
 
-1、增加配置模块-支持动态更新配置
+| 仪表盘 | 个人页 |
+|:-----------:|:-----------:|
+|![](doc/img/dashboard.png)|![](doc/img/profile.png)|
+| 用户管理 | 角色管理 |
+|![](doc/img/user-manager.png)|![](doc/img/role.png)|
+| 配置管理 | 连接管理 |
+|![](doc/img/config.png)|![](doc/img/connection.png)|
+| Redis-Operational |  |
+|![](doc/img/redis-retrieve.png)| |
 
-2、redis连接配置中自定义序列化代码时支持上传和下载jar包以及运行时加载jar包
+## 贡献指引
 
-3、集成百度的[uid-generator](https://github.com/baidu/uid-generator/)
+## 路线图
 
-#### v1.6.1
+## 更新记录
 
-1、缓存器支持可配置
+见 [CHANGELOG](CHANGELOG.md) 文件
 
-2、限流器支持可配置
+## 使用协议
 
-#### v1.6.0
+```textmate
+Copyright 2021 tuanzhuo
 
-1、登录和注册增加验证码
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-2、增加限流模块
+   https://www.apache.org/licenses/LICENSE-2.0
 
-3、增加Token模块
-
-4、增加缓存模块
-
-5、增加CachersEndpoint
-
-#### v1.5.0
-
-1、项目调整为多模块结构
-
-2、Spring Boot从1.5.4.RELEASE升级到2.3.4.RELEASE版本<br/>
-
-备注：RedisConnectionFactory使用LettuceConnectionFactory替换JedisConnectionFactory
-
-3、增加Dashboard-分析页菜单
-
-4、支持JWT或者Redis方式来生成Token
-
-5、支持list，zset类型分页查询和修改数据
-
-6、优化页面
-
-#### v1.4.0
-
-1、优化日志追踪-TraceLoggerFactory
-
-2、增加用户管理-用户列表菜单
-
-3、增加角色管理-角色列表菜单
-
-4、优化页面
-
-#### v1.3.0
-
-1、系统支持登录和退出功能
-
-2、支持用户注册，增加个人页菜单，支持查看基本设置和修改密码功能
-
-3、对系统菜单进行权限控制
-
-4、优化页面
-
-#### v1.2.0
-
-1、支持对redis连接配置信息中的密码进行加密存储到数据库
-
-2、支持对redis连接配置信息进行测试连接的功能
- 
-3、支持对redis中的string，set，zset，hash，list等类型的数据进行添加和修改的功能
- 
-4、优化页面
-
-#### v1.1.0
-
-1、优化查询redis中的数据时将数据封装成树形结构的方法
-
-2、优化页面
-
-#### v1.0.0
-
-1、支持查询，添加，修改，删除redis连接配置信息
-
-2、支持redis中数据的查询，删除，修改key和key的过期时间
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```

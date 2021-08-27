@@ -87,7 +87,8 @@ logging:
     #显示JdbcTemplate的sql执行日志
     org.springframework.jdbc.core: debug
     org.springframework.jdbc.core.StatementCreatorUtils: trace
-  path: /home/tz/Logs/redismanager
+  file:
+    path: /home/tz/Logs/redismanager
 
 rm:
   config: classpath:config/config-local.properties
@@ -110,7 +111,8 @@ logging:
     org.apache.ibatis: debug
     com.mysql: debug
     com.tz.redismanager.dao.mapper: debug
-  path: /home/tz/Logs/redismanager
+  file:
+    path: /home/tz/Logs/redismanager
 
 rm:
   config: classpath:config/config-dev.properties
@@ -128,7 +130,8 @@ spring:
 logging:
   level: 
     root: info
-  path: /home/tz/Logs/redismanager
+  file:
+    path: /home/tz/Logs/redismanager
 
 rm:
   config: classpath:config/config-test.properties
@@ -151,7 +154,8 @@ logging:
     org.apache.ibatis: debug
     com.mysql: debug
     com.tz.redismanager.dao.mapper: debug
-  path: /home/tz/Logs/redismanager
+  file:
+    path: /home/tz/Logs/redismanager
 
 rm:
   #config: file:/home/tz/Logs/redismanager/config-online.properties
