@@ -3,37 +3,37 @@
 [![](https://img.shields.io/badge/Base%20up%20by-SpringBoot%202.3.4%20RELEASE-06?logo=SpringBoot&labelColor=02303A)](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter/2.3.4.RELEASE)
 [![](https://img.shields.io/badge/Use%20up%20by-JDK%201.8+-important?logo=java&labelColor=02303A)](https://www.oracle.com/cn/java/technologies/javase/javase-jdk8-downloads.html)
 [![](https://img.shields.io/badge/Use%20up%20by-MySQL%205.x.x%20<%208.x.x-9cf?logo=MySQL&labelColor=02303A)](https://dev.mysql.com/doc/relnotes/mysql/5.7/en/)
-[![](https://img.shields.io/badge/Build%20up%20by-Redis%203.0.5+%20-06A0CE?logo=Redis&labelColor=02303A)](https://redis.io)
-[![](https://img.shields.io/badge/Build%20up%20by-Zookeeper%203.6.0+%20-06A0CE?logo=zhu&labelColor=02303A)](https://zookeeper.apache.org/doc/r3.6.0/index.html)
+[![](https://img.shields.io/badge/Use%20up%20by-Redis%203.0.5+%20-06A0CE?logo=Redis&labelColor=02303A)](https://redis.io)
+[![](https://img.shields.io/badge/Use%20up%20by-Zookeeper%203.6.0+%20-06A0CE?logo=zhu&labelColor=02303A)](https://zookeeper.apache.org/doc/r3.6.0/index.html)
 
-redismanager 是 Redis **单机** 和 **集群** 下数据的查询，添加，修改，删除；支持自定义 key，value 的序列化方式。
+redismanager 是用于管理Redis的数据。支持 Redis **单机** 和 **集群** 下数据的查询，添加，修改，删除；支持自定义 key，value 的序列化方式。
 
 ## 模块说明
 
 ```text
 redismanager/
-    ├── redismanager-cacher/
-    ├── redismanager-common/
-    ├── redismanager-config/
-    ├── redismanager-config-sdk/
-    ├── redismanager-core/
-    ├── redismanager-dao/
-    ├── redismanager-limiter/
-    ├── redismanager-model/
-    ├── redismanager-token/
-    ├── redismanager-uid-generator/
-    ├── redismanager-web/
+    ├── redismanager-cacher/ 缓存模块
+    ├── redismanager-common/ 公共模块
+    ├── redismanager-config/ 配置模块
+    ├── redismanager-config-sdk/ 配置SDK模块
+    ├── redismanager-core/ 核心模块
+    ├── redismanager-dao/ DAO模块
+    ├── redismanager-limiter/ 限流模块
+    ├── redismanager-model/ 模型模块
+    ├── redismanager-token/ Token模块
+    ├── redismanager-uid-generator/ UID模块
+    ├── redismanager-web/ WEB模块
     ├── ……
     └── ……
 ```
 
 ### redismanager 模块依赖关系
 
-![](doc/img/redismanager.png)
+![](https://img-blog.csdnimg.cn/20210828151924889.png)
 
 ### redismanager-core 模块依赖
 
-![](doc/img/redismanager-web.png)
+![](https://img-blog.csdnimg.cn/20210828151931785.png)
 
 ## 构建使用
 
@@ -52,13 +52,13 @@ redismanager/
 
 | 仪表盘 | 个人页 |
 |:-----------:|:-----------:|
-|![](doc/img/dashboard.png)|![](doc/img/profile.png)|
+|![](https://img-blog.csdnimg.cn/2021082815191339.png)|![](https://img-blog.csdnimg.cn/20210828151918149.png)|
 | 用户管理 | 角色管理 |
-|![](doc/img/user-manager.png)|![](doc/img/role.png)|
+|![](https://img-blog.csdnimg.cn/20210828151943384.png)|![](https://img-blog.csdnimg.cn/20210828151939730.png)|
 | 配置管理 | 连接管理 |
-|![](doc/img/config.png)|![](doc/img/connection.png)|
+|![](https://img-blog.csdnimg.cn/20210828151903389.png)|![](https://img-blog.csdnimg.cn/20210828151908667.png)|
 | Redis-Operational |  |
-|![](doc/img/redis-retrieve.png)| |
+|![](https://img-blog.csdnimg.cn/20210828151936100.png)| |
 
 ## 贡献指引
 
