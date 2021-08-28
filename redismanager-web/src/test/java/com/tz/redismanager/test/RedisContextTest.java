@@ -22,15 +22,15 @@ public class RedisContextTest {
 
 	@Test
 	public void testInitContext() {
-	    String id = "0c38bf1adbb6447288704c316f2a3bfc";
+	    Long id = 1829600233578495L;
         redisContextService.initContext(id);
         RedisTemplate<String, Object> redisTemplate = redisContextService.getRedisTemplate(id);
-        redisTemplate.opsForHash().put(id,"wen","wen001");
+        redisTemplate.opsForHash().put(id.toString(),"wen","wen001");
 
-        id = "d850a65a64e64898918d49f01d019307";
+        id = 1829600233578496L;
         redisContextService.initContext(id);
         redisTemplate = redisContextService.getRedisTemplate(id);
-        redisTemplate.opsForHash().put(id,"adminwen","wen002");
+        redisTemplate.opsForHash().put(id.toString(),"adminwen","wen002");
     }
 
 

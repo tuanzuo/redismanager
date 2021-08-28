@@ -17,7 +17,7 @@ public interface IRedisAdminService {
      * @param id
      * @return
      */
-    ApiResult<RedisServerInfoVO> queryServerInfo(String id);
+    ApiResult<RedisServerInfoVO> queryServerInfo(Long id);
 
     /**
      * 查询redis的key
@@ -26,7 +26,7 @@ public interface IRedisAdminService {
      * @param key
      * @return
      */
-    List<RedisTreeNode> searchKey(String id, String key);
+    List<RedisTreeNode> searchKey(Long id, String key);
 
     /**
      * 查询redis key对应的value

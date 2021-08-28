@@ -20,5 +20,5 @@ public class RoleDTO extends RolePO {
     /**
      * 用户Id
      */
-    private Integer userId;
+    private Long userId;
 }

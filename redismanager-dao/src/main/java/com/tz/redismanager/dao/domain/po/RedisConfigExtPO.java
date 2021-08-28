@@ -34,7 +34,7 @@ public class RedisConfigExtPO implements Serializable {
     /**
      * 关联的配置id
      */
-    private String rconfigId;
+    private Long rconfigId;
 
     /**
      * 扩展key

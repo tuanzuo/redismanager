@@ -132,7 +132,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, AuthContext authContext) {
+    public ApiResult<?> updateStatus(List<Long> ids, Integer status, AuthContext authContext) {
         userPOMapper.batchUpdateStatus(ids, status, authContext.getUserName());
         return new ApiResult<>(ResultCode.SUCCESS);
     }
@@ -167,14 +167,14 @@ public class UserServiceImpl implements IUserService {
     public ApiResult<?> grantRole(UserVO vo, AuthContext authContext) {
         List<UserRoleRelationPO> userRoles = userRoleRelationPOMapper.selectByUserRoleRelation(vo.getId(), ConstInterface.IF_DEL.NO);
         //key:roleId,value:id
-        Map<Integer, Integer> userRoleMap = userRoles.stream().collect(Collectors.toMap(UserRoleRelationPO::getRoleId, UserRoleRelationPO::getId));
-        List<Integer> userRoleIdsToOld = userRoles.stream().map(UserRoleRelationPO::getRoleId).collect(Collectors.toList());
-        List<Integer> userRoleIdsToNew = Optional.ofNullable(vo.getRoleIds()).orElse(new ArrayList<>());
+        Map<Long, Long> userRoleMap = userRoles.stream().collect(Collectors.toMap(UserRoleRelationPO::getRoleId, UserRoleRelationPO::getId));
+        List<Long> userRoleIdsToOld = userRoles.stream().map(UserRoleRelationPO::getRoleId).collect(Collectors.toList());
+        List<Long> userRoleIdsToNew = Optional.ofNullable(vo.getRoleIds()).orElse(new ArrayList<>());
 
-        List<Integer> delUserRoleIds = (List<Integer>) CollectionUtils.removeAll(userRoleIdsToOld, userRoleIdsToNew);
-        List<Integer> addUserRoleIds = (List<Integer>) CollectionUtils.removeAll(userRoleIdsToNew, userRoleIdsToOld);
+        List<Long> delUserRoleIds = (List<Long>) CollectionUtils.removeAll(userRoleIdsToOld, userRoleIdsToNew);
+        List<Long> addUserRoleIds = (List<Long>) CollectionUtils.removeAll(userRoleIdsToNew, userRoleIdsToOld);
 
-        List<Integer> delIds = new ArrayList<>();
+        List<Long> delIds = new ArrayList<>();
         delUserRoleIds.forEach(roleId -> {
             delIds.add(userRoleMap.get(roleId));
         });
@@ -305,9 +305,9 @@ public class UserServiceImpl implements IUserService {
 
     private void addUserResp(List<UserResp> userResps, List<UserPO> list) {
         list = Optional.ofNullable(list).orElse(new ArrayList<>());
-        Set<Integer> userIds = list.stream().map(temp -> temp.getId()).collect(Collectors.toSet());
+        Set<Long> userIds = list.stream().map(temp -> temp.getId()).collect(Collectors.toSet());
         List<RoleDTO> userRoles = userRoleRelationPOMapper.selectByUserRole(null, userIds, null, ConstInterface.IF_DEL.NO);
-        Map<Integer, List<RoleDTO>> userRoleMap = userRoles.stream().collect(Collectors.groupingBy(RoleDTO::getUserId));
+        Map<Long, List<RoleDTO>> userRoleMap = userRoles.stream().collect(Collectors.groupingBy(RoleDTO::getUserId));
         list.forEach(user -> {
             user.setPwd(null);
             UserResp userResp = new UserResp();
@@ -318,11 +318,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     private void setUserRoles(UserResp userResp, List<RoleDTO> userRoles) {
-        List<Integer> roleIds = userRoles.stream().map(RoleDTO::getId).collect(Collectors.toList());
+        List<Long> roleIds = userRoles.stream().map(RoleDTO::getId).collect(Collectors.toList());
         userResp.setRoleIds(roleIds);
     }
 
-    private List<UserRoleRelationPO> buildGrantUserRoleRelation(UserVO vo, List<Integer> addUserRoleIds, AuthContext authContext) {
+    private List<UserRoleRelationPO> buildGrantUserRoleRelation(UserVO vo, List<Long> addUserRoleIds, AuthContext authContext) {
         List<UserRoleRelationPO> userRoles = new ArrayList<>();
         addUserRoleIds.forEach(roleId -> {
             UserRoleRelationPO roleRelation = new UserRoleRelationPO();

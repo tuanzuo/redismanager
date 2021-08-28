@@ -27,14 +27,14 @@ public interface IStatisticService {
      *
      * @param userId
      */
-    void addOnlineUser(Integer userId);
+    void addOnlineUser(Long userId);
 
     /**
      * 删除在线人数
      *
      * @param userId
      */
-    void removeOnlineUser(Integer userId);
+    void removeOnlineUser(Long userId);
 
     /**
      * 统计在线人数
@@ -69,7 +69,7 @@ public interface IStatisticService {
      *
      * @param redisConfigId
      */
-    void addRedisConfigVisit(String redisConfigId);
+    void addRedisConfigVisit(Long redisConfigId);
 
     /**
      * 统计redis连接访问量

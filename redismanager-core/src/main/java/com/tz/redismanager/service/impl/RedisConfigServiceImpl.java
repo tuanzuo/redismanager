@@ -17,6 +17,7 @@ import com.tz.redismanager.dao.mapper.RedisConfigExtPOMapper;
 import com.tz.redismanager.dao.mapper.RedisConfigPOMapper;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
+import com.tz.redismanager.domain.vo.RedisConfigPageVO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.security.domain.AuthContext;
@@ -75,33 +76,49 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     private RedisConfigExtPOMapper redisConfigExtPOMapper;
 
     @Override
-    public List<RedisConfigDTO> searchList(RedisConfigPageParam param) {
-        List<RedisConfigDTO> resultList = new ArrayList<>();
+    public ApiResult<RedisConfigPageVO> searchList(RedisConfigPageParam param) {
+        RedisConfigPageVO pageVO = new RedisConfigPageVO();
         List<RedisConfigPO> list = redisConfigPOMapper.selectPage(this.buidPageParams(param));
         if (CollectionUtils.isEmpty(list)) {
-            return resultList;
+            return new ApiResult<>(ResultCode.SUCCESS, pageVO);
         }
-        list.forEach(temp -> {
+
+        Long currentMinId = 0L;
+        List<RedisConfigDTO> resultList = new ArrayList<>();
+        int i = 0;
+        for (RedisConfigPO temp : list) {
+            //得到本次查询最小的id
+            if (i == 0) {
+                currentMinId = temp.getId();
+            }
+            i++;
+            if (temp.getId() < currentMinId) {
+                currentMinId = temp.getId();
+            }
+
             RedisConfigDTO target = new RedisConfigDTO();
             BeanUtils.copyProperties(temp, target);
             resultList.add(target);
-        });
+        }
+        //设置本次查询最小的id
+        pageVO.setCurrentMinId(currentMinId);
+        pageVO.setConfigList(resultList);
 
         //扩展配置
         List<RedisConfigExtPO> extList = this.queryRedisConfigExts(list);
         if (CollectionUtils.isEmpty(extList)) {
-            return resultList;
+            return new ApiResult<>(ResultCode.SUCCESS, pageVO);
         }
-        Map<String, List<RedisConfigExtPO>> map = extList.stream().collect(Collectors.groupingBy(RedisConfigExtPO::getRconfigId));
+        Map<Long, List<RedisConfigExtPO>> map = extList.stream().collect(Collectors.groupingBy(RedisConfigExtPO::getRconfigId));
         resultList.forEach(temp -> {
             temp.setExtList(map.get(temp.getId()));
         });
-        return resultList;
+        return new ApiResult<>(ResultCode.SUCCESS, pageVO);
     }
 
     @Cacheable(name = "redis连接配置信息缓存", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
     @Override
-    public RedisConfigDTO query(String id) {
+    public RedisConfigDTO query(Long id) {
         RedisConfigDTO result = new RedisConfigDTO();
         RedisConfigPO po = redisConfigPOMapper.selectByPrimaryKey(id);
         BeanUtils.copyProperties(po, result);
@@ -111,7 +128,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public List<RedisConfigPO> queryList(Set<String> ids) {
+    public List<RedisConfigPO> queryList(Set<Long> ids) {
         if (CollectionUtils.isEmpty(ids)) {
             return new ArrayList<>();
         }
@@ -126,7 +143,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
 
     @CacheEvict(name = "redis连接配置信息失效", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
     @Override
-    public void invalidateCache(String id) {
+    public void invalidateCache(Long id) {
 
     }
 
@@ -145,7 +162,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     }
 
     @Override
-    public ApiResult<?> delete(String id, AuthContext authContext) {
+    public ApiResult<?> delete(Long id, AuthContext authContext) {
         RedisConfigPO po = this.buildDelRedisConfigPO(id, authContext);
         RedisConfigExtDTO extDTO = this.buildDelRedisConfigExtDTO(id, authContext);
         transactionTemplate.execute((transactionStatus) -> {
@@ -244,14 +261,15 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         params.put("isSuperAdmin", param.getIsSuperAdmin());
         params.put("yesSuperAdmin", ConstInterface.IS_SUPER_ADMIN.YES);
         params.put("noSuperAdmin", ConstInterface.IS_SUPER_ADMIN.NO);
-        params.put("offset", param.getOffset());
+        params.put("preMinId", param.getPreMinId());
+        //params.put("offset", param.getOffset());
         params.put("rows", param.getRows());
         params.put("ifDel", ConstInterface.IF_DEL.NO);
         return params;
     }
 
     private RedisConfigExtDTO buildRedisConfigExtDTO(List<RedisConfigPO> list) {
-        Set<String> configIds = list.stream().map(temp -> temp.getId()).collect(Collectors.toSet());
+        Set<Long> configIds = list.stream().map(temp -> temp.getId()).collect(Collectors.toSet());
         RedisConfigExtDTO queryDTO = new RedisConfigExtDTO();
         queryDTO.setRconfigIds(configIds);
         queryDTO.setExtKey(RedisConfigExtPO.EXT_KEY_JAR_PATH);
@@ -265,7 +283,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         BeanUtils.copyProperties(vo, po);
         this.encryptPassWord(po);
         //po.setId(UUIDUtils.generateId());
-        po.setId(String.valueOf(uidGenerator.getUID()));
+        po.setId(uidGenerator.getUID());
         po.setCreater(userName);
         po.setCreateTime(new Date());
         po.setUpdater(userName);
@@ -293,7 +311,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         return extList;
     }
 
-    private RedisConfigPO buildDelRedisConfigPO(String id, AuthContext authContext) {
+    private RedisConfigPO buildDelRedisConfigPO(Long id, AuthContext authContext) {
         String userName = authContext.getUserName();
         RedisConfigPO po = new RedisConfigPO();
         po.setId(id);
@@ -303,7 +321,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         return po;
     }
 
-    private RedisConfigExtDTO buildDelRedisConfigExtDTO(String id, AuthContext authContext) {
+    private RedisConfigExtDTO buildDelRedisConfigExtDTO(Long id, AuthContext authContext) {
         RedisConfigExtDTO extDTO = new RedisConfigExtDTO();
         extDTO.setRconfigId(id);
         extDTO.setIfDel(ConstInterface.IF_DEL.YES);

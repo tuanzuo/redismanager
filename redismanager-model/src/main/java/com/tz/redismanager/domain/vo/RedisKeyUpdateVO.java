@@ -28,9 +28,9 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class RedisKeyUpdateVO {
 
-    @NotEmpty(message = "id不能为空", groups = {ValidGroup.RenameKey.class, ValidGroup.SetTTL.class, ValidGroup.UpdateKeyValue.class})
+    @NotNull(message = "id不能为空", groups = {ValidGroup.RenameKey.class, ValidGroup.SetTTL.class, ValidGroup.UpdateKeyValue.class})
     @ConnectionId
-    private String id;
+    private Long id;
 
     @NotEmpty(message = "key不能为空", groups = {ValidGroup.RenameKey.class, ValidGroup.SetTTL.class, ValidGroup.UpdateKeyValue.class})
     private String key;

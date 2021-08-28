@@ -19,15 +19,15 @@ import java.util.Set;
 @Mapper
 public interface RedisConfigPOMapper {
 
-    int deleteByPrimaryKey(String id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(RedisConfigPO record);
 
     int insertSelective(RedisConfigPO record);
 
-    RedisConfigPO selectByPrimaryKey(String id);
+    RedisConfigPO selectByPrimaryKey(Long id);
 
-    List<RedisConfigPO> selectByIds(@Param("ids")Set<String> ids);
+    List<RedisConfigPO> selectByIds(@Param("ids")Set<Long> ids);
 
     List<RedisConfigPO> selectPage(Map<String, Object> params);
 

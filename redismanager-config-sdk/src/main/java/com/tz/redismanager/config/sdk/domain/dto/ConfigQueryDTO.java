@@ -17,7 +17,7 @@ public class ConfigQueryDTO {
     /**
      * 主键
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 服务名

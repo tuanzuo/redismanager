@@ -51,14 +51,14 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     @Cacheable(name = "redis服务器信息缓存", key = ConstInterface.CacheKey.REDIS_SERVER, var = "#id")
     @SetRedisTemplate(whenIsNullContinueExec = true)
     @Override
-    public ApiResult<RedisServerInfoVO> queryServerInfo(@ConnectionId String id) {
+    public ApiResult<RedisServerInfoVO> queryServerInfo(@ConnectionId Long id) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         return new ApiResult<>(ResultCode.SUCCESS, this.buildRedisServerInfoVO(redisTemplate));
     }
 
     @SetRedisTemplate(whenIsNullContinueExec = true)
     @Override
-    public List<RedisTreeNode> searchKey(@ConnectionId String id, String key) {
+    public List<RedisTreeNode> searchKey(@ConnectionId Long id, String key) {
         //Root树节点List
         List<RedisTreeNode> treeNodesForRoot = new ArrayList<>();
         //构建Root树节点
@@ -256,7 +256,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
      * @param id
      * @return
      */
-    private RedisTreeNode buildRootTreeNode(String id) {
+    private RedisTreeNode buildRootTreeNode(Long id) {
         String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
         RedisConfigPO configPO = redisConfigService.query(id);
         if (null != configPO) {
@@ -289,7 +289,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
      * @param key
      * @return
      */
-    private Set<String> getKeys(String id, String key) {
+    private Set<String> getKeys(Long id, String key) {
         RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
         if (null == redisTemplate) {
             logger.error("[RedisAdmin] [searchKey] {id:{}查询不到redisTemplate}", id);

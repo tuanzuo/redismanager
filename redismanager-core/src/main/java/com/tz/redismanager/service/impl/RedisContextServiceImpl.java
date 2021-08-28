@@ -36,7 +36,7 @@ public class RedisContextServiceImpl implements IRedisContextService {
     /**
      * RedisTemplate缓存Map--key:id,value:RedisTemplate
      */
-    private static Map<String, RedisTemplate<String, Object>> redisTemplateMap = new ConcurrentHashMap<>();
+    private static Map<Long, RedisTemplate<String, Object>> redisTemplateMap = new ConcurrentHashMap<>();
 
     @Value("${upload.file.path.prefix}")
     private String uploadPrefix;
@@ -48,7 +48,7 @@ public class RedisContextServiceImpl implements IRedisContextService {
 
     @Override
     @MethodLog(logPrefix = "RedisTemplate初始化", logInputParams = false, logOutputParams = false)
-    public RedisTemplate<String, Object> initContext(String id) {
+    public RedisTemplate<String, Object> initContext(Long id) {
         if (redisTemplateMap.containsKey(id)) {
             logger.info("[redisContext] [initContext] [已存在对应的redisTemplate] {id:{}}", id);
             return null;
@@ -98,17 +98,17 @@ public class RedisContextServiceImpl implements IRedisContextService {
     }
 
     @Override
-    public RedisTemplate<String, Object> getRedisTemplate(String id) {
+    public RedisTemplate<String, Object> getRedisTemplate(Long id) {
         return redisTemplateMap.get(id);
     }
 
     @Override
-    public Map<String, RedisTemplate<String, Object>> getRedisTemplateMap() {
+    public Map<Long, RedisTemplate<String, Object>> getRedisTemplateMap() {
         return redisTemplateMap;
     }
 
     @Override
-    public void removeRedisTemplate(String id) {
+    public void removeRedisTemplate(Long id) {
         redisTemplateMap.remove(id);
         logger.info("[redisContext] [removeRedisTemplate] {redisTemplate清理完成,id:{}}", id);
     }

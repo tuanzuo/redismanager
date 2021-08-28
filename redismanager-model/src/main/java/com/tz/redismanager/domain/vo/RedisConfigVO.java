@@ -28,8 +28,8 @@ import java.util.List;
 @Setter
 public class RedisConfigVO {
 
-    @NotEmpty(message = "id不能为空", groups = {ValidGroup.UpdateConnection.class})
-    private String id;
+    @NotNull(message = "id不能为空", groups = {ValidGroup.UpdateConnection.class})
+    private Long id;
 
     /**
      * 名称

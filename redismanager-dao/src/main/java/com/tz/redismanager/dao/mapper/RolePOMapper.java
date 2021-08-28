@@ -17,13 +17,13 @@ import java.util.List;
 @Mapper
 public interface RolePOMapper {
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(RolePO record);
 
     int insertSelective(RolePO record);
 
-    RolePO selectByPrimaryKey(Integer id);
+    RolePO selectByPrimaryKey(Long id);
 
     List<RolePO> getAll(@Param("status") Integer status, @Param("ifDel") Integer ifDel);
 
@@ -38,6 +38,6 @@ public interface RolePOMapper {
 
     int updateByPrimaryKey(RolePO record);
 
-    int batchUpdateStatus(@Param("ids") List<Integer> ids, @Param("status") Integer status, @Param("updater") String updater);
+    int batchUpdateStatus(@Param("ids") List<Long> ids, @Param("status") Integer status, @Param("updater") String updater);
 
 }

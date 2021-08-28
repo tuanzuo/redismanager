@@ -43,7 +43,7 @@ public interface IRoleService {
      * @param authContext
      * @return
      */
-    ApiResult<?> updateStatus(List<Integer> ids, Integer status, AuthContext authContext);
+    ApiResult<?> updateStatus(List<Long> ids, Integer status, AuthContext authContext);
 
     /**
      * 分页查询角色列表

@@ -5,6 +5,7 @@ import com.tz.redismanager.dao.domain.dto.RedisConfigDTO;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
+import com.tz.redismanager.domain.vo.RedisConfigPageVO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.security.domain.AuthContext;
 import org.springframework.http.ResponseEntity;
@@ -25,17 +26,17 @@ public interface IRedisConfigService {
      *
      * @return
      */
-    List<RedisConfigDTO> searchList(RedisConfigPageParam param);
+    ApiResult<RedisConfigPageVO> searchList(RedisConfigPageParam param);
 
     /**
      * 查询redis连接配置
      */
-    RedisConfigDTO query(String id);
+    RedisConfigDTO query(Long id);
 
     /**
      * 批量查询redis连接配置
      */
-    List<RedisConfigPO> queryList(Set<String> ids);
+    List<RedisConfigPO> queryList(Set<Long> ids);
 
     /**
      * 查询redis连接配置分析页数据
@@ -47,7 +48,7 @@ public interface IRedisConfigService {
     /**
      * 失效redis连接配置缓存
      */
-    void invalidateCache(String id);
+    void invalidateCache(Long id);
 
     /**
      * 添加redis连接配置
@@ -61,7 +62,7 @@ public interface IRedisConfigService {
      *
      * @param id
      */
-    ApiResult<?> delete(String id, AuthContext authContext);
+    ApiResult<?> delete(Long id, AuthContext authContext);
 
     /**
      * 修改redis连接配置

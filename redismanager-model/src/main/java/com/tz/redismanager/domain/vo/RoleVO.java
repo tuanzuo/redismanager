@@ -25,13 +25,13 @@ public class RoleVO {
      * 角色id
      */
     @NotNull(message = "角色id不能为空", groups = {ValidGroup.UpdateRole.class})
-    private Integer id;
+    private Long id;
 
     /**
      * 角色id集合
      */
     @NotEmpty(message = "角色id集合不能为空", groups = {ValidGroup.UpdateRoleStatus.class})
-    private List<Integer> ids;
+    private List<Long> ids;
 
     /**
      * 角色名称

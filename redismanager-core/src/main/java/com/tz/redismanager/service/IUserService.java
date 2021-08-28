@@ -56,7 +56,7 @@ public interface IUserService {
      * @param authContext
      * @return
      */
-    ApiResult<?> updateStatus(List<Integer> ids, Integer status, AuthContext authContext);
+    ApiResult<?> updateStatus(List<Long> ids, Integer status, AuthContext authContext);
 
     /**
      * 修改用户密码
