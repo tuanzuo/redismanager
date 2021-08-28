@@ -60,14 +60,14 @@ public class RedisStatisticServiceImpl implements IStatisticService {
     @Override
     @Async
     public void statisticsToAsync(AuthContext authContext) {
-        Integer userId = Optional.ofNullable(authContext).map(AuthContext::getUserId).orElse(null);
+        Long userId = Optional.ofNullable(authContext).map(AuthContext::getUserId).orElse(null);
         this.addOnlineUser(userId);
         this.addVisit();
         this.addUserVisit(userId, authContext.getUserName());
     }
 
     @Override
-    public void addOnlineUser(Integer userId) {
+    public void addOnlineUser(Long userId) {
         if (null == userId) {
             return;
         }
@@ -76,7 +76,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
     }
 
     @Override
-    public void removeOnlineUser(Integer userId) {
+    public void removeOnlineUser(Long userId) {
         if (null == userId) {
             return;
         }
@@ -296,7 +296,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
 
     @Override
     @Async
-    public void addRedisConfigVisit(String redisConfigId) {
+    public void addRedisConfigVisit(Long redisConfigId) {
         DateUtils.CurrentDate currentDate = DateUtils.getCurrentDate();
 
         String currentYearDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY());
@@ -341,7 +341,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         return dto;
     }
 
-    private void addUserVisit(Integer userId, String userName) {
+    private void addUserVisit(Long userId, String userName) {
         if (null == userId || StringUtils.isBlank(userName)) {
             return;
         }
@@ -420,7 +420,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
      * @param cacheValue 缓存value
      * @param expireDay  过期天数
      */
-    private void incrementRankVisit(String cacheKey, String cacheValue, Integer expireDay) {
+    private void incrementRankVisit(String cacheKey, Object cacheValue, Integer expireDay) {
         redisTemplate.opsForZSet().incrementScore(cacheKey, cacheValue, 1);
         redisTemplate.expire(cacheKey, expireDay, TimeUnit.DAYS);
     }
@@ -437,13 +437,13 @@ public class RedisStatisticServiceImpl implements IStatisticService {
 
     private void buildRedisConfigVisitDetail(RedisConfigVisitDataDTO dto, String detailKey) {
         Set<ZSetOperations.TypedTuple<Object>> details = Optional.ofNullable(redisTemplate.opsForZSet().reverseRangeWithScores(detailKey, START, END)).orElse(new HashSet<>());
-        Set<String> redisConfigIds = new HashSet<>();
+        Set<Long> redisConfigIds = new HashSet<>();
         details.forEach(temp -> {
-            redisConfigIds.add(String.valueOf(temp.getValue()));
+            redisConfigIds.add(Long.valueOf(temp.getValue().toString()));
         });
         List<RedisConfigPO> configList = redisConfigService.queryList(redisConfigIds);
         //List转成Map，key: RedisConfigPO.id
-        ImmutableMap<String, RedisConfigPO> map = Maps.uniqueIndex(configList, (redisConfigPO) -> redisConfigPO.getId());
+        ImmutableMap<Long, RedisConfigPO> map = Maps.uniqueIndex(configList, (redisConfigPO) -> redisConfigPO.getId());
         details.forEach(temp -> {
             String redisConfigId = String.valueOf(temp.getValue());
             RedisConfigPO configPO = map.get(redisConfigId);

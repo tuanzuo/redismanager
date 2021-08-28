@@ -22,7 +22,7 @@ public class RedisConfigPO {
     /**
      * 主键
      */
-    private String id;
+    private Long id;
 
     /**
      * 名称

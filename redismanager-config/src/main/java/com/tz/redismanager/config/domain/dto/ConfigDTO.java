@@ -20,5 +20,5 @@ public class ConfigDTO extends ConfigPO {
     /**
      * 配置id集合
      */
-    private Set<Integer> ids;
+    private Set<Long> ids;
 }

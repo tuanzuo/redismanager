@@ -21,7 +21,7 @@ public class UserResp {
     /**
      * 主键
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 用户名
@@ -62,6 +62,6 @@ public class UserResp {
     /**
      * 用户角色id集合
      */
-    private List<Integer> roleIds;
+    private List<Long> roleIds;
 
 }

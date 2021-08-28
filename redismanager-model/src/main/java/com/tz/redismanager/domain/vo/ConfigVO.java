@@ -23,13 +23,13 @@ public class ConfigVO {
      * 配置id
      */
     @NotNull(message = "配置id不能为空", groups = {ValidGroup.UpdateConfig.class})
-    private Integer id;
+    private Long id;
 
     /**
      * 配置id集合
      */
     @NotEmpty(message = "配置id集合不能为空", groups = {ValidGroup.DelConfig.class})
-    private Set<Integer> ids;
+    private Set<Long> ids;
 
     /**
      * 服务名

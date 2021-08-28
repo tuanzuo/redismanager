@@ -61,7 +61,7 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public ApiResult<?> updateStatus(List<Integer> ids, Integer status, AuthContext authContext) {
+    public ApiResult<?> updateStatus(List<Long> ids, Integer status, AuthContext authContext) {
         rolePOMapper.batchUpdateStatus(ids, status, authContext.getUserName());
         return new ApiResult<>(ResultCode.SUCCESS);
     }

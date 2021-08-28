@@ -19,7 +19,7 @@ public interface IRedisContextService {
      * @param id
      * @return
      */
-    RedisTemplate<String, Object> initContext(String id);
+    RedisTemplate<String, Object> initContext(Long id);
 
     /**
      * 得到RedisTemplate
@@ -27,21 +27,21 @@ public interface IRedisContextService {
      * @param id
      * @return
      */
-    RedisTemplate<String, Object> getRedisTemplate(String id);
+    RedisTemplate<String, Object> getRedisTemplate(Long id);
 
     /**
      * 得到RedisTemplate的Map
      *
      * @return
      */
-    Map<String, RedisTemplate<String, Object>> getRedisTemplateMap();
+    Map<Long, RedisTemplate<String, Object>> getRedisTemplateMap();
 
     /**
      * 删除RedisTemplate
      *
      * @param id
      */
-    void removeRedisTemplate(String id);
+    void removeRedisTemplate(Long id);
 
     /**
      * 测试redis连接

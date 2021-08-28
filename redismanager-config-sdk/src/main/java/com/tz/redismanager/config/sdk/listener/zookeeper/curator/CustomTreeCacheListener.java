@@ -57,7 +57,7 @@ public class CustomTreeCacheListener implements TreeCacheListener {
 
     private ConfigQueryDTO buildConfigQueryDTO(String id) {
         ConfigQueryDTO param = new ConfigQueryDTO();
-        param.setId(Integer.valueOf(id));
+        param.setId(Long.valueOf(id));
         param.setServiceName(applicationName);
         return param;
     }

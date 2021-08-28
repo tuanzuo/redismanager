@@ -19,9 +19,9 @@ import java.util.Set;
 @Mapper
 public interface UserRoleRelationPOMapper {
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
-    int delByIds(@Param("ids") List<Integer> ids, @Param("updater") String updater, @Param("updateTime") Date updateTime, @Param("ifDel") Integer ifDel);
+    int delByIds(@Param("ids") List<Long> ids, @Param("updater") String updater, @Param("updateTime") Date updateTime, @Param("ifDel") Integer ifDel);
 
     int insert(UserRoleRelationPO record);
 
@@ -29,12 +29,12 @@ public interface UserRoleRelationPOMapper {
 
     int insertSelective(UserRoleRelationPO record);
 
-    UserRoleRelationPO selectByPrimaryKey(Integer id);
+    UserRoleRelationPO selectByPrimaryKey(Long id);
 
-    List<RoleDTO> selectByUserRole(@Param("userId") Integer userId, @Param("userIds") Set<Integer> userIds,
+    List<RoleDTO> selectByUserRole(@Param("userId") Long userId, @Param("userIds") Set<Long> userIds,
                                    @Param("roleStatus") Integer roleStatus, @Param("ifDel") Integer ifDel);
 
-    List<UserRoleRelationPO> selectByUserRoleRelation(@Param("userId") Integer userId, @Param("ifDel") Integer ifDel);
+    List<UserRoleRelationPO> selectByUserRoleRelation(@Param("userId") Long userId, @Param("ifDel") Integer ifDel);
 
     int updateByPrimaryKeySelective(UserRoleRelationPO record);
 

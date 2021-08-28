@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * redis key添加VO
@@ -22,9 +23,9 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 public class RedisKeyAddVO {
 
-    @NotEmpty(message = "id不能为空")
+    @NotNull(message = "id不能为空")
     @ConnectionId
-    private String id;
+    private Long id;
 
     @NotEmpty(message = "key不能为空")
     private String key;

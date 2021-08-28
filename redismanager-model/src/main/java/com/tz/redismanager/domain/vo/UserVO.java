@@ -25,13 +25,13 @@ public class UserVO extends CaptchaVO{
      * 用户id
      */
     @NotNull(message = "用户id不能为空", groups = {ValidGroup.ResetUserPwd.class, ValidGroup.GrantUserRole.class,})
-    private Integer id;
+    private Long id;
 
     /**
      * 用户id集合
      */
     @NotEmpty(message = "用户id集合不能为空", groups = {ValidGroup.UpdateUserStatus.class})
-    private List<Integer> ids;
+    private List<Long> ids;
 
     /**
      * 用户名
@@ -68,7 +68,7 @@ public class UserVO extends CaptchaVO{
     /**
      * 角色id列表
      */
-    private List<Integer> roleIds;
+    private List<Long> roleIds;
 
 
 }

@@ -74,7 +74,7 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
     }
 
     @Override
-    public int deleteByPrimaryKey(Integer id) {
+    public int deleteByPrimaryKey(Long id) {
         ConfigPO po = new ConfigPO();
         po.setId(id);
         return namedParameterJdbcTemplate.update(deleteByPrimaryKey_sql, new BeanPropertySqlParameterSource(po));
@@ -94,12 +94,12 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
     public int insert(ConfigPO record) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int retVal = namedParameterJdbcTemplate.update(insert_sql, new BeanPropertySqlParameterSource(record), keyHolder);
-        record.setId(keyHolder.getKey().intValue());
+        record.setId(keyHolder.getKey().longValue());
         return retVal;
     }
 
     @Override
-    public ConfigPO selectByPrimaryKey(Integer id) {
+    public ConfigPO selectByPrimaryKey(Long id) {
         ConfigPO po = new ConfigPO();
         po.setId(id);
         return namedParameterJdbcTemplate.queryForObject(selectByPrimaryKey_sql, new BeanPropertySqlParameterSource(po), new ConfigPORowMapper());
@@ -198,7 +198,7 @@ public class JdbcTemplateConfigDaoImpl implements IConfigDao {
         @Override
         public ConfigPO mapRow(ResultSet rs, int rowNum) throws SQLException {
             ConfigPO po = new ConfigPO();
-            po.setId(rs.getInt(FIELD_ID));
+            po.setId(rs.getLong(FIELD_ID));
             po.setServiceName(rs.getString(FIELD_SERVICE_NAME));
             po.setConfigType(rs.getInt(FIELD_CONFIG_TYPE));
             po.setConfigKey(rs.getString(FIELD_CONFIG_KEY));

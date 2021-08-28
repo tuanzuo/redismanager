@@ -22,7 +22,7 @@ public interface IConfigDao {
      * @param id
      * @return
      */
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     /**
      * 通过主键逻辑删除
@@ -54,7 +54,7 @@ public interface IConfigDao {
      * @param id
      * @return
      */
-    ConfigPO selectByPrimaryKey(Integer id);
+    ConfigPO selectByPrimaryKey(Long id);
 
     /**
      * 查询

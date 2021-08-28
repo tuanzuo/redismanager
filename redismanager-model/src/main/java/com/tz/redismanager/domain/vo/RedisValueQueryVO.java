@@ -4,6 +4,7 @@ import com.tz.redismanager.annotation.ConnectionId;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * redis key查询value的VO
@@ -18,9 +19,9 @@ public class RedisValueQueryVO {
     private static final Integer DEFAULT_PAGE_NUM = 1;
     private static final Integer DEFAULT_PAGE_SIZE = 1000;
 
-    @NotEmpty(message = "id不能为空")
+    @NotNull(message = "id不能为空")
     @ConnectionId
-    private String id;
+    private Long id;
 
     @NotEmpty(message = "searchKey不能为空")
     private String searchKey;
@@ -35,7 +36,7 @@ public class RedisValueQueryVO {
      */
     private Integer pageSize = DEFAULT_PAGE_SIZE;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

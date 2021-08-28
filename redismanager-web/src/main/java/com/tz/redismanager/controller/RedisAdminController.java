@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class RedisAdminController {
 
     @RequestMapping("context/init/{id}")
     @Auth
-    public ApiResult<?> initContext(@NotEmpty(message = "id不能为空") @PathVariable("id") String id) {
+    public ApiResult<?> initContext(@NotNull(message = "id不能为空") @PathVariable("id") Long id) {
         redisContextService.initContext(id);
         statisticService.addRedisConfigVisit(id);
         return new ApiResult<>(ResultCode.SUCCESS);
@@ -53,7 +54,7 @@ public class RedisAdminController {
 
     @RequestMapping("context/cache/clear/{id}")
     @Auth
-    public ApiResult<?> clearCacheRedisTemplate(@NotEmpty(message = "id不能为空") @PathVariable("id") String id) {
+    public ApiResult<?> clearCacheRedisTemplate(@NotNull(message = "id不能为空") @PathVariable("id") Long id) {
         redisContextService.removeRedisTemplate(id);
         redisConfigService.invalidateCache(id);
         return new ApiResult<>(ResultCode.SUCCESS);
@@ -67,7 +68,7 @@ public class RedisAdminController {
 
     @RequestMapping("server/info/{id}")
     @Auth
-    public ApiResult<?> queryServerInfo(@NotEmpty(message = "id不能为空") @PathVariable("id") String id) {
+    public ApiResult<?> queryServerInfo(@NotNull(message = "id不能为空") @PathVariable("id") Long id) {
         return redisAdminService.queryServerInfo(id);
     }
 
@@ -75,7 +76,7 @@ public class RedisAdminController {
     @Auth
     @MethodLog(logPrefix = "查询Redis的Key接口", logInputParams = false, logOutputParams = false)
     @Limiter(name = "查询Redis的Key请求限流", key = "REDIS_ADMIN_KEY_LIST_API", qps = 200)
-    public ApiResult<?> keyList(@NotEmpty(message = "id不能为空") String id, @NotEmpty(message = "查询条件不能为空") String searchKey) {
+    public ApiResult<?> keyList(@NotNull(message = "id不能为空") Long id, @NotEmpty(message = "查询条件不能为空") String searchKey) {
         Map<String, Object> map = new HashMap<>();
         map.put("keyList", redisAdminService.searchKey(id, searchKey));
         return new ApiResult<>(ResultCode.SUCCESS, map);

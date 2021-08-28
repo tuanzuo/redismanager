@@ -22,7 +22,7 @@ public class RolePO {
     /**
      * 主键
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 角色名称

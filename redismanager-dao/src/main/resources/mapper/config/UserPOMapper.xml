@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tz.redismanager.dao.mapper.UserPOMapper">
   <resultMap id="BaseResultMap" type="com.tz.redismanager.dao.domain.po.UserPO">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="pwd" jdbcType="VARCHAR" property="pwd" />
     <result column="status" jdbcType="INTEGER" property="status" />
@@ -16,11 +16,11 @@
   <sql id="Base_Column_List">
     id, name, pwd, status, note, creater, create_time, updater, update_time, if_del
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_user
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectByName" resultMap="BaseResultMap">
     select
@@ -76,16 +76,16 @@
       </if>
     </where>
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_user
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.tz.redismanager.dao.domain.po.UserPO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into t_user (id, name, pwd, status,
       note, creater, create_time, 
       updater, update_time, if_del
       )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
       #{note,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{ifDel,jdbcType=INTEGER}
       )
@@ -126,7 +126,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -188,7 +188,7 @@
         if_del = #{ifDel,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.dao.domain.po.UserPO">
     update t_user
@@ -201,12 +201,12 @@
       updater = #{updater,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       if_del = #{ifDel,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPwd">
     update t_user
     set pwd = #{pwd,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER} and pwd = #{oldPwd,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT} and pwd = #{oldPwd,jdbcType=VARCHAR}
   </update>
   <update id="batchUpdateStatus">
     update t_user
@@ -216,7 +216,7 @@
     <where>
       id in
       <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
-        #{id,jdbcType=INTEGER}
+        #{id,jdbcType=BIGINT}
       </foreach>
     </where>
   </update>

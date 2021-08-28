@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * redis key删除VO
@@ -16,9 +17,9 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 public class RedisKeyDelVO {
-    @NotEmpty(message = "id不能为空")
+    @NotNull(message = "id不能为空")
     @ConnectionId
-    private String id;
+    private Long id;
 
     @NotEmpty(message = "keys不能为空")
     private String[] keys;

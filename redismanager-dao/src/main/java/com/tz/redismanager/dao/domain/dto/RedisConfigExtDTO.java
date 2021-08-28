@@ -22,6 +22,6 @@ public class RedisConfigExtDTO extends RedisConfigExtPO {
     /**
      * 扩展配置id集合
      */
-    private Set<String> rconfigIds;
+    private Set<Long> rconfigIds;
 
 }

@@ -2,9 +2,9 @@ package com.tz.redismanager.controller;
 
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.constant.ConstInterface;
-import com.tz.redismanager.dao.domain.dto.RedisConfigDTO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RedisConfigPageParam;
+import com.tz.redismanager.domain.vo.RedisConfigPageVO;
 import com.tz.redismanager.domain.vo.RedisConfigVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.limiter.annotation.Limiter;
@@ -18,10 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotEmpty;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.validation.constraints.NotNull;
 
 /**
  * redis连接配置controller
@@ -42,12 +39,10 @@ public class RedisConfigController {
     @MethodLog(logPrefix = "查询Redis连接信息", logInputParams = false, logOutputParams = false)
     @Auth
     @Limiter(name = "查询Redis连接信息请求限流", key = "REDIS_CONFIG_LIST_API", qps = 200)
-    public ApiResult<?> list(RedisConfigPageParam param, AuthContext authContext) {
-        Map<String, List<RedisConfigDTO>> map = new HashMap<>();
+    public ApiResult<RedisConfigPageVO> list(RedisConfigPageParam param, AuthContext authContext) {
         param.setUserName(authContext.getUserName());
         param.setIsSuperAdmin(authContext.getRoles().contains(ConstInterface.ROLE_CODE.SUPER_ADMIN) ? ConstInterface.IS_SUPER_ADMIN.YES : ConstInterface.IS_SUPER_ADMIN.NO);
-        map.put("configList", redisConfigService.searchList(param));
-        return new ApiResult<>(ResultCode.SUCCESS, map);
+        return redisConfigService.searchList(param);
     }
 
     @RequestMapping("add")
@@ -59,7 +54,7 @@ public class RedisConfigController {
 
     @RequestMapping("del/{id}")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    public ApiResult<?> del(@NotEmpty(message = "id不能为空") @PathVariable("id") String id, AuthContext authContext) {
+    public ApiResult<?> del(@NotNull(message = "id不能为空") @PathVariable("id") Long id, AuthContext authContext) {
         return redisConfigService.delete(id, authContext);
     }
 

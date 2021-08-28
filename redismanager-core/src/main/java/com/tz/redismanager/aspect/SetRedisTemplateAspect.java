@@ -8,7 +8,6 @@ import com.tz.redismanager.service.IRedisContextService;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import com.tz.redismanager.util.RedisContextUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -55,9 +54,9 @@ public class SetRedisTemplateAspect {
             return joinPoint.proceed();
         }
 
-        String id = this.getIdFromParam(signature, args);
+        Long id = this.getIdFromParam(signature, args);
         id = Optional.ofNullable(id).orElse(this.getIdFromParamObj(id, args));
-        if (StringUtils.isBlank(id)) {
+        if (null == id) {
             return joinPoint.proceed();
         }
 
@@ -94,12 +93,12 @@ public class SetRedisTemplateAspect {
     /**
      * 从参数中得到被{@link ConnectionId}注解标识的参数的值
      */
-    private String getIdFromParam(Signature signature, Object[] args) {
+    private Long getIdFromParam(Signature signature, Object[] args) {
         /**找到{@link ConnectionId}注解标识的参数的位置*/
         Integer index = this.findConnectionIdToMarkParamIndex(signature);
-        String id = null;
+        Long id = null;
         if (null != index && null != args[index]) {
-            id = args[index].toString();
+            id = Long.valueOf(args[index].toString());
         }
         return id;
     }
@@ -107,7 +106,7 @@ public class SetRedisTemplateAspect {
     /**
      * 从参数对象中得到被{@link ConnectionId}注解标识的属性的值
      */
-    private String getIdFromParamObj(String id, Object[] args) throws IllegalAccessException {
+    private Long getIdFromParamObj(Long id, Object[] args) throws IllegalAccessException {
         label:
         for (Object arg : args) {
             if (null == arg) {
@@ -126,7 +125,7 @@ public class SetRedisTemplateAspect {
                 if (null == obj) {
                     continue;
                 }
-                id = obj.toString();
+                id = Long.valueOf(obj.toString());
                 break label;
             }
         }

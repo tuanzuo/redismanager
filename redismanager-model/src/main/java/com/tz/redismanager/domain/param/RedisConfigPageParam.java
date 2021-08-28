@@ -46,6 +46,19 @@ public class RedisConfigPageParam {
      */
     private Integer pagesize = DEFAULT_PAGE_SIZE;
 
+    /**
+     * 上一次查询id的最小值
+     */
+    private Long preMinId;
+
+    public Long getPreMinId() {
+        return preMinId;
+    }
+
+    public void setPreMinId(Long preMinId) {
+        this.preMinId = preMinId;
+    }
+
     public int getOffset() {
         //有参数处理逻辑
         return (this.getPageNum() - 1) * this.getPagesize();

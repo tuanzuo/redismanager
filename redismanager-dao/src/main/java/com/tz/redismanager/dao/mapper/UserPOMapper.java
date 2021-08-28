@@ -17,13 +17,13 @@ import java.util.List;
 @Mapper
 public interface UserPOMapper {
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(UserPO record);
 
     int insertSelective(UserPO record);
 
-    UserPO selectByPrimaryKey(Integer id);
+    UserPO selectByPrimaryKey(Long id);
 
     UserPO selectByName(@Param("name") String name);
 
@@ -40,7 +40,7 @@ public interface UserPOMapper {
 
     int updateByPrimaryKey(UserPO record);
 
-    int updateByPwd(@Param("id") Integer id, @Param("pwd") String pwd, @Param("oldPwd") String oldPwd);
+    int updateByPwd(@Param("id") Long id, @Param("pwd") String pwd, @Param("oldPwd") String oldPwd);
 
-    int batchUpdateStatus(@Param("ids") List<Integer> ids, @Param("status") Integer status, @Param("updater") String updater);
+    int batchUpdateStatus(@Param("ids") List<Long> ids, @Param("status") Integer status, @Param("updater") String updater);
 }
