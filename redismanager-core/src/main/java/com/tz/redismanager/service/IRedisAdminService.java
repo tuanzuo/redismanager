@@ -13,6 +13,13 @@ import java.util.List;
 public interface IRedisAdminService {
 
     /**
+     * 查询redis服务器信息 v1.7.0
+     * @param id
+     * @return
+     */
+    ApiResult<RedisServerInfoVO> queryServerInfo(String id);
+
+    /**
      * 查询redis的key
      *
      * @param id

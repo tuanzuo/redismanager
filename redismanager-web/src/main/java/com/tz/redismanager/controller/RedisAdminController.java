@@ -65,6 +65,12 @@ public class RedisAdminController {
         return redisContextService.testRedisConnection(vo);
     }
 
+    @RequestMapping("server/info/{id}")
+    @Auth
+    public ApiResult<?> queryServerInfo(@NotEmpty(message = "id不能为空") @PathVariable("id") String id) {
+        return redisAdminService.queryServerInfo(id);
+    }
+
     @RequestMapping("key/list")
     @Auth
     @MethodLog(logPrefix = "查询Redis的Key接口", logInputParams = false, logOutputParams = false)

@@ -1,18 +1,18 @@
 self.__precacheManifest = [
   {
-    "revision": "55e4354126c5aa4f5e26",
+    "revision": "40cb0d3ef536fdd21aac",
     "url": "/vendors.chunk.css"
   },
   {
-    "revision": "55e4354126c5aa4f5e26",
+    "revision": "40cb0d3ef536fdd21aac",
     "url": "/vendors.async.js"
   },
   {
-    "revision": "9028b81777f01e934909",
+    "revision": "f313698e3ed70a2b9981",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "9028b81777f01e934909",
+    "revision": "f313698e3ed70a2b9981",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -20,11 +20,11 @@ self.__precacheManifest = [
     "url": "/layouts__BlankLayout.async.js"
   },
   {
-    "revision": "a1ec5333cb40ef581fc5",
+    "revision": "66a68995bf8ef57a012d",
     "url": "/layouts__UserLayout.chunk.css"
   },
   {
-    "revision": "a1ec5333cb40ef581fc5",
+    "revision": "66a68995bf8ef57a012d",
     "url": "/layouts__UserLayout.async.js"
   },
   {
@@ -32,35 +32,35 @@ self.__precacheManifest = [
     "url": "/p__Account__Settings__models__geographic.js.async.js"
   },
   {
-    "revision": "bd7c1df666390359c944",
+    "revision": "ad73fa4483606d3ffc90",
     "url": "/p__Account__Settings__models__useropt.js.async.js"
   },
   {
-    "revision": "c2db6575915c03c1f83b",
+    "revision": "08bc4cd639a40ef6243d",
     "url": "/p__ConfigManager__models__configmanager.js.async.js"
   },
   {
-    "revision": "e7c0ee2d81136a89ab60",
+    "revision": "51ad7dd0bd60ac4559c5",
     "url": "/p__Dashboard__models__activities.js.async.js"
   },
   {
-    "revision": "e173e94e4924aafc2d05",
+    "revision": "776f6ebf9e3735d297d9",
     "url": "/p__Dashboard__models__chart.js.async.js"
   },
   {
-    "revision": "a4e1539abdea5edff249",
+    "revision": "0a812f10ea52caeb6f3b",
     "url": "/p__Dashboard__models__monitor.js.async.js"
   },
   {
-    "revision": "035a87bb53489a4f8c21",
+    "revision": "909ed6a4a27dfcbc4bd8",
     "url": "/p__Redis__models__redisadmin.js.async.js"
   },
   {
-    "revision": "a9383176faf6b8fed333",
+    "revision": "1ae000ec9f987e19a33e",
     "url": "/p__RoleManager__models__rolemanager.js.async.js"
   },
   {
-    "revision": "48ca9627b8eebb4c0924",
+    "revision": "b926dbb6ad652848e508",
     "url": "/p__UserManager__models__usermanager.js.async.js"
   },
   {
@@ -88,19 +88,19 @@ self.__precacheManifest = [
     "url": "/p__User__RegisterResult.async.js"
   },
   {
-    "revision": "19c7119c7bca82aaacfa",
+    "revision": "c482c656edee93aa9b2c",
     "url": "/p__User__models__captcha.js.async.js"
   },
   {
-    "revision": "5a4e8dce157addd17f44",
+    "revision": "0d4604adbcaebc69e14c",
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "a2dd0848bb0e4e524c6e",
+    "revision": "c45fbf393253e2c601f4",
     "url": "/umi.css"
   },
   {
-    "revision": "a2dd0848bb0e4e524c6e",
+    "revision": "c45fbf393253e2c601f4",
     "url": "/umi.js"
   },
   {
@@ -200,6 +200,10 @@ self.__precacheManifest = [
     "url": "/index.html"
   },
   {
+    "revision": "5423f638851bd441057fb363969ac6c9",
+    "url": "/favicon.png.redis"
+  },
+  {
     "revision": "347329d0982682b42d40c8162817a940",
     "url": "/icons\\icon-128x128.png"
   },
@@ -212,32 +216,28 @@ self.__precacheManifest = [
     "url": "/favicon.png"
   },
   {
-    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
-    "url": "/icons\\icon-512x512.png"
-  },
-  {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
     "url": "/favicon.png.back"
   },
   {
-    "revision": "5423f638851bd441057fb363969ac6c9",
-    "url": "/favicon.png.redis"
+    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
+    "url": "/icons\\icon-512x512.png"
   },
   {
-    "revision": "70af7a35733166735063f90072ee1150",
-    "url": "/img\\HsIsxMZiWKrNUavQUXqx.svg"
-  },
-  {
-    "revision": "e147bdebf32ef9cb7ce137ed0ed5d3a6",
-    "url": "/img\\BiazfanxmamNRoxxVxka.png"
+    "revision": "356efdc3a7c62a58403fb14854c46c71",
+    "url": "/img\\wAhyIChODzsoKIOBHcBk.svg"
   },
   {
     "revision": "9a723c40a87f1e96e339b0af5e3e42bc",
     "url": "/img\\sAuJeJzSKbUmHfBQRzmZ.svg"
   },
   {
-    "revision": "356efdc3a7c62a58403fb14854c46c71",
-    "url": "/img\\wAhyIChODzsoKIOBHcBk.svg"
+    "revision": "e147bdebf32ef9cb7ce137ed0ed5d3a6",
+    "url": "/img\\BiazfanxmamNRoxxVxka.png"
+  },
+  {
+    "revision": "70af7a35733166735063f90072ee1150",
+    "url": "/img\\HsIsxMZiWKrNUavQUXqx.svg"
   },
   {
     "revision": "1b92f9a438bb106d7f5d9394df1c88ab",
