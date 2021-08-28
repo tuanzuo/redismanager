@@ -4,7 +4,7 @@
 [![](https://img.shields.io/badge/Use%20up%20by-JDK%201.8+-important?logo=java&labelColor=02303A)](https://www.oracle.com/cn/java/technologies/javase/javase-jdk8-downloads.html)
 [![](https://img.shields.io/badge/Use%20up%20by-MySQL%205.x.x%20<%208.x.x-9cf?logo=MySQL&labelColor=02303A)](https://dev.mysql.com/doc/relnotes/mysql/5.7/en/)
 [![](https://img.shields.io/badge/Use%20up%20by-Redis%203.0.5+%20-06A0CE?logo=Redis&labelColor=02303A)](https://redis.io)
-[![](https://img.shields.io/badge/Use%20up%20by-Zookeeper%203.6.0+%20-06A0CE?logo=zhu&labelColor=02303A)](https://zookeeper.apache.org/doc/r3.6.0/index.html)
+[![](https://img.shields.io/badge/Use%20up%20by-Zookeeper%203.6.0+%20-06A0CE?logo=apache&labelColor=02303A)](https://zookeeper.apache.org/doc/r3.6.0/index.html)
 
 **redismanager**是用于管理Redis的数据。支持Redis**单机**和**集群**下数据的查询，添加，修改，删除；支持自定义 key，value 的序列化方式。
 

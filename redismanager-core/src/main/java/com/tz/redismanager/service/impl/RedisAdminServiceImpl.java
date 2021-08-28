@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.tz.redismanager.annotation.ConnectionId;
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.annotation.SetRedisTemplate;
+import com.tz.redismanager.cacher.annotation.Cacheable;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.po.RedisConfigPO;
 import com.tz.redismanager.domain.ApiResult;
@@ -26,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.DataType;
+import org.springframework.data.redis.connection.RedisServerCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,14 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
 
     @Autowired
     private IRedisConfigService redisConfigService;
+
+    @Cacheable(name = "redis服务器信息缓存", key = ConstInterface.CacheKey.REDIS_SERVER, var = "#id")
+    @SetRedisTemplate(whenIsNullContinueExec = true)
+    @Override
+    public ApiResult<RedisServerInfoVO> queryServerInfo(@ConnectionId String id) {
+        RedisTemplate<String, Object> redisTemplate = RedisContextUtils.getRedisTemplate();
+        return new ApiResult<>(ResultCode.SUCCESS, this.buildRedisServerInfoVO(redisTemplate));
+    }
 
     @SetRedisTemplate(whenIsNullContinueExec = true)
     @Override
@@ -116,34 +126,6 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
         return this.buildValueResp(vo, redisTemplate, keyType, value);
     }
 
-    private RedisValueResp buildValueResp(RedisValueQueryVO vo, RedisTemplate<String, Object> redisTemplate, String keyType, Object value) {
-        RedisValueResp resp = new RedisValueResp();
-        resp.setValue(value);
-        resp.setKeyType(keyType);
-        resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
-        resp.setPageNum(vo.getPageNum());
-        resp.setPageSize(vo.getPageSize());
-        Long totalSize = null;
-        if (HandlerTypeEnum.LIST.getType().equals(keyType)) {
-            totalSize = redisTemplate.opsForList().size(vo.getSearchKey());
-        } else if (HandlerTypeEnum.ZSET.getType().equals(keyType)) {
-            totalSize = redisTemplate.opsForZSet().size(vo.getSearchKey());
-        }
-        resp.setTotalSize(totalSize);
-        resp.setStart(vo.getStart());
-        resp.setEnd(vo.getEnd());
-        return resp;
-    }
-
-    /**
-     * 重新设置keySerializer
-     *
-     * @param redisTemplate
-     */
-    private void reSetKeySerializer(RedisTemplate<String, Object> redisTemplate) {
-        CommonUtils.reSetKeySerializer(redisTemplate);
-    }
-
     @MethodLog
     @SetRedisTemplate
     @Override
@@ -204,12 +186,69 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
     }
 
     /**
+     * 构建redis服务器信息
+     * @param redisTemplate
+     * @return
+     */
+    private RedisServerInfoVO buildRedisServerInfoVO(RedisTemplate<String, Object> redisTemplate) {
+        RedisServerCommands redisServerCommands = redisTemplate.getConnectionFactory().getConnection().serverCommands();
+        RedisServerInfoVO serverInfoVO = new RedisServerInfoVO();
+        serverInfoVO.setServer(redisServerCommands.info(ConstInterface.RedisServer.SERVER));
+        serverInfoVO.setClients(redisServerCommands.info(ConstInterface.RedisServer.CLIENTS));
+        serverInfoVO.setMemory(redisServerCommands.info(ConstInterface.RedisServer.MEMORY));
+        serverInfoVO.setPersistence(redisServerCommands.info(ConstInterface.RedisServer.PERSISTENCE));
+        serverInfoVO.setStats(redisServerCommands.info(ConstInterface.RedisServer.STATS));
+        serverInfoVO.setReplication(redisServerCommands.info(ConstInterface.RedisServer.REPLICATION));
+        serverInfoVO.setCpu(redisServerCommands.info(ConstInterface.RedisServer.CPU));
+        serverInfoVO.setCommandstats(redisServerCommands.info(ConstInterface.RedisServer.COMMANDSTATS));
+        serverInfoVO.setCluster(redisServerCommands.info(ConstInterface.RedisServer.CLUSTER));
+        serverInfoVO.setKeyspace(redisServerCommands.info(ConstInterface.RedisServer.KEYSPACE));
+        return serverInfoVO;
+    }
+
+    /**
+     * 构建redis的key对应的value数据
+     * @param vo
+     * @param redisTemplate
+     * @param keyType
+     * @param value
+     * @return
+     */
+    private RedisValueResp buildValueResp(RedisValueQueryVO vo, RedisTemplate<String, Object> redisTemplate, String keyType, Object value) {
+        RedisValueResp resp = new RedisValueResp();
+        resp.setValue(value);
+        resp.setKeyType(keyType);
+        resp.setExpireTime(redisTemplate.getExpire(vo.getSearchKey()));
+        resp.setPageNum(vo.getPageNum());
+        resp.setPageSize(vo.getPageSize());
+        Long totalSize = null;
+        if (HandlerTypeEnum.LIST.getType().equals(keyType)) {
+            totalSize = redisTemplate.opsForList().size(vo.getSearchKey());
+        } else if (HandlerTypeEnum.ZSET.getType().equals(keyType)) {
+            totalSize = redisTemplate.opsForZSet().size(vo.getSearchKey());
+        }
+        resp.setTotalSize(totalSize);
+        resp.setStart(vo.getStart());
+        resp.setEnd(vo.getEnd());
+        return resp;
+    }
+
+    /**
+     * 重新设置keySerializer
+     *
+     * @param redisTemplate
+     */
+    private void reSetKeySerializer(RedisTemplate<String, Object> redisTemplate) {
+        CommonUtils.reSetKeySerializer(redisTemplate);
+    }
+
+    /**
      * 设置root节点的title
      * @param root
      * @param keyCount
      */
     private void setRootTreeNodeTitle(RedisTreeNode root, Integer keyCount) {
-        root.setTitle(root.getTitle() + ConstInterface.Symbol.BRACKET_LEFT + keyCount + ConstInterface.Symbol.BRACKET_RIGHT);
+        root.setTitle(StringUtils.join(root.getTitle(), ConstInterface.Symbol.BRACKET_LEFT, keyCount, ConstInterface.Symbol.BRACKET_RIGHT));
     }
 
     /**

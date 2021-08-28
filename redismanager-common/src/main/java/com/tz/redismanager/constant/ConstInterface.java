@@ -122,6 +122,10 @@ public interface ConstInterface {
          */
         String REDIS_CONFIG = COMMON_PRE_KEY + "rds:conf";
         /**
+         * redis服务器信息的key
+         */
+        String REDIS_SERVER = COMMON_PRE_KEY + "rds:server";
+        /**
          * 分析页的key
          */
         String ANALYSIS = COMMON_PRE_KEY + "analysis";
@@ -187,5 +191,21 @@ public interface ConstInterface {
      */
     interface TokenType {
         String REDIS = "redis";
+    }
+
+    /**
+     * redis服务器信息
+     */
+    interface RedisServer {
+        String SERVER = "server";
+        String CLIENTS = "clients";
+        String MEMORY = "memory";
+        String PERSISTENCE = "persistence";
+        String STATS = "stats";
+        String REPLICATION = "replication";
+        String CPU = "cpu";
+        String COMMANDSTATS = "commandstats";
+        String CLUSTER = "cluster";
+        String KEYSPACE = "keyspace";
     }
 }
