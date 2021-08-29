@@ -44,8 +44,8 @@ public class RedisStatisticServiceImpl implements IStatisticService {
     private static final Integer DAYS_31 = 31;
     private static final Integer DAYS_7 = 7;
     private static final Integer DAYS_1 = 1;
-    private static final Integer YEAR_1 = DAYS_365;
-    private static final Integer YEAR_10 = DAYS_365 * 10;
+    private static final Integer DAYS_YEAR_1 = DAYS_365;
+    private static final Integer DAYS_YEAR_10 = DAYS_365 * 10;
     private static final long START = 0;
     private static final long END = 50;
 
@@ -95,7 +95,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         DateUtils.CurrentDate currentDate = DateUtils.getCurrentDate();
         String uuid = UUIDUtils.generateId();
         Map<String, Integer> map = Maps.newHashMap();
-        map.put(ConstInterface.CacheKey.VISIT_TOTAL_ALL, YEAR_10 * 24);
+        map.put(ConstInterface.CacheKey.VISIT_TOTAL_ALL, DAYS_YEAR_10 * 24);
         map.put(StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYY()), DAYS_365 * 24);
         map.put(StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMM()), DAYS_31 * 24);
         map.put(StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMMDD()), DAYS_1 * 24);
@@ -109,8 +109,8 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         String currentMonthKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMM());
         String currentDayKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMMDD());
         String currentHourKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMMDDHH());
-        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, ConstInterface.Common.ALL_KEY), currentDate.getYYYY(), currentYearKey, YEAR_10));
-        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY()), currentDate.getMM(), currentMonthKey, YEAR_1));
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, ConstInterface.Common.ALL_KEY), currentDate.getYYYY(), currentYearKey, DAYS_YEAR_10));
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY()), currentDate.getMM(), currentMonthKey, DAYS_YEAR_1));
         list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYYMM()), currentDate.getDD(), currentDayKey, DAYS_31));
         list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY(), ConstInterface.Common.WEEK_KEY, new DateTime().weekOfWeekyear().get()), String.valueOf(new DateTime().dayOfWeek().get()), currentDayKey, DAYS_7));
         list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYYMMDD()), currentDate.getHH(), currentHourKey, DAYS_1));
@@ -319,7 +319,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         String currentMonthKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMM());
         String currentDayKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMMDD());
         String currentHourKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMMDDHH());
-        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY()), currentDate.getMM(), currentMonthKey, YEAR_1));
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY()), currentDate.getMM(), currentMonthKey, DAYS_YEAR_1));
         list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYYMM()), currentDate.getDD(), currentDayKey, DAYS_31));
         list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY(), ConstInterface.Common.WEEK_KEY, new DateTime().weekOfWeekyear().get()), String.valueOf(new DateTime().dayOfWeek().get()), currentDayKey, DAYS_7));
         list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYYMMDD()), currentDate.getHH(), currentHourKey, DAYS_1));
