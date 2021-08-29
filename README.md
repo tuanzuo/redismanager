@@ -55,7 +55,7 @@ redismanager/
 |![](https://img-blog.csdnimg.cn/2021082815191339.png)|![](https://img-blog.csdnimg.cn/20210828151918149.png)|
 | 用户管理 | 角色管理 |
 |![](https://img-blog.csdnimg.cn/20210828151943384.png)|![](https://img-blog.csdnimg.cn/20210828151939730.png)|
-| 配置管理 | 连接管理 |
+| 配置管理 | Redis连接管理 |
 |![](https://img-blog.csdnimg.cn/20210828151903389.png)|![](https://img-blog.csdnimg.cn/20210828151908667.png)|
 | Redis-Operational |  |
 |![](https://img-blog.csdnimg.cn/20210828151936100.png)| |
