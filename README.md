@@ -12,17 +12,17 @@
 
 ```text
 redismanager/
-    ├── redismanager-cacher/ 缓存模块
-    ├── redismanager-common/ 公共模块
-    ├── redismanager-config/ 配置模块
-    ├── redismanager-config-sdk/ 配置SDK模块
-    ├── redismanager-core/ 核心模块
-    ├── redismanager-dao/ DAO模块
-    ├── redismanager-limiter/ 限流模块
-    ├── redismanager-model/ 模型模块
-    ├── redismanager-token/ Token模块
+    ├── redismanager-cacher/        缓存模块
+    ├── redismanager-common/        公共模块
+    ├── redismanager-config/        配置模块
+    ├── redismanager-config-sdk/    配置SDK模块
+    ├── redismanager-core/          核心模块
+    ├── redismanager-dao/           DAO模块
+    ├── redismanager-limiter/       限流模块
+    ├── redismanager-model/         模型模块
+    ├── redismanager-token/         Token模块
     ├── redismanager-uid-generator/ UID模块
-    ├── redismanager-web/ WEB模块
+    ├── redismanager-web/           WEB模块
     ├── ……
     └── ……
 ```
