@@ -445,7 +445,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         //List转成Map，key: RedisConfigPO.id
         ImmutableMap<Long, RedisConfigPO> map = Maps.uniqueIndex(configList, (redisConfigPO) -> redisConfigPO.getId());
         details.forEach(temp -> {
-            String redisConfigId = String.valueOf(temp.getValue());
+            Long redisConfigId = Long.valueOf(temp.getValue().toString());
             RedisConfigPO configPO = map.get(redisConfigId);
             if (null == configPO) {
                 return;
