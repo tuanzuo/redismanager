@@ -107,6 +107,8 @@ public interface ConstInterface {
          */
         int NO_EXPIRE = -1;
         int ZERO = 0;
+        String WEEK_KEY = ":week:";
+        String ALL_KEY = "all";
     }
 
     /**

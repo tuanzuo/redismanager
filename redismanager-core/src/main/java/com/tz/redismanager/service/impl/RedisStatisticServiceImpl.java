@@ -16,6 +16,7 @@ import com.tz.redismanager.service.IStatisticService;
 import com.tz.redismanager.util.DateUtils;
 import com.tz.redismanager.util.UUIDUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.javatuples.Quartet;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -93,37 +94,29 @@ public class RedisStatisticServiceImpl implements IStatisticService {
     public void addVisit() {
         DateUtils.CurrentDate currentDate = DateUtils.getCurrentDate();
         String uuid = UUIDUtils.generateId();
-        String totalKey = ConstInterface.CacheKey.VISIT_TOTAL_ALL;
-        this.incrementVisit(totalKey, uuid, YEAR_10, TimeUnit.DAYS);
+        Map<String, Integer> map = Maps.newHashMap();
+        map.put(ConstInterface.CacheKey.VISIT_TOTAL_ALL, YEAR_10 * 24);
+        map.put(StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYY()), DAYS_365 * 24);
+        map.put(StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMM()), DAYS_31 * 24);
+        map.put(StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMMDD()), DAYS_1 * 24);
+        map.put(StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMMDDHH()), HOURS_1);
+        map.forEach((key, value) -> {
+            this.incrementVisit(key, uuid, value, TimeUnit.HOURS);
+        });
 
+        List<Quartet<String, String, String, Integer>> list = new ArrayList<>();
         String currentYearKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYY());
-        this.incrementVisit(currentYearKey, uuid, DAYS_365, TimeUnit.DAYS);
-
-        String totalDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, "all");
-        this.incrementDetailVisit(totalDetailKey, currentDate.getYYYY(), currentYearKey, YEAR_10);
-
         String currentMonthKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMM());
-        this.incrementVisit(currentMonthKey, uuid, DAYS_31, TimeUnit.DAYS);
-
-        String yearDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY());
-        this.incrementDetailVisit(yearDetailKey, currentDate.getMM(), currentMonthKey, YEAR_1);
-
         String currentDayKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMMDD());
-        this.incrementVisit(currentDayKey, uuid, DAYS_1, TimeUnit.DAYS);
-
-        String mmDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYYMM());
-        this.incrementDetailVisit(mmDetailKey, currentDate.getDD(), currentDayKey, DAYS_31);
-
-        int weekOfYear = new DateTime().weekOfWeekyear().get();
-        int dayOfWeek = new DateTime().dayOfWeek().get();
-        String weekDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
-        this.incrementDetailVisit(weekDetailKey, String.valueOf(dayOfWeek), currentDayKey, DAYS_7);
-
         String currentHourKey = StringUtils.join(ConstInterface.CacheKey.VISIT_TOTAL, currentDate.getYYYYMMDDHH());
-        this.incrementVisit(currentHourKey, uuid, HOURS_1, TimeUnit.HOURS);
-
-        String ddDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYYMMDD());
-        this.incrementDetailVisit(ddDetailKey, currentDate.getHH(), currentHourKey, DAYS_1);
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, ConstInterface.Common.ALL_KEY), currentDate.getYYYY(), currentYearKey, YEAR_10));
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY()), currentDate.getMM(), currentMonthKey, YEAR_1));
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYYMM()), currentDate.getDD(), currentDayKey, DAYS_31));
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY(), ConstInterface.Common.WEEK_KEY, new DateTime().weekOfWeekyear().get()), String.valueOf(new DateTime().dayOfWeek().get()), currentDayKey, DAYS_7));
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYYMMDD()), currentDate.getHH(), currentHourKey, DAYS_1));
+        list.forEach(temp -> {
+            this.incrementDetailVisit(temp.getValue0(), temp.getValue1(), temp.getValue2(), temp.getValue3());
+        });
     }
 
     @Override
@@ -184,7 +177,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
 
         if (DateTypeEnum.WEEK.getType().equals(param.getDateType())) {
             int weekOfYear = new DateTime().weekOfWeekyear().get();
-            String weekDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
+            String weekDetailKey = StringUtils.join(ConstInterface.CacheKey.VISIT_DETAIL, currentDate.getYYYY(), ConstInterface.Common.WEEK_KEY, weekOfYear);
             Map<Object, Object> weekDetails = redisTemplate.opsForHash().entries(weekDetailKey);
             weekDetails.forEach((key, value) -> {
                 VisitDataDTO.totalDeail deail = new VisitDataDTO.totalDeail();
@@ -245,7 +238,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
 
         if (DateTypeEnum.WEEK.getType().equals(param.getDateType())) {
             int weekOfYear = new DateTime().weekOfWeekyear().get();
-            String weekDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
+            String weekDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY(), ConstInterface.Common.WEEK_KEY, weekOfYear);
             Map<Object, Object> weekDetails = redisTemplate.opsForHash().entries(weekDetailKey);
             weekDetails.forEach((key, value) -> {
                 UserVisitDataDTO.Detail deail = new UserVisitDataDTO.Detail();
@@ -271,26 +264,12 @@ public class RedisStatisticServiceImpl implements IStatisticService {
         }
 
         //user visit排行榜
-        if (DateTypeEnum.YEAR.getType().equals(param.getDateType())) {
-            String yearDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYY());
-            this.buildUserRankVisitDetail(dto, yearDetailKey);
-        }
-
-        if (DateTypeEnum.MONTH.getType().equals(param.getDateType())) {
-            String mmDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYYMM());
-            this.buildUserRankVisitDetail(dto, mmDetailKey);
-        }
-
-        if (DateTypeEnum.WEEK.getType().equals(param.getDateType())) {
-            int weekOfYear = new DateTime().weekOfWeekyear().get();
-            String weekDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
-            this.buildUserRankVisitDetail(dto, weekDetailKey);
-        }
-
-        if (DateTypeEnum.TODAY.getType().equals(param.getDateType())) {
-            String ddDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYYMMDD());
-            this.buildUserRankVisitDetail(dto, ddDetailKey);
-        }
+        Map<String, String> map = Maps.newHashMap();
+        map.put(DateTypeEnum.YEAR.getType(), StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYY()));
+        map.put(DateTypeEnum.MONTH.getType(), StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYYMM()));
+        map.put(DateTypeEnum.WEEK.getType(), StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYY(), ConstInterface.Common.WEEK_KEY, new DateTime().weekOfWeekyear().get()));
+        map.put(DateTypeEnum.TODAY.getType(), StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYYMMDD()));
+        this.buildUserRankVisitDetail(dto, map.get(param.getDateType()));
         return dto;
     }
 
@@ -298,46 +277,27 @@ public class RedisStatisticServiceImpl implements IStatisticService {
     @Async
     public void addRedisConfigVisit(Long redisConfigId) {
         DateUtils.CurrentDate currentDate = DateUtils.getCurrentDate();
-
-        String currentYearDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY());
-        this.incrementRankVisit(currentYearDetailKey, redisConfigId, DAYS_365);
-
-        String currentMonthDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYYMM());
-        this.incrementRankVisit(currentMonthDetailKey, redisConfigId, DAYS_31);
-
-        int weekOfYear = new DateTime().weekOfWeekyear().get();
-        String currentWeekDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
-        this.incrementRankVisit(currentWeekDetailKey, redisConfigId, DAYS_7);
-
-        String currentDayDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYYMMDD());
-        this.incrementRankVisit(currentDayDetailKey, redisConfigId, DAYS_1);
+        Map<String, Integer> map = Maps.newHashMap();
+        map.put(StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY()), DAYS_365);
+        map.put(StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYYMM()), DAYS_31);
+        map.put(StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY(), ConstInterface.Common.WEEK_KEY, new DateTime().weekOfWeekyear().get()), DAYS_7);
+        map.put(StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYYMMDD()), DAYS_1);
+        map.forEach((key, value) -> {
+            this.incrementRankVisit(key, redisConfigId, value);
+        });
     }
 
     @Override
     public RedisConfigVisitDataDTO countRedisConfigVisit(AnalysisParam param) {
-        RedisConfigVisitDataDTO dto = new RedisConfigVisitDataDTO();
         DateUtils.CurrentDate currentDate = DateUtils.getCurrentDate();
+        Map<String, String> map = Maps.newHashMap();
+        map.put(DateTypeEnum.YEAR.getType(), StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY()));
+        map.put(DateTypeEnum.MONTH.getType(), StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYYMM()));
+        map.put(DateTypeEnum.WEEK.getType(), StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY(), ConstInterface.Common.WEEK_KEY, new DateTime().weekOfWeekyear().get()));
+        map.put(DateTypeEnum.TODAY.getType(), StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYYMMDD()));
 
-        if (DateTypeEnum.YEAR.getType().equals(param.getDateType())) {
-            String yearDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY());
-            this.buildRedisConfigVisitDetail(dto, yearDetailKey);
-        }
-
-        if (DateTypeEnum.MONTH.getType().equals(param.getDateType())) {
-            String mmDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYYMM());
-            this.buildRedisConfigVisitDetail(dto, mmDetailKey);
-        }
-
-        if (DateTypeEnum.WEEK.getType().equals(param.getDateType())) {
-            int weekOfYear = new DateTime().weekOfWeekyear().get();
-            String weekDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
-            this.buildRedisConfigVisitDetail(dto, weekDetailKey);
-        }
-
-        if (DateTypeEnum.TODAY.getType().equals(param.getDateType())) {
-            String ddDetailKey = StringUtils.join(ConstInterface.CacheKey.REDIS_CONFIG_VISIT_RANK_DETAIL, currentDate.getYYYYMMDD());
-            this.buildRedisConfigVisitDetail(dto, ddDetailKey);
-        }
+        RedisConfigVisitDataDTO dto = new RedisConfigVisitDataDTO();
+        this.buildRedisConfigVisitDetail(dto, map.get(param.getDateType()));
         return dto;
     }
 
@@ -346,45 +306,36 @@ public class RedisStatisticServiceImpl implements IStatisticService {
             return;
         }
         DateUtils.CurrentDate currentDate = DateUtils.getCurrentDate();
+        Map<String, Integer> map = Maps.newHashMap();
+        map.put(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYY()), DAYS_365 * 24);
+        map.put(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMM()), DAYS_31 * 24);
+        map.put(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMMDD()), DAYS_1 * 24);
+        map.put(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMMDDHH()), HOURS_1);
+        map.forEach((key, value) -> {
+            this.incrementVisit(key, userId, value, TimeUnit.HOURS);
+        });
 
-        String currentYearKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYY());
-        this.incrementVisit(currentYearKey, userId, DAYS_365, TimeUnit.DAYS);
-
+        List<Quartet<String, String, String, Integer>> list = new ArrayList<>();
         String currentMonthKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMM());
-        this.incrementVisit(currentMonthKey, userId, DAYS_31, TimeUnit.DAYS);
-
-        String yearDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY());
-        this.incrementDetailVisit(yearDetailKey, currentDate.getMM(), currentMonthKey, YEAR_1);
-
         String currentDayKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMMDD());
-        this.incrementVisit(currentDayKey, userId, DAYS_1, TimeUnit.DAYS);
-
-        String mmDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYYMM());
-        this.incrementDetailVisit(mmDetailKey, currentDate.getDD(), currentDayKey, DAYS_31);
-
-        int weekOfYear = new DateTime().weekOfWeekyear().get();
-        int dayOfWeek = new DateTime().dayOfWeek().get();
-        String weekDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
-        this.incrementDetailVisit(weekDetailKey, String.valueOf(dayOfWeek), currentDayKey, DAYS_7);
-
         String currentHourKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_TOTAL, currentDate.getYYYYMMDDHH());
-        this.incrementVisit(currentHourKey, userId, HOURS_1, TimeUnit.HOURS);
-
-        String ddDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYYMMDD());
-        this.incrementDetailVisit(ddDetailKey, currentDate.getHH(), currentHourKey, DAYS_1);
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY()), currentDate.getMM(), currentMonthKey, YEAR_1));
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYYMM()), currentDate.getDD(), currentDayKey, DAYS_31));
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYY(), ConstInterface.Common.WEEK_KEY, new DateTime().weekOfWeekyear().get()), String.valueOf(new DateTime().dayOfWeek().get()), currentDayKey, DAYS_7));
+        list.add(Quartet.with(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_DETAIL, currentDate.getYYYYMMDD()), currentDate.getHH(), currentHourKey, DAYS_1));
+        list.forEach(temp -> {
+            this.incrementDetailVisit(temp.getValue0(), temp.getValue1(), temp.getValue2(), temp.getValue3());
+        });
 
         //user visit排行榜
-        String currentYearDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYY());
-        this.incrementRankVisit(currentYearDetailKey, userName, DAYS_365);
-
-        String currentMonthDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYYMM());
-        this.incrementRankVisit(currentMonthDetailKey, userName, DAYS_31);
-
-        String currentWeekDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYY(), ":week:", weekOfYear);
-        this.incrementRankVisit(currentWeekDetailKey, userName, DAYS_7);
-
-        String currentDayDetailKey = StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYYMMDD());
-        this.incrementRankVisit(currentDayDetailKey, userName, DAYS_1);
+        Map<String, Integer> mapUserVisit = Maps.newHashMap();
+        mapUserVisit.put(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYY()), DAYS_365);
+        mapUserVisit.put(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYYMM()), DAYS_31);
+        mapUserVisit.put(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYY(), ConstInterface.Common.WEEK_KEY, new DateTime().weekOfWeekyear().get()), DAYS_7);
+        mapUserVisit.put(StringUtils.join(ConstInterface.CacheKey.USER_VISIT_RANK_DETAIL, currentDate.getYYYYMMDD()), DAYS_1);
+        mapUserVisit.forEach((key, value) -> {
+            this.incrementRankVisit(key, userName, value);
+        });
     }
 
     /**

@@ -154,6 +154,13 @@
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>3.14.1</version>
             </dependency>
+            <!-- java元组类 s:https://github.com/javatuples/javatuples-->
+            <dependency>
+                <groupId>org.javatuples</groupId>
+                <artifactId>javatuples</artifactId>
+                <version>1.2</version>
+            </dependency>
+            <!-- java元组类 e-->
         </dependencies>
     </dependencyManagement>
 
