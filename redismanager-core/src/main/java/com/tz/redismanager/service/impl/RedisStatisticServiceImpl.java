@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 @Service
 public class RedisStatisticServiceImpl implements IStatisticService {
 
+    private static final Integer MINUTE_10 = 10;
     private static final Integer HOURS_24 = 24;
     private static final Integer HOURS_1 = 1;
     private static final Integer DAYS_365 = 365;
@@ -73,7 +74,7 @@ public class RedisStatisticServiceImpl implements IStatisticService {
             return;
         }
         redisTemplate.opsForValue().setBit(userOnlineKey, userId, true);
-        redisTemplate.expire(userOnlineKey, HOURS_24, TimeUnit.HOURS);
+        redisTemplate.expire(userOnlineKey, MINUTE_10, TimeUnit.MINUTES);
     }
 
     @Override
