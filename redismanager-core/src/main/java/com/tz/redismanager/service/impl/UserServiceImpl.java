@@ -116,6 +116,10 @@ public class UserServiceImpl implements IUserService {
         //未读消息条数-在线人数
         //jsonObject.put("unreadCount", userStatisticsService.countOnlineUser());
         jsonObject.put("unreadCount", 0);
+        //在线人数 v1.7.0
+        jsonObject.put("onlineUserCount", userStatisticsService.countOnlineUser());
+        //注册天数 v1.7.0
+        jsonObject.put("registerDay", null != userPO.getCreateTime() ? (int) ((System.currentTimeMillis() - userPO.getCreateTime().getTime()) / (24 * 60 * 60 * 1000)) : 0);
         //右上角用户头像 v1.5.0
         jsonObject.put("avatar", "/img/BiazfanxmamNRoxxVxka.png");
         return jsonObject;
