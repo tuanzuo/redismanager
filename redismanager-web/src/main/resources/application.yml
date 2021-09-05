@@ -56,7 +56,7 @@ spring:
     #自动执行初始化脚本使用(需要提前创建好数据库->db.name)：首次启动应用时设置为ALWAYS，执行完毕后需要把ALWAYS改为NEVER，否则对已存在的表，会报错【如果把continueOnError设置为true就不会报错了】
     initializationMode: ALWAYS
     schema: classpath*:sql/redisadmin.sql
-    #初始化脚本错误时是否继续进行，true:继续，false:不继续【如果把initializationMode一直设置为ALWAYS时，可以把continueOnError设置为true，再次启动应用时就不会报错了】
+    #执行初始化脚本错误时是否继续进行，true:继续，false:不继续【如果把initializationMode一直设置为ALWAYS时，可以把continueOnError设置为true，再次启动应用时就不会报错了】
     continueOnError: true
 
 #mybatis
