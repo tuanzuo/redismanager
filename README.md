@@ -41,7 +41,7 @@ redismanager/
 </font>），**redis**（<font color="red">版本：3.0.5+</font>），**mysql**（<font color="red">版本：5.x.x，不支持 8.x.x</font>），因此你需要提前准备好这些环境，这里不再赘述
 
 1. 执行 redismanager/doc/sql/ 路径 `redisadmin-create-db.sql` 脚本，创建一个名称为redisadmin的数据库(相关的表会在应用启动时自动创建)<br/>
-备注：应用首次启动时把application.yml中的spring.datasource.initializationMode设置为ALWAYS，spring.datasource.continueOnError设置为false<br/>
+**备注**：应用首次启动时把application.yml中的spring.datasource.initializationMode设置为ALWAYS，spring.datasource.continueOnError设置为false<br/>
 应用后续启动时把application.yml中的中的spring.datasource.initializationMode设置为NEVER或者把
 spring.datasource.initializationMode设置为ALWAYS，spring.datasource.continueOnError设置为true
 2. 修改 redismanager-web 模板 `config/config-local.properties` 文件中数据库，redis，zookeeper 的连接和配置
