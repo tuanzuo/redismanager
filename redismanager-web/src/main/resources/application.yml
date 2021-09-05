@@ -80,6 +80,7 @@ spring:
     port: ${redis.port}
     password: ${redis.password}
     database: ${redis.database}
+    timeout: ${redis.timeout}
 
 logging:
   level:
@@ -107,6 +108,7 @@ spring:
     port: ${redis.port}
     password: ${redis.password}
     database: ${redis.database}
+    timeout: ${redis.timeout}
 
 logging:
   level: 
@@ -131,6 +133,7 @@ spring:
     port: ${redis.port}
     password: ${redis.password}
     database: ${redis.database}
+    timeout: ${redis.timeout}
 
 logging:
   level: 
@@ -150,6 +153,11 @@ spring:
        nodes: ${redis.cluster.nodes}
     password: ${redis.password}
     database: ${redis.database}
+    timeout: ${redis.timeout}
+    lettuce:
+      pool:
+        maxActive: ${redis.maxActive}
+        maxWait: ${redis.maxWait}
 
 logging:
   level:
