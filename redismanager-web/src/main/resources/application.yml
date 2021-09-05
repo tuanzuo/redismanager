@@ -53,6 +53,9 @@ spring:
     filters: stat,wall,log4j
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     useGlobalDataSourceStat: true
+    #自动执行初始化脚本使用(需要提前创建好数据库->db.name)：首次启动项目时设置为ALWAYS，执行完毕后需要把ALWAYS改为NEVER，否则对已存在的表，会报错
+    initializationMode: NEVER
+    schema: classpath*:sql/redisadmin.sql
 
 #mybatis
 mybatis:
