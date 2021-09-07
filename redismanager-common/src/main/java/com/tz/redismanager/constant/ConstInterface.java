@@ -139,6 +139,10 @@ public interface ConstInterface {
          */
         String CURRENT_USER = COMMON_PRE_KEY + "usr:curt";
         /**
+         * 用户列表的key
+         */
+        String USER_LIST = COMMON_PRE_KEY + "usr:list";
+        /**
          * 认证信息的key
          */
         String USER_AUTH = COMMON_PRE_KEY + "user:auth:";
@@ -179,6 +183,10 @@ public interface ConstInterface {
          * 验证码key
          */
         String CAPTCHA_KEY = COMMON_PRE_KEY + "captcha:";
+        /**
+         * 角色列表的key
+         */
+        String ROLE_LIST = COMMON_PRE_KEY + "role:list";
     }
 
     /**

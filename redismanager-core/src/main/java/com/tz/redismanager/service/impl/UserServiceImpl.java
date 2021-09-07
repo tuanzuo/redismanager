@@ -45,8 +45,10 @@ public class UserServiceImpl implements IUserService {
     private static final String ROLE_SUPER_ADMIN = "superadmin";
 
     private static List<String> noteList = Arrays.asList("世界那么大", "我想去看看", "生活不只是苟且", "还有诗和远方",
-            "有人与我立黄昏", "有人问我粥可温", "有人与我捻熄灯", "有人共我书半生",
-            "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰", "有人醒我茶已冷");
+        "有人与我立黄昏", "有人问我粥可温", "有人与我捻熄灯", "有人共我书半生",
+        "有人陪我夜已深", "有人与我把酒分", "有人拭我相思泪", "有人梦我与前尘", "有人陪我顾星辰", "有人醒我茶已冷",
+        "世人慌慌张张，不过为了碎银几两，偏偏这碎银几两，可解世间万种惆怅。", "闲时与你立黄昏，灶前笑问粥可温。",
+        "雪压枝头低，虽低不着泥；一朝红日出，依旧与天齐。");
 
     @Autowired
     private ICaptchaService captchaService;
@@ -196,6 +198,7 @@ public class UserServiceImpl implements IUserService {
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
+    @Cacheable(name = "用户列表信息缓存", key = ConstInterface.CacheKey.USER_LIST, var = "#param.name + ':' + #param.status + ':' + #param.getOffset() + ':' + #param.getRows()")
     @Override
     public ApiResult<?> queryList(UserPageParam param) {
         Integer total = userPOMapper.countUser(param.getName(), param.getStatus(), ConstInterface.IF_DEL.NO);
