@@ -77,38 +77,20 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
 
     @Override
     public ApiResult<RedisConfigPageVO> searchList(RedisConfigPageParam param) {
+        //1、查询数据
         RedisConfigPageVO pageVO = new RedisConfigPageVO();
         List<RedisConfigPO> list = redisConfigPOMapper.selectPage(this.buidPageParams(param));
         if (CollectionUtils.isEmpty(list)) {
             return new ApiResult<>(ResultCode.SUCCESS, pageVO);
         }
-
-        Long currentMinId = 0L;
-        List<RedisConfigDTO> resultList = new ArrayList<>();
-        int i = 0;
-        for (RedisConfigPO temp : list) {
-            //得到本次查询最小的id
-            if (i == 0) {
-                currentMinId = temp.getId();
-            }
-            i++;
-            if (temp.getId() < currentMinId) {
-                currentMinId = temp.getId();
-            }
-
-            RedisConfigDTO target = new RedisConfigDTO();
-            BeanUtils.copyProperties(temp, target);
-            resultList.add(target);
-        }
-        //设置本次查询最小的id
-        pageVO.setCurrentMinId(currentMinId);
-        pageVO.setConfigList(resultList);
-
-        //扩展配置
+        //2、构建返回的List
+        List<RedisConfigDTO> resultList = this.buildRedisConfigDTOList(pageVO, list);
+        //3、查询扩展配置
         List<RedisConfigExtPO> extList = this.queryRedisConfigExts(list);
         if (CollectionUtils.isEmpty(extList)) {
             return new ApiResult<>(ResultCode.SUCCESS, pageVO);
         }
+        //4、设置扩展配置数据
         Map<Long, List<RedisConfigExtPO>> map = extList.stream().collect(Collectors.groupingBy(RedisConfigExtPO::getRconfigId));
         resultList.forEach(temp -> {
             temp.setExtList(map.get(temp.getId()));
@@ -245,6 +227,30 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
             logger.error("下载文件异常，filePath:{}", filePath, e);
         }
         return entity;
+    }
+
+    private List<RedisConfigDTO> buildRedisConfigDTOList(RedisConfigPageVO pageVO, List<RedisConfigPO> list) {
+        Long currentMinId = 0L;
+        List<RedisConfigDTO> resultList = new ArrayList<>();
+        int i = 0;
+        for (RedisConfigPO temp : list) {
+            //得到本次查询最小的id
+            if (i == 0) {
+                currentMinId = temp.getId();
+            }
+            i++;
+            if (temp.getId() < currentMinId) {
+                currentMinId = temp.getId();
+            }
+
+            RedisConfigDTO target = new RedisConfigDTO();
+            BeanUtils.copyProperties(temp, target);
+            resultList.add(target);
+        }
+        //设置本次查询最小的id
+        pageVO.setCurrentMinId(currentMinId);
+        pageVO.setConfigList(resultList);
+        return resultList;
     }
 
     private List<RedisConfigExtPO> queryRedisConfigExts(List<RedisConfigPO> list) {
