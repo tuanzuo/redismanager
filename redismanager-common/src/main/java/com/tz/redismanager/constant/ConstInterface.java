@@ -123,6 +123,7 @@ public interface ConstInterface {
          * redis连接信息的key
          */
         String REDIS_CONFIG = COMMON_PRE_KEY + "rds:conf";
+        String REDIS_CONFIG_DTO = COMMON_PRE_KEY + "rds:conf:dto";
         /**
          * redis服务器信息的key
          */

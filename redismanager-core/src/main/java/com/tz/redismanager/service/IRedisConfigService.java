@@ -31,7 +31,12 @@ public interface IRedisConfigService {
     /**
      * 查询redis连接配置
      */
-    RedisConfigDTO query(Long id);
+    RedisConfigPO queryPO(Long id);
+
+    /**
+     * 查询redis连接配置
+     */
+    RedisConfigDTO queryDTO(Long id);
 
     /**
      * 批量查询redis连接配置
@@ -49,6 +54,16 @@ public interface IRedisConfigService {
      * 失效redis连接配置缓存
      */
     void invalidateCache(Long id);
+
+    /**
+     * 失效redis连接配置PO缓存
+     */
+    void invalidatePOCache(Long id);
+
+    /**
+     * 失效redis连接配置DTO缓存
+     */
+    void invalidateDTOCache(Long id);
 
     /**
      * 添加redis连接配置
