@@ -258,7 +258,7 @@ public class RedisAdminServiceImpl implements IRedisAdminService {
      */
     private RedisTreeNode buildRootTreeNode(Long id) {
         String rootNodeTitle = ConstInterface.Common.ROOT_NODE_TITLE;
-        RedisConfigPO configPO = redisConfigService.query(id);
+        RedisConfigPO configPO = redisConfigService.queryPO(id);
         if (null != configPO) {
             rootNodeTitle = configPO.getName();
         }

@@ -23,7 +23,10 @@ public class RedisConfigPageVO {
     List<?> configList = new ArrayList<>();
 
     /**
-     * 当前redis连接配置列表中最小的id
+     * 当前redis连接配置列表中最小的id<br/>
+     * v1.7.0-20211109-需要把currentMinId属性的类型从Long修改为String，<br/>
+     * 因为js的number类型有个最大值（安全值）。即2的53次方=9007199254740992，如果超过这个值，那么js会出现不精确的问题，<br/>
+     * 例如：数据库中的id=21827466180016128，但是页面中展示的id=21827466180016130<br/>
      */
-    Long currentMinId = 0L;
+    String currentMinId = "0";
 }

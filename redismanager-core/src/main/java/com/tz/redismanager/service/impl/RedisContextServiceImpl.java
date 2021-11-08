@@ -53,7 +53,7 @@ public class RedisContextServiceImpl implements IRedisContextService {
             logger.info("[redisContext] [initContext] [已存在对应的redisTemplate] {id:{}}", id);
             return null;
         }
-        RedisConfigDTO redisConfigDto = redisConfigService.query(id);
+        RedisConfigDTO redisConfigDto = redisConfigService.queryDTO(id);
         if (null == redisConfigDto) {
             logger.error("[redisContext] [initContext] [查询不到redisConfig数据] {id:{}}", id);
             return null;

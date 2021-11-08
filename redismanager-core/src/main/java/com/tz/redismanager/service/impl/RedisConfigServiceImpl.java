@@ -91,19 +91,24 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
             return new ApiResult<>(ResultCode.SUCCESS, pageVO);
         }
         //4、设置扩展配置数据
-        Map<Long, List<RedisConfigExtPO>> map = extList.stream().collect(Collectors.groupingBy(RedisConfigExtPO::getRconfigId));
+        Map<String, List<RedisConfigExtPO>> map = extList.stream().collect(Collectors.groupingBy(temp -> String.valueOf(temp.getRconfigId())));
         resultList.forEach(temp -> {
             temp.setExtList(map.get(temp.getId()));
         });
         return new ApiResult<>(ResultCode.SUCCESS, pageVO);
     }
 
-    @Cacheable(name = "redis连接配置信息缓存", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
+    @Cacheable(name = "redis连接配置信息PO缓存", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
     @Override
-    public RedisConfigDTO query(Long id) {
-        RedisConfigDTO result = new RedisConfigDTO();
+    public RedisConfigPO queryPO(Long id) {
+        return redisConfigPOMapper.selectByPrimaryKey(id);
+    }
+
+    @Cacheable(name = "redis连接配置信息DTO缓存", key = ConstInterface.CacheKey.REDIS_CONFIG_DTO, var = "#id")
+    @Override
+    public RedisConfigDTO queryDTO(Long id) {
         RedisConfigPO po = redisConfigPOMapper.selectByPrimaryKey(id);
-        BeanUtils.copyProperties(po, result);
+        RedisConfigDTO result = this.convertRedisConfigPOToDTO(po);
         List<RedisConfigExtPO> extPOS = redisConfigExtPOMapper.selectList(this.buildQueryRedisConfigExtDTO(po));
         result.setExtList(extPOS);
         return result;
@@ -123,9 +128,21 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         return redisConfigPOMapper.selectToAnalysis(ConstInterface.IF_DEL.NO);
     }
 
-    @CacheEvict(name = "redis连接配置信息失效", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
     @Override
     public void invalidateCache(Long id) {
+        springUtils.getBean(IRedisConfigService.class).invalidateDTOCache(id);
+        springUtils.getBean(IRedisConfigService.class).invalidatePOCache(id);
+    }
+
+    @CacheEvict(name = "redis连接配置信息PO失效", key = ConstInterface.CacheKey.REDIS_CONFIG, var = "#id")
+    @Override
+    public void invalidatePOCache(Long id) {
+
+    }
+
+    @CacheEvict(name = "redis连接配置信息DTO失效", key = ConstInterface.CacheKey.REDIS_CONFIG_DTO, var = "#id")
+    @Override
+    public void invalidateDTOCache(Long id) {
 
     }
 
@@ -243,14 +260,20 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
                 currentMinId = temp.getId();
             }
 
-            RedisConfigDTO target = new RedisConfigDTO();
-            BeanUtils.copyProperties(temp, target);
-            resultList.add(target);
+            resultList.add(this.convertRedisConfigPOToDTO(temp));
         }
-        //设置本次查询最小的id
-        pageVO.setCurrentMinId(currentMinId);
+        /**设置本次查询最小的id--转换id-->Long转成String：防止Long的值超过了js的number类型最大值的问题  v1.7.0-20211109*/
+        pageVO.setCurrentMinId(String.valueOf(currentMinId));
         pageVO.setConfigList(resultList);
         return resultList;
+    }
+
+    private RedisConfigDTO convertRedisConfigPOToDTO(RedisConfigPO po) {
+        RedisConfigDTO dto = new RedisConfigDTO();
+        BeanUtils.copyProperties(po, dto);
+        /**转换id-->Long转成String：防止Long的值超过了js的number类型最大值的问题  v1.7.0-20211109*/
+        dto.setId(String.valueOf(po.getId()));
+        return dto;
     }
 
     private List<RedisConfigExtPO> queryRedisConfigExts(List<RedisConfigPO> list) {
@@ -302,7 +325,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
         String userName = authContext.getUserName();
         List<RedisConfigExtPO> extList = new ArrayList<>();
         vo.getExts().forEach(temp -> {
-            RedisConfigExtPO extPO = new RedisConfigExtDTO();
+            RedisConfigExtPO extPO = new RedisConfigExtPO();
             extPO.setRconfigId(po.getId());
             extPO.setExtKey(RedisConfigExtPO.EXT_KEY_JAR_PATH);
             extPO.setExtName(temp.getExtName());
@@ -338,7 +361,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
 
     private RedisConfigPO buildUpdateRedisConfigPO(RedisConfigVO vo, AuthContext authContext) {
         String userName = authContext.getUserName();
-        RedisConfigPO oldPO = springUtils.getBean(IRedisConfigService.class).query(vo.getId());
+        RedisConfigPO oldPO = springUtils.getBean(IRedisConfigService.class).queryPO(vo.getId());
         RedisConfigPO po = new RedisConfigPO();
         BeanUtils.copyProperties(vo, po);
         if (!StringUtils.equals(po.getPassword(), oldPO.getPassword())) {
