@@ -262,8 +262,8 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
 
             resultList.add(this.convertRedisConfigPOToDTO(temp));
         }
-        //设置本次查询最小的id
-        pageVO.setCurrentMinId(currentMinId);
+        /**设置本次查询最小的id--转换id-->Long转成String：防止Long的值超过了js的number类型最大值的问题  v1.7.0-20211109*/
+        pageVO.setCurrentMinId(String.valueOf(currentMinId));
         pageVO.setConfigList(resultList);
         return resultList;
     }
@@ -271,7 +271,7 @@ public class RedisConfigServiceImpl implements IRedisConfigService {
     private RedisConfigDTO convertRedisConfigPOToDTO(RedisConfigPO po) {
         RedisConfigDTO dto = new RedisConfigDTO();
         BeanUtils.copyProperties(po, dto);
-        /**转换id-->Long转成String  v1.7.0-20211109*/
+        /**转换id-->Long转成String：防止Long的值超过了js的number类型最大值的问题  v1.7.0-20211109*/
         dto.setId(String.valueOf(po.getId()));
         return dto;
     }
