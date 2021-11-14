@@ -2,6 +2,7 @@ package com.tz.redismanager.controller;
 
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.PostmanConfigVO;
+import com.tz.redismanager.domain.vo.RequestConfigVO;
 import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IPostmanConfigService;
@@ -46,6 +47,12 @@ public class PostmanConfigController {
     @Auth
     public ApiResult<?> list(PostmanConfigVO vo, AuthContext authContext) {
         return postmanConfigService.queryList(vo, authContext);
+    }
+
+    @RequestMapping("request")
+    @Auth
+    public Object request(@RequestBody RequestConfigVO vo, AuthContext authContext) {
+        return postmanConfigService.request(vo, authContext);
     }
 
 }

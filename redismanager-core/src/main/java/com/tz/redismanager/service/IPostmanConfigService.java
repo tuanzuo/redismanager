@@ -2,6 +2,7 @@ package com.tz.redismanager.service;
 
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.PostmanConfigVO;
+import com.tz.redismanager.domain.vo.RequestConfigVO;
 import com.tz.redismanager.security.domain.AuthContext;
 
 /**
@@ -48,4 +49,11 @@ public interface IPostmanConfigService {
      */
     ApiResult<?> queryList(PostmanConfigVO vo, AuthContext authContext);
 
+    /**
+     * 请求
+     * @param vo
+     * @param authContext
+     * @return
+     */
+    Object request(RequestConfigVO vo, AuthContext authContext);
 }

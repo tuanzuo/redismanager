@@ -1,5 +1,6 @@
 package com.tz.redismanager.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.dto.PostmanConfigDTO;
 import com.tz.redismanager.dao.domain.po.PostmanConfigPO;
@@ -7,14 +8,23 @@ import com.tz.redismanager.dao.mapper.PostmanConfigPOMapper;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.PostmanConfigResp;
 import com.tz.redismanager.domain.vo.PostmanConfigVO;
+import com.tz.redismanager.domain.vo.RequestConfigVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IPostmanConfigService;
+import com.tz.redismanager.util.JsonUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +39,8 @@ import java.util.stream.Collectors;
 @Service
 public class PostmanConfigServiceImpl implements IPostmanConfigService {
 
+    @Autowired
+    private RestTemplate restTemplate;
     @Autowired
     private TransactionTemplate transactionTemplate;
     @Autowired
@@ -139,6 +151,25 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
             }
         }
         return new ApiResult<>(ResultCode.SUCCESS, respList.stream().sorted(Comparator.comparing(PostmanConfigResp::getSort)).collect(Collectors.toList()));
+    }
+
+    @Override
+    public Object request(RequestConfigVO vo, AuthContext authContext) {
+        Map<String,String> headersMap = JsonUtils.parseObject(vo.getHeaders(), new TypeReference<Map<String, Object>>(){}.getType());
+        HttpHeaders headers = new HttpHeaders();
+        if (MapUtils.isNotEmpty(headersMap)) {
+            headers.setAll(headersMap);
+        }
+        Map<String,String> cookiesMap = JsonUtils.parseObject(vo.getCookies(), new TypeReference<Map<String, Object>>(){}.getType());
+        if (MapUtils.isNotEmpty(cookiesMap)) {
+            List<String> cookieList = new ArrayList<>();
+            cookiesMap.forEach((key, value) -> cookieList.add(key + "=" + value));
+            headers.put(HttpHeaders.COOKIE, cookieList);
+        }
+        Map<String, Object> body = JsonUtils.parseObject(vo.getBody(), new TypeReference<Map<String, Object>>(){}.getType());
+        Map<String,String> paramsMap = JsonUtils.parseObject(vo.getParams(), new TypeReference<Map<String, Object>>(){}.getType());
+        ResponseEntity<Object> responseEntity = restTemplate.exchange(vo.getRequestUrl(), HttpMethod.resolve(StringUtils.upperCase(vo.getRequestType())), new HttpEntity<>(body, headers), Object.class, paramsMap);
+        return responseEntity;
     }
 
     private PostmanConfigDTO buildSubQueryDTO(Set<Long> ids) {

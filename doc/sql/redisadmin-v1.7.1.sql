@@ -158,7 +158,7 @@ CREATE TABLE `t_postman_config` (
   `request_url` varchar(1024) COLLATE utf8_bin DEFAULT NULL COMMENT '请求url',
   `config_info` text COLLATE utf8_bin COMMENT '配置信息JSON',
   `note` varchar(2048) COLLATE utf8_bin DEFAULT NULL COMMENT '备注',
-  `sort` int(11) NOT NULL DEFAULT '1' COMMENT '排序',
+  `sort` int(11) NOT NULL DEFAULT '100' COMMENT '排序',
   `creater` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `updater` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '修改人',
