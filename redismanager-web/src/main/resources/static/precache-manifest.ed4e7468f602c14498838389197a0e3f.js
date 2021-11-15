@@ -8,11 +8,11 @@ self.__precacheManifest = [
     "url": "/vendors.async.js"
   },
   {
-    "revision": "b2909b73b6174121d326",
+    "revision": "84bd144c4b5051ef2355",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "b2909b73b6174121d326",
+    "revision": "84bd144c4b5051ef2355",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -100,11 +100,11 @@ self.__precacheManifest = [
     "url": "/p__User__models__register.js.async.js"
   },
   {
-    "revision": "a5473ade0dafc8c69067",
+    "revision": "c9793f02bef82ae722a6",
     "url": "/umi.css"
   },
   {
-    "revision": "a5473ade0dafc8c69067",
+    "revision": "c9793f02bef82ae722a6",
     "url": "/umi.js"
   },
   {
@@ -204,20 +204,28 @@ self.__precacheManifest = [
     "url": "/index.html"
   },
   {
-    "revision": "5423f638851bd441057fb363969ac6c9",
-    "url": "/favicon.png.redis"
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
   },
   {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
     "url": "/favicon.png.back"
   },
   {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons\\icon-128x128.png"
   },
   {
     "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
     "url": "/icons\\icon-192x192.png"
+  },
+  {
+    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
+    "url": "/icons\\icon-512x512.png"
+  },
+  {
+    "revision": "5423f638851bd441057fb363969ac6c9",
+    "url": "/favicon.png.redis"
   },
   {
     "revision": "346e09471362f2907510a31812129cd2",
@@ -228,24 +236,16 @@ self.__precacheManifest = [
     "url": "/img\\HsIsxMZiWKrNUavQUXqx.svg"
   },
   {
-    "revision": "2dec628d04c18c54f0b80bc80ce70593",
-    "url": "/img\\wAhyIChODzsoKIOBHcBk.svg"
-  },
-  {
     "revision": "e793fb2e87cce0934a94edcdff293e52",
     "url": "/img\\sAuJeJzSKbUmHfBQRzmZ.svg"
   },
   {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons\\icon-128x128.png"
-  },
-  {
-    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
-    "url": "/icons\\icon-512x512.png"
-  },
-  {
     "revision": "e147bdebf32ef9cb7ce137ed0ed5d3a6",
     "url": "/img\\BiazfanxmamNRoxxVxka.png"
+  },
+  {
+    "revision": "2dec628d04c18c54f0b80bc80ce70593",
+    "url": "/img\\wAhyIChODzsoKIOBHcBk.svg"
   },
   {
     "revision": "1b92f9a438bb106d7f5d9394df1c88ab",
