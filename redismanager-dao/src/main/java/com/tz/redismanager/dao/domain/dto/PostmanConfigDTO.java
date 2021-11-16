@@ -21,7 +21,13 @@ import java.util.Set;
 public class PostmanConfigDTO extends PostmanConfigPO {
 
     /**
+     * id集合
+     */
+    private Set<Long> ids;
+
+    /**
      * 父id集合
      */
     private Set<Long> pids;
+
 }

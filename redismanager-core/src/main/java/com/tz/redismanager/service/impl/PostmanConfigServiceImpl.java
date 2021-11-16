@@ -15,6 +15,7 @@ import com.tz.redismanager.service.IPostmanConfigService;
 import com.tz.redismanager.util.JsonUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +132,48 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
     }
 
     @Override
+    public ApiResult<?> share(PostmanConfigVO vo, AuthContext authContext) {
+        String[] shareUserNames = StringUtils.split(vo.getShareUserNames(), ",");
+        if (ArrayUtils.isEmpty(shareUserNames)) {
+            return new ApiResult<>(ResultCode.FAIL.getCode(), "无分享的用户名");
+        }
+        vo.setShareUserName(new HashSet<>(Arrays.asList(shareUserNames)));
+
+        if (ConstInterface.CATEGORY.INTERFACE_CATEGORY.equals(vo.getCategory())) {
+            PostmanConfigDTO dto = new PostmanConfigDTO();
+            dto.setId(vo.getId());
+            dto.setCreater(authContext.getUserName());
+            dto.setIfDel(ConstInterface.IF_DEL.NO);
+            List<PostmanConfigPO> parentList = postmanConfigPOMapper.selectByParams(dto);
+
+            PostmanConfigDTO subDto = new PostmanConfigDTO();
+            subDto.setPid(vo.getId());
+            subDto.setCreater(authContext.getUserName());
+            subDto.setIfDel(ConstInterface.IF_DEL.NO);
+            List<PostmanConfigPO> subList = postmanConfigPOMapper.selectByParams(subDto);
+            Map<Long, List<PostmanConfigPO>> subMap = subList.stream().filter(temp -> null != temp.getPid()).collect(Collectors.groupingBy(PostmanConfigPO::getPid));
+
+            this.saveShareConfig(vo, parentList, subMap);
+        } else if (ConstInterface.CATEGORY.INTERFACE_TYPE.equals(vo.getCategory())) {
+            PostmanConfigDTO dto = new PostmanConfigDTO();
+            dto.setId(vo.getPid());
+            dto.setCreater(authContext.getUserName());
+            dto.setIfDel(ConstInterface.IF_DEL.NO);
+            List<PostmanConfigPO> parentList = postmanConfigPOMapper.selectByParams(dto);
+
+            PostmanConfigDTO subDto = new PostmanConfigDTO();
+            subDto.setId(vo.getId());
+            subDto.setCreater(authContext.getUserName());
+            subDto.setIfDel(ConstInterface.IF_DEL.NO);
+            List<PostmanConfigPO> subList = postmanConfigPOMapper.selectByParams(subDto);
+            Map<Long, List<PostmanConfigPO>> subMap = subList.stream().filter(temp -> null != temp.getPid()).collect(Collectors.groupingBy(PostmanConfigPO::getPid));
+
+            this.saveShareConfig(vo, parentList, subMap);
+        }
+        return new ApiResult<>(ResultCode.SUCCESS);
+    }
+
+    @Override
     public ApiResult<?> queryList(PostmanConfigVO vo, AuthContext authContext) {
         List<PostmanConfigResp> respList = new ArrayList<>();
         List<PostmanConfigPO> list = postmanConfigPOMapper.selectByParams(this.buildQueryDTO(vo, authContext));
@@ -155,27 +198,52 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
 
     @Override
     public Object request(RequestConfigVO vo, AuthContext authContext) {
-        Map<String,String> headersMap = JsonUtils.parseObject(vo.getHeaders(), new TypeReference<Map<String, Object>>(){}.getType());
+        Map<String, String> headersMap = JsonUtils.parseObject(vo.getHeaders(), new TypeReference<Map<String, Object>>() {
+        }.getType());
         HttpHeaders headers = new HttpHeaders();
         if (MapUtils.isNotEmpty(headersMap)) {
             headers.setAll(headersMap);
         }
-        Map<String,String> cookiesMap = JsonUtils.parseObject(vo.getCookies(), new TypeReference<Map<String, Object>>(){}.getType());
+        Map<String, String> cookiesMap = JsonUtils.parseObject(vo.getCookies(), new TypeReference<Map<String, Object>>() {
+        }.getType());
         if (MapUtils.isNotEmpty(cookiesMap)) {
             List<String> cookieList = new ArrayList<>();
             cookiesMap.forEach((key, value) -> cookieList.add(key + "=" + value));
             headers.put(HttpHeaders.COOKIE, cookieList);
         }
-        Map<String, Object> body = JsonUtils.parseObject(vo.getBody(), new TypeReference<Map<String, Object>>(){}.getType());
-        Map<String,String> paramsMap = JsonUtils.parseObject(vo.getParams(), new TypeReference<Map<String, Object>>(){}.getType());
+        Map<String, Object> body = JsonUtils.parseObject(vo.getBody(), new TypeReference<Map<String, Object>>() {
+        }.getType());
+        Map<String, String> paramsMap = JsonUtils.parseObject(vo.getParams(), new TypeReference<Map<String, Object>>() {
+        }.getType());
         ResponseEntity<Object> responseEntity = restTemplate.exchange(vo.getRequestUrl(), HttpMethod.resolve(StringUtils.upperCase(vo.getRequestType())), new HttpEntity<>(body, headers), Object.class, paramsMap);
         return responseEntity;
     }
 
-    private PostmanConfigDTO buildSubQueryDTO(Set<Long> ids) {
-        PostmanConfigDTO dto = new PostmanConfigDTO();
-        dto.setPids(ids);
-        return dto;
+    private void saveShareConfig(PostmanConfigVO vo, List<PostmanConfigPO> parentList, Map<Long, List<PostmanConfigPO>> subMap) {
+        transactionTemplate.execute((transactionStatus) -> {
+            for (PostmanConfigPO parentAddPO : parentList) {
+                Long oldId = parentAddPO.getId();
+                String configName = parentAddPO.getConfigName() + "[share]";
+                for (String userName : vo.getShareUserName()) {
+                    parentAddPO.setConfigName(configName);
+                    parentAddPO.setCreater(userName);
+                    parentAddPO.setCreateTime(new Date());
+                    parentAddPO.setUpdater(userName);
+                    parentAddPO.setUpdateTime(new Date());
+                    postmanConfigPOMapper.insertSelective(parentAddPO);
+                    List<PostmanConfigPO> subListTemp = Optional.ofNullable(subMap.get(oldId)).orElse(new ArrayList<>());
+                    for (PostmanConfigPO subAddPO : subListTemp) {
+                        subAddPO.setPid(parentAddPO.getId());
+                        subAddPO.setCreater(userName);
+                        subAddPO.setCreateTime(new Date());
+                        subAddPO.setUpdater(userName);
+                        subAddPO.setUpdateTime(new Date());
+                        postmanConfigPOMapper.insertSelective(subAddPO);
+                    }
+                }
+            }
+            return null;
+        });
     }
 
     private PostmanConfigPO buildAddPO(PostmanConfigVO vo, AuthContext authContext) {

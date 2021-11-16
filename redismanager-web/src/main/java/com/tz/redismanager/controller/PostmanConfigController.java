@@ -43,6 +43,12 @@ public class PostmanConfigController {
         return postmanConfigService.del(vo, authContext);
     }
 
+    @RequestMapping("share")
+    @Auth
+    public ApiResult<?> share(@RequestBody PostmanConfigVO vo, AuthContext authContext) {
+        return postmanConfigService.share(vo, authContext);
+    }
+
     @RequestMapping("list")
     @Auth
     public ApiResult<?> list(PostmanConfigVO vo, AuthContext authContext) {

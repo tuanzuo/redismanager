@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Set;
 
 
 /**
@@ -76,4 +77,13 @@ public class PostmanConfigVO implements Serializable {
      */
     private String categoryName;
 
+    /**
+     * 要分享用户的userName（多个用户名使用英文逗号分割）
+     */
+    private String shareUserNames;
+
+    /**
+     * 要分享用户的userName集合
+     */
+    private Set<String> shareUserName;
 }

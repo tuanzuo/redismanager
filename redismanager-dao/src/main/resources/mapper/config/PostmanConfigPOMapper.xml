@@ -32,6 +32,15 @@
     <include refid="Base_Column_List" />
     from t_postman_config
     <where>
+        <if test="id != null">
+            AND id = #{id,jdbcType=BIGINT}
+        </if>
+        <if test="ids != null">
+            AND id in
+            <foreach collection="ids" item="temp" index="index" open="(" separator="," close=")">
+                #{temp,jdbcType=BIGINT}
+            </foreach>
+        </if>
         <if test="pid != null">
             AND pid = #{pid,jdbcType=BIGINT}
         </if>

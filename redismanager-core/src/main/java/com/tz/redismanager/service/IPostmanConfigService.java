@@ -42,6 +42,14 @@ public interface IPostmanConfigService {
     ApiResult<?> del(PostmanConfigVO vo, AuthContext authContext);
 
     /**
+     * 分享
+     * @param vo
+     * @param authContext
+     * @return
+     */
+    ApiResult<?> share(PostmanConfigVO vo, AuthContext authContext);
+
+    /**
      * 查询列表
      *
      * @param vo
@@ -56,4 +64,5 @@ public interface IPostmanConfigService {
      * @return
      */
     Object request(RequestConfigVO vo, AuthContext authContext);
+
 }
