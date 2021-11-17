@@ -85,5 +85,5 @@ public class PostmanConfigVO implements Serializable {
     /**
      * 要分享用户的userName集合
      */
-    private Set<String> shareUserName;
+    private Set<String> shareUserNameList;
 }

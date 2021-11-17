@@ -4,7 +4,9 @@ import com.alibaba.fastjson.TypeReference;
 import com.tz.redismanager.constant.ConstInterface;
 import com.tz.redismanager.dao.domain.dto.PostmanConfigDTO;
 import com.tz.redismanager.dao.domain.po.PostmanConfigPO;
+import com.tz.redismanager.dao.domain.po.UserPO;
 import com.tz.redismanager.dao.mapper.PostmanConfigPOMapper;
+import com.tz.redismanager.dao.mapper.UserPOMapper;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.PostmanConfigResp;
 import com.tz.redismanager.domain.vo.PostmanConfigVO;
@@ -46,6 +48,8 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
     private TransactionTemplate transactionTemplate;
     @Autowired
     private PostmanConfigPOMapper postmanConfigPOMapper;
+    @Autowired
+    private UserPOMapper userPOMapper;
 
     @Override
     public ApiResult<?> add(PostmanConfigVO vo, AuthContext authContext) {
@@ -137,7 +141,13 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
         if (ArrayUtils.isEmpty(shareUserNames)) {
             return new ApiResult<>(ResultCode.FAIL.getCode(), "无分享的用户名");
         }
-        vo.setShareUserName(new HashSet<>(Arrays.asList(shareUserNames)));
+        vo.setShareUserNameList(new HashSet<>(Arrays.asList(shareUserNames)));
+
+        List<UserPO> users = userPOMapper.selectByNames(vo.getShareUserNameList());
+        if(CollectionUtils.isEmpty(users)){
+            return new ApiResult<>(ResultCode.FAIL.getCode(), "分享的用户名不存在");
+        }
+        vo.setShareUserNameList(users.stream().map(temp -> temp.getName()).collect(Collectors.toSet()));
 
         if (ConstInterface.CATEGORY.INTERFACE_CATEGORY.equals(vo.getCategory())) {
             PostmanConfigDTO dto = new PostmanConfigDTO();
@@ -224,7 +234,7 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
             for (PostmanConfigPO parentAddPO : parentList) {
                 Long oldId = parentAddPO.getId();
                 String configName = parentAddPO.getConfigName() + "[share]";
-                for (String userName : vo.getShareUserName()) {
+                for (String userName : vo.getShareUserNameList()) {
                     parentAddPO.setConfigName(configName);
                     parentAddPO.setCreater(userName);
                     parentAddPO.setCreateTime(new Date());

@@ -38,6 +38,11 @@ public class RedisContextServiceImpl implements IRedisContextService {
      */
     private static Map<Long, RedisTemplate<String, Object>> redisTemplateMap = new ConcurrentHashMap<>();
 
+    /**
+     * RedisTemplate序列化Map--key:id,value:自定义的序列化代码
+     */
+    private static Map<Long, String> redisTemplateSerCodeMap = new ConcurrentHashMap<>();
+
     @Value("${upload.file.path.prefix}")
     private String uploadPrefix;
 
@@ -87,6 +92,7 @@ public class RedisContextServiceImpl implements IRedisContextService {
         //设置自定义的序列化方式
         if (null != redisTemplate && StringUtils.isNotBlank(redisConfigDto.getSerCode())) {
             RedisContextUtils.initRedisSerializer(redisConfigDto.getSerCode(), redisTemplate);
+            redisTemplateSerCodeMap.put(id, redisConfigDto.getSerCode());
         }
         if (null != redisTemplate) {
             redisTemplateMap.put(id, redisTemplate);
@@ -111,6 +117,11 @@ public class RedisContextServiceImpl implements IRedisContextService {
     public void removeRedisTemplate(Long id) {
         redisTemplateMap.remove(id);
         logger.info("[redisContext] [removeRedisTemplate] {redisTemplate清理完成,id:{}}", id);
+    }
+
+    @Override
+    public String getRedisTemplateSerCode(Long id) {
+        return redisTemplateSerCodeMap.get(id);
     }
 
     @Override

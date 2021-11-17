@@ -8,11 +8,11 @@ self.__precacheManifest = [
     "url": "/vendors.async.js"
   },
   {
-    "revision": "08b7790402ce8a6959ab",
+    "revision": "f1d743277bcbc93d9511",
     "url": "/layouts__BasicLayout.chunk.css"
   },
   {
-    "revision": "08b7790402ce8a6959ab",
+    "revision": "f1d743277bcbc93d9511",
     "url": "/layouts__BasicLayout.async.js"
   },
   {
@@ -204,44 +204,44 @@ self.__precacheManifest = [
     "url": "/index.html"
   },
   {
+    "revision": "c891db020b04fc5afaccff5439d843cd",
+    "url": "/favicon.png"
+  },
+  {
     "revision": "694c4300be571fdd4d8b6abbe14d2e3f",
     "url": "/favicon.png.back"
-  },
-  {
-    "revision": "347329d0982682b42d40c8162817a940",
-    "url": "/icons\\icon-128x128.png"
-  },
-  {
-    "revision": "5423f638851bd441057fb363969ac6c9",
-    "url": "/favicon.png.redis"
   },
   {
     "revision": "c23aa881b8d0e959f6c0aeb5ae7e4baa",
     "url": "/icons\\icon-192x192.png"
   },
   {
-    "revision": "c891db020b04fc5afaccff5439d843cd",
-    "url": "/favicon.png"
+    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
+    "url": "/icons\\icon-512x512.png"
+  },
+  {
+    "revision": "347329d0982682b42d40c8162817a940",
+    "url": "/icons\\icon-128x128.png"
   },
   {
     "revision": "346e09471362f2907510a31812129cd2",
     "url": "/img\\github.png"
   },
   {
+    "revision": "7b34fcaac1317b402f276942a1db2c13",
+    "url": "/img\\HsIsxMZiWKrNUavQUXqx.svg"
+  },
+  {
     "revision": "2dec628d04c18c54f0b80bc80ce70593",
     "url": "/img\\wAhyIChODzsoKIOBHcBk.svg"
   },
   {
+    "revision": "5423f638851bd441057fb363969ac6c9",
+    "url": "/favicon.png.redis"
+  },
+  {
     "revision": "e793fb2e87cce0934a94edcdff293e52",
     "url": "/img\\sAuJeJzSKbUmHfBQRzmZ.svg"
-  },
-  {
-    "revision": "5661ce8e2472d2727e8fd0390b22ba37",
-    "url": "/icons\\icon-512x512.png"
-  },
-  {
-    "revision": "7b34fcaac1317b402f276942a1db2c13",
-    "url": "/img\\HsIsxMZiWKrNUavQUXqx.svg"
   },
   {
     "revision": "e147bdebf32ef9cb7ce137ed0ed5d3a6",
