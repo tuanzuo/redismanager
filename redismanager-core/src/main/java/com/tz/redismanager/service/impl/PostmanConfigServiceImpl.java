@@ -53,12 +53,7 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
 
     @Override
     public ApiResult<?> add(PostmanConfigVO vo, AuthContext authContext) {
-        PostmanConfigDTO dto = new PostmanConfigDTO();
-        dto.setConfigName(vo.getCategoryName());
-        dto.setCategory(ConstInterface.CATEGORY.INTERFACE_CATEGORY);
-        dto.setIfDel(ConstInterface.IF_DEL.NO);
-        dto.setCreater(authContext.getUserName());
-        List<PostmanConfigPO> list = postmanConfigPOMapper.selectByParams(dto);
+        List<PostmanConfigPO> list = postmanConfigPOMapper.selectByParams(this.buildQueryCategoryDTO(vo, authContext));
         PostmanConfigPO parent = null;
         if (CollectionUtils.isNotEmpty(list)) {
             parent = list.get(0);
@@ -87,12 +82,7 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
     public ApiResult<?> update(PostmanConfigVO vo, AuthContext authContext) {
         PostmanConfigPO addParentPO = null;
         if (ConstInterface.CATEGORY.INTERFACE_TYPE.equals(vo.getCategory())) {
-            PostmanConfigDTO dto = new PostmanConfigDTO();
-            dto.setConfigName(vo.getCategoryName());
-            dto.setCategory(ConstInterface.CATEGORY.INTERFACE_CATEGORY);
-            dto.setIfDel(ConstInterface.IF_DEL.NO);
-            dto.setCreater(authContext.getUserName());
-            List<PostmanConfigPO> list = postmanConfigPOMapper.selectByParams(dto);
+            List<PostmanConfigPO> list = postmanConfigPOMapper.selectByParams(this.buildQueryCategoryDTO(vo, authContext));
             if (CollectionUtils.isEmpty(list)) {
                 PostmanConfigVO pvo = new PostmanConfigVO();
                 pvo.setConfigName(vo.getCategoryName());
@@ -144,7 +134,7 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
         vo.setShareUserNameList(new HashSet<>(Arrays.asList(shareUserNames)));
 
         List<UserPO> users = userPOMapper.selectByNames(vo.getShareUserNameList());
-        if(CollectionUtils.isEmpty(users)){
+        if (CollectionUtils.isEmpty(users)) {
             return new ApiResult<>(ResultCode.FAIL.getCode(), "分享的用户名不存在");
         }
         vo.setShareUserNameList(users.stream().map(temp -> temp.getName()).collect(Collectors.toSet()));
@@ -284,6 +274,15 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
         dto.setShareFlag(vo.getShareFlag());
         dto.setCreater(authContext.getUserName());
         dto.setIfDel(ConstInterface.IF_DEL.NO);
+        return dto;
+    }
+
+    private PostmanConfigDTO buildQueryCategoryDTO(PostmanConfigVO vo, AuthContext authContext) {
+        PostmanConfigDTO dto = new PostmanConfigDTO();
+        dto.setConfigName(vo.getCategoryName());
+        dto.setCategory(ConstInterface.CATEGORY.INTERFACE_CATEGORY);
+        dto.setIfDel(ConstInterface.IF_DEL.NO);
+        dto.setCreater(authContext.getUserName());
         return dto;
     }
 }

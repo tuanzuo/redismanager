@@ -44,7 +44,9 @@ public class QuerySetValueHandler extends AbstractQueryValueHandler {
         } catch (Exception e) {
             logger.error("{id:{}查询出错,message:{}}", vo.getId(), e.getMessage());
             logger.info("{ValueSerializer从{}切换到StringRedisSerializer处理}", redisTemplate.getValueSerializer().getClass().getSimpleName());
-            redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
+            //redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
+            //重新设置keySerializer
+            this.reSetKeySerializer(redisTemplate);
             value = this.getValue(vo, redisTemplate);
         }
         return value;
