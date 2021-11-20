@@ -198,7 +198,7 @@ public class UserServiceImpl implements IUserService {
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
-    @Cacheable(name = "用户列表信息缓存", key = ConstInterface.CacheKey.USER_LIST, var = "#param.name + ':' + #param.status + ':' + #param.getOffset() + ':' + #param.getRows()")
+    //@Cacheable(name = "用户列表信息缓存", key = ConstInterface.CacheKey.USER_LIST, var = "#param.name + ':' + #param.status + ':' + #param.getOffset() + ':' + #param.getRows()")
     @Override
     public ApiResult<?> queryList(UserPageParam param) {
         Integer total = userPOMapper.countUser(param.getName(), param.getStatus(), ConstInterface.IF_DEL.NO);
