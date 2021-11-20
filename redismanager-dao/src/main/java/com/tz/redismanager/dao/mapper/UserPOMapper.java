@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 用户Mapper
@@ -26,6 +27,8 @@ public interface UserPOMapper {
     UserPO selectByPrimaryKey(Long id);
 
     UserPO selectByName(@Param("name") String name);
+
+    List<UserPO> selectByNames(@Param("names") Set<String> names);
 
     UserPO selectByNamePwd(@Param("name") String name, @Param("pwd") String pwd, @Param("ifDel") Integer ifDel);
 

@@ -78,6 +78,15 @@ public interface ConstInterface {
     }
 
     /**
+     * 类型[1=接口分类,2=接口,3=环境]
+     */
+    interface CATEGORY {
+        Integer INTERFACE_CATEGORY = 1;
+        Integer INTERFACE_TYPE = 2;
+        Integer ENV_TYPE = 3;
+    }
+
+    /**
      * 符号
      */
     interface Symbol {

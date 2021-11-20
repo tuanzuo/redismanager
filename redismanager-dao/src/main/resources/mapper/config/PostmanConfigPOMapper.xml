@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tz.redismanager.dao.mapper.PostmanConfigPOMapper">
+  <resultMap id="BaseResultMap" type="com.tz.redismanager.dao.domain.po.PostmanConfigPO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="share_flag" jdbcType="TINYINT" property="shareFlag" />
+    <result column="category" jdbcType="INTEGER" property="category" />
+    <result column="config_name" jdbcType="VARCHAR" property="configName" />
+    <result column="request_url" jdbcType="VARCHAR" property="requestUrl" />
+    <result column="config_info" jdbcType="VARCHAR" property="configInfo" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="if_del" jdbcType="TINYINT" property="ifDel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, pid, share_flag, category, config_name, request_url, config_info, note, sort, 
+    creater, create_time, updater, update_time, if_del
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_postman_config
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByParams" parameterType="com.tz.redismanager.dao.domain.dto.PostmanConfigDTO" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_postman_config
+    <where>
+        <if test="id != null">
+            AND id = #{id,jdbcType=BIGINT}
+        </if>
+        <if test="ids != null">
+            AND id in
+            <foreach collection="ids" item="temp" index="index" open="(" separator="," close=")">
+                #{temp,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        <if test="pid != null">
+            AND pid = #{pid,jdbcType=BIGINT}
+        </if>
+        <if test="pids != null">
+            AND pid in
+            <foreach collection="pids" item="temp" index="index" open="(" separator="," close=")">
+                #{temp,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        <if test="shareFlag != null">
+            AND share_flag = #{shareFlag,jdbcType=TINYINT}
+        </if>
+        <if test="category != null">
+            AND category = #{category,jdbcType=INTEGER}
+        </if>
+        <if test="configName != null">
+            AND config_name = #{configName,jdbcType=VARCHAR}
+        </if>
+        <if test="requestUrl != null">
+            AND request_url = #{requestUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="creater != null">
+            AND creater = #{creater,jdbcType=VARCHAR}
+        </if>
+        <if test="updater != null">
+            AND updater = #{updater,jdbcType=VARCHAR}
+        </if>
+        <if test="ifDel != null">
+            AND if_del = #{ifDel,jdbcType=TINYINT}
+        </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_postman_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.tz.redismanager.dao.domain.po.PostmanConfigPO" useGeneratedKeys="true">
+    insert into t_postman_config (pid, share_flag, category, 
+      config_name, request_url, config_info, 
+      note, sort, creater, 
+      create_time, updater, update_time, 
+      if_del)
+    values (#{pid,jdbcType=BIGINT}, #{shareFlag,jdbcType=TINYINT}, #{category,jdbcType=INTEGER}, 
+      #{configName,jdbcType=VARCHAR}, #{requestUrl,jdbcType=VARCHAR}, #{configInfo,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{creater,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{ifDel,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.tz.redismanager.dao.domain.po.PostmanConfigPO" useGeneratedKeys="true">
+    insert into t_postman_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="shareFlag != null">
+        share_flag,
+      </if>
+      <if test="category != null">
+        category,
+      </if>
+      <if test="configName != null">
+        config_name,
+      </if>
+      <if test="requestUrl != null">
+        request_url,
+      </if>
+      <if test="configInfo != null">
+        config_info,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="creater != null">
+        creater,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="ifDel != null">
+        if_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pid != null">
+        #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="shareFlag != null">
+        #{shareFlag,jdbcType=TINYINT},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=INTEGER},
+      </if>
+      <if test="configName != null">
+        #{configName,jdbcType=VARCHAR},
+      </if>
+      <if test="requestUrl != null">
+        #{requestUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="configInfo != null">
+        #{configInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null">
+        #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ifDel != null">
+        #{ifDel,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tz.redismanager.dao.domain.po.PostmanConfigPO">
+    update t_postman_config
+    <set>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="shareFlag != null">
+        share_flag = #{shareFlag,jdbcType=TINYINT},
+      </if>
+      <if test="category != null">
+        category = #{category,jdbcType=INTEGER},
+      </if>
+      <if test="configName != null">
+        config_name = #{configName,jdbcType=VARCHAR},
+      </if>
+      <if test="requestUrl != null">
+        request_url = #{requestUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="configInfo != null">
+        config_info = #{configInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null">
+        creater = #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ifDel != null">
+        if_del = #{ifDel,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tz.redismanager.dao.domain.po.PostmanConfigPO">
+    update t_postman_config
+    set pid = #{pid,jdbcType=BIGINT},
+      share_flag = #{shareFlag,jdbcType=TINYINT},
+      category = #{category,jdbcType=INTEGER},
+      config_name = #{configName,jdbcType=VARCHAR},
+      request_url = #{requestUrl,jdbcType=VARCHAR},
+      config_info = #{configInfo,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      creater = #{creater,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      updater = #{updater,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      if_del = #{ifDel,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

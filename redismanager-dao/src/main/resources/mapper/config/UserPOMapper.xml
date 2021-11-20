@@ -30,6 +30,17 @@
       name = #{name,jdbcType=VARCHAR}
     </where>
   </select>
+  <select id="selectByNames" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user
+    <where>
+        name in
+        <foreach collection="names" item="name" index="index" open="(" separator="," close=")">
+            #{name,jdbcType=VARCHAR}
+        </foreach>
+    </where>
+  </select>
   <select id="selectByNamePwd" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

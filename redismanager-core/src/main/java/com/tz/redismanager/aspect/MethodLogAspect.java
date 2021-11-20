@@ -58,7 +58,7 @@ public class MethodLogAspect {
         logBuilder.append(ConstInterface.Symbol.MIDDLE_BRACKET_LEFT).append(methodName).append(ConstInterface.Symbol.MIDDLE_BRACKET_RIGHT);
 
         if (methodLog.logInputParams()) {
-            logger.info(logBuilder.toString() + "{入参:{}}", JsonUtils.toJsonStr(joinPoint.getArgs()));
+            logger.info(logBuilder.toString() + " [入参] {}", JsonUtils.toJsonStr(joinPoint.getArgs()));
         }
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -67,11 +67,11 @@ public class MethodLogAspect {
         boolean flag = false;
         if (methodLog.logOutputParams()) {
             flag = true;
-            logBuilder.append("{出参:").append(JsonUtils.toJsonStr(result)).append("}");
+            logBuilder.append(" [出参] ").append(JsonUtils.toJsonStr(result));
         }
         if (methodLog.logExecTime()) {
             flag = true;
-            logBuilder.append("{执行耗时:").append(stopWatch.getTotalTimeMillis()).append("ms}");
+            logBuilder.append(" [执行耗时] ").append(stopWatch.getTotalTimeMillis()).append("ms");
         }
         if (flag) {
             logger.info(logBuilder.toString());

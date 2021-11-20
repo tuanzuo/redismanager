@@ -71,6 +71,7 @@ public class SetRedisTemplateAspect {
             }
         }
         RedisContextUtils.setRedisTemplate(redisTemplate);
+        RedisContextUtils.setRedisConfigId(id);
         Object result;
         //得到设置的序列化对象
         RedisSerializer keySerializer = redisTemplate.getKeySerializer();
@@ -86,6 +87,7 @@ public class SetRedisTemplateAspect {
             redisTemplate.setValueSerializer(valueSerializer);
             redisTemplate.setHashValueSerializer(hashValueSerializer);
             RedisContextUtils.cleanRedisTemplate();
+            RedisContextUtils.cleanRedisConfigId();
         }
         return result;
     }

@@ -1,3 +1,7 @@
+CREATE DATABASE `redisadmin` CHARACTER SET utf8 COLLATE utf8_bin;
+
+USE redisadmin;
+
 CREATE TABLE `t_redis_config` (
   `id` bigint(20) NOT NULL COMMENT '主键',
   `name` varchar(1024) collate utf8_bin default NULL COMMENT '名称',

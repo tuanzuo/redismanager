@@ -3,6 +3,7 @@ package com.tz.redismanager.util;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.tz.redismanager.config.redis.custom.CustomLettuceConnectionConfiguration;
 import com.tz.redismanager.constant.ConstInterface;
+import com.tz.redismanager.domain.dto.GroovyRunDTO;
 import com.tz.redismanager.trace.TraceLoggerFactory;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
@@ -33,6 +34,8 @@ public class RedisContextUtils {
 
     public static ThreadLocal<RedisTemplate<String, Object>> threadLocalRedisTemplate = new InheritableThreadLocal<>();
 
+    public static ThreadLocal<Long> threadLocalRedisConfigId = new InheritableThreadLocal<>();
+
     public static RedisTemplate<String, Object> getRedisTemplate() {
         return threadLocalRedisTemplate.get();
     }
@@ -43,6 +46,18 @@ public class RedisContextUtils {
 
     public static void cleanRedisTemplate() {
         threadLocalRedisTemplate.remove();
+    }
+
+    public static Long getRedisConfigId() {
+        return threadLocalRedisConfigId.get();
+    }
+
+    public static void setRedisConfigId(Long id) {
+        threadLocalRedisConfigId.set(id);
+    }
+
+    public static void cleanRedisConfigId() {
+        threadLocalRedisConfigId.remove();
     }
 
 
@@ -105,9 +120,16 @@ public class RedisContextUtils {
         return customRedisTemplate;
     }
 
-    public static void initRedisSerializer(String serializeCode, RedisTemplate<String, Object> redisTemplate) {
+    public static GroovyRunDTO initRedisSerializer(String serializeCode, RedisTemplate<String, Object> redisTemplate) {
+        return initRedisSerializerCommon(serializeCode,redisTemplate,1);
+    }
+
+    public static GroovyRunDTO initRedisSerializerCommon(String serializeCode, RedisTemplate<String, Object> redisTemplate, Integer serializerCategory) {
+        GroovyRunDTO groovyRunDTO = new GroovyRunDTO();
         Binding binding = new Binding();
         binding.setVariable("customRedisTemplate", redisTemplate);
+        binding.setVariable("serializerCategory", serializerCategory);
+        binding.setVariable("groovyRunDTO", groovyRunDTO);
 
         GroovyClassLoader groovyClassLoader = new GroovyClassLoader(RedisContextUtils.class.getClassLoader());
         CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
@@ -117,5 +139,7 @@ public class RedisContextUtils {
         GroovyShell groovyShell = new GroovyShell(groovyClassLoader, binding, compilerConfiguration);
         Script script = groovyShell.parse(serializeCode);
         script.run();
+        return groovyRunDTO;
     }
+
 }

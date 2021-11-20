@@ -44,6 +44,13 @@ public interface IRedisContextService {
     void removeRedisTemplate(Long id);
 
     /**
+     * 得到RedisTemplate的自定义序列化代码
+     * @param id
+     * @return
+     */
+    String getRedisTemplateSerCode(Long id);
+
+    /**
      * 测试redis连接
      *
      * @param vo
