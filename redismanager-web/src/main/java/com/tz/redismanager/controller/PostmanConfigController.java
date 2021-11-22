@@ -3,6 +3,7 @@ package com.tz.redismanager.controller;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.PostmanConfigVO;
 import com.tz.redismanager.domain.vo.RequestConfigVO;
+import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.security.annotation.Auth;
 import com.tz.redismanager.security.domain.AuthContext;
 import com.tz.redismanager.service.IPostmanConfigService;
@@ -57,6 +58,7 @@ public class PostmanConfigController {
 
     @RequestMapping("request")
     @Auth
+    @Limiter(name = "服务端执行请求", key = "POSTMAN_CONFIG_REQUEST_API", qps = 100)
     public Object request(@RequestBody RequestConfigVO vo, AuthContext authContext) {
         return postmanConfigService.request(vo, authContext);
     }
