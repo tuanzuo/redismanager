@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>仪表盘controller</p>
+ * 仪表盘管理
  *
  * @author tuanzuo
  * @version 1.5.0

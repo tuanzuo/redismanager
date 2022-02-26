@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>Postman配置controller</p>
+ * Postman配置管理
  *
  * @author tuanzuo
  * @version 1.7.1

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 角色controller
+ * 角色管理
  *
  * @author tuanzuo
  * @version 1.4.0

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * redis操作controller
+ * redis操作管理
  *
  * @author tuanzuo
  * @Since:2019-08-23 22:28:29
@@ -62,13 +62,13 @@ public class RedisAdminController {
 
     @RequestMapping("context/test/connection")
     @Auth
-    public ApiResult<?> testRedisConnection(@Validated({ValidGroup.TestConnection.class}) @RequestBody RedisConfigVO vo) {
+    public ApiResult<String> testRedisConnection(@Validated({ValidGroup.TestConnection.class}) @RequestBody RedisConfigVO vo) {
         return redisContextService.testRedisConnection(vo);
     }
 
     @RequestMapping("server/info/{id}")
     @Auth
-    public ApiResult<?> queryServerInfo(@NotNull(message = "id不能为空") @PathVariable("id") Long id) {
+    public ApiResult<RedisServerInfoVO> queryServerInfo(@NotNull(message = "id不能为空") @PathVariable("id") Long id) {
         return redisAdminService.queryServerInfo(id);
     }
 
@@ -76,7 +76,7 @@ public class RedisAdminController {
     @Auth
     @MethodLog(logPrefix = "查询Redis的Key接口", logInputParams = false, logOutputParams = false)
     @Limiter(name = "查询Redis的Key请求限流", key = "REDIS_ADMIN_KEY_LIST_API", qps = 200)
-    public ApiResult<?> keyList(@NotNull(message = "id不能为空") Long id, @NotEmpty(message = "查询条件不能为空") String searchKey) {
+    public ApiResult<Map<String, Object>> keyList(@NotNull(message = "id不能为空") Long id, @NotEmpty(message = "查询条件不能为空") String searchKey) {
         Map<String, Object> map = new HashMap<>();
         map.put("keyList", redisAdminService.searchKey(id, searchKey));
         return new ApiResult<>(ResultCode.SUCCESS, map);
@@ -86,7 +86,7 @@ public class RedisAdminController {
     @Auth
     @MethodLog(logPrefix = "查询Redis的Key对应value接口", logInputParams = false, logOutputParams = false)
     @Limiter(name = "查询Redis的Key对应value请求限流", key = "REDIS_ADMIN_KEY_VALUE_API", qps = 200)
-    public ApiResult<?> keyValue(@Validated @RequestBody RedisValueQueryVO vo) {
+    public ApiResult<Map<String, Object>> keyValue(@Validated @RequestBody RedisValueQueryVO vo) {
         Map<String, Object> map = new HashMap<>();
         map.put("keyValue", redisAdminService.searchKeyValue(vo));
         return new ApiResult<>(ResultCode.SUCCESS, map);
