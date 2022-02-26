@@ -31,7 +31,7 @@ public class ConfigPO {
 
     /**
      * 配置类型
-     * {@link com.tz.redismanager.config.enm.ConfigTypeEnum}
+     * @see com.tz.redismanager.config.enm.ConfigTypeEnum#code
      */
     private Integer configType;
 

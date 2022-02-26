@@ -39,7 +39,7 @@ public class ConfigVO {
 
     /**
      * 配置类型
-     * {@link com.tz.redismanager.config.enm.ConfigTypeEnum}
+     * @see com.tz.redismanager.config.enm.ConfigTypeEnum#code
      */
     @NotNull(message = "类型不能为空", groups = {ValidGroup.AddConfig.class, ValidGroup.UpdateConfig.class})
     private Integer configType;

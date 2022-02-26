@@ -18,11 +18,29 @@ import java.util.List;
 @Setter
 public class AnalysisRespVO {
 
+    /**
+     * 请求量数据
+     */
     private VisitData visitData = new VisitData();
+    /**
+     * 用户访问量数据
+     */
     private UserVisitData userVisitData = new UserVisitData();
+    /**
+     * Redis连接配置排行榜数据
+     */
     private RedisConfigVisitData redisConfigVisitData = new RedisConfigVisitData();
+    /**
+     * 用户数据
+     */
     private UserData userData = new UserData();
+    /**
+     * 角色数据
+     */
     private RoleData roleData = new RoleData();
+    /**
+     * Redis连接配置数据
+     */
     private RedisConfigData redisConfigData = new RedisConfigData();
 
     /**

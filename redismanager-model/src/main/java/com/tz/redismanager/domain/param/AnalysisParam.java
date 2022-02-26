@@ -19,7 +19,7 @@ public class AnalysisParam {
 
     /**
      * 日期类型
-     * {@link com.tz.redismanager.enm.DateTypeEnum}
+     * @see com.tz.redismanager.enm.DateTypeEnum#type
      */
     private String dateType = DateTypeEnum.YEAR.getType();
 
