@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Error页面配置
+ * 错误页面管理
  *
  * @author tuanzuo
  * @version 1.0

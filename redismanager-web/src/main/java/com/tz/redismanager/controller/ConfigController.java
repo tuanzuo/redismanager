@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>配置controller</p>
+ * 配置管理
  *
  * @author tuanzuo
  * @version 1.7.0

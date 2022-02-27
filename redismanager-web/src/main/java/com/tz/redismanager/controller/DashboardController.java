@@ -3,6 +3,7 @@ package com.tz.redismanager.controller;
 import com.tz.redismanager.annotation.MethodLog;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.AnalysisParam;
+import com.tz.redismanager.domain.vo.AnalysisRespVO;
 import com.tz.redismanager.enm.ResultCode;
 import com.tz.redismanager.limiter.annotation.Limiter;
 import com.tz.redismanager.security.annotation.Auth;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>仪表盘controller</p>
+ * 仪表盘管理
  *
  * @author tuanzuo
  * @version 1.5.0
@@ -31,7 +32,7 @@ public class DashboardController {
     @Auth
     @MethodLog(logPrefix = "查询分析数据", logInputParams = false, logOutputParams = false)
     @Limiter(name = "查询分析数据请求限流", key = "DASHBOARD_ANALYSIS_API", qps = 200)
-    public ApiResult<?> analysis(@RequestBody @Validated AnalysisParam param) {
+    public ApiResult<AnalysisRespVO> analysis(@RequestBody @Validated AnalysisParam param) {
         return new ApiResult<>(ResultCode.SUCCESS, dashboardService.analysis(param));
     }
 

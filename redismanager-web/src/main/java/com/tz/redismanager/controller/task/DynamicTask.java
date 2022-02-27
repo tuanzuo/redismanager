@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
 /**
- * <p>动态开启，暂停，修改任务</p>
+ * 动态开启，暂停，修改任务管理
  *
  * @author tuanzuo
  * @version 1.7.0

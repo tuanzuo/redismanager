@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 验证码controller
+ * 验证码管理
  *
  * @Author:tuanzuo
  * @Since:2020-12-19 19:17:15

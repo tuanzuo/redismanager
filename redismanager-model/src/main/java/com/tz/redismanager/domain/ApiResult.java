@@ -15,10 +15,17 @@ import lombok.Setter;
 @Setter
 public class ApiResult<T> {
     /**
-     * @see ResultCode
+     * 状态码
+     * @see ResultCode#code
      */
     private String code;
+    /**
+     * 状态描述
+     */
     private String msg;
+    /**
+     * 返回数据
+     */
     private T datas;
 
     public ApiResult() {

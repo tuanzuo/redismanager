@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotNull;
 
 /**
- * redis连接配置controller
+ * redis连接配置管理
  *
  * @author tuanzuo
  * @Since:2019-08-23 22:29:01
