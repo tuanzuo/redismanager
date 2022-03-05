@@ -28,6 +28,11 @@ public class DashboardController {
     @Autowired
     private IDashboardService dashboardService;
 
+    /**
+     * 查询分析数据接口
+     * @param param
+     * @return
+     */
     @RequestMapping("analysis")
     @Auth
     @MethodLog(logPrefix = "查询分析数据", logInputParams = false, logOutputParams = false)

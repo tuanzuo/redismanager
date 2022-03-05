@@ -44,6 +44,11 @@ public class RedisAdminController {
     @Autowired
     private IStatisticService statisticService;
 
+    /**
+     * 初始化redis连接接口
+     * @param id
+     * @return
+     */
     @RequestMapping("context/init/{id}")
     @Auth
     public ApiResult<?> initContext(@NotNull(message = "id不能为空") @PathVariable("id") Long id) {
@@ -52,6 +57,11 @@ public class RedisAdminController {
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
+    /**
+     * 清理redis连接缓存接口
+     * @param id
+     * @return
+     */
     @RequestMapping("context/cache/clear/{id}")
     @Auth
     public ApiResult<?> clearCacheRedisTemplate(@NotNull(message = "id不能为空") @PathVariable("id") Long id) {
@@ -60,18 +70,34 @@ public class RedisAdminController {
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
+    /**
+     * 测试redis连接接口
+     * @param vo
+     * @return
+     */
     @RequestMapping("context/test/connection")
     @Auth
     public ApiResult<String> testRedisConnection(@Validated({ValidGroup.TestConnection.class}) @RequestBody RedisConfigVO vo) {
         return redisContextService.testRedisConnection(vo);
     }
 
+    /**
+     * 查询redis服务信息接口
+     * @param id
+     * @return
+     */
     @RequestMapping("server/info/{id}")
     @Auth
     public ApiResult<RedisServerInfoVO> queryServerInfo(@NotNull(message = "id不能为空") @PathVariable("id") Long id) {
         return redisAdminService.queryServerInfo(id);
     }
 
+    /**
+     * 查询redis的key列表接口
+     * @param id
+     * @param searchKey
+     * @return
+     */
     @RequestMapping("key/list")
     @Auth
     @MethodLog(logPrefix = "查询Redis的Key接口", logInputParams = false, logOutputParams = false)
@@ -82,6 +108,11 @@ public class RedisAdminController {
         return new ApiResult<>(ResultCode.SUCCESS, map);
     }
 
+    /**
+     * 查询redis的key对应value接口
+     * @param vo
+     * @return
+     */
     @RequestMapping("key/value")
     @Auth
     @MethodLog(logPrefix = "查询Redis的Key对应value接口", logInputParams = false, logOutputParams = false)
@@ -92,30 +123,55 @@ public class RedisAdminController {
         return new ApiResult<>(ResultCode.SUCCESS, map);
     }
 
+    /**
+     * 删除redis的key接口
+     * @param vo
+     * @return
+     */
     @RequestMapping("key/del")
     @Auth
     public ApiResult<?> delKeys(@Validated @RequestBody RedisKeyDelVO vo) {
         return redisAdminService.delKeys(vo);
     }
 
+    /**
+     * 修改redis的key名称接口
+     * @param vo
+     * @return
+     */
     @RequestMapping("key/rename")
     @Auth
     public ApiResult<?> renameKey(@Validated({ValidGroup.RenameKey.class}) @RequestBody RedisKeyUpdateVO vo) {
         return redisAdminService.renameKey(vo);
     }
 
+    /**
+     * 设置redis的key过期时间接口
+     * @param vo
+     * @return
+     */
     @RequestMapping("key/setTtl")
     @Auth
     public ApiResult<?> setTtl(@Validated({ValidGroup.SetTTL.class}) @RequestBody RedisKeyUpdateVO vo) {
         return redisAdminService.setTtl(vo);
     }
 
+    /**
+     * 修改redis的key对应的value接口
+     * @param vo
+     * @return
+     */
     @RequestMapping("key/updateValue")
     @Auth
     public ApiResult<?> updateValue(@Validated({ValidGroup.UpdateKeyValue.class}) @RequestBody RedisKeyUpdateVO vo) {
         return redisAdminService.updateValue(vo);
     }
 
+    /**
+     * 添加redis的key接口
+     * @param vo
+     * @return
+     */
     @RequestMapping("key/addKey")
     @Auth
     public ApiResult<?> addKey(@Validated @RequestBody RedisKeyAddVO vo) {

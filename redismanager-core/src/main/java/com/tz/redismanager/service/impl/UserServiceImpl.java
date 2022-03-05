@@ -100,7 +100,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ApiResult<?> countOnline() {
+    public ApiResult<Long> countOnline() {
         Long count = userStatisticsService.countOnlineUser();
         return new ApiResult<>(ResultCode.SUCCESS, count);
     }
@@ -200,7 +200,7 @@ public class UserServiceImpl implements IUserService {
 
     //@Cacheable(name = "用户列表信息缓存", key = ConstInterface.CacheKey.USER_LIST, var = "#param.name + ':' + #param.status + ':' + #param.getOffset() + ':' + #param.getRows()")
     @Override
-    public ApiResult<?> queryList(UserPageParam param) {
+    public ApiResult<UserListResp> queryList(UserPageParam param) {
         Integer total = userPOMapper.countUser(param.getName(), param.getStatus(), ConstInterface.IF_DEL.NO);
         UserListResp resp = this.buildUserListResp(param, total);
         if (total <= 0) {

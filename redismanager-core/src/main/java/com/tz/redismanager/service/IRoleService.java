@@ -3,6 +3,8 @@ package com.tz.redismanager.service;
 import com.tz.redismanager.dao.domain.dto.RoleAnalysisDTO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.RolePageParam;
+import com.tz.redismanager.domain.vo.PageResp;
+import com.tz.redismanager.domain.vo.RoleResp;
 import com.tz.redismanager.domain.vo.RoleVO;
 import com.tz.redismanager.security.domain.AuthContext;
 
@@ -51,7 +53,7 @@ public interface IRoleService {
      * @param param
      * @return
      */
-    ApiResult<?> queryList(RolePageParam param);
+    ApiResult<PageResp<RoleResp>> queryList(RolePageParam param);
 
     /**
      * 查询角色分析页数据

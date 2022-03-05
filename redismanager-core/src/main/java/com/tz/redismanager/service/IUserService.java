@@ -3,6 +3,7 @@ package com.tz.redismanager.service;
 import com.tz.redismanager.dao.domain.dto.UserAnalysisDTO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.param.UserPageParam;
+import com.tz.redismanager.domain.vo.UserListResp;
 import com.tz.redismanager.domain.vo.UserVO;
 import com.tz.redismanager.security.domain.AuthContext;
 
@@ -30,7 +31,7 @@ public interface IUserService {
      *
      * @return
      */
-    ApiResult<?> countOnline();
+    ApiResult<Long> countOnline();
 
     /**
      * 当前用户信息
@@ -90,7 +91,7 @@ public interface IUserService {
      * @param param
      * @return
      */
-    ApiResult<?> queryList(UserPageParam param);
+    ApiResult<UserListResp> queryList(UserPageParam param);
 
     /**
      * 查询用户分析页数据

@@ -33,7 +33,7 @@ public class ConfigDecoratorImpl implements IConfigDecorator {
     private IConfigService configService;
 
     @Override
-    public ApiResult<?> queryPageList(ConfigPageParam param) {
+    public ApiResult<PageResp<ConfigPO>> queryPageList(ConfigPageParam param) {
         Integer total = configService.countPage(param);
         PageResp<ConfigPO> resp = this.buildPageResp(param, total);
         if (total <= 0) {

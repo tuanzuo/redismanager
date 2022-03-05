@@ -22,6 +22,10 @@ public class CaptchaController {
     @Autowired
     private ICaptchaService captchaService;
 
+    /**
+     * 获取验证码接口
+     * @return
+     */
     @RequestMapping("/captcha")
     @Limiter(name = "验证码请求限流", key = "CAPTCHA_API", qps = 100)
     public ApiResult<CaptchaResp> captcha() {

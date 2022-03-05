@@ -35,6 +35,12 @@ public class RedisConfigController {
     @Autowired
     private IRedisConfigService redisConfigService;
 
+    /**
+     * 查询redis连接信息列表接口
+     * @param param
+     * @param authContext
+     * @return
+     */
     @RequestMapping("list")
     @MethodLog(logPrefix = "查询Redis连接信息", logInputParams = false, logOutputParams = false)
     @Auth
@@ -45,6 +51,12 @@ public class RedisConfigController {
         return redisConfigService.searchList(param);
     }
 
+    /**
+     * 添加redis连接信息接口
+     * @param vo
+     * @param authContext
+     * @return
+     */
     @RequestMapping("add")
     @Auth
     public ApiResult<?> add(@Validated({ValidGroup.AddConnection.class}) @RequestBody RedisConfigVO vo, AuthContext authContext) {
@@ -52,24 +64,48 @@ public class RedisConfigController {
         return new ApiResult<>(ResultCode.SUCCESS);
     }
 
+    /**
+     * 删除redis连接信息接口
+     * @param id
+     * @param authContext
+     * @return
+     */
     @RequestMapping("del/{id}")
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
     public ApiResult<?> del(@NotNull(message = "id不能为空") @PathVariable("id") Long id, AuthContext authContext) {
         return redisConfigService.delete(id, authContext);
     }
 
+    /**
+     * 修改redis连接信息接口
+     * @param vo
+     * @param authContext
+     * @return
+     */
     @RequestMapping("update")
     @Auth
     public ApiResult<?> update(@Validated({ValidGroup.UpdateConnection.class}) @RequestBody RedisConfigVO vo, AuthContext authContext) {
         return redisConfigService.update(vo, authContext);
     }
 
+    /**
+     * 上传文件接口
+     * @param file
+     * @param authContext
+     * @return
+     */
     @RequestMapping("/upload")
     @Auth
     public ApiResult<?> upload(@RequestParam("file") MultipartFile file, AuthContext authContext) {
         return redisConfigService.upload(file, authContext);
     }
 
+    /**
+     * 下载文件接口
+     * @param fileName
+     * @param authContext
+     * @return
+     */
     @RequestMapping("/download")
     @Auth
     public ResponseEntity<byte[]> download(@RequestParam("fileName") String fileName, AuthContext authContext) {
