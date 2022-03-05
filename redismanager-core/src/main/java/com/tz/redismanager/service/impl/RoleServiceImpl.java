@@ -67,7 +67,7 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public ApiResult<?> queryList(RolePageParam param) {
+    public ApiResult<PageResp<RoleResp>> queryList(RolePageParam param) {
         RolePO queryRole = this.buildQueryRole(param);
         Integer total = rolePOMapper.countRole(queryRole);
         PageResp<RoleResp> resp = this.buildPageResp(param, total);

@@ -1,8 +1,10 @@
 package com.tz.redismanager.service;
 
 import com.tz.redismanager.config.domain.param.ConfigPageParam;
+import com.tz.redismanager.config.domain.po.ConfigPO;
 import com.tz.redismanager.domain.ApiResult;
 import com.tz.redismanager.domain.vo.ConfigVO;
+import com.tz.redismanager.domain.vo.PageResp;
 import com.tz.redismanager.security.domain.AuthContext;
 
 /**
@@ -20,7 +22,7 @@ public interface IConfigDecorator {
      * @param param
      * @return
      */
-    ApiResult<?> queryPageList(ConfigPageParam param);
+    ApiResult<PageResp<ConfigPO>> queryPageList(ConfigPageParam param);
 
     /**
      * 添加配置

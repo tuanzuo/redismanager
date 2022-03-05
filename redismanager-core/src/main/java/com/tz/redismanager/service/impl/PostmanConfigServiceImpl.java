@@ -174,7 +174,7 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
     }
 
     @Override
-    public ApiResult<?> queryList(PostmanConfigVO vo, AuthContext authContext) {
+    public ApiResult<List<PostmanConfigResp>> queryList(PostmanConfigVO vo, AuthContext authContext) {
         List<PostmanConfigResp> respList = new ArrayList<>();
         List<PostmanConfigPO> list = postmanConfigPOMapper.selectByParams(this.buildQueryDTO(vo, authContext));
         Map<Long, List<PostmanConfigResp>> subListMap = list.stream().

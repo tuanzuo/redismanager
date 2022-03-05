@@ -1,6 +1,7 @@
 package com.tz.redismanager.controller;
 
 import com.tz.redismanager.domain.ApiResult;
+import com.tz.redismanager.domain.vo.AuthResp;
 import com.tz.redismanager.domain.vo.LoginVO;
 import com.tz.redismanager.service.IAuthService;
 import com.tz.redismanager.security.annotation.Auth;
@@ -26,11 +27,21 @@ public class LoginController {
     @Autowired
     private IAuthService authService;
 
+    /**
+     * 登录接口
+     * @param vo
+     * @return
+     */
     @RequestMapping("login")
-    public ApiResult<?> login(@Validated({ValidGroup.Login.class}) @RequestBody LoginVO vo) {
+    public ApiResult<AuthResp> login(@Validated({ValidGroup.Login.class}) @RequestBody LoginVO vo) {
         return authService.login(vo);
     }
 
+    /**
+     * 登出接口
+     * @param authContext
+     * @return
+     */
     @RequestMapping("logout")
     @Auth(required = false)
     public ApiResult<?> logout(AuthContext authContext) {

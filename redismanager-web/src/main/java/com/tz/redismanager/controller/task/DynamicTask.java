@@ -37,7 +37,7 @@ public class DynamicTask {
 
     //http://127.0.0.1/startTask?taskId=1&cron=*/3 * * * * *
     /**
-     * 启动任务
+     * 启动任务接口
      *
      * @param taskId 任务id
      * @param cron cron表达式
@@ -53,7 +53,7 @@ public class DynamicTask {
 
     //http://127.0.0.1/stopTask?taskId=1
     /**
-     * 停止任务
+     * 停止任务接口
      *
      * @param taskId
      * @return
@@ -67,7 +67,7 @@ public class DynamicTask {
 
     //http://127.0.0.1/changeTask?taskId=1&cron=*/10 * * * * *
     /**
-     * 修改任务
+     * 修改任务接口
      *
      * @param taskId
      * @param cron
