@@ -208,7 +208,7 @@ public class PostmanConfigServiceImpl implements IPostmanConfigService {
         }.getType());
         if (MapUtils.isNotEmpty(cookiesMap)) {
             List<String> cookieList = new ArrayList<>();
-            cookiesMap.forEach((key, value) -> cookieList.add(key + "=" + value));
+            cookiesMap.forEach((key, value) -> cookieList.add(StringUtils.join(key, ConstInterface.Symbol.EQUAL, value)));
             headers.put(HttpHeaders.COOKIE, cookieList);
         }
         Map<String, Object> body = JsonUtils.parseObject(vo.getBody(), new TypeReference<Map<String, Object>>() {
