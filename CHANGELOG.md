@@ -5,6 +5,8 @@
 🚀 新功能
 
 1. 增加接口请求的功能（postman）
+2. 加入EasyYapi插件的配置文件(.easy.api.config)
+3. 完善接口注释，方便通过EasyYapi插件把接口信息推送到yapi中
 
 ## v1.7.0(2021.08.24)
 
