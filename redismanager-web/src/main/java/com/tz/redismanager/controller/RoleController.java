@@ -76,7 +76,7 @@ public class RoleController {
     @RequestMapping("list")
     @MethodLog(logPrefix = "查询角色列表接口", logInputParams = false, logOutputParams = false)
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    @Limiter(name = "查询角色列表接口请求限流", key = "ROLE_LIST_API", qps = 200)
+    @Limiter(name = "查询角色列表接口限流", key = "ROLE_LIST_API", qps = 200)
     public ApiResult<PageResp<RoleResp>> list(RolePageParam param) {
         return roleService.queryList(param);
     }
