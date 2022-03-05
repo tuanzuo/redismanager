@@ -35,8 +35,8 @@ public class DashboardController {
      */
     @RequestMapping("analysis")
     @Auth
-    @MethodLog(logPrefix = "查询分析数据", logInputParams = false, logOutputParams = false)
-    @Limiter(name = "查询分析数据请求限流", key = "DASHBOARD_ANALYSIS_API", qps = 200)
+    @MethodLog(logPrefix = "查询分析数据接口", logInputParams = false, logOutputParams = false)
+    @Limiter(name = "查询分析数据接口限流", key = "DASHBOARD_ANALYSIS_API", qps = 200)
     public ApiResult<AnalysisRespVO> analysis(@RequestBody @Validated AnalysisParam param) {
         return new ApiResult<>(ResultCode.SUCCESS, dashboardService.analysis(param));
     }

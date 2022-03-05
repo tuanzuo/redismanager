@@ -100,8 +100,8 @@ public class RedisAdminController {
      */
     @RequestMapping("key/list")
     @Auth
-    @MethodLog(logPrefix = "查询Redis的Key接口", logInputParams = false, logOutputParams = false)
-    @Limiter(name = "查询Redis的Key请求限流", key = "REDIS_ADMIN_KEY_LIST_API", qps = 200)
+    @MethodLog(logPrefix = "查询Redis的Key列表接口", logInputParams = false, logOutputParams = false)
+    @Limiter(name = "查询Redis的Key列表接口请求限流", key = "REDIS_ADMIN_KEY_LIST_API", qps = 200)
     public ApiResult<Map<String, Object>> keyList(@NotNull(message = "id不能为空") Long id, @NotEmpty(message = "查询条件不能为空") String searchKey) {
         Map<String, Object> map = new HashMap<>();
         map.put("keyList", redisAdminService.searchKey(id, searchKey));
@@ -116,7 +116,7 @@ public class RedisAdminController {
     @RequestMapping("key/value")
     @Auth
     @MethodLog(logPrefix = "查询Redis的Key对应value接口", logInputParams = false, logOutputParams = false)
-    @Limiter(name = "查询Redis的Key对应value请求限流", key = "REDIS_ADMIN_KEY_VALUE_API", qps = 200)
+    @Limiter(name = "查询Redis的Key对应value接口限流", key = "REDIS_ADMIN_KEY_VALUE_API", qps = 200)
     public ApiResult<Map<String, Object>> keyValue(@Validated @RequestBody RedisValueQueryVO vo) {
         Map<String, Object> map = new HashMap<>();
         map.put("keyValue", redisAdminService.searchKeyValue(vo));

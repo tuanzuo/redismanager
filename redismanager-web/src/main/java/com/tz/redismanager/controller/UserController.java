@@ -127,7 +127,7 @@ public class UserController {
     @RequestMapping("list")
     @MethodLog(logPrefix = "查询用户列表接口", logInputParams = false, logOutputParams = false)
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    @Limiter(name = "查询用户列表接口请求限流", key = "USER_LIST_API", qps = 200)
+    @Limiter(name = "查询用户列表接口限流", key = "USER_LIST_API", qps = 200)
     public ApiResult<UserListResp> list(UserPageParam param) {
         return userService.queryList(param);
     }

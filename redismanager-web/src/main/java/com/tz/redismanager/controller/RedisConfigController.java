@@ -42,9 +42,9 @@ public class RedisConfigController {
      * @return
      */
     @RequestMapping("list")
-    @MethodLog(logPrefix = "查询Redis连接信息", logInputParams = false, logOutputParams = false)
+    @MethodLog(logPrefix = "查询Redis连接信息列表接口", logInputParams = false, logOutputParams = false)
     @Auth
-    @Limiter(name = "查询Redis连接信息请求限流", key = "REDIS_CONFIG_LIST_API", qps = 200)
+    @Limiter(name = "查询Redis连接信息列表接口限流", key = "REDIS_CONFIG_LIST_API", qps = 200)
     public ApiResult<RedisConfigPageVO> list(RedisConfigPageParam param, AuthContext authContext) {
         param.setUserName(authContext.getUserName());
         param.setIsSuperAdmin(authContext.getRoles().contains(ConstInterface.ROLE_CODE.SUPER_ADMIN) ? ConstInterface.IS_SUPER_ADMIN.YES : ConstInterface.IS_SUPER_ADMIN.NO);

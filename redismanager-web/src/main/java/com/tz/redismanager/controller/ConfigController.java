@@ -38,9 +38,9 @@ public class ConfigController {
      * @return
      */
     @RequestMapping("list")
-    @MethodLog(logPrefix = "查询配置列表", logInputParams = false, logOutputParams = false)
+    @MethodLog(logPrefix = "查询配置列表接口", logInputParams = false, logOutputParams = false)
     @Auth(permitRoles = {ConstInterface.ROLE_CODE.SUPER_ADMIN})
-    @Limiter(name = "查询配置列表请求限流", key = "CONFIG_LIST_API", qps = 200)
+    @Limiter(name = "查询配置列表接口限流", key = "CONFIG_LIST_API", qps = 200)
     public ApiResult<PageResp<ConfigPO>> list(ConfigPageParam param) {
         return configDecorator.queryPageList(param);
     }
