@@ -103,6 +103,7 @@ public interface ConstInterface {
         String BRACKET_LEFT = "(";
         String BRACKET_RIGHT = ")";
         String SLASH = "/";
+        String EQUAL = "=";
     }
 
     /**
