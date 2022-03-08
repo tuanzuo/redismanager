@@ -8,6 +8,10 @@ server:
   error:
     #指定错误path
     path: /error
+  servlet:
+    jsp:
+      #不注册JSP servlet
+      registered: false
 
 #暴露loggers,caches这几个endpoint
 management:
