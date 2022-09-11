@@ -48,9 +48,30 @@
 	 </encoder>
   </appender>
 
+  <!-- 对FILE增加异步日志包裹-->
+  <appender name="ASYNC_FILE" class="com.tz.redismanager.config.LogbackAsyncAppender">
+      <queueSize>1024</queueSize>
+      <discardingThreshold>100</discardingThreshold>
+      <appender-ref ref="FILE" />
+  </appender>
+
+  <!-- 对FILE_ERR增加异步日志包裹-->
+  <appender name="ASYNC_FILE_ERR" class="com.tz.redismanager.config.LogbackAsyncAppender">
+      <queueSize>1024</queueSize>
+      <discardingThreshold>100</discardingThreshold>
+      <appender-ref ref="FILE_ERR" />
+  </appender>
+
+  <!-- 对CONSOLE增加异步日志包裹-->
+  <appender name="ASYNC_CONSOLE" class="com.tz.redismanager.config.LogbackAsyncAppender">
+      <queueSize>1024</queueSize>
+      <discardingThreshold>100</discardingThreshold>
+      <appender-ref ref="CONSOLE" />
+  </appender>
+
   <root level="INFO">
-    <appender-ref ref="CONSOLE" />
-    <appender-ref ref="FILE" />
-    <appender-ref ref="FILE_ERR" />
+    <appender-ref ref="ASYNC_FILE" />
+    <appender-ref ref="ASYNC_FILE_ERR" />
+    <appender-ref ref="ASYNC_CONSOLE" />
   </root>
 </configuration>
