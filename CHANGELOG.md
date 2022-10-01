@@ -6,7 +6,7 @@
 
 1. 日志异步化
 2. fastjson从1.2.74升级到1.2.83
-3. 自定义DataSource(DruidDataSource)
+3. 自定义DataSource(DruidDataSource)(2022.10.01)
 
 ## v1.7.1(2021.11.14)
 
