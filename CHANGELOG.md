@@ -4,7 +4,7 @@
 
 🏃‍ 升级jar包
 1. mysql-connector-java从5.1.42升级到8.0.23
-2.  guava从29.0-jre升级到32.0.0-jre
+2. guava从29.0-jre升级到32.0.0-jre
 
 ## v1.7.2(2022.09.11)
 
