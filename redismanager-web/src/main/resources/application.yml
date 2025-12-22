@@ -38,7 +38,7 @@ spring:
   #数据库连接
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${db.host}:${db.port}/${db.name}?&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false
     username: ${db.username}
     password: ${db.password}
